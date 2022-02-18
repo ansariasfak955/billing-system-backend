@@ -2,7 +2,7 @@
   <nav class="navbar top-navbar">
     <div class="container">
       <div class="navbar-content">
-        <a href="#" class="navbar-brand" onclick="return false">
+        <a href="" class="navbar-brand" onclick="return false">
           Billing<span>System</span>
         </a>
         <form class="search-form">
