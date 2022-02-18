@@ -11,7 +11,18 @@
 |
 */
 
+/* route links */
+
 Route::get('/', function () {
+    return view('backend.dashboard');
+});
+
+
+
+
+/* Oringinal theme links */
+
+Route::get('/dev', function () {
     return view('dashboard');
 });
 
@@ -104,7 +115,7 @@ Route::group(['prefix' => 'error'], function(){
     Route::get('500', function () { return view('pages.error.500'); });
 });
 
-Route::get('/clear-cache', function() {
+Route::get('clear-cache', function() {
     Artisan::call('cache:clear');
     return "Cache is cleared";
 });
