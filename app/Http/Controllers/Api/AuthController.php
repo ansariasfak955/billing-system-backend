@@ -70,7 +70,7 @@ class AuthController extends Controller
 
        
 
-        if(User::where('email', $request->email)->orWhere("mobile_number", $request->mobile_number)->first() != NULL){
+        if(User::where('email', $request->email)->first() != NULL){
             return response()->json(['success' => false,
             'message' => "You are already registered"]);
         }
