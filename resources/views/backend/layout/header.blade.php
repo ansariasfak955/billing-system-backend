@@ -52,7 +52,7 @@
     </div>
   </nav>
   <nav class="bottom-navbar">
-    <div class="container">
+    <div class="container"> 
       <ul class="nav page-navigation">
         <li class="nav-item {{ active_class(['/']) }}">
           <a class="nav-link" href="{{ url('/') }}">
@@ -61,15 +61,15 @@
           </a>
         </li>
         <li class="nav-item {{ active_class(['forms/*']) }}">
-          <a href="#" class="nav-link">
+          <a href="#" class="nav-link" onclick="return false">
             <i class="link-icon" data-feather="inbox"></i>
             <span class="menu-title">Users</span>
             <i class="link-arrow"></i>
           </a>
           <div class="submenu">
             <ul class="submenu-item">
-              <li class="nav-item"><a href="{{ url('/all-users') }}" class="nav-link {{ active_class(['all-users']) }}">All Users</a></li>
-              <li class="nav-item"><a href="{{ url('/add-user') }}" class="nav-link {{ active_class(['add-user']) }}">Add user</a></li>
+              <li class="nav-item"><a href="{{ url('/users') }}" class="nav-link {{ active_class(['users']) }}">Users</a></li>
+              {{-- <li class="nav-item"><a href="{{ url('/add-user') }}" class="nav-link {{ active_class(['add-user']) }}">Add user</a></li> --}}
             </ul>
           </div>
         </li>

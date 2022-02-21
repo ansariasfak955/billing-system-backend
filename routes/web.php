@@ -18,6 +18,8 @@ Route::get('/', function () {
 });
 
 Route::any('/profile', 'UserController@profile');
+Route::resource('users', UserController::class);
+Route::get('user-data', 'UserController@getUserdata')->name('getUserdata');
 
 
 

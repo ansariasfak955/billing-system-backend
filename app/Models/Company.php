@@ -12,7 +12,7 @@ class Company extends Model
     protected $fillable = ['name', 'commercial_name', 'country', 'state', 'city', 'address', 'pincode', 'phone', 'activity_type', 'email', 'legal_registration', 'corporate_color', 'register_as', 'tin', 'fax', 'number_of_employees', 'website', 'language', 'time_zone', 'fiscal_start_date', 'fiscal_start_month', 'number_of_decimal', 'decimal_separator', 'pdf_file_download_date_format', 'currency', 'currency_representation', 'taxpayer_identification', 'logo', 'user_id'];
 
 
-     public function getLogoAttribute()
+    public function getLogoAttribute()
     {
         if ($this->attributes['logo']) {
             return url('/storage').'/company/logo/'.$this->attributes['logo'];
