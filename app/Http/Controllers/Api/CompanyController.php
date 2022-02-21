@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Helpers\TableHelper;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -38,6 +39,9 @@ class CompanyController extends Controller
             $request->logo->move(storage_path('app/public/company/logo'), $imageName);
             $company->logo = $imageName;
         }
+
+
+        TableHelper::createTables($company->id);
 
         return response()->json([
             "status" => true,
