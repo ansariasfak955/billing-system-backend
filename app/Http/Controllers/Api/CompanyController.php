@@ -69,10 +69,11 @@ class CompanyController extends Controller
      */
     public function update(Request $request, Company $company)
     {
+        
         $company->update($request->all());
 
         if($request->logo != NULL){
-            $imageName = time().'.'.$request->image->extension();  
+            $imageName = time().'.'.$request->logo->extension();  
             $request->logo->move(storage_path('app/public/company/logo'), $imageName);
             $company->logo = $imageName;
         }
