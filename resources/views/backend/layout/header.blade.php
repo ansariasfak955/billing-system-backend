@@ -25,18 +25,18 @@
                 </div>
                 <div class="text-center">
                   <p class="tx-16 fw-bolder">Admin</p>
-                  <p class="tx-12 text-muted">pranav.bhardwaj@codingcafe.website</p>
+                  <p class="tx-12 text-muted">developer@codingcafe.website</p>
                 </div>
               </div>
               <ul class="list-unstyled p-1">
                 <li class="dropdown-item py-2">
-                  <a href="{{ url('/general/profile') }}" class="text-body ms-0">
+                  <a href="{{ url('') }}" class="text-body ms-0">
                     <i class="me-2 icon-md" data-feather="user"></i>
                     <span>Profile</span>
                   </a>
                 </li>
                 <li class="dropdown-item py-2">
-                  <a href="javascript:;" class="text-body ms-0">
+                  <a href="{{url('/logout')}}" class="text-body ms-0">
                     <i class="me-2 icon-md" data-feather="log-out"></i>
                     <span>Log Out</span>
                   </a>

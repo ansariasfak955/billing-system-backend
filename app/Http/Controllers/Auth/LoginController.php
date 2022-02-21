@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+//use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -18,14 +20,14 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+   // use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -35,5 +37,25 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+        if(User::where('email', $request->email)->first() == NULL){
+            return redirect("login")->withErrors(['email' => 'Login details are Incorrect']);
+        }
+        $credentials = $request->only('email', 'password');
+        if (\Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect()->intended('/')->withSuccess('Signed in');
+        } else {
+            if(User::where('email', $request->email)->where('password', $request->password)->first() == NULL){
+                return redirect()->back()->withInput($request->input())->withErrors(['password' => 'Password Incorrect']);
+            }
+        }
+        return redirect("login")->withErrors('Login details are not valid');
     }
 }

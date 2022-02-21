@@ -13,13 +13,23 @@
 
 /* route links */
 
-Route::get('/', function () {
+
+
+Route::group(['middleware' => 'auth'], function() {
+    Route::get('/', function () {
     return view('backend.dashboard');
+    });
+    Route::any('/profile', 'UserController@profile');
+    Route::resource('users', UserController::class);
+    Route::get('user-data', 'UserController@getUserdata')->name('getUserdata');
+    Route::get('/logout', function(){
+        \Auth::logout();
+        return redirect('/login');
+    });
 });
 
-Route::any('/profile', 'UserController@profile');
-Route::resource('users', UserController::class);
-Route::get('user-data', 'UserController@getUserdata')->name('getUserdata');
+ Route::get('login', function () { return view('backend.pages.auth.login'); })->name('login');
+ Route::post('login', 'Auth\LoginController@login');
 
 
 
