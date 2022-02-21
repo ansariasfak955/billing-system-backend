@@ -20,6 +20,6 @@ Route::group(['namespace' => 'Api'], function() {
     Route::post('forget-password', 'AuthController@forgetPassword');
    
     Route::group(['middleware' => ['auth:api']], function(){
-
+        Route::apiResource('companies', CompanyController::class);
     });
 });

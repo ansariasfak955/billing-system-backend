@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('backend.dashboard');
 });
 
-Route::any('/profile', 'App\Http\Controllers\UserController@profile');
+Route::any('/profile', 'UserController@profile');
 
 
 
