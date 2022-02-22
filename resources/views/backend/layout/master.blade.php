@@ -44,7 +44,7 @@
   @include('backend.layout.header')
     <div class="page-wrapper">
       <div class="page-content">
-         @include('backend.component.alert')
+        @include('backend.component.alert')
         @yield('content')
       </div>
       @include('backend.layout.footer')

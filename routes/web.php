@@ -14,7 +14,7 @@
 /* route links */
 
 
-
+Auth::routes();
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/', function () {
     return view('backend.dashboard');
@@ -41,6 +41,15 @@ Route::group(['middleware' => 'auth'], function() {
 
  Route::get('login', function () { return view('backend.pages.auth.login'); })->name('login');
  Route::post('login', 'Auth\LoginController@login');
+
+
+ Route::get('/forgot-password', 'Auth\ForgotPasswordController@getForgetPassword')->name('password.request');
+
+Route::post('/forgot-password', 'Auth\ForgotPasswordController@updateForgetPassword')->name('password.email');
+
+Route::get('/reset-password/{token}', 'Auth\ResetPasswordController@getResetPassword')->name('password.reset');
+
+Route::post('/reset-password', 'Auth\ResetPasswordController@updateResetpassword')->name('password.update');
 
 
 
