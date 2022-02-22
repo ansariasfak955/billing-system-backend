@@ -157,4 +157,34 @@ class UserController extends Controller
         ]);
     }
 
+    //  Get profile
+    public function getProfile()
+    {
+        $page_title = 'Profile';
+
+        return view('backend.pages.users.profile', compact('page_title'));
+    }
+
+
+    /* Update profile */
+    public function updateProfile(Request $request, $id)
+    {
+        $user = User::where('id', $id)->first();
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required'
+        ]);
+    
+        $user->update($request->all());
+        if($request->image != NULL){
+            $imageName = time().'.'.$request->image->extension();  
+            $request->image->move(storage_path('app/public/users'), $imageName);
+            $user->image = $imageName;
+            $user->save();
+        }
+       
+        return redirect()->back()->with('success','Profile updated successfully');
+       
+    }
+
 }

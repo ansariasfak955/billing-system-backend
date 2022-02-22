@@ -80,7 +80,8 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'mobile_number' => $request->mobile_number,
-            'password' => bcrypt($request->password)
+            'password' => bcrypt($request->password),
+            'country' => $request->country
         ]);
         $user->assignRole('user'); 
 

@@ -1,0 +1,8 @@
+.horizontal-menu .bottom-navbar .page-navigation {
+    position: relative;
+    width: 100%;
+    z-index: 99;
+    justify-content: left !important;
+    transition-duration: .2s;
+    transition-property: background,box-shadow;
+}

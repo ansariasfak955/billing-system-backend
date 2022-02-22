@@ -44,4 +44,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Company::class, 'user_id', 'id');
     }
+
+    public function getImageAttribute()
+    {
+        if ($this->attributes['image']) {
+            return url('/storage').'/users/'.$this->attributes['image'];
+        } else {
+            return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
+        }
+    }
 }

@@ -19,7 +19,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/', function () {
     return view('backend.dashboard');
     });
-    Route::any('/profile', 'UserController@profile');
+    
+    /* get and update profile links */
+    Route::get('/profile', 'UserController@getProfile');
+    Route::put('/update-profile/{id}', 'UserController@updateProfile');
     Route::resource('users', UserController::class);
     Route::get('user-data', 'UserController@getUserdata')->name('getUserdata');
     Route::get('/logout', function(){
