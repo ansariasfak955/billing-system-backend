@@ -6,3 +6,6 @@
     transition-duration: .2s;
     transition-property: background,box-shadow;
 }
+.table-responsive {
+    overflow-x: hidden !important;
+}

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="navbar-content">
         <a href="" class="navbar-brand" onclick="return false">
-          Billing<span>System</span>
+         <img src="{{ asset('light.png')}}" width="100">
         </a>
         {{-- <form class="search-form">
           <div class="input-group">
