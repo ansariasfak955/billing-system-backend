@@ -26,6 +26,9 @@ Route::group(['middleware' => 'auth'], function() {
         \Auth::logout();
         return redirect('/login');
     });
+    
+    /* Delete Links */
+    Route::post('users/delete', 'UserController@deleteAll');
 });
 
  Route::get('login', function () { return view('backend.pages.auth.login'); })->name('login');

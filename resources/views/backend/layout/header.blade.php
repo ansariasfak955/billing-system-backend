@@ -5,14 +5,14 @@
         <a href="" class="navbar-brand" onclick="return false">
           Billing<span>System</span>
         </a>
-        <form class="search-form">
+        {{-- <form class="search-form">
           <div class="input-group">
             <div class="input-group-text">
               <i data-feather="search"></i>
             </div>
             <input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
           </div>
-        </form>
+        </form> --}}
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -69,7 +69,7 @@
           <div class="submenu">
             <ul class="submenu-item">
               <li class="nav-item"><a href="{{ url('/users') }}" class="nav-link {{ active_class(['users']) }}">Users</a></li>
-              {{-- <li class="nav-item"><a href="{{ url('/add-user') }}" class="nav-link {{ active_class(['add-user']) }}">Add user</a></li> --}}
+              <li class="nav-item"><a href="{{ url('/users/create') }}" class="nav-link {{ active_class(['users/create']) }}">Add user</a></li>
             </ul>
           </div>
         </li>

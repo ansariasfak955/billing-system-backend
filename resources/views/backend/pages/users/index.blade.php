@@ -2,34 +2,28 @@
 
 @push('plugin-styles')
   <link href="{{ asset('assets/plugins/datatables-net/dataTables.bootstrap4.css') }}" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Sweet Alert -->
+        <link href="{{ URL::asset('plugins/sweet-alert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css">
 @endpush
 
 @section('content')
 <nav class="page-breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="#">Tables</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Data Table</li>
+    <li class="breadcrumb-item active" aria-current="page">Users</li>
   </ol>
 </nav>
-
+ 
 <div class="row">
   <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h6 class="card-title">Users</h6>
+        @if($users_count > 0)
+            <button class="btn btn-primary btn-sm grid-batch-delete mb-2" data-ajax-url="{{ url('/users/delete') }}" data-type="class">Delete All</button>
+        @endif
         <div class="table-responsive">
-          <table id="user_data" class="table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
+          {!! $dataTable->table() !!} 
+          
         </div>
       </div>
     </div>
@@ -38,43 +32,18 @@
 @endsection
 
 @push('plugin-scripts')
+  {!! $dataTable->scripts() !!}
   <script src="{{ asset('assets/plugins/datatables-net/jquery.dataTables.js') }}"></script>
   <script src="{{ asset('assets/plugins/datatables-net-bs4/dataTables.bootstrap4.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+    <script src="{{ URL::asset('assets/js/custom.js')}}"></script>
+  <script type="text/javascript">
+      $(document).ready(function(){
+          $(".all_items_checkbox").attr("title", "");
+      });
+  </script>      
 @endpush
 
 @push('custom-scripts')
   <script src="{{ asset('assets/js/data-table.js') }}"></script>
 @endpush
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-     $(function() {
-/* datatable for  monthly deviations */
-            $('#user_data').DataTable({
-                lengthMenu: [10, 20, 100, 500, 1000],
-                pageLength: 10,
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    "url": "{{ route('getUserdata') }}",
-                    "type": 'GET',
-                    "data":{}
-                },
-                columns: [
-                  
-                    { data: 'name', name: 'Name', render: function(data, type, full, meta) {
-                        return data
-                    }},
-                    { data: 'email', name: 'Email', render: function(data, type, full, meta) {
-                        return data
-                    }},
-                    { data: 'mobile_number', name: 'Phone', render: function(data, type, full, meta) {
-                        return data
-                    }},
-                    { data: 'country', name: 'Country', render: function(data, type, full, meta) {
-                        return data
-                    }}
-                ],
-                destroy: true
-            });
-        });
-</script>

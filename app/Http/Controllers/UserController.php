@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\DataTables\UserDataTable;
 use Illuminate\Http\Request;
+use Validator;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -16,7 +18,8 @@ class UserController extends Controller
     public function index(UserDataTable $dataTable, Request $request)
     {
         $page_title = "Users";
-        return $dataTable->render('backend.pages.users.index', compact('page_title'));
+        $users_count = User::whereHas("roles", function($q){ $q->where("name", "user"); })->count();
+        return $dataTable->render('backend.pages.users.index', compact('page_title', 'users_count'));
     }
 
     /**
@@ -26,7 +29,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $page_title = "Create User";
+        $role = "user";
+        return view('backend.pages.users.create', compact('page_title', 'role'));
     }
 
     /**
@@ -37,7 +42,24 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'name' => 'required',
+            'email' => 'email|unique:users'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withError($validator->errors()->first())->withInput();
+        }
+
+        $request['password'] = Hash::make($request->password);
+        /*if ($request->is_ban == 'on') {
+            $request['is_ban'] = 1;
+        } else {
+            $request['is_ban'] = 0;
+        }*/
+        $user = User::create($request->all());
+        $user->assignRole($request->role);
+        return redirect()->route('users.index')->withSuccess('New user is created successfully!');
     }
 
     /**
@@ -59,7 +81,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $page_title = "Edit User";
+        $role = "user";
+        return view('backend.pages.users.edit', compact('user', 'page_title', 'role'));
     }
 
     /**
@@ -71,7 +95,34 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'name' => 'required'             
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withError($validator->errors()->first())->withInput();
+        }        
+
+        
+        if ($request->password != '') {
+            $request['password'] = Hash::make($request->password);
+        }
+
+        /*if ($request->is_ban == 'on') {
+            $request['is_ban'] = 1;
+        } else {
+            $request['is_ban'] = 0;
+        }*/
+        
+        $user->syncRoles($request->role);
+        
+        if ($request->password == '') {
+            $user->update($request->except(['_method', '_token', 'role', 'password']));
+        } else {
+            $user->update($request->except(['_method', '_token', 'role']));
+        }       
+        
+        return redirect()->route('users.index')->withSuccess('User Updated Successfully!'); 
     }
 
     /**
@@ -82,22 +133,28 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        if($user->delete()){
+            return response()->json([
+                    'status' => true,
+                    'message' => "User deleted successfully!"
+            ]);
+        } else {
+            return response()->json([
+                    'status' => false,
+                    'message' => "Retry deleting again!"
+            ]);
+        }
     }
 
-    public function getUserData()
+    /* Delete Multiple Entries */
+
+    public function deleteAll(Request $request)
     {
-        $users = User::whereHas("roles", function($q){ $q->where("name", "user"); })->orderBy('id', 'DESC')->get();
-       
-        $i = 0;
-        foreach ($users as $user) {
-            $user_data[$i]['name'] = $user->name;
-            $user_data[$i]['email'] = $user->email;
-            $user_data[$i]['mobile_number'] = $user->mobile_number;
-            $user_data[$i]['country'] = $user->country;
-           
-            $i++;
-        }
-        return \DataTables::of($user_data)->make();
+        User::whereIn('id', $request->ids)->delete();
+        return response()->json([
+            'status' => true, 
+            'message' => 'Selected items deleted successfully', 
+        ]);
     }
+
 }
