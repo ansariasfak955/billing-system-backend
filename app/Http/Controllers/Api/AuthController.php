@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Jobs\SendEmailsOnUserGeneration;
 use App\Jobs\SendEmailForgetPassword;
+use App\Jobs\PasswordChangeSuccess;
 
 class AuthController extends Controller
 {
@@ -132,5 +133,36 @@ class AuthController extends Controller
             'status' => true,
             'message' => 'Reset password link sent on your email address.',
         ]);
+    }
+
+    /* Reset password */
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+       
+        $updatePassword = \DB::table('password_resets')->where([
+                              'email' => $request->email,
+                              'token' => $request->token
+                            ])->first();
+        if(!$updatePassword){
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid token!',
+            ]);
+        }
+
+        if($updatePassword->type == "user"){
+           User::where('email', $request->email)->update(['password' => bcrypt($request->password)]);
+           \DB::table('password_resets')->where(['email'=> $request->email])->delete();
+            PasswordChangeSuccess::dispatchNow(User::where('email', $request->email)->first());
+          return response()->json([
+                'status' => true,
+                'message' => 'Your password has been changed successfully!',
+            ]);
+        }
     }
 }

@@ -54,7 +54,7 @@ class ResetPasswordController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required'
         ]);
-        dd($request);
+       
         $updatePassword = \DB::table('password_resets')->where([
                               'email' => $request->email,
                               'token' => $request->token
