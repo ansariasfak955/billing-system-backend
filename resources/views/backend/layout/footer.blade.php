@@ -1,3 +1,6 @@
+<!-- bundle -->
+<script src="{{ URL::asset('plugins/sweet-alert2/sweetalert2.min.js')}}"></script>
+{{-- <script src="{{ URL::asset('pages/jquery.sweet-alert.init.js')}}"></script> --}}
 <footer class="footer border-top">
   <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between py-3 small">
     <p class="text-muted mb-1 mb-md-0">Copyright © {{ date('Y')}} BillingSystem</p>

@@ -57,7 +57,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 col-md-6 text-left">
-                                    {{-- <a href="/change-password" target="_blank" class="">Click here to update password</a> --}}
+                                    <a href="/change-password" target="_blank" class="">Click here to update password</a>
                                 </div>
                                 <div class="col-xs-12 col-sm-6 col-md-6 text-right">
                                   <button type="submit" class="btn btn-primary">Submit</button>

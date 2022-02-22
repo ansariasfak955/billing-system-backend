@@ -187,4 +187,33 @@ class UserController extends Controller
        
     }
 
+    /* get and update password */
+
+    public function changePassword(Request $request)
+    {
+       if($request->isMethod('post')){
+            if(!isset($request->current_password)){
+                return redirect()->back()->with('error','Please enter current password!'); 
+            }
+
+            if(!isset($request->new_password)){
+                return redirect()->back()->with('error','Please enter new password!'); 
+            }
+
+
+        if(isset($request->new_password)){
+            if(!\Hash::check($request->current_password, \Auth::user()->password)){
+                return redirect()->back()->with('error','Current password does not matched');
+            } 
+        }
+        if(isset($request->new_password)){
+            \Auth::user()->password = bcrypt($request->new_password);
+            \Auth::user()->save();
+        }
+
+        return redirect()->to('/')->with('success','password updated successfully');
+       }
+       return view('backend.pages.users.change-password');
+    }
+
 }

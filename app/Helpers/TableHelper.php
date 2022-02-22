@@ -94,8 +94,8 @@ class TableHelper
         }
 
         /* Creating dynamic company based products table */
-        if (!Schema::hasTable('company_'.$company_id.'_category_products')) {
-            Schema::create('company_'.$company_id.'_category_products', function (Blueprint $table) {
+        if (!Schema::hasTable('company_'.$company_id.'_product_categories')) {
+            Schema::create('company_'.$company_id.'_product_categories', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
                 $table->timestamps();

@@ -20,9 +20,6 @@ Route::group(['middleware' => 'auth'], function() {
     return view('backend.dashboard');
     });
     
-    /* get and update profile links */
-    Route::get('/profile', 'UserController@getProfile');
-    Route::put('/update-profile/{id}', 'UserController@updateProfile');
     Route::resource('users', UserController::class);
     Route::get('user-data', 'UserController@getUserdata')->name('getUserdata');
     Route::get('/logout', function(){
@@ -32,6 +29,14 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Delete Links */
     Route::post('users/delete', 'UserController@deleteAll');
+
+    /* get and update profile links */
+    Route::get('/profile', 'UserController@getProfile');
+    Route::put('/update-profile/{id}', 'UserController@updateProfile');
+
+    /* get and update password */
+    Route::get('/change-password', 'UserController@changePassword');
+    Route::post('/change-password', 'UserController@changePassword');
 });
 
  Route::get('login', function () { return view('backend.pages.auth.login'); })->name('login');
