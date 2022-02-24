@@ -35,6 +35,8 @@
   <!-- end common css -->
 
   @stack('style')
+  <!-- Sweet Alert -->
+  <link href="{{ URL::asset('plugins/sweet-alert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css">
 </head>
 <body data-base-url="{{url('/')}}">
 
@@ -55,6 +57,8 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('assets/plugins/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <!-- bundle -->
+<script src="{{ URL::asset('plugins/sweet-alert2/sweetalert2.min.js')}}"></script>
     <!-- end base js -->
 
     <!-- plugin js -->

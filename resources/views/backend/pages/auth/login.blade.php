@@ -35,9 +35,9 @@
                 <div class="mb-2">
                   <button type="submit" class=" btn btn-primary me-2 mb-2 mb-md-0">Sign In</button>
                 </div>
-                <div class="mb-2">
+                {{-- <div class="mb-2">
                   <a href="{{ url('forgot-password')}}">Forgot password</a>
-                </div>
+                </div> --}}
               </form>
             </div>
           </div>

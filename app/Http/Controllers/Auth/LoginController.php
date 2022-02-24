@@ -45,17 +45,17 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        if(User::where('email', $request->email)->first() == NULL){
-            return redirect("login")->withErrors(['email' => 'Login details are Incorrect']);
+        if(User::whereHas("roles", function($q){ $q->where("name", "admin"); })->where('email', $request->email)->first() == NULL){
+            return redirect()->back()->withError('Email address is incorrect');
         }
         $credentials = $request->only('email', 'password');
         if (\Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             return redirect()->intended('/')->withSuccess('Signed in');
         } else {
             if(User::where('email', $request->email)->where('password', $request->password)->first() == NULL){
-                return redirect()->back()->withInput($request->input())->withErrors(['password' => 'Password Incorrect']);
+                return redirect()->back()->withInput($request->input())->withError('Password Incorrect');
             }
         }
-        return redirect("login")->withErrors('Login details are not valid');
+        return redirect()->back()->withError('Login details are not valid');
     }
 }

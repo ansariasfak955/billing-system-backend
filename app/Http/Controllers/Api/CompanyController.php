@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Helpers\TableHelper;
 use Illuminate\Http\Request;
 use Auth;
+use Validator;
 
 class CompanyController extends Controller
 {
@@ -32,12 +33,25 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $request['user_id'] = Auth()->id();
-        $company = Company::create($request->all());
+
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|unique:companies',
+            'phone' => 'digits:10'            
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }  
+        $company = Company::create($request->except('logo'));
 
         if($request->logo != NULL){
             $imageName = time().'.'.$request->logo->extension();  
             $request->logo->move(storage_path('app/public/company/logo'), $imageName);
             $company->logo = $imageName;
+            $company->save();
         }
 
 
