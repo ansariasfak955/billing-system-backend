@@ -87,6 +87,18 @@ class CompanyController extends Controller
      */
     public function update(Request $request, Company $company)
     {
+
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|unique:companies,name,'.$company->id,
+            'phone' => 'digits:10'            
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
         
         $company->update($request->all());
 
