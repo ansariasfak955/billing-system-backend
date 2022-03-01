@@ -26,6 +26,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('bank_accounts', BankAccountController::class);
             Route::apiResource('product_categories', ProductCategoryController::class);
             Route::apiResource('products', ProductController::class);
+            Route::apiResource('roles', RoleController::class);
         });
     });
 });
