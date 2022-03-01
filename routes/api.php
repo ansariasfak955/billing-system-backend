@@ -22,5 +22,8 @@ Route::group(['namespace' => 'Api'], function() {
    
     Route::group(['middleware' => ['auth:api']], function(){
         Route::apiResource('companies', CompanyController::class);
+        Route::group(["prefix" => "{company_id}/"], function(){
+            Route::apiResource('bank_accounts', BankAccountController::class);
+        });
     });
 });

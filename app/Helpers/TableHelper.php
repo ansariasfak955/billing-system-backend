@@ -19,13 +19,47 @@ class TableHelper
             });
         }
 
-        /* Creating dynamic company based role permissions table */
-        if (!Schema::hasTable('company_'.$company_id.'_role_permissions')) {
-            Schema::create('company_'.$company_id.'_role_permissions', function (Blueprint $table) {
+        /* Create dynamic permissions table */
+        if (!Schema::hasTable('company_'.$company_id.'_permissions')) {
+            Schema::create('company_'.$company_id.'_permissions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
-                $table->integer('company_role_id');
+                $table->string('slug');
                 $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic company based role permissions table */
+        if (!Schema::hasTable('company_'.$company_id.'_role_has_permissions')) {
+            Schema::create('company_'.$company_id.'_role_has_permissions', function (Blueprint $table) {
+                $table->integer('permission_id');
+                $table->integer('role_id');
+            });
+        }
+
+        /* Creating dynamic company based users permissions table */
+        if (!Schema::hasTable('company_'.$company_id.'_users_permissions')) {
+            Schema::create('company_'.$company_id.'_users_permissions', function (Blueprint $table) {
+                $table->integer('user_id');
+                $table->integer('permission_id');
+            });
+        }
+
+        /* Creating dynamic company based model has roles table */
+        if (!Schema::hasTable('company_'.$company_id.'_model_has_roles')) {
+            Schema::create('company_'.$company_id.'_model_has_roles', function (Blueprint $table) {
+                $table->integer('role_id');
+                $table->string('model_type');
+                $table->integer('model_id');
+            });
+        }
+
+        /* Creating dynamic company based model has permissions table */
+        if (!Schema::hasTable('company_'.$company_id.'_model_has_permissions')) {
+            Schema::create('company_'.$company_id.'_model_has_permissions', function (Blueprint $table) {
+                $table->integer('permission_id');
+                $table->string('model_type');
+                $table->integer('model_id');
             });
         }
 

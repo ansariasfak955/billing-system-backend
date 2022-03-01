@@ -25,7 +25,7 @@
                 </div>
                 <div class="text-center">
                   <p class="tx-16 fw-bolder">Admin</p>
-                  <p class="tx-12 text-muted">developer@codingcafe.website</p>
+                  <p class="tx-12 text-muted">{{\Auth::user()->email}}</p>
                 </div>
               </div>
               <ul class="list-unstyled p-1">
