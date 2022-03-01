@@ -34,6 +34,9 @@ class BankAccountController extends Controller
         $bank_account =  new BankAccount;
         $bank_account = $bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->create($request->except('company_id'));
 
+        $bank_account->is_default = $request->is_default??'0';
+        $bank_account->save();
+
         return response()->json([
             "status" => true,
             "bank_account" => $bank_account,
@@ -75,6 +78,9 @@ class BankAccountController extends Controller
         $bank_account = $bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->where('id', $request->bank_account)->first();
         
         $bank_account->update($request->except('company_id', '_method'));
+
+        $bank_account->is_default = $request->is_default??$bank_account->is_default;
+        $bank_account->save();
 
         return response()->json([
             "status" => true,

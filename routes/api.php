@@ -24,6 +24,8 @@ Route::group(['namespace' => 'Api'], function() {
         Route::apiResource('companies', CompanyController::class);
         Route::group(["prefix" => "{company_id}/"], function(){
             Route::apiResource('bank_accounts', BankAccountController::class);
+            Route::apiResource('product_categories', ProductCategoryController::class);
+            Route::apiResource('products', ProductController::class);
         });
     });
 });
