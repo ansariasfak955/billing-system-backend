@@ -51,6 +51,10 @@ Route::get('/reset-password/{token}', 'Auth\ResetPasswordController@getResetPass
 
 Route::post('/reset-password', 'Auth\ResetPasswordController@updateResetpassword')->name('password.update');
 
+Route::get('create-company-tables', function(){
+    App\Helpers\TableHelper::createTables(5);
+});
+
 
 
 /* Oringinal theme links */

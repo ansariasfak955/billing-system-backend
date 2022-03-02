@@ -2,6 +2,7 @@
 namespace App\Helpers;
 
 use App\Models\Company;
+use App\Models\CustomStateType;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -152,6 +153,33 @@ class TableHelper
             Schema::create('company_'.$company_id.'_rates', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic company based custom state type  table */
+        if (!Schema::hasTable('company_'.$company_id.'_custom_state_types')) {
+            Schema::create('company_'.$company_id.'_custom_state_types', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->timestamps();
+            });
+
+            $custom_state_type =  new CustomStateType;
+            $types = ['Incident', 'Purchase Delivery Note', 'Purchase Order', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
+            foreach($types as $type){
+                $custom_state_type->setTable('company_'.$company_id.'_custom_state_types')->create(["name" => $type]);
+            }
+        }
+
+        /* Creating dynamic company based custom states table */
+        if (!Schema::hasTable('company_'.$company_id.'_custom_states')) {
+            Schema::create('company_'.$company_id.'_custom_states', function (Blueprint $table) {
+                $table->id();
+                $table->integer('type_id');
+                $table->string('name')->nullable();
+                $table->text('description')->nullable();
+                $table->string('color')->nullable();
                 $table->timestamps();
             });
         }
