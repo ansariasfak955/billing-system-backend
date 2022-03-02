@@ -3,6 +3,7 @@ namespace App\Helpers;
 
 use App\Models\Company;
 use App\Models\CustomStateType;
+use App\Models\CustomState;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -157,21 +158,6 @@ class TableHelper
             });
         }
 
-        /* Creating dynamic company based custom state type  table */
-        if (!Schema::hasTable('company_'.$company_id.'_custom_state_types')) {
-            Schema::create('company_'.$company_id.'_custom_state_types', function (Blueprint $table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->timestamps();
-            });
-
-            $custom_state_type =  new CustomStateType;
-            $types = ['Incident', 'Purchase Delivery Note', 'Purchase Order', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
-            foreach($types as $type){
-                $custom_state_type->setTable('company_'.$company_id.'_custom_state_types')->create(["name" => $type]);
-            }
-        }
-
         /* Creating dynamic company based custom states table */
         if (!Schema::hasTable('company_'.$company_id.'_custom_states')) {
             Schema::create('company_'.$company_id.'_custom_states', function (Blueprint $table) {
@@ -183,5 +169,47 @@ class TableHelper
                 $table->timestamps();
             });
         }
+        /* Creating dynamic company based custom state type  table */
+        if (!Schema::hasTable('company_'.$company_id.'_custom_state_types')) {
+            Schema::create('company_'.$company_id.'_custom_state_types', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->timestamps();
+            });
+
+            $types = ['Incident', 'Purchase Delivery Note', 'Purchase Order', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
+            foreach($types as $type){
+                $custom_state_type =  new CustomStateType;
+                CustomStateType::setGlobalTable('company_'.$company_id.'_custom_state_types') ;
+                $custom_state =  new CustomState;
+                CustomState::setGlobalTable('company_'.$company_id.'_custom_states') ;
+                $custom_type = $custom_state_type->setTable('company_'.$company_id.'_custom_state_types')->create(["name" => $type]);
+                $custom_state->setTable('company_'.$company_id.'_custom_states')->create([
+                    "name" => "Pending",
+                    "description" => "",
+                    "color" => "#ffe66e",
+                    "type_id" => $custom_type->id
+                ]);
+                $custom_state->setTable('company_'.$company_id.'_custom_states')->create([
+                    "name" => "Refused",
+                    "description" => "",
+                    "color" => "#ff7272",
+                    "type_id" => $custom_type->id
+                ]);
+                $custom_state->setTable('company_'.$company_id.'_custom_states')->create([
+                    "name" => "In Progress",
+                    "description" => "",
+                    "color" => "#FD9A64",
+                    "type_id" => $custom_type->id
+                ]);
+                $custom_state->setTable('company_'.$company_id.'_custom_states')->create([
+                    "name" => "Closed",
+                    "description" => "",
+                    "color" => "#49ce31",
+                    "type_id" => $custom_type->id
+                ]);
+            }
+        }
+
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CustomState;
+use App\Models\CustomStateType;
 use Validator;
 
 class CustomStateController extends Controller
@@ -17,6 +18,7 @@ class CustomStateController extends Controller
     public function index(Request $request)
     {
         $custom_state =  new CustomState;
+        CustomState::setGlobalTable('company_'.$request->company_id.'_custom_states') ;
         return response()->json([
             "status" => true,
             "custom_states" =>  $custom_state->setTable('company_'.$request->company_id.'_custom_states')->get()
@@ -43,6 +45,7 @@ class CustomStateController extends Controller
             ]);
         }
         $custom_state =  new CustomState;
+        CustomState::setGlobalTable('company_'.$request->company_id.'_custom_states') ;
         $custom_state = $custom_state->setTable('company_'.$request->company_id.'_custom_states')->create($request->except('company_id'));
 
         return response()->json([
@@ -61,6 +64,7 @@ class CustomStateController extends Controller
     public function show(Request $request)
     {
         $custom_state =  new CustomState;
+        CustomState::setGlobalTable('company_'.$request->company_id.'_custom_states') ;
         $custom_state = $custom_state->setTable('company_'.$request->company_id.'_custom_states')->where('id', $request->custom_state)->first();
 
         return response()->json([
@@ -91,6 +95,7 @@ class CustomStateController extends Controller
             ]);
         }
         $custom_state =  new CustomState;
+        CustomState::setGlobalTable('company_'.$request->company_id.'_custom_states') ;
         $custom_state = $custom_state->setTable('company_'.$request->company_id.'_custom_states')->where('id', $request->custom_state)->first();
         
         $custom_state->update($request->except('company_id', '_method'));
@@ -112,6 +117,7 @@ class CustomStateController extends Controller
     public function destroy(Request $request)
     {
         $custom_state =  new CustomState;
+        CustomState::setGlobalTable('company_'.$request->company_id.'_custom_states') ;
         $custom_state = $custom_state->setTable('company_'.$request->company_id.'_custom_states')->where('id', $request->custom_state)->first();
 
         if($custom_state->delete()){
@@ -125,5 +131,25 @@ class CustomStateController extends Controller
                     'message' => "Retry deleting again! "
             ]);
         }
+    }
+
+
+    /* Get custom state types */
+    public function getCustomStateTypes(Request $request)
+    {
+        $custom_state_type =  new CustomStateType;
+        CustomStateType::setGlobalTable('company_'.$request->company_id.'_custom_state_types') ;
+        CustomState::setGlobalTable('company_'.$request->company_id.'_custom_states') ;
+
+        if(isset($request->custom_state_type_id)){
+            return response()->json([
+                'status' => true,
+                'types' => $custom_state_type->setTable('company_'.$request->company_id.'_custom_state_types')->where('id', $request->custom_state_type_id)->with('states')->first()
+            ]);
+        }
+        return response()->json([
+                'status' => true,
+                'types' => $custom_state_type->setTable('company_'.$request->company_id.'_custom_state_types')->with('states')->get()
+        ]);
     }
 }
