@@ -9,7 +9,7 @@ class MyTemplate extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'document_type', 'font', 'color', 'is_default', 'hide_company_information', 'hide_assets_information', 'show_signature_box'];
+    protected $fillable = ['name', 'document_type', 'font', 'color'];
 
     protected static $globalTable = 'my_templates' ;
 
@@ -18,5 +18,14 @@ class MyTemplate extends Model
     }
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
+    }
+
+    public function getWatermarkAttribute()
+    {
+        if ($this->attributes['watermark']) {
+            return url('/storage').'/templates/watermark/'.$this->attributes['watermark'];
+        } else {
+            return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
+        }
     }
 }

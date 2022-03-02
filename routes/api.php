@@ -28,6 +28,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('products', ProductController::class);
             Route::apiResource('roles', RoleController::class);
             Route::apiResource('custom_states', CustomStateController::class);
+            Route::apiResource('my_templates', MyTemplateController::class);
             Route::get('custom_state_types', 'CustomStateController@getCustomStateTypes');
         });
     });
