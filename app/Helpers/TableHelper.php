@@ -6,6 +6,8 @@ use App\Models\CustomStateType;
 use App\Models\CustomState;
 use App\Models\MyTemplate;
 use App\Models\MyTemplateMeta;
+use App\Models\DefaultPdfSendOption;
+use App\Models\Setting;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -1576,5 +1578,100 @@ class TableHelper
             }
         }
 
+        /* Creating dynamic company based settings table */
+        if (!Schema::hasTable('company_'.$company_id.'_settings')) {
+            Schema::create('company_'.$company_id.'_settings', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('option_name')->nullabe();
+                $table->longText('option_value')->nullabe();
+                $table->timestamps();
+            }); 
+
+            /* Add entries in settings table */
+        Setting::setGlobalTable('company_'.$company_id.'_settings');
+        /* Email send as */
+        Setting::create([
+            "option_name" => "email_configuration_send_as",
+            "option_value" => "STEL Order Email Address",
+        ]);
+        /* Email sender name */
+        Setting::create([
+            "option_name" => "email_configuration_sender_name",
+            "option_value" => "",
+        ]);
+        /* Email send copy to */
+        Setting::create([
+            "option_name" => "email_configuration_send_copy_to",
+            "option_value" => "Without copy",
+        ]);
+        /* Email connect */
+        Setting::create([
+            "option_name" => "email_configuration_email_connect",
+            "option_value" => "",
+        ]);
+        /* Email reply to */
+        Setting::create([
+            "option_name" => "email_configuration_reply_to",
+            "option_value" => "Sending Address",
+        ]);
+        /* Email send read receipts to */
+        Setting::create([
+            "option_name" => "email_configuration_send_read_receipts_to",
+            "option_value" => "Sending Address",
+        ]);
+        /* Email client emails subject */
+        Setting::create([
+            "option_name" => "email_configuration_client_emails_subject",
+            "option_value" => "@CLIENTNAME@, you can now access your @DOCUMENTTYPE@ from @MYCOMPANY@",
+        ]);
+        /* Email client emails message */
+        Setting::create([
+            "option_name" => "email_configuration_client_emails_message",
+            "option_value" => "Esteemed @CLIENTNAME@,
+
+
+
+You will find your @DOCUMENTTYPE@ attached to this email.
+
+
+
+Best regards and thank you for placing your trust in @MYCOMPANY@.
+
+@USERNAME@",
+        ]);
+        /* Email signature */
+        Setting::create([
+            "option_name" => "email_configuration_signature",
+            "option_value" => "",
+        ]);
+        }
+
+        
+        /* Creating dynamic company based default pdf options table */
+        if (!Schema::hasTable('company_'.$company_id.'_default_pdf_send_options')) {
+            Schema::create('company_'.$company_id.'_default_pdf_send_options', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('type');
+                $table->string('format');
+                $table->enum('price_after_tax', ['0', '1'])->default('0');
+                $table->enum('mailing_format', ['0', '1'])->default('0');
+                $table->enum('include_main_image', ['0', '1'])->default('0');
+                $table->timestamps();
+            }); 
+
+            DefaultPdfSendOption::setGlobalTable('company_'.$company_id.'_default_pdf_send_options');
+
+            $templates = ['Ordinary Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
+
+            foreach($templates as $template){
+                DefaultPdfSendOption::create([
+                    "type" => $template,
+                    "format" => "Valued",
+                    "price_after_tax" => "0",
+                    "mailing_format" => "0",
+                    "include_main_image" => "0",
+                ]);
+            }
+        }
     }
 }
