@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MyTemplate;
+use App\Models\MyTemplateMeta;
 use Validator;
 
 class MyTemplateController extends Controller
@@ -31,6 +32,7 @@ class MyTemplateController extends Controller
      */
     public function store(Request $request)
     {
+        
         $validator = Validator::make($request->all(),[
             'name' => 'required',          
             'document_type' => 'required',          
@@ -60,6 +62,17 @@ class MyTemplateController extends Controller
         $template->show_signature_box = $request->show_signature_box??'0';
         $template->save();
 
+        $parser = new \Seld\JsonLint\JsonParser();
+        $items = $parser->parse($request->metas);
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+        foreach($items as $item ){
+            MyTemplateMeta::create([
+                "template_id" => $template->id,
+                "option_name" => $item->option_name,
+                "option_value" => $item->option_value
+            ]);
+        }
+
         return response()->json([
             "status" => true,
             "template" => $template,
@@ -76,7 +89,8 @@ class MyTemplateController extends Controller
     public function show(Request $request)
     {
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
-        $template = MyTemplate::where('id', $request->my_template)->first();
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+        $template = MyTemplate::where('id', $request->my_template)->with('metas')->first();
         return response()->json([
             "status" => true,
             "template" => $template
@@ -122,6 +136,13 @@ class MyTemplateController extends Controller
         $template->show_signature_box = $request->show_signature_box??$template->hide_company_information;
         $template->save();
 
+        $parser = new \Seld\JsonLint\JsonParser();
+        $items = $parser->parse($request->metas);
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+        foreach($items as $item ){
+            MyTemplateMeta::where('template_id', $template->id)->where('option_name', $item->option_name)->update(["option_value" => $item->option_value]);
+        }
+
         return response()->json([
             "status" => true,
             "template" => $template,
@@ -138,9 +159,11 @@ class MyTemplateController extends Controller
     public function destroy(Request $request)
     {
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
         $template = MyTemplate::where('id', $request->my_template)->first();
 
         if($template->delete()){
+            $template->metas()->delete();
             return response()->json([
                     'status' => true,
                     'message' => "Template deleted successfully!"
@@ -153,17 +176,6 @@ class MyTemplateController extends Controller
         }
     }
 
-    /* create template meta */
-    public function createTemplateMeta(Request $request)
-    {
-        
-    }
-
-    /* create template meta */
-    public function EditTemplateMeta(Request $request)
-    {
-        
-    }
 }
 
 

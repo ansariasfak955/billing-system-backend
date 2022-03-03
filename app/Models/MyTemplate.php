@@ -28,4 +28,9 @@ class MyTemplate extends Model
             return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
         }
     }
+
+    public function metas()
+    {
+        return $this->hasMany(MyTemplateMeta::class, 'template_id', 'id');
+    }
 }
