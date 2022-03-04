@@ -26,7 +26,7 @@ class MyTemplateController extends Controller
         }
         return response()->json([
             "status" => true,
-            "custom_states" => MyTemplate::get()
+            "templates" => MyTemplate::get()
         ]);
     }
 
