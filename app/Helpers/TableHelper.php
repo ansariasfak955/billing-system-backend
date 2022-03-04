@@ -74,10 +74,13 @@ class TableHelper
             Schema::create('company_'.$company_id.'_users', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name')->nullable();
+                $table->string('username')->nullable();
                 $table->string('surname')->nullable();
+                $table->string('role')->nullable();
                 $table->string('tin')->nullable();
                 $table->string('email')->nullable();
-                $table->string('photo')->nullable();
+                $table->string('password')->nullable();
+                $table->string('image')->nullable();
                 $table->string('phone_1')->nullable();
                 $table->string('phone_2')->nullable();
                 $table->string('position')->nullable();
@@ -88,6 +91,16 @@ class TableHelper
                 $table->string('pincode')->nullable();
                 $table->string('country')->nullable();
                 $table->string('language')->nullable();
+                $table->enum('has_access', ['0', '1'])->default('1');
+                $table->enum('use_email_configuartion', ['gmail', 'smtp'])->default('gmail');
+                $table->string('gmail_sender_name')->nullable();
+                $table->string('gmail_email_address')->nullable();
+                $table->string('smtp_sender_name')->nullable();
+                $table->string('smtp_email_address')->nullable();
+                $table->string('smtp_server')->nullable();
+                $table->string('smtp_security_protocol')->nullable();
+                $table->string('smtp_password')->nullable();
+                $table->string('smtp_port')->nullable();
                 $table->timestamps();
             });
         }
@@ -149,6 +162,7 @@ class TableHelper
             Schema::create('company_'.$company_id.'_product_categories', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
+                $table->longText('description')->nullable();
                 $table->timestamps();
             });
         }

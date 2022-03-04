@@ -29,6 +29,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('roles', RoleController::class);
             Route::apiResource('custom_states', CustomStateController::class);
             Route::apiResource('my_templates', MyTemplateController::class);
+            Route::apiResource('users', UserController::class);
             Route::get('custom_state_types', 'CustomStateController@getCustomStateTypes');
             Route::get('get-settings', 'SettingController@getSettings');
             Route::post('update-settings', 'SettingController@updateSettings');
