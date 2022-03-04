@@ -17,6 +17,12 @@ class ProductCategoryController extends Controller
     public function index(Request $request)
     {
         $product_category =  new ProductCategory;
+        if($product_category->setTable('company_'.$request->company_id.'_product_categories')->count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
         return response()->json([
             "status" => true,
             "product_categories" =>  $product_category->setTable('company_'.$request->company_id.'_product_categories')->get()
@@ -62,6 +68,13 @@ class ProductCategoryController extends Controller
     {
         $product_category =  new ProductCategory;
         $product_category = $product_category->setTable('company_'.$request->company_id.'_product_categories')->where('id', $request->product_category)->first();
+
+        if($product_category ==  NULL){
+            return response()->json([
+                "status" => true,
+                "message" => "This entry does not exists"
+            ]);
+        }
  
         return response()->json([
             "status" => true,

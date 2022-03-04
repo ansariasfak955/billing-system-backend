@@ -49,6 +49,7 @@ class AuthController extends Controller
             return response()->json(['status' => false, 'message' => 'Please check your login credentials!']);
         }
     }
+    
     /** 
      * Register api 
      * 

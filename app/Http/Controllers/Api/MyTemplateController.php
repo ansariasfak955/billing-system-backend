@@ -18,6 +18,12 @@ class MyTemplateController extends Controller
     public function index(Request $request)
     {
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
+        if(MyTemplate::count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
         return response()->json([
             "status" => true,
             "custom_states" => MyTemplate::get()

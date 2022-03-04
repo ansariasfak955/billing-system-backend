@@ -18,6 +18,13 @@ class CompanyController extends Controller
      */
     public function index()
     {
+
+        if(Auth::user()->companies->count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
         return response()->json([
             "status" => true,
             "companies" => Auth::user()->companies

@@ -19,6 +19,12 @@ class CustomStateController extends Controller
     {
         $custom_state =  new CustomState;
         CustomState::setGlobalTable('company_'.$request->company_id.'_custom_states') ;
+        if(CustomState::count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
         return response()->json([
             "status" => true,
             "custom_states" =>  $custom_state->setTable('company_'.$request->company_id.'_custom_states')->get()
@@ -66,6 +72,13 @@ class CustomStateController extends Controller
         $custom_state =  new CustomState;
         CustomState::setGlobalTable('company_'.$request->company_id.'_custom_states') ;
         $custom_state = $custom_state->setTable('company_'.$request->company_id.'_custom_states')->where('id', $request->custom_state)->first();
+
+        if($custom_state ==  NULL){
+            return response()->json([
+                "status" => true,
+                "message" => "This entry does not exists"
+            ]);
+        }
 
         return response()->json([
             "status" => true,

@@ -17,6 +17,12 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $product =  new Product;
+        if($product->setTable('company_'.$request->company_id.'_products')->count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
         return response()->json([
             "status" => true,
             "products" =>  $product->setTable('company_'.$request->company_id.'_products')->get()
@@ -77,6 +83,13 @@ class ProductController extends Controller
     {
         $product =  new Product;
         $product = $product->setTable('company_'.$request->company_id.'_products')->where('id', $request->product)->first();
+
+        if($product ==  NULL){
+            return response()->json([
+                "status" => true,
+                "message" => "This entry does not exists"
+            ]);
+        }
  
         return response()->json([
             "status" => true,

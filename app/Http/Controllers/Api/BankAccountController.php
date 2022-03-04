@@ -16,6 +16,12 @@ class BankAccountController extends Controller
     public function index(Request $request)
     {
         $bank_account =  new BankAccount;
+        if($bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
         return response()->json([
             "status" => true,
             "bank_accounts" =>  $bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->get()

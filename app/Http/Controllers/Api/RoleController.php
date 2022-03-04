@@ -17,6 +17,12 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         $role =  new Role;
+        if($role->setTable('company_'.$request->company_id.'_roles')->count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
         return response()->json([
             "status" => true,
             "roles" =>  $role->setTable('company_'.$request->company_id.'_roles')->get()

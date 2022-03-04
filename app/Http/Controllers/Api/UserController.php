@@ -17,9 +17,15 @@ class UserController extends Controller
     public function index(Request $request)
     {
         User::setGlobalTable('company_'.$request->company_id.'_users');
+        if(User::count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
         return response()->json([
             "status" => true,
-            "custom_states" => User::get()
+            "users" => User::get()
         ]);
     }
 
