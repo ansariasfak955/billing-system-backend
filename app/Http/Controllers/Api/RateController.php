@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\ProductCategory;
+use App\Models\Rate;
 use Illuminate\Http\Request;
 use Validator;
 
-class ProductCategoryController extends Controller
+class RateController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class ProductCategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $product_category =  new ProductCategory;
-        if($product_category->setTable('company_'.$request->company_id.'_product_categories')->count() == 0){
+        Rate::setGlobalTable('company_'.$request->company_id.'_rates');
+        if(Rate::count() == 0){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -25,7 +25,7 @@ class ProductCategoryController extends Controller
         }
         return response()->json([
             "status" => true,
-            "product_categories" =>  $product_category->setTable('company_'.$request->company_id.'_product_categories')->get()
+            "rates" =>  Rate::get()
         ]);
     }
 
@@ -37,7 +37,7 @@ class ProductCategoryController extends Controller
      */
     public function store(Request $request)
     {
-
+        Rate::setGlobalTable('company_'.$request->company_id.'_rates');
         $validator = Validator::make($request->all(),[
             'name' => 'required'          
         ]);
@@ -48,13 +48,13 @@ class ProductCategoryController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        $product_category =  new ProductCategory;
-        $product_category = $product_category->setTable('company_'.$request->company_id.'_product_categories')->create($request->except('company_id'));
+        
+        $rate = Rate::create($request->except('company_id'));
 
         return response()->json([
             "status" => true,
-            "product_category" => $product_category,
-            "message" => "Product category created successfully"
+            "rate" => $rate,
+            "message" => "Rate created successfully"
         ]);
     }
 
@@ -66,10 +66,10 @@ class ProductCategoryController extends Controller
      */
     public function show(Request $request)
     {
-        $product_category =  new ProductCategory;
-        $product_category = $product_category->setTable('company_'.$request->company_id.'_product_categories')->where('id', $request->product_category)->first();
+        Rate::setGlobalTable('company_'.$request->company_id.'_rates');
+        $rate = Rate::where('id', $request->rate)->first();
 
-        if($product_category ==  NULL){
+        if($rate ==  NULL){
             return response()->json([
                 "status" => true,
                 "message" => "This entry does not exists"
@@ -78,7 +78,7 @@ class ProductCategoryController extends Controller
  
         return response()->json([
             "status" => true,
-            "product_category" => $product_category
+            "rate" => $rate
         ]);
     }
 
@@ -91,6 +91,8 @@ class ProductCategoryController extends Controller
      */
     public function update(Request $request)
     {
+        
+        Rate::setGlobalTable('company_'.$request->company_id.'_rates');
         $validator = Validator::make($request->all(),[
             'name' => 'required'          
         ]);
@@ -101,14 +103,13 @@ class ProductCategoryController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        $product_category =  new ProductCategory;
-        $product_category = $product_category->setTable('company_'.$request->company_id.'_product_categories')->where('id', $request->product_category)->first();
+        $rate = Rate::where('id', $request->rate)->first();
         
-        $product_category->update($request->except('company_id', '_method'));
+        $rate->update($request->except('company_id', '_method'));
 
         return response()->json([
             "status" => true,
-            "product_category" => $product_category
+            "rate" => $rate
         ]);
     }
 
@@ -120,12 +121,12 @@ class ProductCategoryController extends Controller
      */
     public function destroy(Request $request)
     {
-        $product_category =  new ProductCategory;
-        $product_category = $product_category->setTable('company_'.$request->company_id.'_product_categories')->where('id', $request->product_category)->first();
-        if($product_category->delete()){
+        Rate::setGlobalTable('company_'.$request->company_id.'_rates');
+        $rate = Rate::where('id', $request->rate)->first();
+        if($rate->delete()){
             return response()->json([
                     'status' => true,
-                    'message' => "Product category deleted successfully!"
+                    'message' => "Rate deleted successfully!"
             ]);
         } else {
             return response()->json([

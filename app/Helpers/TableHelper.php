@@ -181,6 +181,7 @@ class TableHelper
             Schema::create('company_'.$company_id.'_rates', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
+                $table->longText('description')->nullable();
                 $table->timestamps();
             });
         }
@@ -1706,6 +1707,12 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
         if (!Schema::hasColumn('company_'.$company_id.'_permissions', 'guard_name')){
             Schema::table('company_'.$company_id.'_permissions', function (Blueprint $table) {
                 $table->string('guard_name')->nullable();
+            });
+        }
+
+        if (!Schema::hasColumn('company_'.$company_id.'_rates', 'description')){
+            Schema::table('company_'.$company_id.'_rates', function (Blueprint $table) {
+                $table->string('description')->nullable();
             });
         }
 
