@@ -20,6 +20,12 @@ class AuthController extends Controller
      * @return \Illuminate\Http\Response 
      */ 
     public function login(Request $request){ 
+
+
+        if($request->company_id != NULL){
+            (new UserController())->setConfig($request->company_id);
+            User::setGlobalTable('company_'.$request->company_id.'_users');
+        }
         $validator = Validator::make($request->all(), [
             'email' => 'sometimes|required|email',
             'password' => 'required',

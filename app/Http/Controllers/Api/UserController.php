@@ -5,10 +5,30 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Config;
 use Validator;
+use Auth;
 
 class UserController extends Controller
 {
+
+    /*
+    * Set config files according to company 
+    *
+    */
+    public function setConfig($company_id)
+    {
+        
+        config([
+            'permission.tables.roles' => 'company_'.$company_id.'_roles',
+            'permission.tables.permissions' => 'company_'.$company_id.'_permissions',
+            'permission.tables.model_has_permissions' => 'company_'.$company_id.'_model_has_permissions',
+            'permission.tables.model_has_roles' => 'company_'.$company_id.'_model_has_roles',
+            'permission.tables.role_has_permissions' => 'company_'.$company_id.'_role_has_permissions',
+        ]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
