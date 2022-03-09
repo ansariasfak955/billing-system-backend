@@ -15,6 +15,7 @@
 //use App\Http\Controllers\Api\UserController;
 use Spatie\Permission\Models\Permission;
 
+
 Auth::routes();
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/', function () {
@@ -52,9 +53,7 @@ Route::get('/reset-password/{token}', 'Auth\ResetPasswordController@getResetPass
 
 Route::post('/reset-password', 'Auth\ResetPasswordController@updateResetpassword')->name('password.update');
 
-Route::get('create-company-tables', function(){
-    App\Helpers\TableHelper::createTables(5);
-});
+
 
 Route::get('assign-roles', function(){
     

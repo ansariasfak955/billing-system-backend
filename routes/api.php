@@ -19,6 +19,9 @@ Route::group(['namespace' => 'Api'], function() {
     Route::post('register', 'AuthController@register');
     Route::post('forget-password', 'AuthController@forgetPassword');
     Route::post('reset-password', 'AuthController@resetPassword');
+    Route::get('create-company-tables', function(){
+        App\Helpers\TableHelper::createTables(47);
+    });
    
     Route::group(['middleware' => ['auth:api']], function(){
         Route::apiResource('companies', CompanyController::class);
