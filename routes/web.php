@@ -12,7 +12,7 @@
 */
 
 /* route links */
-use App\Http\Controllers\Api\UserController;
+//use App\Http\Controllers\Api\UserController;
 use Spatie\Permission\Models\Permission;
 
 Auth::routes();

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateServicesTable extends Migration
+class CreateExpenseAndInvestmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateServicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('expense_and_investments', function (Blueprint $table) {
             $table->id();
             $table->string('reference')->nullable();
             $table->string('name');
@@ -22,6 +22,8 @@ class CreateServicesTable extends Migration
             $table->string('image')->nullable();
             $table->string('vat')->nullable();
             $table->enum('is_active', ['0', '1'])->default('1');
+            $table->enum('type', ['expense', 'investment'])->default('expense');
+            $table->integer('category_id')->default(0);
             $table->longText('description')->nullable();
             $table->longText('private_comments')->nullable();
             $table->string('created_from')->nullable();
@@ -45,6 +47,6 @@ class CreateServicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('expense_and_investments');
     }
 }
