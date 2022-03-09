@@ -233,6 +233,16 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic company based expense categories table */
+        if (!Schema::hasTable('company_'.$company_id.'_expense_categories')) {
+            Schema::create('company_'.$company_id.'_expense_categories', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->enum('type', ['expense', 'investment'])->dafault('expense');
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic company based rate table */
         if (!Schema::hasTable('company_'.$company_id.'_rates')) {
             Schema::create('company_'.$company_id.'_rates', function (Blueprint $table) {
