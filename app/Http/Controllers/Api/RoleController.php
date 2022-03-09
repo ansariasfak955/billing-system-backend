@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Role;
+use App\Http\Controllers\Api\UserController;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use Validator;
+use Auth;
 
 class RoleController extends Controller
 {
@@ -16,8 +19,9 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-        $role =  new Role;
-        if($role->setTable('company_'.$request->company_id.'_roles')->count() == 0){
+        (new UserController())->setConfig($request->company_id);
+       
+        if(Role::count() == 0){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -25,7 +29,7 @@ class RoleController extends Controller
         }
         return response()->json([
             "status" => true,
-            "roles" =>  $role->setTable('company_'.$request->company_id.'_roles')->get()
+            "roles" =>  Role::get()
         ]);
     }
 
@@ -37,6 +41,8 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        (new UserController())->setConfig($request->company_id);
+
         $validator = Validator::make($request->all(),[
             'name' => 'required'          
         ]);
@@ -47,8 +53,27 @@ class RoleController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        $role =  new Role;
-        $role = $role->setTable('company_'.$request->company_id.'_roles')->create($request->except('company_id'));
+
+        if(Role::where('name', $request->name)->first() != NULL){
+            return response()->json([
+                "status" => false,
+                "message" => "Role with same name already exists"
+            ]);
+        }
+
+       
+        $role = Role::create($request->except('company_id', 'permissions'));
+
+        if(isset($request->permissions)){
+            foreach(Permission::get() as $permission){
+                if(in_array($permission->id, $request->permissions)){ 
+                    $role->givePermissionTo($permission);
+                }
+            }
+        }
+
+
+      
 
         return response()->json([
             "status" => true,
@@ -65,8 +90,9 @@ class RoleController extends Controller
      */
     public function show(Request $request)
     {
-        $role =  new Role;
-        $role = $role->setTable('company_'.$request->company_id.'_roles')->where('id', $request->role)->first();
+        (new UserController())->setConfig($request->company_id);
+       
+        $role = Role::where('id', $request->role)->with('permissions')->first();
  
         return response()->json([
             "status" => true,
@@ -83,6 +109,8 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        (new UserController())->setConfig($request->company_id);
+
         $validator = Validator::make($request->all(),[
             'name' => 'required'          
         ]);
@@ -93,10 +121,23 @@ class RoleController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        $role =  new Role;
-        $role = $role->setTable('company_'.$request->company_id.'_roles')->where('id', $request->role)->first();
         
-        $role->update($request->except('company_id', '_method'));
+        $role = Role::where('id', $request->role)->first();
+        
+        $role->update($request->except('company_id', '_method', 'permissions'));
+        if(isset($request->permissions)){
+            foreach(Permission::get() as $permission){
+                if(in_array($permission->id, $request->permissions)){ 
+                   if($role->hasPermissionTo($permission->name) != 1){
+                        $role->givePermissionTo($permission);
+                   }
+                } else {
+                    if($role->hasPermissionTo($permission->name) == 1){
+                        $role->revokePermissionTo($permission);
+                    }
+                }
+            }
+        }
 
         return response()->json([
             "role" => $role
@@ -111,8 +152,9 @@ class RoleController extends Controller
      */
     public function destroy(Request $request)
     {
-        $role =  new Role;
-        $role = $role->setTable('company_'.$request->company_id.'_roles')->where('id', $request->role)->first();
+        (new UserController())->setConfig($request->company_id);
+
+        $role = Role::where('id', $request->role)->first();
         if($role->delete()){
             return response()->json([
                     'status' => true,
@@ -124,5 +166,19 @@ class RoleController extends Controller
                     'message' => "Retry deleting again! "
             ]);
         }
+    }
+
+    /* 
+    * Get All Permissions
+    */
+    public function getPermissions(Request $request)
+    {
+        (new UserController())->setConfig($request->company_id);
+        
+        return response()->json([
+                'status' => true,
+                'permissions' => Permission::get()
+        ]);
+        
     }
 }

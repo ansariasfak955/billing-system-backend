@@ -32,6 +32,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('users', UserController::class);
             Route::get('custom_state_types', 'CustomStateController@getCustomStateTypes');
             Route::get('get-settings', 'SettingController@getSettings');
+            Route::get('permissions', 'RoleController@getPermissions');
             Route::post('update-settings', 'SettingController@updateSettings');
         });
     });
