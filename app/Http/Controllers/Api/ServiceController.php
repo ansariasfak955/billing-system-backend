@@ -55,7 +55,7 @@ class ServiceController extends Controller
 
         if($request->image != NULL){
             $imageName = time().'.'.$request->image->extension();  
-            $request->image->move(storage_path('app/public/products/images'), $imageName);
+            $request->image->move(storage_path('app/public/services/images'), $imageName);
             $service->image = $imageName;
             $service->save();
         }
