@@ -15,6 +15,13 @@ class BankAccountController extends Controller
      */
     public function index(Request $request)
     {
+        if(($request->company_id ==  NULL)||($request->company_id ==  0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
+
         $bank_account =  new BankAccount;
         if($bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->count() == 0){
             return response()->json([

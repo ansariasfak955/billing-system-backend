@@ -17,6 +17,12 @@ class ExpenseAndInvestmentController extends Controller
      */
     public function index(Request $request)
     {
+        if(($request->company_id ==  NULL)||($request->company_id ==  0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
         ExpenseAndInvestment::setGlobalTable('company_'.$request->company_id.'_expense_and_investments');
         if(ExpenseAndInvestment::count() == 0){
             return response()->json([

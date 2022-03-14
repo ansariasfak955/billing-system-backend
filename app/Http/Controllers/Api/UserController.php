@@ -36,6 +36,12 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        if(($request->company_id ==  NULL)||($request->company_id ==  0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
         User::setGlobalTable('company_'.$request->company_id.'_users');
         if(User::count() == 0){
             return response()->json([

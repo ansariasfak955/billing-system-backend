@@ -19,6 +19,12 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
+        if(($request->company_id ==  NULL)||($request->company_id ==  0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
         (new UserController())->setConfig($request->company_id);
        
         if(Role::count() == 0){

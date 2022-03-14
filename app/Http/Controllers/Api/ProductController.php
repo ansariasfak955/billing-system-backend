@@ -16,6 +16,12 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        if(($request->company_id ==  NULL)||($request->company_id ==  0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
         $product =  new Product;
         if($product->setTable('company_'.$request->company_id.'_products')->count() == 0){
             return response()->json([

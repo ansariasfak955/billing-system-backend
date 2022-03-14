@@ -17,6 +17,12 @@ class CustomStateController extends Controller
      */
     public function index(Request $request)
     {
+        if(($request->company_id ==  NULL)||($request->company_id ==  0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
         $custom_state =  new CustomState;
         CustomState::setGlobalTable('company_'.$request->company_id.'_custom_states') ;
         if(CustomState::count() == 0){
