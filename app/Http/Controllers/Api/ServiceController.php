@@ -17,7 +17,7 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
 
-        if(($request->company_id ==  NULL)||($request->company_id ==  0){
+        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
             return response()->json([
                 "status" => false,
                 "message" =>  "Please select company"
