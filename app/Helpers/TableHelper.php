@@ -822,7 +822,7 @@ class TableHelper
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
-                        "option_name" => "client_section_title_text",
+                        "option_name" => "client_reference_text",
                         "option_value" => ""
                     ]);
 

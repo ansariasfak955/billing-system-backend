@@ -73,16 +73,17 @@ class MyTemplateController extends Controller
         $template->hide_assets_information = $request->hide_assets_information??'0';
         $template->show_signature_box = $request->show_signature_box??'0';
         $template->save();
-
-        $parser = new \Seld\JsonLint\JsonParser();
-        $items = $parser->parse($request->metas);
-        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
-        foreach($items as $item ){
-            MyTemplateMeta::create([
-                "template_id" => $template->id,
-                "option_name" => $item->option_name,
-                "option_value" => $item->option_value
-            ]);
+        if(isset($request->metas)){
+            $parser = new \Seld\JsonLint\JsonParser();
+            $items = $parser->parse($request->metas);
+            MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+            foreach($items as $item ){
+                MyTemplateMeta::create([
+                    "template_id" => $template->id,
+                    "option_name" => $item->option_name,
+                    "option_value" => $item->option_value
+                ]);
+            }
         }
 
         return response()->json([
@@ -147,12 +148,13 @@ class MyTemplateController extends Controller
         $template->hide_assets_information = $request->hide_assets_information??$template->hide_company_information;
         $template->show_signature_box = $request->show_signature_box??$template->hide_company_information;
         $template->save();
-
-        $parser = new \Seld\JsonLint\JsonParser();
-        $items = $parser->parse($request->metas);
-        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
-        foreach($items as $item ){
-            MyTemplateMeta::where('template_id', $template->id)->where('option_name', $item->option_name)->update(["option_value" => $item->option_value]);
+        if(isset($request->metas)){
+            $parser = new \Seld\JsonLint\JsonParser();
+            $items = $parser->parse($request->metas);
+            MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+            foreach($items as $item ){
+                MyTemplateMeta::where('template_id', $template->id)->where('option_name', $item->option_name)->update(["option_value" => $item->option_value]);
+            }
         }
 
         return response()->json([
