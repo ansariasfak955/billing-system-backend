@@ -1257,12 +1257,12 @@ class TableHelper
                     /* Total Text */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
-                        "option_name" => "sign_base_text_heading",
+                        "option_name" => "sign_total_text_heading",
                         "option_value" => "Total text"
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
-                        "option_name" => "sign_base_text_text",
+                        "option_name" => "sign_total_text_text",
                         "option_value" => "TOTAL"
                     ]);
 
@@ -1505,12 +1505,12 @@ class TableHelper
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
-                            "option_name" => "client_assets_brand_show",
+                            "option_name" => "client_assets_model_show",
                             "option_value" => "1"
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
-                            "option_name" => "client_assets_brand_text",
+                            "option_name" => "client_assets_model_text",
                             "option_value" => "Brand:"
                         ]);
 
