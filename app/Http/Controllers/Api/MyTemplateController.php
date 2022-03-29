@@ -77,11 +77,11 @@ class MyTemplateController extends Controller
             $parser = new \Seld\JsonLint\JsonParser();
             $items = $parser->parse($request->metas);
             MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
-            foreach($items as $item ){
+            foreach($items as $key => $value ){
                 MyTemplateMeta::create([
                     "template_id" => $template->id,
-                    "option_name" => $item->option_name,
-                    "option_value" => $item->option_value
+                    "option_name" => $key,
+                    "option_value" => $value
                 ]);
             }
         }
@@ -103,10 +103,17 @@ class MyTemplateController extends Controller
     {
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
         MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
-        $template = MyTemplate::where('id', $request->my_template)->with('metas')->first();
+        $template = MyTemplate::where('id', $request->my_template)->first();
+
+        $data = [];
+        foreach($template->metas as $meta){
+            $data[$meta->option_name] =  $meta->option_value;
+        }
+        
         return response()->json([
             "status" => true,
-            "template" => $template
+            "template" => $template,
+            "meta_data" => $data
         ]);
     }
 
@@ -152,8 +159,8 @@ class MyTemplateController extends Controller
             $parser = new \Seld\JsonLint\JsonParser();
             $items = $parser->parse($request->metas);
             MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
-            foreach($items as $item ){
-                MyTemplateMeta::where('template_id', $template->id)->where('option_name', $item->option_name)->update(["option_value" => $item->option_value]);
+            foreach($items as $key => $value ){
+                MyTemplateMeta::where('template_id', $template->id)->where('option_name', $key)->update(["option_value" => $value]);
             }
         }
 

@@ -1608,7 +1608,7 @@ class TableHelper
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
-                        "option_name" => "payment_terms_title_text",
+                        "option_name" => "payment_terms_date_text",
                         "option_value" => "DATE"
                     ]);
 
@@ -1783,11 +1783,29 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
             });
         }
 
+        if (!Schema::hasColumn('company_'.$company_id.'_permissions', 'parent_id')){
+            Schema::table('company_'.$company_id.'_permissions', function (Blueprint $table) {
+                $table->integer('parent_id')->default('0');
+                $table->integer('is_checkbox')->default('0');
+            });
+        }
+
         /* Create roles */
+
+        if (!Permission::where('name', 'Visible Roles')->exists()) {
+           $permission = Permission::create(['name' => 'Visible Roles']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
 
         if (!Role::where('name', 'Super Admin')->exists()) {
            Role::create(['name' => 'Super Admin']);
-           Permission::create(['name' => 'Super Admin']);
+           
+           $permission = Permission::create(['name' => 'Super Admin']);
+           $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
         }
 
         if (!Role::where('name', 'Admin')->exists()) {
@@ -1797,972 +1815,2281 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
 
         if (!Role::where('name', 'Sales Admin')->exists()) {
            Role::create(['name' => 'Sales Admin']);
-           Permission::create(['name' => 'Sales Admin']);
+           
+           $permission = Permission::create(['name' => 'Sales Admin']);
+           $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
         }
 
         if (!Role::where('name', 'Salesperson')->exists()) {
-           Role::create(['name' => 'Salesperson']);
-           Permission::create(['name' => 'Salesperson']);
+            Role::create(['name' => 'Salesperson']);
+           
+           $permission = Permission::create(['name' => 'Salesperson']);
+           $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
         }
 
         if (!Role::where('name', 'Technical Admin')->exists()) {
            Role::create(['name' => 'Technical Admin']);
-           Permission::create(['name' => 'Technical Admin']);
+           
+           $permission = Permission::create(['name' => 'Technical Admin']);
+           $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
         }
 
         if (!Role::where('name', 'Technician')->exists()) {
            Role::create(['name' => 'Technician']);
-           Permission::create(['name' => 'Technician']);
+           $permission = Permission::create(['name' => 'Technician']);
+           $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
         }
 
         /* Create Permissions */
 
+        /* parent permissions */
+
+        
+
+
+        if (!Permission::where('name', 'Permissions')->exists()) {
+           $permission = Permission::create(['name' => 'Permissions']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Access')->exists()) {
+           $permission = Permission::create(['name' => 'Access']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+
+        if (!Permission::where('name', 'Home')->exists()) {
+           $permission = Permission::create(['name' => 'Home']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Catalog')->exists()) {
+           $permission = Permission::create(['name' => 'Catalog']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Clients')->exists()) {
+           $permission = Permission::create(['name' => 'Clients']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Sales')->exists()) {
+           $permission = Permission::create(['name' => 'Sales']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Technical Service')->exists()) {
+           $permission = Permission::create(['name' => 'Technical Service']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Invoicing')->exists()) {
+           $permission = Permission::create(['name' => 'Invoicing']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Purchases')->exists()) {
+           $permission = Permission::create(['name' => 'Purchases']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Calendar')->exists()) {
+           $permission = Permission::create(['name' => 'Calendar']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Reports')->exists()) {
+           $permission = Permission::create(['name' => 'Reports']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Profile')->exists()) {
+           $permission = Permission::create(['name' => 'Profile']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Connect')->exists()) {
+           $permission = Permission::create(['name' => 'Connect']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Settings')->exists()) {
+           $permission = Permission::create(['name' => 'Settings']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Other Configuration')->exists()) {
+           $permission = Permission::create(['name' => 'Other Configuration']);
+           $permission->parent_id = 0;
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Products')->exists()) {
+           $permission = Permission::create(['name' => 'Products']);
+           $permission->parent_id = Permission::where('name' ,'Catalog')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Services')->exists()) {
+           $permission = Permission::create(['name' => 'Services']);
+           $permission->parent_id = Permission::where('name' ,'Catalog')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Expenses & Investments')->exists()) {
+           $permission = Permission::create(['name' => 'Expenses & Investments']);
+           $permission->parent_id = Permission::where('name' ,'Catalog')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Client Assets')->exists()) {
+           $permission = Permission::create(['name' => 'Client Assets']);
+           $permission->parent_id = Permission::where('name' ,'Catalog')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Clients')->exists()) {
+           $permission = Permission::create(['name' => 'Clients']);
+           $permission->parent_id = Permission::where('name' ,'Clients')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Potential Clients')->exists()) {
+           $permission = Permission::create(['name' => 'Potential Clients']);
+           $permission->parent_id = Permission::where('name' ,'Clients')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Contacts')->exists()) {
+           $permission = Permission::create(['name' => 'Contacts']);
+           $permission->parent_id = Permission::where('name' ,'Clients')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Client bank account')->exists()) {
+           $permission = Permission::create(['name' => 'Client bank account']);
+           $permission->parent_id = Permission::where('name' ,'Clients')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Estimates')->exists()) {
+           $permission = Permission::create(['name' => 'Estimates']);
+           $permission->parent_id = Permission::where('name' ,'Sales')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Orders')->exists()) {
+           $permission = Permission::create(['name' => 'Orders']);
+           $permission->parent_id = Permission::where('name' ,'Sales')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Delivery Notes')->exists()) {
+           $permission = Permission::create(['name' => 'Delivery Notes']);
+           $permission->parent_id = Permission::where('name' ,'Sales')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Incidents')->exists()) {
+           $permission = Permission::create(['name' => 'Incidents']);
+           $permission->parent_id = Permission::where('name' ,'Technical Service')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Work Estimate')->exists()) {
+           $permission = Permission::create(['name' => 'Work Estimate']);
+           $permission->parent_id = Permission::where('name' ,'Technical Service')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Work Orders')->exists()) {
+           $permission = Permission::create(['name' => 'Work Orders']);
+           $permission->parent_id = Permission::where('name' ,'Technical Service')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Work Delivery Notes')->exists()) {
+           $permission = Permission::create(['name' => 'Work Delivery Notes']);
+           $permission->parent_id = Permission::where('name' ,'Technical Service')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Invoices')->exists()) {
+           $permission = Permission::create(['name' => 'Invoices']);
+           $permission->parent_id = Permission::where('name' ,'Invoicing')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Refunds')->exists()) {
+           $permission = Permission::create(['name' => 'Refunds']);
+           $permission->parent_id = Permission::where('name' ,'Invoicing')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Ordinary Invoice Receipts')->exists()) {
+           $permission = Permission::create(['name' => 'Ordinary Invoice Receipts']);
+           $permission->parent_id = Permission::where('name' ,'Invoicing')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Refund Receipts')->exists()) {
+           $permission = Permission::create(['name' => 'Refund Receipts']);
+           $permission->parent_id = Permission::where('name' ,'Invoicing')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Invoice Summary')->exists()) {
+           $permission = Permission::create(['name' => 'Invoice Summary']);
+           $permission->parent_id = Permission::where('name' ,'Invoicing')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Tickets and other expenses')->exists()) {
+           $permission = Permission::create(['name' => 'Tickets and other expenses']);
+           $permission->parent_id = Permission::where('name' ,'Purchases')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Purchase Orders')->exists()) {
+           $permission = Permission::create(['name' => 'Purchase Orders']);
+           $permission->parent_id = Permission::where('name' ,'Purchases')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Purchase Delivery Notes')->exists()) {
+           $permission = Permission::create(['name' => 'Purchase Delivery Notes']);
+           $permission->parent_id = Permission::where('name' ,'Purchases')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Purchase Invoices')->exists()) {
+           $permission = Permission::create(['name' => 'Purchase Invoices']);
+           $permission->parent_id = Permission::where('name' ,'Purchases')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Purchase Invoice Receipts')->exists()) {
+           $permission = Permission::create(['name' => 'Purchase Invoice Receipts']);
+           $permission->parent_id = Permission::where('name' ,'Purchases')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Purchase Invoice Summary')->exists()) {
+           $permission = Permission::create(['name' => 'Purchase Invoice Summary']);
+           $permission->parent_id = Permission::where('name' ,'Purchases')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Suppliers')->exists()) {
+           $permission = Permission::create(['name' => 'Suppliers']);
+           $permission->parent_id = Permission::where('name' ,'Purchases')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Supplier Bank Account')->exists()) {
+           $permission = Permission::create(['name' => 'Supplier Bank Account']);
+           $permission->parent_id = Permission::where('name' ,'Purchases')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+
+        if (!Permission::where('name', 'Calendar')->exists()) {
+           $permission = Permission::create(['name' => 'Calendar']);
+           $permission->parent_id = Permission::where('name' ,'Calendar')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Show all events in the "Related" section')->exists()) {
+           $permission = Permission::create(['name' => 'Show all events in the "Related" section']);
+           $permission->parent_id = Permission::where('name' ,'Calendar')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Tasks')->exists()) {
+           $permission = Permission::create(['name' => 'Tasks']);
+           $permission->parent_id = Permission::where('name' ,'Calendar')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Overview')->exists()) {
+           $permission = Permission::create(['name' => 'Overview']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Invoicing by Client')->exists()) {
+           $permission = Permission::create(['name' => 'Invoicing by Client']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Invoicing by Agent')->exists()) {
+           $permission = Permission::create(['name' => 'Invoicing by Agent']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Invoicing by Item')->exists()) {
+           $permission = Permission::create(['name' => 'Invoicing by Item']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Cash Flow Overview')->exists()) {
+           $permission = Permission::create(['name' => 'Cash Flow Overview']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Cash Flow by Payment Options')->exists()) {
+           $permission = Permission::create(['name' => 'Cash Flow by Payment Options']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Cash Flow by Agent')->exists()) {
+           $permission = Permission::create(['name' => 'Cash Flow by Agent']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Sales Overview')->exists()) {
+           $permission = Permission::create(['name' => 'Sales Overview']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Sales by Client')->exists()) {
+           $permission = Permission::create(['name' => 'Sales by Client']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Sales by Agent')->exists()) {
+           $permission = Permission::create(['name' => 'Sales by Agent']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Sales by Item')->exists()) {
+           $permission = Permission::create(['name' => 'Sales by Item']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Technical Service Overview')->exists()) {
+           $permission = Permission::create(['name' => 'Technical Service Overview']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Incidents by Client')->exists()) {
+           $permission = Permission::create(['name' => 'Incidents by Client']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Incidents by Agent')->exists()) {
+           $permission = Permission::create(['name' => 'Incidents by Agent']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Technical Service by Client')->exists()) {
+           $permission = Permission::create(['name' => 'Technical Service by Client']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Technical Service by Agent')->exists()) {
+           $permission = Permission::create(['name' => 'Technical Service by Agent']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Technical Service by Item')->exists()) {
+           $permission = Permission::create(['name' => 'Technical Service by Item']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Purchases by Provider')->exists()) {
+           $permission = Permission::create(['name' => 'Purchases by Provider']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Purchases by Item')->exists()) {
+           $permission = Permission::create(['name' => 'Purchases by Item']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Stock Valuation')->exists()) {
+           $permission = Permission::create(['name' => 'Stock Valuation']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'View tax reports')->exists()) {
+           $permission = Permission::create(['name' => 'View tax reports']);
+           $permission->parent_id = Permission::where('name' ,'Reports')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Document Management')->exists()) {
+           $permission = Permission::create(['name' => 'Document Management']);
+           $permission->parent_id = Permission::where('name' ,'Profile')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'My email templates')->exists()) {
+           $permission = Permission::create(['name' => 'My email templates']);
+           $permission->parent_id = Permission::where('name' ,'Connect')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Debtor clients')->exists()) {
+           $permission = Permission::create(['name' => 'Debtor clients']);
+           $permission->parent_id = Permission::where('name' ,'Connect')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Management of incidents')->exists()) {
+           $permission = Permission::create(['name' => 'Management of incidents']);
+           $permission->parent_id = Permission::where('name' ,'Connect')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'My business')->exists()) {
+           $permission = Permission::create(['name' => 'My business']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Users')->exists()) {
+           $permission = Permission::create(['name' => 'Users']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Roles')->exists()) {
+           $permission = Permission::create(['name' => 'Roles']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Bank Accounts')->exists()) {
+           $permission = Permission::create(['name' => 'Bank Accounts']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'My templates')->exists()) {
+           $permission = Permission::create(['name' => 'My templates']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'References')->exists()) {
+           $permission = Permission::create(['name' => 'References']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Payment Terms')->exists()) {
+           $permission = Permission::create(['name' => 'Payment Terms']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Price Rates')->exists()) {
+           $permission = Permission::create(['name' => 'Price Rates']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Payment Options')->exists()) {
+           $permission = Permission::create(['name' => 'Payment Options']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Client and Supplier Categories')->exists()) {
+           $permission = Permission::create(['name' => 'Client and Supplier Categories']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Product Categories')->exists()) {
+           $permission = Permission::create(['name' => 'Product Categories']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Delivery Options')->exists()) {
+           $permission = Permission::create(['name' => 'Delivery Options']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Event Types')->exists()) {
+           $permission = Permission::create(['name' => 'Event Types']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Expense Categories')->exists()) {
+           $permission = Permission::create(['name' => 'Expense Categories']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Custom states')->exists()) {
+           $permission = Permission::create(['name' => 'Custom states']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Email Configuration')->exists()) {
+           $permission = Permission::create(['name' => 'Email Configuration']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Taxes')->exists()) {
+           $permission = Permission::create(['name' => 'Taxes']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Advanced Settings')->exists()) {
+           $permission = Permission::create(['name' => 'Advanced Settings']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Automatic Tasks')->exists()) {
+           $permission = Permission::create(['name' => 'Automatic Tasks']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Accounting')->exists()) {
+           $permission = Permission::create(['name' => 'Accounting']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Import from CSV')->exists()) {
+           $permission = Permission::create(['name' => 'Import from CSV']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Export to CSV')->exists()) {
+           $permission = Permission::create(['name' => 'Export to CSV']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Update from CSV')->exists()) {
+           $permission = Permission::create(['name' => 'Update from CSV']);
+           $permission->parent_id = Permission::where('name' ,'Settings')->pluck('id')->first();
+           $permission->is_checkbox = 0;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Show pricing')->exists()) {
+           $permission = Permission::create(['name' => 'Show pricing']);
+           $permission->parent_id = Permission::where('name' ,'Other Configuration')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Show purchase pricing')->exists()) {
+           $permission = Permission::create(['name' => 'Show purchase pricing']);
+           $permission->parent_id = Permission::where('name' ,'Other Configuration')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Show margin')->exists()) {
+           $permission = Permission::create(['name' => 'Show margin']);
+           $permission->parent_id = Permission::where('name' ,'Other Configuration')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Show stock')->exists()) {
+           $permission = Permission::create(['name' => 'Show stock']);
+           $permission->parent_id = Permission::where('name' ,'Other Configuration')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
+        }
+
         /* products */
 
         if (!Permission::where('name', 'view products')->exists()) {
-           Permission::create(['name' => 'view products']);
+           $permission = Permission::create(['name' => 'view products']);
+           $permission->parent_id = Permission::where('name' ,'Products')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
         }
 
         if (!Permission::where('name', 'edit products')->exists()) {
-           Permission::create(['name' => 'edit products']);
+           $permission = Permission::create(['name' => 'edit products']);
+           $permission->parent_id = Permission::where('name' ,'Products')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
         }
 
         if (!Permission::where('name', 'create products')->exists()) {
-           Permission::create(['name' => 'create products']);
+           $permission = Permission::create(['name' => 'create products']);
+           $permission->parent_id = Permission::where('name' ,'Products')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
         }
 
         if (!Permission::where('name', 'delete products')->exists()) {
-           Permission::create(['name' => 'delete products']);
+           $permission = Permission::create(['name' => 'delete products']);
+           $permission->parent_id = Permission::where('name' ,'Products')->pluck('id')->first();
+           $permission->is_checkbox = 1;
+           $permission->save();
         }
 
         /* services */
 
         if (!Permission::where('name', 'view services')->exists()) {
-           Permission::create(['name' => 'view services']);
+            $permission = Permission::create(['name' => 'view services']);
+            $permission->parent_id = Permission::where('name' ,'Services')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit services')->exists()) {
-           Permission::create(['name' => 'edit services']);
+            $permission = Permission::create(['name' => 'edit services']);
+            $permission->parent_id = Permission::where('name' ,'Services')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create services')->exists()) {
-           Permission::create(['name' => 'create services']);
+            $permission = Permission::create(['name' => 'create services']);
+            $permission->parent_id = Permission::where('name' ,'Services')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete services')->exists()) {
-           Permission::create(['name' => 'delete services']);
+            $permission = Permission::create(['name' => 'delete services']);
+            $permission->parent_id = Permission::where('name' ,'Services')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* expenses and investments */
 
         if (!Permission::where('name', 'view expenses and investments')->exists()) {
-           Permission::create(['name' => 'view expenses and investments']);
+            $permission = Permission::create(['name' => 'view expenses and investments']);
+            $permission->parent_id = Permission::where('name' ,'Expenses & Investments')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit expenses and investments')->exists()) {
-           Permission::create(['name' => 'edit expenses and investments']);
+            $permission = Permission::create(['name' => 'edit expenses and investments']);
+            $permission->parent_id = Permission::where('name' ,'Expenses & Investments')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create expenses and investments')->exists()) {
-           Permission::create(['name' => 'create expenses and investments']);
+            $permission = Permission::create(['name' => 'create expenses and investments']);
+            $permission->parent_id = Permission::where('name' ,'Expenses & Investments')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete expenses and investments')->exists()) {
-           Permission::create(['name' => 'delete expenses and investments']);
+            $permission = Permission::create(['name' => 'delete expenses and investments']);
+            $permission->parent_id = Permission::where('name' ,'Expenses & Investments')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* client assets */
 
         if (!Permission::where('name', 'view client assets')->exists()) {
-           Permission::create(['name' => 'view client assets']);
+            $permission = Permission::create(['name' => 'view client assets']);
+            $permission->parent_id = Permission::where('name' ,'Client Assets')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit client assets')->exists()) {
-           Permission::create(['name' => 'edit client assets']);
+            $permission = Permission::create(['name' => 'edit client assets']);
+            $permission->parent_id = Permission::where('name' ,'Client Assets')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create client assets')->exists()) {
-           Permission::create(['name' => 'create client assets']);
+           
+            $permission = Permission::create(['name' => 'create client assets']);
+            $permission->parent_id = Permission::where('name' ,'Client Assets')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete client assets')->exists()) {
-           Permission::create(['name' => 'delete client assets']);
+            
+            $permission = Permission::create(['name' => 'delete client assets']);
+            $permission->parent_id = Permission::where('name' ,'Client Assets')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* clients */
 
         if (!Permission::where('name', 'view clients')->exists()) {
-           Permission::create(['name' => 'view clients']);
+           
+            $permission = Permission::create(['name' => 'view clients']);
+            $permission->parent_id = Permission::where('name' ,'Clients')->where('parent_id', '!=', 0)->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit clients')->exists()) {
-           Permission::create(['name' => 'edit clients']);
+           
+            $permission = Permission::create(['name' => 'edit clients']);
+            $permission->parent_id = Permission::where('name' ,'Clients')->where('parent_id', '!=', 0)->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create clients')->exists()) {
-           Permission::create(['name' => 'create clients']);
+
+            $permission = Permission::create(['name' => 'create clients']);
+            $permission->parent_id = Permission::where('name' ,'Clients')->where('parent_id', '!=', 0)->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete clients')->exists()) {
-           Permission::create(['name' => 'delete clients']);
+           
+            $permission = Permission::create(['name' => 'delete clients']);
+            $permission->parent_id = Permission::where('name' ,'Clients')->where('parent_id', '!=', 0)->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* clients */
 
         if (!Permission::where('name', 'view potential clients')->exists()) {
-           Permission::create(['name' => 'view potential clients']);
+            $permission = Permission::create(['name' => 'view potential clients']);
+            $permission->parent_id = Permission::where('name' ,'Potential Clients')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit potential clients')->exists()) {
-           Permission::create(['name' => 'edit potential clients']);
+           
+            $permission = Permission::create(['name' => 'edit potential clients']);
+            $permission->parent_id = Permission::where('name' ,'Potential Clients')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create potential clients')->exists()) {
-           Permission::create(['name' => 'create potential clients']);
+           
+            $permission = Permission::create(['name' => 'create potential clients']);
+            $permission->parent_id = Permission::where('name' ,'Potential Clients')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete potential clients')->exists()) {
-           Permission::create(['name' => 'delete potential clients']);
+           
+            $permission = Permission::create(['name' => 'delete potential clients']);
+            $permission->parent_id = Permission::where('name' ,'Potential Clients')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* contacts */
 
         if (!Permission::where('name', 'view contacts')->exists()) {
-           Permission::create(['name' => 'view contacts']);
+            
+            $permission = Permission::create(['name' => 'view contacts']);
+            $permission->parent_id = Permission::where('name' ,'Contacts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit contacts')->exists()) {
-           Permission::create(['name' => 'edit contacts']);
+           
+            $permission = Permission::create(['name' => 'edit contacts']);
+            $permission->parent_id = Permission::where('name' ,'Contacts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create contacts')->exists()) {
-           Permission::create(['name' => 'create contacts']);
+            
+            $permission = Permission::create(['name' => 'create contacts']);
+            $permission->parent_id = Permission::where('name' ,'Contacts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete contacts')->exists()) {
-           Permission::create(['name' => 'delete contacts']);
+            
+            $permission = Permission::create(['name' => 'delete contacts']);
+            $permission->parent_id = Permission::where('name' ,'Contacts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* client bank account */
 
         if (!Permission::where('name', 'view client bank account')->exists()) {
-           Permission::create(['name' => 'view client bank account']);
+           
+            $permission = Permission::create(['name' => 'view client bank account']);
+            $permission->parent_id = Permission::where('name' ,'Client bank account')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit client bank account')->exists()) {
-           Permission::create(['name' => 'edit client bank account']);
+            
+            $permission = Permission::create(['name' => 'edit client bank account']);
+            $permission->parent_id = Permission::where('name' ,'Client bank account')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* sales */
 
         if (!Permission::where('name', 'view estimates')->exists()) {
-           Permission::create(['name' => 'view estimates']);
+           
+            $permission = Permission::create(['name' => 'view estimates']);
+            $permission->parent_id = Permission::where('name' ,'Estimates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit estimates')->exists()) {
-           Permission::create(['name' => 'edit estimates']);
+           
+            $permission = Permission::create(['name' => 'edit estimates']);
+            $permission->parent_id = Permission::where('name' ,'Estimates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create estimates')->exists()) {
-           Permission::create(['name' => 'create estimates']);
+           
+            $permission = Permission::create(['name' => 'create estimates']);
+            $permission->parent_id = Permission::where('name' ,'Estimates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete estimates')->exists()) {
-           Permission::create(['name' => 'delete estimates']);
+           
+            $permission = Permission::create(['name' => 'delete estimates']);
+            $permission->parent_id = Permission::where('name' ,'Estimates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* orders */
 
         if (!Permission::where('name', 'view orders')->exists()) {
-           Permission::create(['name' => 'view orders']);
+           
+            $permission = Permission::create(['name' => 'view orders']);
+            $permission->parent_id = Permission::where('name' ,'Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit orders')->exists()) {
-           Permission::create(['name' => 'edit orders']);
+           
+            $permission = Permission::create(['name' => 'edit orders']);
+            $permission->parent_id = Permission::where('name' ,'Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create orders')->exists()) {
-           Permission::create(['name' => 'create orders']);
+           
+            $permission = Permission::create(['name' => 'create orders']);
+            $permission->parent_id = Permission::where('name' ,'Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete orders')->exists()) {
-           Permission::create(['name' => 'delete orders']);
+            
+            $permission = Permission::create(['name' => 'delete orders']);
+            $permission->parent_id = Permission::where('name' ,'Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* delivery notes */
 
         if (!Permission::where('name', 'view delivery notes')->exists()) {
-           Permission::create(['name' => 'view delivery notes']);
+           
+            $permission = Permission::create(['name' => 'view delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit delivery notes')->exists()) {
-           Permission::create(['name' => 'edit delivery notes']);
+           
+            $permission = Permission::create(['name' => 'edit delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create delivery notes')->exists()) {
-           Permission::create(['name' => 'create delivery notes']);
+           
+            $permission = Permission::create(['name' => 'create delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete delivery notes')->exists()) {
-           Permission::create(['name' => 'delete delivery notes']);
+           
+            $permission = Permission::create(['name' => 'delete delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Incidents */
 
         if (!Permission::where('name', 'view incidents')->exists()) {
-           Permission::create(['name' => 'view incidents']);
+           
+            $permission = Permission::create(['name' => 'view incidents']);
+            $permission->parent_id = Permission::where('name' ,'Incidents')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit incidents')->exists()) {
-           Permission::create(['name' => 'edit incidents']);
+           
+            $permission = Permission::create(['name' => 'edit incidents']);
+            $permission->parent_id = Permission::where('name' ,'Incidents')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create incidents')->exists()) {
-           Permission::create(['name' => 'create incidents']);
+           
+            $permission = Permission::create(['name' => 'create incidents']);
+            $permission->parent_id = Permission::where('name' ,'Incidents')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete incidents')->exists()) {
-           Permission::create(['name' => 'delete incidents']);
+           
+            $permission = Permission::create(['name' => 'delete incidents']);
+            $permission->parent_id = Permission::where('name' ,'Incidents')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Work Estimate */
 
         if (!Permission::where('name', 'view work estimate')->exists()) {
-           Permission::create(['name' => 'view work estimate']);
+           
+            $permission = Permission::create(['name' => 'view work estimate']);
+            $permission->parent_id = Permission::where('name' ,'Work Estimate')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit work estimate')->exists()) {
-           Permission::create(['name' => 'edit work estimate']);
+           
+            $permission = Permission::create(['name' => 'edit work estimate']);
+            $permission->parent_id = Permission::where('name' ,'Work Estimate')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create work estimate')->exists()) {
-           Permission::create(['name' => 'create work estimate']);
+          
+            $permission =  Permission::create(['name' => 'create work estimate']);
+            $permission->parent_id = Permission::where('name' ,'Work Estimate')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete work estimate')->exists()) {
-           Permission::create(['name' => 'delete work estimate']);
+           
+            $permission =  Permission::create(['name' => 'delete work estimate']);
+            $permission->parent_id = Permission::where('name' ,'Work Estimate')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Work Orders */
 
         if (!Permission::where('name', 'view work orders')->exists()) {
-           Permission::create(['name' => 'view work orders']);
+           
+            $permission =  Permission::create(['name' => 'view work orders']);
+            $permission->parent_id = Permission::where('name' ,'Work Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit work orders')->exists()) {
-           Permission::create(['name' => 'edit work orders']);
+           
+            $permission =  Permission::create(['name' => 'edit work orders']);
+            $permission->parent_id = Permission::where('name' ,'Work Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create work orders')->exists()) {
-           Permission::create(['name' => 'create work orders']);
+           
+            $permission =  Permission::create(['name' => 'create work orders']);
+            $permission->parent_id = Permission::where('name' ,'Work Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
+
         }
 
         if (!Permission::where('name', 'delete work orders')->exists()) {
-           Permission::create(['name' => 'delete work orders']);
+           
+            $permission =  Permission::create(['name' => 'delete work orders']);
+            $permission->parent_id = Permission::where('name' ,'Work Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Work delivery notes */
 
         if (!Permission::where('name', 'view work delivery notes')->exists()) {
-           Permission::create(['name' => 'view work delivery notes']);
+           
+            $permission =  Permission::create(['name' => 'view work delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Work Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit work delivery notes')->exists()) {
-           Permission::create(['name' => 'edit work delivery notes']);
+           
+            $permission =  Permission::create(['name' => 'edit work delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Work Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create work delivery notes')->exists()) {
-           Permission::create(['name' => 'create work delivery notes']);
+           
+            $permission =  Permission::create(['name' => 'create work delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Work Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete work delivery notes')->exists()) {
-           Permission::create(['name' => 'delete work delivery notes']);
+           
+            $permission =  Permission::create(['name' => 'delete work delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Work Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Invoices */
 
         if (!Permission::where('name', 'view invoices')->exists()) {
-           Permission::create(['name' => 'view invoices']);
+           
+            $permission =  Permission::create(['name' => 'view invoices']);
+            $permission->parent_id = Permission::where('name' ,'Invoices')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit invoices')->exists()) {
-           Permission::create(['name' => 'edit invoices']);
+           
+            $permission =  Permission::create(['name' => 'edit invoices']);
+            $permission->parent_id = Permission::where('name' ,'Invoices')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create invoices')->exists()) {
-           Permission::create(['name' => 'create invoices']);
+            
+            $permission =  Permission::create(['name' => 'create invoices']);
+            $permission->parent_id = Permission::where('name' ,'Invoices')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete invoices')->exists()) {
-           Permission::create(['name' => 'delete invoices']);
+           
+            $permission =  Permission::create(['name' => 'delete invoices']);
+            $permission->parent_id = Permission::where('name' ,'Invoices')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Refunds */
 
         if (!Permission::where('name', 'view refunds')->exists()) {
-           Permission::create(['name' => 'view refunds']);
+           
+            $permission =  Permission::create(['name' => 'view refunds']);
+            $permission->parent_id = Permission::where('name' ,'Refunds')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit refunds')->exists()) {
-           Permission::create(['name' => 'edit refunds']);
+           
+            $permission =  Permission::create(['name' => 'edit refunds']);
+            $permission->parent_id = Permission::where('name' ,'Refunds')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create refunds')->exists()) {
-           Permission::create(['name' => 'create refunds']);
+           
+            $permission =  Permission::create(['name' => 'create refunds']);
+            $permission->parent_id = Permission::where('name' ,'Refunds')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete refunds')->exists()) {
-           Permission::create(['name' => 'delete refunds']);
+           
+            $permission =  Permission::create(['name' => 'delete refunds']);
+            $permission->parent_id = Permission::where('name' ,'Refunds')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Ordinary Invoice Receipts */
 
         if (!Permission::where('name', 'view ordinary invoice receipts')->exists()) {
-           Permission::create(['name' => 'view ordinary invoice receipts']);
+            
+            $permission = Permission::create(['name' => 'view ordinary invoice receipts']);
+            $permission->parent_id = Permission::where('name' ,'Ordinary Invoice Receipts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit ordinary invoice receipts')->exists()) {
-           Permission::create(['name' => 'edit ordinary invoice receipts']);
+           
+            $permission = Permission::create(['name' => 'edit ordinary invoice receipts']);
+            $permission->parent_id = Permission::where('name' ,'Ordinary Invoice Receipts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Refund Receipts */
 
         if (!Permission::where('name', 'view refund receipts')->exists()) {
-           Permission::create(['name' => 'view refund receipts']);
+           
+            $permission = Permission::create(['name' => 'view refund receipts']);
+            $permission->parent_id = Permission::where('name' ,'Refund Receipts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit refund receipts')->exists()) {
-           Permission::create(['name' => 'edit refund receipts']);
+           
+            $permission = Permission::create(['name' => 'edit refund receipts']);
+            $permission->parent_id = Permission::where('name' ,'Refund Receipts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Invoice Summary */
 
         if (!Permission::where('name', 'view invoice summary')->exists()) {
-           Permission::create(['name' => 'view invoice summary']);
+           
+            $permission = Permission::create(['name' => 'view invoice summary']);
+            $permission->parent_id = Permission::where('name' ,'Invoice Summary')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Tickets and other expenses */
 
         if (!Permission::where('name', 'view tickets and expenses')->exists()) {
-           Permission::create(['name' => 'view tickets and expenses']);
+           
+            $permission = Permission::create(['name' => 'view tickets and expenses']);
+            $permission->parent_id = Permission::where('name' ,'Tickets and other expenses')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit tickets and expenses')->exists()) {
-           Permission::create(['name' => 'edit tickets and expenses']);
+           
+            $permission = Permission::create(['name' => 'edit tickets and expenses']);
+            $permission->parent_id = Permission::where('name' ,'Tickets and other expenses')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create tickets and expenses')->exists()) {
-           Permission::create(['name' => 'create tickets and expenses']);
+           
+            $permission = Permission::create(['name' => 'create tickets and expenses']);
+            $permission->parent_id = Permission::where('name' ,'Tickets and other expenses')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete tickets and expenses')->exists()) {
-           Permission::create(['name' => 'delete tickets and expenses']);
+           
+            $permission = Permission::create(['name' => 'delete tickets and expenses']);
+            $permission->parent_id = Permission::where('name' ,'Tickets and other expenses')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Purchase Orders */
 
         if (!Permission::where('name', 'view purchase orders')->exists()) {
-           Permission::create(['name' => 'view purchase orders']);
+           
+            $permission = Permission::create(['name' => 'view purchase orders']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit purchase orders')->exists()) {
-           Permission::create(['name' => 'edit purchase orders']);
+           
+            $permission = Permission::create(['name' => 'edit purchase orders']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create purchase orders')->exists()) {
-           Permission::create(['name' => 'create purchase orders']);
+           
+            $permission = Permission::create(['name' => 'create purchase orders']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete purchase orders')->exists()) {
-           Permission::create(['name' => 'delete purchase orders']);
+           
+            $permission = Permission::create(['name' => 'delete purchase orders']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Orders')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Purchase Delivery Notes */
 
         if (!Permission::where('name', 'view purchase delivery notes')->exists()) {
-           Permission::create(['name' => 'view purchase delivery notes']);
+           
+            $permission = Permission::create(['name' => 'view purchase delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit purchase delivery notes')->exists()) {
-           Permission::create(['name' => 'edit purchase delivery notes']);
+           
+            $permission = Permission::create(['name' => 'edit purchase delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create purchase delivery notes')->exists()) {
-           Permission::create(['name' => 'create purchase delivery notes']);
+           
+            $permission = Permission::create(['name' => 'create purchase delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete purchase delivery notes')->exists()) {
-           Permission::create(['name' => 'delete purchase delivery notes']);
+           
+            $permission = Permission::create(['name' => 'delete purchase delivery notes']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Delivery Notes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Purchase Invoices */
 
         if (!Permission::where('name', 'view purchase invoices')->exists()) {
-           Permission::create(['name' => 'view purchase invoices']);
+           
+            $permission = Permission::create(['name' => 'view purchase invoices']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Invoices')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit purchase invoices')->exists()) {
-           Permission::create(['name' => 'edit purchase invoices']);
+           
+            $permission = Permission::create(['name' => 'edit purchase invoices']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Invoices')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create purchase invoices')->exists()) {
-           Permission::create(['name' => 'create purchase invoices']);
+           
+            $permission = Permission::create(['name' => 'create purchase invoices']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Invoices')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete purchase invoices')->exists()) {
-           Permission::create(['name' => 'delete purchase invoices']);
+           
+            $permission = Permission::create(['name' => 'delete purchase invoices']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Invoices')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Purchase Invoice Receipts */
 
         if (!Permission::where('name', 'view purchase invoice receipts')->exists()) {
-           Permission::create(['name' => 'view purchase invoice receipts']);
+           
+            $permission = Permission::create(['name' => 'view purchase invoice receipts']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Invoice Receipts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit purchase invoice receipts')->exists()) {
-           Permission::create(['name' => 'edit purchase invoice receipts']);
+           
+            $permission = Permission::create(['name' => 'edit purchase invoice receipts']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Invoice Receipts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Purchase Invoice Summary */
 
         if (!Permission::where('name', 'view purchase invoice summary')->exists()) {
-           Permission::create(['name' => 'view purchase invoice summary']);
+           
+            $permission = Permission::create(['name' => 'view purchase invoice summary']);
+            $permission->parent_id = Permission::where('name' ,'Purchase Invoice Summary')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Suppliers */
 
         if (!Permission::where('name', 'view suppliers')->exists()) {
-           Permission::create(['name' => 'view suppliers']);
+           
+            $permission = Permission::create(['name' => 'view suppliers']);
+            $permission->parent_id = Permission::where('name' ,'Suppliers')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit suppliers')->exists()) {
-           Permission::create(['name' => 'edit suppliers']);
+           
+            $permission = Permission::create(['name' => 'edit suppliers']);
+            $permission->parent_id = Permission::where('name' ,'Suppliers')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create suppliers')->exists()) {
-           Permission::create(['name' => 'create suppliers']);
+           
+            $permission = Permission::create(['name' => 'create suppliers']);
+            $permission->parent_id = Permission::where('name' ,'Suppliers')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete suppliers')->exists()) {
-           Permission::create(['name' => 'delete suppliers']);
+           
+            $permission = Permission::create(['name' => 'delete suppliers']);
+            $permission->parent_id = Permission::where('name' ,'Suppliers')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Suppliers Bank Account  */
 
         if (!Permission::where('name', 'view suppliers bank account')->exists()) {
-           Permission::create(['name' => 'view suppliers bank account']);
+           
+            $permission = Permission::create(['name' => 'view suppliers bank account']);
+            $permission->parent_id = Permission::where('name' ,'Supplier Bank Account')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit suppliers bank account')->exists()) {
-           Permission::create(['name' => 'edit suppliers bank account']);
+           
+            $permission = Permission::create(['name' => 'edit suppliers bank account']);
+            $permission->parent_id = Permission::where('name' ,'Supplier Bank Account')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
-        /* Calendar */
-        if (!Permission::where('name', 'calendar  calendar')->exists()) {
-           Permission::create(['name' => 'view calendar']);
-        }
 
-        if (!Permission::where('name', 'Show all events in the related section')->exists()) {
-           Permission::create(['name' => 'Show all events in the related section']);
-        }
-
-        if (!Permission::where('name', 'calendar tasks')->exists()) {
-           Permission::create(['name' => 'calendar tasks']);
-        }
-
-        /* Reports */
-        if (!Permission::where('name', 'Reports overview')->exists()) {
-           Permission::create(['name' => 'Reports overview']);
-        }
-
-        if (!Permission::where('name', 'Reports invoicing by client')->exists()) {
-           Permission::create(['name' => 'Reports invoicing by client']);
-        }
-
-        if (!Permission::where('name', 'Reports invoicing by agent')->exists()) {
-           Permission::create(['name' => 'Reports invoicing by agent']);
-        }
-
-        if (!Permission::where('name', 'Reports invoicing by item')->exists()) {
-           Permission::create(['name' => 'Reports invoicing by item']);
-        }
-
-        if (!Permission::where('name', 'Reports cashflow overview')->exists()) {
-           Permission::create(['name' => 'Reports cashflow overview']);
-        }
-
-        if (!Permission::where('name', 'Reports Cash Flow by Payment Options')->exists()) {
-           Permission::create(['name' => 'Reports Cash Flow by Payment Options']);
-        }
-
-        if (!Permission::where('name', 'Reports Cash Flow by Agent')->exists()) {
-           Permission::create(['name' => 'Reports Cash Flow by Agent']);
-        }
-
-        if (!Permission::where('name', 'Reports Sales Overview')->exists()) {
-           Permission::create(['name' => 'Reports Sales Overview']);
-        }
-
-        if (!Permission::where('name', 'Reports Sales by Client')->exists()) {
-           Permission::create(['name' => 'Reports Sales by Client']);
-        }
-
-        if (!Permission::where('name', 'Reports Sales by Agent')->exists()) {
-           Permission::create(['name' => 'Reports Sales by Agent']);
-        }
-
-        if (!Permission::where('name', 'Reports Sales by Item')->exists()) {
-           Permission::create(['name' => 'Reports Sales by Item']);
-        }
-
-        if (!Permission::where('name', 'Reports Technical Service Overview              
-')->exists()) {
-           Permission::create(['name' => 'Reports Technical Service Overview                
-']);
-        }
-
-        if (!Permission::where('name', 'Reports Incidents by Client')->exists()) {
-           Permission::create(['name' => 'Reports Incidents by Client']);
-        }
-
-        if (!Permission::where('name', 'Reports Incidents by Agent')->exists()) {
-           Permission::create(['name' => 'Reports Incidents by Agent']);
-        }
-
-        if (!Permission::where('name', 'Reports Technical Service by Client')->exists()) {
-           Permission::create(['name' => 'Reports Technical Service by Client']);
-        }
-
-        if (!Permission::where('name', 'Reports Technical Service by Agent')->exists()) {
-           Permission::create(['name' => 'Reports Technical Service by Agent']);
-        }
-
-        if (!Permission::where('name', 'Reports Technical Service by Item')->exists()) {
-           Permission::create(['name' => 'Reports Technical Service by Item']);
-        }
-
-        if (!Permission::where('name', 'Reports Purchases by Provider')->exists()) {
-           Permission::create(['name' => 'Reports Purchases by Provider']);
-        }
-
-        if (!Permission::where('name', 'Reports Purchases by Item')->exists()) {
-           Permission::create(['name' => 'Reports Purchases by Item']);
-        }
-
-        if (!Permission::where('name', 'Reports Stock Valuation')->exists()) {
-           Permission::create(['name' => 'Reports Stock Valuation']);
-        }
-
-        if (!Permission::where('name', 'Reports View tax Reports')->exists()) {
-           Permission::create(['name' => 'Reports View tax Reports']);
-        }
 
         /* Profile */
         if (!Permission::where('name', 'view document')->exists()) {
-           Permission::create(['name' => 'view document']);
+           
+            $permission = Permission::create(['name' => 'view document']);
+            $permission->parent_id = Permission::where('name' ,'Document Management')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit document')->exists()) {
-           Permission::create(['name' => 'edit document']);
+           
+            $permission = Permission::create(['name' => 'edit document']);
+            $permission->parent_id = Permission::where('name' ,'Document Management')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Connect email templates*/
 
         if (!Permission::where('name', 'view email templates')->exists()) {
-           Permission::create(['name' => 'view email templates']);
+           
+            $permission = Permission::create(['name' => 'view email templates']);
+            $permission->parent_id = Permission::where('name' ,'My email templates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit email templates')->exists()) {
-           Permission::create(['name' => 'edit email templates']);
+           
+            $permission = Permission::create(['name' => 'edit email templates']);
+            $permission->parent_id = Permission::where('name' ,'My email templates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create email templates')->exists()) {
-           Permission::create(['name' => 'create email templates']);
+           
+            $permission = Permission::create(['name' => 'create email templates']);
+            $permission->parent_id = Permission::where('name' ,'My email templates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete email templates')->exists()) {
-           Permission::create(['name' => 'delete email templates']);
+           
+            $permission = Permission::create(['name' => 'delete email templates']);
+            $permission->parent_id = Permission::where('name' ,'My email templates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'send email templates')->exists()) {
-           Permission::create(['name' => 'send email templates']);
+           
+            $permission = Permission::create(['name' => 'send email templates']);
+            $permission->parent_id = Permission::where('name' ,'My email templates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Connect Debtor clients  */
 
 
         if (!Permission::where('name', 'edit debtor clients')->exists()) {
-           Permission::create(['name' => 'edit debtor clients']);
+           
+            $permission = Permission::create(['name' => 'edit debtor clients']);
+            $permission->parent_id = Permission::where('name' ,'Debtor clients')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'send debtor clients')->exists()) {
-           Permission::create(['name' => 'send debtor clients']);
+           
+            $permission = Permission::create(['name' => 'send debtor clients']);
+            $permission->parent_id = Permission::where('name' ,'Debtor clients')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Management of incidents */
 
         if (!Permission::where('name', 'edit management of incidents')->exists()) {
-           Permission::create(['name' => 'edit management of incidents']);
+           
+            $permission = Permission::create(['name' => 'edit management of incidents']);
+            $permission->parent_id = Permission::where('name' ,'Management of incidents')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Settings business */
 
         if (!Permission::where('name', 'view my business')->exists()) {
-           Permission::create(['name' => 'view my business']);
+           
+            $permission = Permission::create(['name' => 'view my business']);
+            $permission->parent_id = Permission::where('name' ,'My business')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
+
         }
 
         if (!Permission::where('name', 'edit my business')->exists()) {
-           Permission::create(['name' => 'edit my business']);
+           
+            $permission = Permission::create(['name' => 'edit my business']);
+            $permission->parent_id = Permission::where('name' ,'My business')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* users */
 
         if (!Permission::where('name', 'view users')->exists()) {
-           Permission::create(['name' => 'view users']);
+           
+            $permission = Permission::create(['name' => 'view users']);
+            $permission->parent_id = Permission::where('name' ,'Users')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit users')->exists()) {
-           Permission::create(['name' => 'edit users']);
+           
+            $permission = Permission::create(['name' => 'edit users']);
+            $permission->parent_id = Permission::where('name' ,'Users')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create users')->exists()) {
-           Permission::create(['name' => 'create users']);
+           
+            $permission = Permission::create(['name' => 'create users']);
+            $permission->parent_id = Permission::where('name' ,'Users')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete users')->exists()) {
-           Permission::create(['name' => 'delete users']);
+           
+            $permission = Permission::create(['name' => 'delete users']);
+            $permission->parent_id = Permission::where('name' ,'Users')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* roles */
 
         if (!Permission::where('name', 'view roles')->exists()) {
-           Permission::create(['name' => 'view roles']);
+           
+            $permission = Permission::create(['name' => 'view roles']);
+            $permission->parent_id = Permission::where('name' ,'Roles')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit roles')->exists()) {
-           Permission::create(['name' => 'edit roles']);
+           
+            $permission = Permission::create(['name' => 'edit roles']);
+            $permission->parent_id = Permission::where('name' ,'Roles')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create roles')->exists()) {
-           Permission::create(['name' => 'create roles']);
+           
+            $permission = Permission::create(['name' => 'create roles']);
+            $permission->parent_id = Permission::where('name' ,'Roles')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete roles')->exists()) {
-           Permission::create(['name' => 'delete roles']);
+           
+            $permission = Permission::create(['name' => 'delete roles']);
+            $permission->parent_id = Permission::where('name' ,'Roles')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* bank accounts */
 
         if (!Permission::where('name', 'view bank accounts')->exists()) {
-           Permission::create(['name' => 'view bank accounts']);
+           
+            $permission = Permission::create(['name' => 'view bank accounts']);
+            $permission->parent_id = Permission::where('name' ,'Bank Accounts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit bank accounts')->exists()) {
-           Permission::create(['name' => 'edit bank accounts']);
+           
+            $permission = Permission::create(['name' => 'edit bank accounts']);
+            $permission->parent_id = Permission::where('name' ,'Bank Accounts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create bank accounts')->exists()) {
-           Permission::create(['name' => 'create bank accounts']);
+           
+            $permission = Permission::create(['name' => 'create bank accounts']);
+            $permission->parent_id = Permission::where('name' ,'Bank Accounts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete bank accounts')->exists()) {
-           Permission::create(['name' => 'delete bank accounts']);
+           
+            $permission = Permission::create(['name' => 'delete bank accounts']);
+            $permission->parent_id = Permission::where('name' ,'Bank Accounts')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* My templates */
 
         if (!Permission::where('name', 'view my templates')->exists()) {
-           Permission::create(['name' => 'view my templates']);
+           
+            $permission = Permission::create(['name' => 'view my templates']);
+            $permission->parent_id = Permission::where('name' ,'My templates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit my templates')->exists()) {
-           Permission::create(['name' => 'edit my templates']);
+           
+            $permission = Permission::create(['name' => 'edit my templates']);
+            $permission->parent_id = Permission::where('name' ,'My templates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create my templates')->exists()) {
-           Permission::create(['name' => 'create my templates']);
+           
+            $permission = Permission::create(['name' => 'create my templates']);
+            $permission->parent_id = Permission::where('name' ,'My templates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete my templates')->exists()) {
-           Permission::create(['name' => 'delete my templates']);
+           
+            $permission = Permission::create(['name' => 'delete my templates']);
+            $permission->parent_id = Permission::where('name' ,'My templates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* References */
 
         if (!Permission::where('name', 'view references')->exists()) {
-           Permission::create(['name' => 'view references']);
+           
+            $permission = Permission::create(['name' => 'view references']);
+            $permission->parent_id = Permission::where('name' ,'References')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit references')->exists()) {
-           Permission::create(['name' => 'edit references']);
+           
+            $permission = Permission::create(['name' => 'edit references']);
+            $permission->parent_id = Permission::where('name' ,'References')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create references')->exists()) {
-           Permission::create(['name' => 'create references']);
+           
+            $permission = Permission::create(['name' => 'create references']);
+            $permission->parent_id = Permission::where('name' ,'References')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete references')->exists()) {
-           Permission::create(['name' => 'delete references']);
+           
+            $permission = Permission::create(['name' => 'delete references']);
+            $permission->parent_id = Permission::where('name' ,'References')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Payment terms  */
 
         if (!Permission::where('name', 'view payment terms')->exists()) {
-           Permission::create(['name' => 'view payment terms']);
+           
+            $permission = Permission::create(['name' => 'view payment terms']);
+            $permission->parent_id = Permission::where('name' ,'Payment Terms')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit payment terms')->exists()) {
-           Permission::create(['name' => 'edit payment terms']);
+           
+            $permission = Permission::create(['name' => 'edit payment terms']);
+            $permission->parent_id = Permission::where('name' ,'Payment Terms')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create payment terms')->exists()) {
-           Permission::create(['name' => 'create payment terms']);
+           
+            $permission = Permission::create(['name' => 'create payment terms']);
+            $permission->parent_id = Permission::where('name' ,'Payment Terms')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete payment terms')->exists()) {
-           Permission::create(['name' => 'delete payment terms']);
+           
+            $permission = Permission::create(['name' => 'delete payment terms']);
+            $permission->parent_id = Permission::where('name' ,'Payment Terms')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
+
         }
 
         /* Price Rates  */
 
         if (!Permission::where('name', 'view price rates')->exists()) {
-           Permission::create(['name' => 'view price rates']);
+           
+            $permission = Permission::create(['name' => 'view price rates']);
+            $permission->parent_id = Permission::where('name' ,'Price Rates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit price rates')->exists()) {
-           Permission::create(['name' => 'edit price rates']);
+           
+            $permission = Permission::create(['name' => 'edit price rates']);
+            $permission->parent_id = Permission::where('name' ,'Price Rates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create price rates')->exists()) {
-           Permission::create(['name' => 'create price rates']);
+           
+            $permission = Permission::create(['name' => 'create price rates']);
+            $permission->parent_id = Permission::where('name' ,'Price Rates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete price rates')->exists()) {
-           Permission::create(['name' => 'delete price rates']);
+           
+            $permission = Permission::create(['name' => 'delete price rates']);
+            $permission->parent_id = Permission::where('name' ,'Price Rates')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Payment Options  */
 
-        if (!Permission::where('name', 'view price options')->exists()) {
-           Permission::create(['name' => 'view price options']);
+        if (!Permission::where('name', 'view payment options')->exists()) {
+           
+            $permission = Permission::create(['name' => 'view payment options']);
+            $permission->parent_id = Permission::where('name' ,'Payment Options')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
-        if (!Permission::where('name', 'edit price options')->exists()) {
-           Permission::create(['name' => 'edit price options']);
+        if (!Permission::where('name', 'edit payment options')->exists()) {
+           
+            $permission = Permission::create(['name' => 'edit payment options']);
+            $permission->parent_id = Permission::where('name' ,'Payment Options')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
-        if (!Permission::where('name', 'create price options')->exists()) {
-           Permission::create(['name' => 'create price options']);
+        if (!Permission::where('name', 'create payment options')->exists()) {
+           
+            $permission = Permission::create(['name' => 'create payment options']);
+            $permission->parent_id = Permission::where('name' ,'Payment Options')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
-        if (!Permission::where('name', 'delete price options')->exists()) {
-           Permission::create(['name' => 'delete price options']);
+        if (!Permission::where('name', 'delete payment options')->exists()) {
+           
+            $permission = Permission::create(['name' => 'delete payment options']);
+            $permission->parent_id = Permission::where('name' ,'Payment Options')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Client and Supplier Categories  */
 
         if (!Permission::where('name', 'view client and supplier categories')->exists()) {
-           Permission::create(['name' => 'view client and supplier categories']);
+           
+            $permission = Permission::create(['name' => 'view client and supplier categories']);
+            $permission->parent_id = Permission::where('name' ,'Client and Supplier Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit client and supplier categories')->exists()) {
-           Permission::create(['name' => 'edit client and supplier categories']);
+           
+            $permission = Permission::create(['name' => 'edit client and supplier categories']);
+            $permission->parent_id = Permission::where('name' ,'Client and Supplier Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create client and supplier categories')->exists()) {
-           Permission::create(['name' => 'create client and supplier categories']);
+           
+            $permission = Permission::create(['name' => 'create client and supplier categories']);
+            $permission->parent_id = Permission::where('name' ,'Client and Supplier Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete client and supplier categories')->exists()) {
-           Permission::create(['name' => 'delete client and supplier categories']);
+           
+            $permission = Permission::create(['name' => 'delete client and supplier categories']);
+            $permission->parent_id = Permission::where('name' ,'Client and Supplier Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Product Categories  */
 
         if (!Permission::where('name', 'view product categories')->exists()) {
-           Permission::create(['name' => 'view product categories']);
+           
+            $permission = Permission::create(['name' => 'view product categories']);
+            $permission->parent_id = Permission::where('name' ,'Product Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit product categories')->exists()) {
-           Permission::create(['name' => 'edit product categories']);
+           
+            $permission = Permission::create(['name' => 'edit product categories']);
+            $permission->parent_id = Permission::where('name' ,'Product Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create product categories')->exists()) {
-           Permission::create(['name' => 'create product categories']);
+           
+            $permission = Permission::create(['name' => 'create product categories']);
+            $permission->parent_id = Permission::where('name' ,'Product Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete product categories')->exists()) {
-           Permission::create(['name' => 'delete product categories']);
+           
+            $permission = Permission::create(['name' => 'delete product categories']);
+            $permission->parent_id = Permission::where('name' ,'Product Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Delivery Options */
 
         if (!Permission::where('name', 'view delivery options')->exists()) {
-           Permission::create(['name' => 'view delivery options']);
+           
+            $permission = Permission::create(['name' => 'view delivery options']);
+            $permission->parent_id = Permission::where('name' ,'Delivery Options')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit delivery options')->exists()) {
-           Permission::create(['name' => 'edit delivery options']);
+           
+            $permission = Permission::create(['name' => 'edit delivery options']);
+            $permission->parent_id = Permission::where('name' ,'Delivery Options')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create delivery options')->exists()) {
-           Permission::create(['name' => 'create delivery options']);
+           
+            $permission = Permission::create(['name' => 'create delivery options']);
+            $permission->parent_id = Permission::where('name' ,'Delivery Options')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete delivery options')->exists()) {
-           Permission::create(['name' => 'delete delivery options']);
+           
+            $permission = Permission::create(['name' => 'delete delivery options']);
+            $permission->parent_id = Permission::where('name' ,'Delivery Options')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Event Types  */
 
         if (!Permission::where('name', 'view event types')->exists()) {
-           Permission::create(['name' => 'view event types']);
+           
+            $permission = Permission::create(['name' => 'view event types']);
+            $permission->parent_id = Permission::where('name' ,'Event Types')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit event types')->exists()) {
-           Permission::create(['name' => 'edit event types']);
+           
+            $permission = Permission::create(['name' => 'edit event types']);
+            $permission->parent_id = Permission::where('name' ,'Event Types')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create event types')->exists()) {
-           Permission::create(['name' => 'create event types']);
+           
+            $permission = Permission::create(['name' => 'create event types']);
+            $permission->parent_id = Permission::where('name' ,'Event Types')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete event types')->exists()) {
-           Permission::create(['name' => 'delete event types']);
+           
+            $permission = Permission::create(['name' => 'delete event types']);
+            $permission->parent_id = Permission::where('name' ,'Event Types')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Expense categories  */
 
         if (!Permission::where('name', 'view expense categories')->exists()) {
-           Permission::create(['name' => 'view expense categories']);
+           
+            $permission = Permission::create(['name' => 'view expense categories']);
+            $permission->parent_id = Permission::where('name' ,'Expense Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit expense categories')->exists()) {
-           Permission::create(['name' => 'edit expense categories']);
+           
+            $permission = Permission::create(['name' => 'edit expense categories']);
+            $permission->parent_id = Permission::where('name' ,'Expense Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create expense categories')->exists()) {
-           Permission::create(['name' => 'create expense categories']);
+           
+            $permission = Permission::create(['name' => 'create expense categories']);
+            $permission->parent_id = Permission::where('name' ,'Expense Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete expense categories')->exists()) {
-           Permission::create(['name' => 'delete expense categories']);
+           
+            $permission = Permission::create(['name' => 'delete expense categories']);
+            $permission->parent_id = Permission::where('name' ,'Expense Categories')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Custom States  */
 
         if (!Permission::where('name', 'view custom states')->exists()) {
-           Permission::create(['name' => 'view custom states']);
+           
+            $permission = Permission::create(['name' => 'view custom states']);
+            $permission->parent_id = Permission::where('name' ,'Custom states')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit custom states')->exists()) {
-           Permission::create(['name' => 'edit custom states']);
+           
+            $permission = Permission::create(['name' => 'edit custom states']);
+            $permission->parent_id = Permission::where('name' ,'Custom states')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Email Configuration  */
 
         if (!Permission::where('name', 'view email configuration')->exists()) {
-           Permission::create(['name' => 'view email configuration']);
+           
+            $permission = Permission::create(['name' => 'view email configuration']);
+            $permission->parent_id = Permission::where('name' ,'Email Configuration')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit email configuration')->exists()) {
-           Permission::create(['name' => 'edit email configuration']);
+           
+            $permission = Permission::create(['name' => 'edit email configuration']);
+            $permission->parent_id = Permission::where('name' ,'Email Configuration')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Taxes  */
 
         if (!Permission::where('name', 'view taxes')->exists()) {
-           Permission::create(['name' => 'view taxes']);
+           
+            $permission = Permission::create(['name' => 'view taxes']);
+            $permission->parent_id = Permission::where('name' ,'Taxes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit taxes')->exists()) {
-           Permission::create(['name' => 'edit taxes']);
+           
+            $permission = Permission::create(['name' => 'edit taxes']);
+            $permission->parent_id = Permission::where('name' ,'Taxes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create taxes')->exists()) {
-           Permission::create(['name' => 'create taxes']);
+           
+            $permission = Permission::create(['name' => 'create taxes']);
+            $permission->parent_id = Permission::where('name' ,'Taxes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete taxes')->exists()) {
-           Permission::create(['name' => 'delete taxes']);
+           
+            $permission = Permission::create(['name' => 'delete taxes']);
+            $permission->parent_id = Permission::where('name' ,'Taxes')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Advance Settings  */
 
         if (!Permission::where('name', 'view advance settings')->exists()) {
-           Permission::create(['name' => 'view advance settings']);
+           
+            $permission = Permission::create(['name' => 'view advance settings']);
+            $permission->parent_id = Permission::where('name' ,'Advanced Settings')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit advance settings')->exists()) {
-           Permission::create(['name' => 'edit advance settings']);
+           
+            $permission = Permission::create(['name' => 'edit advance settings']);
+            $permission->parent_id = Permission::where('name' ,'Advanced Settings')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /*  Automatic tasks  */
 
         if (!Permission::where('name', 'view automatic tasks')->exists()) {
-           Permission::create(['name' => 'view automatic tasks']);
+           
+            $permission = Permission::create(['name' => 'view automatic tasks']);
+            $permission->parent_id = Permission::where('name' ,'Automatic Tasks')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'edit automatic tasks')->exists()) {
-           Permission::create(['name' => 'edit automatic tasks']);
+           
+            $permission = Permission::create(['name' => 'edit automatic tasks']);
+            $permission->parent_id = Permission::where('name' ,'Automatic Tasks')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'create automatic tasks')->exists()) {
-           Permission::create(['name' => 'create automatic tasks']);
+           
+            $permission = Permission::create(['name' => 'create automatic tasks']);
+            $permission->parent_id = Permission::where('name' ,'Automatic Tasks')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'delete automatic tasks')->exists()) {
-           Permission::create(['name' => 'delete automatic tasks']);
+           
+            $permission = Permission::create(['name' => 'delete automatic tasks']);
+            $permission->parent_id = Permission::where('name' ,'Automatic Tasks')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Import from CSV */
         if (!Permission::where('name', 'Import from CSV')->exists()) {
-           Permission::create(['name' => 'Import from CSV']);
+           
+            $permission = Permission::create(['name' => 'Import from CSV']);
+            $permission->parent_id = Permission::where('name' ,'Import from CSV')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Export to CSV */
         if (!Permission::where('name', 'Export to CSV')->exists()) {
-           Permission::create(['name' => 'Export to CSV']);
+           
+            $permission = Permission::create(['name' => 'Export to CSV']);
+            $permission->parent_id = Permission::where('name' ,'Export to CSV')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Update from CSV */
         if (!Permission::where('name', 'Update from CSV')->exists()) {
-           Permission::create(['name' => 'Update from CSV']);
+           
+            $permission = Permission::create(['name' => 'Update from CSV']);
+            $permission->parent_id = Permission::where('name' ,'Update from CSV')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
 
-        /* Other Configuration */
-
-        if (!Permission::where('name', 'Show pricing')->exists()) {
-           Permission::create(['name' => 'Show pricing']);
-        }
-
-        if (!Permission::where('name', 'Show purchase pricing')->exists()) {
-           Permission::create(['name' => 'Show purchase pricing']);
-        }
-
-        if (!Permission::where('name', 'Show stock')->exists()) {
-           Permission::create(['name' => 'Show stock']);
-        }
 
         /* Home */
         if (!Permission::where('name', 'Total amounts')->exists()) {
-           Permission::create(['name' => 'Total amounts']);
+           
+            $permission = Permission::create(['name' => 'Total amounts']);
+            $permission->parent_id = Permission::where('name' ,'Home')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Access */
 
         if (!Permission::where('name', 'Web access')->exists()) {
-           Permission::create(['name' => 'Web access']);
+           
+            $permission = Permission::create(['name' => 'Web access']);
+            $permission->parent_id = Permission::where('name' ,'Access')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Permission::where('name', 'Android and IOS access')->exists()) {
-           Permission::create(['name' => 'Android and IOS access']);
+           
+            $permission = Permission::create(['name' => 'Android and IOS access']);
+            $permission->parent_id = Permission::where('name' ,'Access')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Permissions */
         if (!Permission::where('name', 'All permissions')->exists()) {
-           Permission::create(['name' => 'All permissions']);
+           
+            $permission = Permission::create(['name' => 'All permissions']);
+            $permission->parent_id = Permission::where('name' ,'Permissions')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
     }

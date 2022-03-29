@@ -20,7 +20,7 @@ Route::group(['namespace' => 'Api'], function() {
     Route::post('forget-password', 'AuthController@forgetPassword');
     Route::post('reset-password', 'AuthController@resetPassword');
     Route::get('create-company-tables', function(){
-        App\Helpers\TableHelper::createTables(47);
+        App\Helpers\TableHelper::createTables(5);
     });
    
     Route::group(['middleware' => ['auth:api']], function(){

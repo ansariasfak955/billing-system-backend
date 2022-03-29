@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\UserController;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Validator;
 use Auth;
@@ -180,10 +180,14 @@ class RoleController extends Controller
     public function getPermissions(Request $request)
     {
         (new UserController())->setConfig($request->company_id);
+
+        $permissions = Permission::get();
+
+
         
         return response()->json([
                 'status' => true,
-                'permissions' => Permission::get()
+                'permissions' => Permission::with('children')->get()
         ]);
         
     }
