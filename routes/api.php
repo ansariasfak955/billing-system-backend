@@ -41,6 +41,8 @@ Route::group(['namespace' => 'Api'], function() {
             Route::get('get-settings', 'SettingController@getSettings');
             Route::get('permissions', 'RoleController@getPermissions');
             Route::post('update-settings', 'SettingController@updateSettings');
+            Route::apiResource('clients', ClientController::class);
+            Route::apiResource('client-contacts', ClientContactController::class);
         });
     });
 });

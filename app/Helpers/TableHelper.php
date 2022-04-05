@@ -34,6 +34,71 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic clients table */
+        if (!Schema::hasTable('company_'.$company_id.'_clients')) {
+            Schema::create('company_'.$company_id.'_clients', function (Blueprint $table) {
+                $table->id();
+                $table->string('reference')->nullable();
+                $table->string('legal_name')->nullable();
+                $table->string('tin')->nullable();
+                $table->string('phone_1')->nullable();
+                $table->string('address')->nullable();
+                $table->string('state')->nullable();
+                $table->string('country')->nullable();
+                $table->string('name')->nullable();
+                $table->string('email')->nullable();
+                $table->string('city')->nullable();
+                $table->string('zip_code')->nullable();
+                $table->string('fax')->nullable();
+                $table->string('website')->nullable();
+                $table->string('comments')->nullable();
+                $table->string('popup_notice')->nullable();
+                $table->string('created_from')->default('web');
+                $table->string('phone_2')->nullable();
+                $table->string('payment_date')->nullable();
+                $table->string('discount')->nullable();
+                $table->string('rate')->nullable();
+                $table->string('currency')->nullable();
+                $table->string('subject_to_vat')->nullable();
+                $table->string('maximum_risk')->nullable();
+                $table->string('bank_account_format')->nullable();
+                $table->string('bank_account_account')->nullable();
+                $table->string('bank_account_bic')->nullable();
+                $table->string('bank_account_name')->nullable();
+                $table->string('bank_account_description')->nullable();
+            });
+        }
+
+        /* Creating dynamic clients special prices table */
+        if (!Schema::hasTable('company_'.$company_id.'_special_prices')) {
+            Schema::create('company_'.$company_id.'_special_prices', function (Blueprint $table) {
+                $table->id();
+                $table->string('client_id');
+                $table->string('product_id')->nullable();
+                $table->float('purchase_price')->nullable();
+                $table->float('sales_price')->nullable();
+                $table->string('purchase_margin')->nullable();
+                $table->string('sales_margin')->nullable();
+                $table->float('discount')->nullable();
+                $table->float('special_price')->nullable();
+            });
+        }
+
+        /* Creating dynamic client contacts table */
+        if (!Schema::hasTable('company_'.$company_id.'_client_contacts')) {
+            Schema::create('company_'.$company_id.'_client_contacts', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('phone')->nullable();
+                $table->string('email')->nullable();
+                $table->longText('comments')->nullable();
+                $table->string('created_from')->default('web');
+                $table->integer('client_id');
+                $table->string('fax')->nullable();
+                $table->string('position')->nullable();
+            });
+        }
+
         /* Create dynamic permissions table */
         if (!Schema::hasTable('company_'.$company_id.'_permissions')) {
             Schema::create('company_'.$company_id.'_permissions', function (Blueprint $table) {
