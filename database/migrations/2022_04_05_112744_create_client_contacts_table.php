@@ -19,10 +19,10 @@ class CreateClientContactsTable extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->longText('comments')->nullable();
-            $table->string('created_from')->default('web');
             $table->integer('client_id');
             $table->string('fax')->nullable();
             $table->string('position')->nullable();
+            $table->timestamps();
         });
     }
 

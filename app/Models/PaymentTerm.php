@@ -5,24 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ClientSpecialPrice extends Model
+class PaymentTerm extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
-    	"client_id",
-		"product_id",
-		"purchase_price",
-		"sales_price",
-		"purchase_margin",
-		"sales_margin",
-		"discount",
-		"special_price"
+        "name",
+        "description"
     ];
 
-    protected static $globalTable = 'client_special_prices' ;
+    protected static $globalTable = 'payment_terms' ;
 
     public function getTable() {
         return self::$globalTable ;

@@ -5,24 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ClientSpecialPrice extends Model
+class ClientAddress extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
-    	"client_id",
-		"product_id",
-		"purchase_price",
-		"sales_price",
-		"purchase_margin",
-		"sales_margin",
-		"discount",
-		"special_price"
+        "address",
+        "state",
+        "city",
+        "zip_code",
+        "country",
+        "address_latitude",
+        "address_longitude",
+        "type",
+        "extra_information",
+        "description"
     ];
 
-    protected static $globalTable = 'client_special_prices' ;
+    protected static $globalTable = 'client_addresses' ;
 
     public function getTable() {
         return self::$globalTable ;

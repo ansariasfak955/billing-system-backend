@@ -23,6 +23,7 @@ class CreateClientSpecialPricesTable extends Migration
             $table->string('sales_margin')->nullable();
             $table->float('discount')->nullable();
             $table->float('special_price')->nullable();
+            $table->timestamps();
         });
     }
 

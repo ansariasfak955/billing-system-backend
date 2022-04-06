@@ -8,6 +8,7 @@ use App\Models\MyTemplate;
 use App\Models\MyTemplateMeta;
 use App\Models\DefaultPdfSendOption;
 use App\Models\Setting;
+use App\Models\PaymentOption;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\Api\UserController;
@@ -49,29 +50,45 @@ class TableHelper
                 $table->string('email')->nullable();
                 $table->string('city')->nullable();
                 $table->string('zip_code')->nullable();
+                $table->string('address_latitude')->nullable();
+                $table->string('address_longitude')->nullable();
+
+                /* general fields */
                 $table->string('fax')->nullable();
                 $table->string('website')->nullable();
                 $table->string('comments')->nullable();
                 $table->string('popup_notice')->nullable();
                 $table->string('created_from')->default('web');
                 $table->string('phone_2')->nullable();
+                $table->integer('client_category')->default(0);
+
+                /* commercial fields */
+                $table->integer('payment_option_id')->default(0);
                 $table->string('payment_date')->nullable();
-                $table->string('discount')->nullable();
+                $table->float('discount')->nullable();
                 $table->string('rate')->nullable();
                 $table->string('currency')->nullable();
-                $table->string('subject_to_vat')->nullable();
-                $table->string('maximum_risk')->nullable();
+                $table->enum('subject_to_vat', ['0', '1'])->default(0);
+                $table->float('maximum_risk')->nullable();
+                $table->integer('payment_terms_id')->default(0);
+                $table->string('payment_adjustment')->default("unspecified");
+                $table->integer('agent')->default(0);
+                $table->integer('invoice_to')->default(0);
+                $table->enum('subject_to_income_tax', ['0', '1'])->default(0);
+
+                /* bank account fields */
                 $table->string('bank_account_format')->nullable();
                 $table->string('bank_account_account')->nullable();
                 $table->string('bank_account_bic')->nullable();
                 $table->string('bank_account_name')->nullable();
                 $table->string('bank_account_description')->nullable();
+                $table->timestamps();
             });
         }
 
         /* Creating dynamic clients special prices table */
-        if (!Schema::hasTable('company_'.$company_id.'_special_prices')) {
-            Schema::create('company_'.$company_id.'_special_prices', function (Blueprint $table) {
+        if (!Schema::hasTable('company_'.$company_id.'_client_special_prices')) {
+            Schema::create('company_'.$company_id.'_client_special_prices', function (Blueprint $table) {
                 $table->id();
                 $table->string('client_id');
                 $table->string('product_id')->nullable();
@@ -81,6 +98,7 @@ class TableHelper
                 $table->string('sales_margin')->nullable();
                 $table->float('discount')->nullable();
                 $table->float('special_price')->nullable();
+                $table->timestamps();
             });
         }
 
@@ -92,10 +110,126 @@ class TableHelper
                 $table->string('phone')->nullable();
                 $table->string('email')->nullable();
                 $table->longText('comments')->nullable();
-                $table->string('created_from')->default('web');
                 $table->integer('client_id');
                 $table->string('fax')->nullable();
                 $table->string('position')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic client addresses table */
+        if (!Schema::hasTable('company_'.$company_id.'_client_addresses')) {
+            Schema::create('company_'.$company_id.'_client_addresses', function (Blueprint $table) {
+                $table->id();
+                $table->string('address')->nullable();
+                $table->string('state')->nullable();
+                $table->string('city')->nullable();
+                $table->string('zip_code')->nullable();
+                $table->string('country')->nullable();
+                $table->string('address_latitude')->nullable();
+                $table->string('address_longitude')->nullable();
+                $table->string('type')->default("other");
+                $table->longText('extra_information')->nullable();
+                $table->longText('description')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic client assets table */
+        if (!Schema::hasTable('company_'.$company_id.'_client_assets')) {
+            Schema::create('company_'.$company_id.'_client_assets', function (Blueprint $table) {
+                $table->id();
+                $table->string('client_id')->nullable();
+                $table->string('address')->nullable();
+                $table->string('name')->nullable();
+                $table->string('identifier')->nullable();
+                $table->string('serial_number')->nullable();
+                $table->string('brand')->nullable();
+                $table->longText('description')->nullable();
+                $table->longText('private_comments')->nullable();
+                $table->string('model')->nullable();
+                $table->enum('subject_to_maintenance', ['0', '1'])->nullable();
+                $table->date('start_of_warranty')->nullable();
+                $table->date('end_of_warranty')->nullable();
+                $table->string('main_image')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic client attachments table */
+        if (!Schema::hasTable('company_'.$company_id.'_client_attachments')) {
+            Schema::create('company_'.$company_id.'_client_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->string('client_id')->nullable();
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic payment options table */
+        if (!Schema::hasTable('company_'.$company_id.'_payment_options')) {
+            Schema::create('company_'.$company_id.'_payment_options', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->enum('by_default', ['0', '1'])->deafult('0');
+                $table->enum('link_bank_account', ['0', '1'])->deafult('0');
+                $table->longText('description')->nullable();
+                $table->timestamps();
+
+            });
+
+            $payment_option =  new PaymentOption;
+            PaymentOption::setGlobalTable('company_'.$company_id.'_payment_options') ;
+
+            $payment_option->setTable('company_'.$company_id.'_payment_options')->create([
+                "name" => "Bank Transfer",
+                "by_default" => "0",
+                "link_bank_account" => "1",
+                "description" => "A series of instructions that are offered on behalf of the account holder to a financial entity so that they may withdraw the funds from our account and pay it into the account of another person or company."
+            ]);
+
+            $payment_option->setTable('company_'.$company_id.'_payment_options')->create([
+                "name" => "Cash",
+                "by_default" => "0",
+                "link_bank_account" => "0",
+                "description" => "A payment made in cash."
+            ]);
+
+            $payment_option->setTable('company_'.$company_id.'_payment_options')->create([
+                "name" => "Check",
+                "by_default" => "0",
+                "link_bank_account" => "0",
+                "description" => "A document that orders a bank to pay a specific amount of money from a person's account to the person in whose name the cheque has been issued."
+            ]);
+
+            $payment_option->setTable('company_'.$company_id.'_payment_options')->create([
+                "name" => "Direct Debit",
+                "by_default" => "0",
+                "link_bank_account" => "0",
+                "description" => "A document that indicates a financial transaction in which one person withdraws funds from another person's bank account."
+                ]);
+            
+        }
+
+        /* Creating dynamic client and supplier category table */
+        if (!Schema::hasTable('company_'.$company_id.'_client_supplier_categories')) {
+            Schema::create('company_'.$company_id.'_client_supplier_categories', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('rate')->nullable();
+                $table->longText('description')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic payment terms table */
+        if (!Schema::hasTable('company_'.$company_id.'_payment_terms')) {
+            Schema::create('company_'.$company_id.'_payment_terms', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->longText('description')->nullable();
+                $table->timestamps();
             });
         }
 

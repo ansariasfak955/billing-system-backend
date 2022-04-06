@@ -17,24 +17,24 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
-        // if(($request->company_id ==  NULL)||($request->company_id ==  0)){
-        //     return response()->json([
-        //         "status" => false,
-        //         "message" =>  "Please select company"
-        //     ]);
-        // }
+        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
 
-        // $bank_account =  new Client;
-        // if($bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->count() == 0){
-        //     return response()->json([
-        //         "status" => false,
-        //         "message" =>  "No data found"
-        //     ]);
-        // }
-        // return response()->json([
-        //     "status" => true,
-        //     "bank_accounts" =>  $bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->get()
-        // ]);
+        $client =  new Client;
+        if($client->setTable('company_'.$request->company_id.'_clients')->count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
+        return response()->json([
+            "status" => true,
+            "clients" =>  $client->setTable('company_'.$request->company_id.'_clients')->get()
+        ]);
     }
 
 
@@ -60,26 +60,13 @@ class ClientController extends Controller
 
         $client =  new Client;
         Client::setGlobalTable($table) ;
-        $client = $client->setTable($table)->create($request->except(['company_id','client_id','product_id','purchase_price','sales_price','purchase_margin','sales_margin','discount','special_price']));
+        $client = $client->setTable($table)->create($request->except(['company_id', 'contacts', 'addresses']));
 
-        $client_special_price =  new ClientSpecialPrice;
-
-        $client_sp_table = 'company_'.$request->company_id.'_special_prices';
-        ClientSpecialPrice::setGlobalTable($client_sp_table);
-        ClientSpecialPrice::create([
-            'client_id' => $request->client_id,
-            'product_id' => $request->product_id,
-            'purchase_price' => $request->purchase_price,
-            'sales_price' => $request->sales_price,
-            'purchase_margin' => $request->purchase_margin,
-            'sales_margin' => $request->sales_margin,
-            'discount' => $request->discount,
-            'special_price' => $request->special_price,
-        ]);
+        
 
         return response()->json([
             "status" => true,
-            "bank_account" => $client,
+            "client" => $client,
             "message" => "Client created successfully"
         ]);
     }
@@ -92,13 +79,13 @@ class ClientController extends Controller
      */
     public function show(Request $request)
     {
-        // $client =  new Client;
-        // $client = $client->setTable('company_'.$request->company_id.'_bank_accounts')->where('id', $request->client)->first();
+        $client =  new Client;
+        $client = $client->setTable('company_'.$request->company_id.'_clients')->where('id', $request->client)->first();
  
-        // return response()->json([
-        //     "status" => true,
-        //     "client" => $client
-        // ]);
+        return response()->json([
+            "status" => true,
+            "client" => $client
+        ]);
     }
 
     /**
@@ -110,19 +97,19 @@ class ClientController extends Controller
      */
     public function update(Request $request)
     {
-        // $client =  new Client;
-        // $client = $client->setTable('company_'.$request->company_id.'_bank_accounts')->where('id', $request->client)->first();
+        $client =  new Client;
+        $client = $client->setTable('company_'.$request->company_id.'_clients')->where('id', $request->client)->first();
         
-        // $client->update($request->except('company_id', '_method'));
+        $client->update($request->except('company_id', '_method'));
 
-        // $client->is_default = $request->is_default??$client->is_default;
-        // $client->save();
+        $client->is_default = $request->is_default??$client->is_default;
+        $client->save();
 
-        // return response()->json([
-        //     "status" => true,
-        //     "client" => $client,
-        //     "message" => "Client updated successfully"
-        // ]);
+        return response()->json([
+            "status" => true,
+            "client" => $client,
+            "message" => "Client updated successfully"
+        ]);
     }
 
     /**
@@ -133,18 +120,18 @@ class ClientController extends Controller
      */
     public function destroy(Request $request)
     {
-        // $client = new Client;
-        // $client = $client->setTable('company_'.$request->company_id.'_bank_accounts')->where('id', $request->client)->first();
-        // if($client->delete()){
-        //     return response()->json([
-        //             'status' => true,
-        //             'message' => "Client deleted successfully!"
-        //     ]);
-        // } else {
-        //     return response()->json([
-        //             'status' => false,
-        //             'message' => "Retry deleting again! "
-        //     ]);
-        // }
+        $client = new Client;
+        $client = $client->setTable('company_'.$request->company_id.'_clients')->where('id', $request->client)->first();
+        if($client->delete()){
+            return response()->json([
+                    'status' => true,
+                    'message' => "Client deleted successfully!"
+            ]);
+        } else {
+            return response()->json([
+                    'status' => false,
+                    'message' => "Retry deleting again! "
+            ]);
+        }
     }
 }
