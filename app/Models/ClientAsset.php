@@ -33,4 +33,13 @@ class ClientAsset extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+
+    public function getMainImageAttribute()
+    {
+        if ($this->attributes['main_image']) {
+            return url('/storage').'/clients/assets/'.$this->attributes['main_image'];
+        } else {
+            return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
+        }
+    }
 }

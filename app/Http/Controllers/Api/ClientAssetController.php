@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ClientAsset;
 use Illuminate\Http\Request;
-
+use Validator;
 class ClientAssetController extends Controller
 {
     /**
@@ -13,9 +13,41 @@ class ClientAssetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_client_assets';
+        ClientAsset::setGlobalTable($table);
+
+        if($request->client_id == NULL){
+            if(ClientAsset::count() == 0){
+                return response()->json([
+                    "status" => false,
+                    "message" =>  "No data found"
+                ]);
+            }
+            return response()->json([
+                "status" => true,
+                "client_assets" =>  ClientAsset::get()
+            ]);
+        }
+
+        if(ClientAsset::where('client_id', $request->client_id)->count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
+        return response()->json([
+            "status" => true,
+            "client_assets" =>  ClientAsset::where('client_id', $request->client_id)->get()
+        ]);
+        
     }
 
     /**
@@ -26,7 +58,37 @@ class ClientAssetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'client_id' => 'required',          
+            'name' => 'required'          
+        ], [
+            'client_id.required' => 'Please select client ',
+            'name.required' => 'Please select name ',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+
+        $table = 'company_'.$request->company_id.'_client_assets';
+        ClientAsset::setGlobalTable($table);
+        $client_asset = ClientAsset::create($request->except('company_id', 'main_image'));
+
+        if($request->main_image != NULL){
+            $imageName = time().'.'.$request->main_image->extension();  
+            $request->main_image->move(storage_path('app/public/clients/assets'), $imageName);
+            $client_asset->main_image = $imageName;
+            $client_asset->save();
+        }
+
+        return response()->json([
+            "status" => true,
+            "client_asset" => $client_asset,
+            "message" => "Client asset created successfully"
+        ]);
     }
 
     /**
@@ -35,9 +97,23 @@ class ClientAssetController extends Controller
      * @param  \App\Models\ClientAsset  $clientAsset
      * @return \Illuminate\Http\Response
      */
-    public function show(ClientAsset $clientAsset)
+    public function show(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_client_assets';
+        ClientAsset::setGlobalTable($table);
+        $client_asset = ClientAsset::where('id', $request->client_asset)->first();
+
+        if($client_asset ==  NULL){
+            return response()->json([
+                "status" => true,
+                "message" => "This entry does not exists"
+            ]);
+        }
+ 
+        return response()->json([
+            "status" => true,
+            "client_asset" => $client_asset
+        ]);
     }
 
     /**
@@ -47,9 +123,40 @@ class ClientAssetController extends Controller
      * @param  \App\Models\ClientAsset  $clientAsset
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ClientAsset $clientAsset)
+    public function update(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_client_assets';
+        ClientAsset::setGlobalTable($table);
+
+        $validator = Validator::make($request->all(),[
+            'client_id' => 'required',          
+            'name' => 'required'          
+        ], [
+            'client_id.required' => 'Please select client ',
+            'name.required' => 'Please select name ',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+        $client_asset = ClientAsset::where('id', $request->client_asset)->first();
+        
+        $client_asset->update($request->except('company_id', '_method', 'main_image'));
+
+        if($request->main_image != NULL){
+            $imageName = time().'.'.$request->main_image->extension();  
+            $request->main_image->move(storage_path('app/public/clients/assets'), $imageName);
+            $client_asset->main_image = $imageName;
+            $client_asset->save();
+        }
+
+        return response()->json([
+            "status" => true,
+            "client_asset" => $client_asset
+        ]);
     }
 
     /**
@@ -58,8 +165,21 @@ class ClientAssetController extends Controller
      * @param  \App\Models\ClientAsset  $clientAsset
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ClientAsset $clientAsset)
+    public function destroy(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_client_assets';
+        ClientAsset::setGlobalTable($table);
+        $client_asset = ClientAsset::where('id', $request->client_asset)->first();
+        if($client_asset->delete()){
+            return response()->json([
+                    'status' => true,
+                    'message' => "Client asset deleted successfully!"
+            ]);
+        } else {
+            return response()->json([
+                    'status' => false,
+                    'message' => "Retry deleting again! "
+            ]);
+        }
     }
 }

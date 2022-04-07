@@ -41,8 +41,12 @@ Route::group(['namespace' => 'Api'], function() {
             Route::get('get-settings', 'SettingController@getSettings');
             Route::get('permissions', 'RoleController@getPermissions');
             Route::post('update-settings', 'SettingController@updateSettings');
+            
+            /* client routes */
             Route::apiResource('clients', ClientController::class);
             Route::apiResource('client-contacts', ClientContactController::class);
+            Route::apiResource('client-special-prices', ClientSpecialPriceController::class);
+            Route::apiResource('client-assets', ClientAssetController::class);
         });
     });
 });

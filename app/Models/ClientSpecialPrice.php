@@ -9,8 +9,6 @@ class ClientSpecialPrice extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
     	"client_id",
 		"product_id",
