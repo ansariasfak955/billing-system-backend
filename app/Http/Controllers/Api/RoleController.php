@@ -78,9 +78,6 @@ class RoleController extends Controller
             }
         }
 
-
-      
-
         return response()->json([
             "status" => true,
             "role" => $role,
@@ -98,11 +95,49 @@ class RoleController extends Controller
     {
         (new UserController())->setConfig($request->company_id);
        
-        $role = Role::where('id', $request->role)->with('permissions')->first();
+        $role = Role::where('id', $request->role)->first();
+
+        $all_permissions = [];
+        $permissions = Permission::where('parent_id', 0)->with('children')->get();
+
+        foreach($permissions as $permission){
+            if(count($permission->children) != 0){
+
+                foreach($permission->children as $second_permission){
+                    $exists = $role->permissions->contains($second_permission->id);
+                    if($exists == true){
+                        $second_permission->setAttribute('is_checked', 'yes');
+                    } else {
+                        $second_permission->setAttribute('is_checked', 'no');
+                    } 
+                    if(count($second_permission->children) != 0){
+                    
+                        foreach($second_permission->children as $third_permission){
+                            $exists = $role->permissions->contains($third_permission->id);
+                            if($exists == true){
+                                $third_permission->setAttribute('is_checked', 'yes');
+                            } else {
+                                $third_permission->setAttribute('is_checked', 'no');
+                            } 
+                        }
+                    }
+                }
+
+            }
+
+            $exists = $role->permissions->contains($permission->id);
+            if($exists == true){
+                $permission->setAttribute('is_checked', 'yes');
+            } else {
+                $permission->setAttribute('is_checked', 'no');
+            }
+           
+        }
  
         return response()->json([
             "status" => true,
-            "role" => $role
+            "role" => $role,
+            "permissions" => $permissions,
         ]);
     }
 
@@ -187,7 +222,7 @@ class RoleController extends Controller
         
         return response()->json([
                 'status' => true,
-                'permissions' => Permission::with('children')->get()
+                'permissions' => Permission::where('parent_id', 0)->with('children')->get()
         ]);
         
     }

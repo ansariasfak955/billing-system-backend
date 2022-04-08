@@ -121,6 +121,7 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_client_addresses')) {
             Schema::create('company_'.$company_id.'_client_addresses', function (Blueprint $table) {
                 $table->id();
+                $table->integer('client_id')->default(0);
                 $table->string('address')->nullable();
                 $table->string('state')->nullable();
                 $table->string('city')->nullable();
@@ -1999,52 +2000,63 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
         }
 
         if (!Role::where('name', 'Super Admin')->exists()) {
-           Role::create(['name' => 'Super Admin']);
-           
-           $permission = Permission::create(['name' => 'Super Admin']);
-           $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
-           $permission->is_checkbox = 1;
-           $permission->save();
+            Role::create(['name' => 'Super Admin']);
         }
 
         if (!Role::where('name', 'Admin')->exists()) {
-           Role::create(['name' => 'Admin']);
-           Permission::create(['name' => 'Admin']);
+            Role::create(['name' => 'Admin']);
         }
 
-        if (!Role::where('name', 'Sales Admin')->exists()) {
-           Role::create(['name' => 'Sales Admin']);
-           
-           $permission = Permission::create(['name' => 'Sales Admin']);
+        if (!Permission::where('name', 'Admin')->exists()) {
+           $permission = Permission::create(['name' => 'Admin']);
            $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
            $permission->is_checkbox = 1;
            $permission->save();
+        }
+
+        if (!Role::where('name', 'Sales Admin')->exists()) {
+            Role::create(['name' => 'Sales Admin']);
+        }
+
+        if (!Permission::where('name', 'Sales Admin')->exists()) {
+            $permission = Permission::create(['name' => 'Sales Admin']);
+            $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Role::where('name', 'Salesperson')->exists()) {
             Role::create(['name' => 'Salesperson']);
-           
-           $permission = Permission::create(['name' => 'Salesperson']);
-           $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
-           $permission->is_checkbox = 1;
-           $permission->save();
+        }
+
+        if (!Permission::where('name', 'Salesperson')->exists()) {
+            $permission = Permission::create(['name' => 'Salesperson']);
+            $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Role::where('name', 'Technical Admin')->exists()) {
-           Role::create(['name' => 'Technical Admin']);
-           
-           $permission = Permission::create(['name' => 'Technical Admin']);
-           $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
-           $permission->is_checkbox = 1;
-           $permission->save();
+            Role::create(['name' => 'Technical Admin']);
+        }
+
+        if (!Permission::where('name', 'Technical Admin')->exists()) {
+            $permission = Permission::create(['name' => 'Technical Admin']);
+            $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         if (!Role::where('name', 'Technician')->exists()) {
            Role::create(['name' => 'Technician']);
-           $permission = Permission::create(['name' => 'Technician']);
-           $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
-           $permission->is_checkbox = 1;
-           $permission->save();
+           
+        }
+
+        if (!Permission::where('name', 'Technician')->exists()) {
+            $permission = Permission::create(['name' => 'Technician']);
+            $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
+            $permission->is_checkbox = 1;
+            $permission->save();
         }
 
         /* Create Permissions */
@@ -2188,8 +2200,8 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
            $permission->save();
         }
 
-        if (!Permission::where('name', 'Clients')->exists()) {
-           $permission = Permission::create(['name' => 'Clients']);
+        if (!Permission::where('name', 'Client ')->exists()) {
+           $permission = Permission::create(['name' => 'Client ']);
            $permission->parent_id = Permission::where('name' ,'Clients')->pluck('id')->first();
            $permission->is_checkbox = 0;
            $permission->save();
@@ -2869,7 +2881,7 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
         if (!Permission::where('name', 'view clients')->exists()) {
            
             $permission = Permission::create(['name' => 'view clients']);
-            $permission->parent_id = Permission::where('name' ,'Clients')->where('parent_id', '!=', 0)->pluck('id')->first();
+            $permission->parent_id = Permission::where('name' ,'Client ')->where('parent_id', '!=', 0)->pluck('id')->first();
             $permission->is_checkbox = 1;
             $permission->save();
         }
@@ -2877,7 +2889,7 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
         if (!Permission::where('name', 'edit clients')->exists()) {
            
             $permission = Permission::create(['name' => 'edit clients']);
-            $permission->parent_id = Permission::where('name' ,'Clients')->where('parent_id', '!=', 0)->pluck('id')->first();
+            $permission->parent_id = Permission::where('name' ,'Client')->where('parent_id', '!=', 0)->pluck('id')->first();
             $permission->is_checkbox = 1;
             $permission->save();
         }
@@ -2885,7 +2897,7 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
         if (!Permission::where('name', 'create clients')->exists()) {
 
             $permission = Permission::create(['name' => 'create clients']);
-            $permission->parent_id = Permission::where('name' ,'Clients')->where('parent_id', '!=', 0)->pluck('id')->first();
+            $permission->parent_id = Permission::where('name' ,'Client')->where('parent_id', '!=', 0)->pluck('id')->first();
             $permission->is_checkbox = 1;
             $permission->save();
         }
@@ -2893,7 +2905,7 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
         if (!Permission::where('name', 'delete clients')->exists()) {
            
             $permission = Permission::create(['name' => 'delete clients']);
-            $permission->parent_id = Permission::where('name' ,'Clients')->where('parent_id', '!=', 0)->pluck('id')->first();
+            $permission->parent_id = Permission::where('name' ,'Client')->where('parent_id', '!=', 0)->pluck('id')->first();
             $permission->is_checkbox = 1;
             $permission->save();
         }

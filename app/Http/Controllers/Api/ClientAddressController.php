@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ClientAddress;
 use Illuminate\Http\Request;
+use Validator;
 
 class ClientAddressController extends Controller
 {
@@ -26,7 +27,34 @@ class ClientAddressController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'client_id' => 'required'
+        ], [
+            'client_id.required' => 'Please select client. '
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+
+
+
+        $table = 'company_'.$request->company_id.'_client_addresses';
+        ClientAddress::setGlobalTable($table);
+        $client_address = ClientAddress::create($request->except('company_id', 'type'));
+
+        
+        $client_address->type = $request->type == NULL ? "other": $request->type;
+        $client_address->save();
+
+        return response()->json([
+            "status" => true,
+            "client_address" => $client_address,
+            "message" => "Client address created successfully"
+        ]);
     }
 
     /**
@@ -35,9 +63,23 @@ class ClientAddressController extends Controller
      * @param  \App\Models\ClientAddress  $clientAddress
      * @return \Illuminate\Http\Response
      */
-    public function show(ClientAddress $clientAddress)
+    public function show(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_client_addresses';
+        ClientAddress::setGlobalTable($table);
+        $client_address = ClientAddress::where('id', $request->client_address)->first();
+
+        if($client_address ==  NULL){
+            return response()->json([
+                "status" => true,
+                "message" => "This entry does not exists"
+            ]);
+        }
+ 
+        return response()->json([
+            "status" => true,
+            "client_address" => $client_address
+        ]);
     }
 
     /**

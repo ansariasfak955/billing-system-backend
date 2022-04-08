@@ -10,6 +10,7 @@ class ClientAddress extends Model
     use HasFactory;
 
     protected $fillable = [
+        "client_id",
         "address",
         "state",
         "city",

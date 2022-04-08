@@ -37,6 +37,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('services', ServiceController::class);
             Route::apiResource('expense_investments', ExpenseAndInvestmentController::class);
             Route::apiResource('expense_categories', ExpenseCategoryController::class);
+            
             Route::get('custom_state_types', 'CustomStateController@getCustomStateTypes');
             Route::get('get-settings', 'SettingController@getSettings');
             Route::get('permissions', 'RoleController@getPermissions');
@@ -48,6 +49,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('client-special-prices', ClientSpecialPriceController::class);
             Route::apiResource('client-assets', ClientAssetController::class);
             Route::apiResource('client-attachments', ClientAttachmentController::class);
+            Route::apiResource('client-addresses', ClientAddressController::class);
         });
     });
 });

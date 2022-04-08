@@ -15,6 +15,7 @@ class CreateClientAddressesTable extends Migration
     {
         Schema::create('client_addresses', function (Blueprint $table) {
             $table->id();
+            $table->integer('client_id')->default(0);
             $table->string('address')->nullable();
             $table->string('state')->nullable();
             $table->string('city')->nullable();
