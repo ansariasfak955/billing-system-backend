@@ -14,9 +14,30 @@ class ClientAddressController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
+
+        $table = 'company_'.$request->company_id.'_client_addresses';
+        ClientAddress::setGlobalTable($table);
+        $client_addresses = ClientAddress::get();
+
+        if ($client_addresses->count() == 0) {
+            return response()->json([
+                "status" => false,
+                "message" => "No address found!"
+            ]);
+        } else {
+            return response()->json([
+                "status" => true,
+                "client_addresses" =>  $client_addresses
+            ]);  
+        }
     }
 
     /**
@@ -30,7 +51,7 @@ class ClientAddressController extends Controller
         $validator = Validator::make($request->all(),[
             'client_id' => 'required'
         ], [
-            'client_id.required' => 'Please select client. '
+            'client_id.required' => 'Please select client.'
         ]);
 
         if ($validator->fails()) {
@@ -40,12 +61,9 @@ class ClientAddressController extends Controller
             ]);
         }
 
-
-
         $table = 'company_'.$request->company_id.'_client_addresses';
         ClientAddress::setGlobalTable($table);
         $client_address = ClientAddress::create($request->except('company_id', 'type'));
-
         
         $client_address->type = $request->type == NULL ? "other": $request->type;
         $client_address->save();
@@ -71,7 +89,7 @@ class ClientAddressController extends Controller
 
         if($client_address ==  NULL){
             return response()->json([
-                "status" => true,
+                "status" => false,
                 "message" => "This entry does not exists"
             ]);
         }
@@ -89,9 +107,20 @@ class ClientAddressController extends Controller
      * @param  \App\Models\ClientAddress  $clientAddress
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ClientAddress $clientAddress)
+    public function update(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_client_addresses';
+        ClientAddress::setGlobalTable($table);
+        $client_address = ClientAddress::where('id', $request->client_address)->first();
+        
+        $client_address->update($request->except('company_id', 'client_address'));
+        $client_address->save();
+
+        return response()->json([
+            "status" => true,
+            "client" => $client_address,
+            "message" => "Client address updated successfully"
+        ]);
     }
 
     /**
@@ -100,8 +129,22 @@ class ClientAddressController extends Controller
      * @param  \App\Models\ClientAddress  $clientAddress
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ClientAddress $clientAddress)
+    public function destroy(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_client_addresses';
+        ClientAddress::setGlobalTable($table);
+        $client_address = ClientAddress::where('id', $request->client_address)->first();
+
+        if($client_address->delete()){
+            return response()->json([
+                'status' => true,
+                'message' => "Client address deleted successfully!"
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "There is an error!"
+            ]);
+        }
     }
 }
