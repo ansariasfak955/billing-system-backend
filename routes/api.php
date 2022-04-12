@@ -50,6 +50,9 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('client-assets', ClientAssetController::class);
             Route::apiResource('client-attachments', ClientAttachmentController::class);
             Route::apiResource('client-addresses', ClientAddressController::class);
+
+            /* Sales Routes */
+            Route::apiResource('sales-estimates', SalesEstimateController::class);
         });
     });
 });

@@ -24,17 +24,21 @@ class ClientController extends Controller
             ]);
         }
 
-        $client =  new Client;
-        if($client->setTable('company_'.$request->company_id.'_clients')->count() == 0){
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
+        $clients = Client::get();
+
+        if ($clients->count() == 0) {
             return response()->json([
                 "status" => false,
-                "message" =>  "No data found"
+                "message" => "No clients found!"
             ]);
+        } else {
+            return response()->json([
+                "status" => true,
+                "clients" =>  $clients
+            ]);  
         }
-        return response()->json([
-            "status" => true,
-            "clients" =>  $client->setTable('company_'.$request->company_id.'_clients')->get()
-        ]);
     }
 
 
@@ -61,9 +65,7 @@ class ClientController extends Controller
         $client =  new Client;
         Client::setGlobalTable($table) ;
         $client = $client->setTable($table)->create($request->except(['company_id', 'contacts', 'addresses']));
-
         
-
         return response()->json([
             "status" => true,
             "client" => $client,
@@ -79,12 +81,20 @@ class ClientController extends Controller
      */
     public function show(Request $request)
     {
-        $client =  new Client;
-        $client = $client->setTable('company_'.$request->company_id.'_clients')->where('id', $request->client)->first();
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
+        $client = Client::where('id', $request->client)->first();
+
+        if($client ==  NULL){
+            return response()->json([
+                "status" => false,
+                "message" => "This entry does not exists"
+            ]);
+        }
  
         return response()->json([
             "status" => true,
-            "client" => $client
+            "client_address" => $client
         ]);
     }
 
@@ -124,13 +134,13 @@ class ClientController extends Controller
         $client = $client->setTable('company_'.$request->company_id.'_clients')->where('id', $request->client)->first();
         if($client->delete()){
             return response()->json([
-                    'status' => true,
-                    'message' => "Client deleted successfully!"
+                'status' => true,
+                'message' => "Client deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => false,
-                    'message' => "Retry deleting again! "
+                'status' => false,
+                'message' => "Retry deleting again!"
             ]);
         }
     }
