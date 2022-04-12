@@ -183,6 +183,27 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic sales attachments table */
+        if (!Schema::hasTable('company_'.$company_id.'_technical_incidents')) {
+            Schema::create('company_'.$company_id.'_technical_incidents', function (Blueprint $table) {
+                $table->id();
+                $table->string('reference')->nullable();
+                $table->string('notifications')->nullable();
+                $table->string('client_id')->nullable();
+                $table->string('address')->nullable();
+                $table->string('priority')->nullable();
+                $table->string('status')->nullable();
+                $table->string('status_changed_by')->nullable();
+                $table->longText('description')->nullable();
+                $table->string('created_by')->nullable();
+                $table->dateTime('date')->nullable();
+                $table->dateTime('assigned_date')->nullable();
+                $table->string('invoice_to')->nullable();
+                $table->dateTime('closing_date')->nullable();
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic client assets table */
         if (!Schema::hasTable('company_'.$company_id.'_client_assets')) {
             Schema::create('company_'.$company_id.'_client_assets', function (Blueprint $table) {

@@ -54,6 +54,9 @@ Route::group(['namespace' => 'Api'], function() {
             /* Sales Routes */
             Route::apiResource('sales-estimates', SalesEstimateController::class);
             Route::apiResource('sales-attachments', SalesAttachmentController::class);
+
+            /* Technical Service */
+            Route::apiResource('technical-incidents', TechnicalIncidentController::class);
         });
     });
 });
