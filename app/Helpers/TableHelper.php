@@ -205,6 +205,17 @@ class TableHelper
         }
 
         /* Creating dynamic client assets table */
+        if (!Schema::hasTable('company_'.$company_id.'_technical_incident_attachments')) {
+            Schema::create('company_'.$company_id.'_technical_incident_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->integer('technical_incident_id');
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic client assets table */
         if (!Schema::hasTable('company_'.$company_id.'_client_assets')) {
             Schema::create('company_'.$company_id.'_client_assets', function (Blueprint $table) {
                 $table->id();

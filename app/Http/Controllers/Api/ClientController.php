@@ -130,8 +130,16 @@ class ClientController extends Controller
      */
     public function destroy(Request $request)
     {
-        $client = new Client;
-        $client = $client->setTable('company_'.$request->company_id.'_clients')->where('id', $request->client)->first();
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
+        $client = Client::where('id', $request->client)->first();
+        if ($client == NULL) {
+            return response()->json([
+                'status' => false,
+                'message' => "Client not exists!"
+            ]);
+        }
+
         if($client->delete()){
             return response()->json([
                 'status' => true,
