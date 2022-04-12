@@ -172,6 +172,17 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic sales attachments table */
+        if (!Schema::hasTable('company_'.$company_id.'_sales_attachments')) {
+            Schema::create('company_'.$company_id.'_sales_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->integer('sales_id');
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic client assets table */
         if (!Schema::hasTable('company_'.$company_id.'_client_assets')) {
             Schema::create('company_'.$company_id.'_client_assets', function (Blueprint $table) {

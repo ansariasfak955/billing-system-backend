@@ -20,7 +20,7 @@ Route::group(['namespace' => 'Api'], function() {
     Route::post('forget-password', 'AuthController@forgetPassword');
     Route::post('reset-password', 'AuthController@resetPassword');
     Route::get('create-company-tables', function(){
-        App\Helpers\TableHelper::createTables(5);
+        App\Helpers\TableHelper::createTables(10);
     });
    
     Route::group(['middleware' => ['auth:api']], function(){
@@ -53,6 +53,7 @@ Route::group(['namespace' => 'Api'], function() {
 
             /* Sales Routes */
             Route::apiResource('sales-estimates', SalesEstimateController::class);
+            Route::apiResource('sales-attachments', SalesAttachmentController::class);
         });
     });
 });

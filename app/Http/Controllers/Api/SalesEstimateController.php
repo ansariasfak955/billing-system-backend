@@ -67,7 +67,7 @@ class SalesEstimateController extends Controller
         $sales_estimate = SalesEstimate::create($request->except('company_id'));
         if ($request->signature) {
             $signature_name = time().'.'.$request->signature->extension();  
-            $request->signature->move(storage_path('app/public/sales-estimate/signature'), $signature_name);
+            $request->signature->move(storage_path('app/public/sales/signature'), $signature_name);
             $sales_estimate->signature = $signature_name;    
         }
         $sales_estimate->save();
@@ -119,7 +119,7 @@ class SalesEstimateController extends Controller
         $sales_estimate->update($request->except('company_id'));
         if ($request->signature) {
             $signature_name = time().'.'.$request->signature->extension();  
-            $request->signature->move(storage_path('app/public/sales-estimate/signature'), $signature_name);
+            $request->signature->move(storage_path('app/public/sales/signature'), $signature_name);
             $sales_estimate->signature = $signature_name;    
         }
         $sales_estimate->save();

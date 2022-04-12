@@ -48,7 +48,7 @@ class SalesEstimate extends Model
     public function getSignatureAttribute()
     {
     	if ($this->attributes['signature'] != NULL) {
-    		return URL::to('/').'/storage/sales-estimate/signature/'.$this->attributes['signature'];
+    		return URL::to('/').'/storage/sales/signature/'.$this->attributes['signature'];
     	}
     	return '';
     }
