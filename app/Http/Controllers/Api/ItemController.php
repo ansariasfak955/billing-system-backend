@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Item;
+use App\Models\ItemMeta;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -59,31 +60,53 @@ class ItemController extends Controller
         Item::setGlobalTable($table);
     	$items = $request->all()['item'];
     	foreach ($items as $item) {
-    		$reference = $item['reference'];
-    		$name = $item['name'];
-			$description = $item['description'];
-			$base_price = $item['base_price'];
-			$quantity = $item['quantity'];
-			$discount = $item['discount'];
-			$tax = $item['tax'];
-			$income_tax = $item['income_tax'];
+    		$reference        = $item['reference'];
+            if (isset($item['reference_id'])) {
+                $reference_id     = $item['reference_id'];
+            } else {
+                $reference_id     = NULL;
+            }
+            
+            $name             = $item['name'];
+			$description      = $item['description'];
+			$base_price       = $item['base_price'];
+			$quantity         = $item['quantity'];
+			$discount         = $item['discount'];
+			$tax              = $item['tax'];
+			$income_tax       = $item['income_tax'];
+            $meta_discount    = $item['meta_discount'];
+            $meta_income_tax  = $item['meta_income_tax'];
 
 			Item::create([
-				'reference' => $reference,
-				'name' => $name,
-				'description' => $description,
-				'base_price' => $base_price,
-				'quantity' => $quantity,
-				'discount' => $discount,
-				'tax' => $tax,
-				'income_tax' => $income_tax
+				'reference'     => $reference,
+                'reference_id'  => $reference_id,
+				'name'          => $name,
+				'description'   => $description,
+				'base_price'    => $base_price,
+				'quantity'      => $quantity,
+				'discount'      => $discount,
+				'tax'           => $tax,
+				'income_tax'    => $income_tax
 			]);
+
+            if ($meta_discount) {
+                $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+                ItemMeta::setGlobalTable($item_meta_table);
+
+                if (isset($item['reference_id'])) {
+                    ItemMeta::create([
+                        'reference_id'  => $item['reference_id'],
+                        'discount'      => $item['meta_discount'],
+                        'income_tax'    => $item['meta_income_tax']
+                    ]);
+                }
+            }
     	}
 
     	return response()->json([
             "status"  => true,
             "message" => "Item created successfully"
-        ]); 
+        ]);
     }
 
     /**
@@ -100,7 +123,7 @@ class ItemController extends Controller
 
         if($item ==  NULL){
             return response()->json([
-                "status" => false,
+                "status"  => false,
                 "message" => "This entry does not exists"
             ]);
         }

@@ -60,8 +60,8 @@ class ClientSpecialPriceController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'client_id' => 'required',          
-            'product_id' => 'required'          
+            'client_id' => 'required',
+            'product_id' => 'required'
         ], [
             'client_id.required' => 'Please select client ',
             'product_id.required' => 'Please select product ',
@@ -160,13 +160,13 @@ class ClientSpecialPriceController extends Controller
         $client_special_price = ClientSpecialPrice::where('id', $request->client_special_price)->first();
         if($client_special_price->delete()){
             return response()->json([
-                    'status' => true,
-                    'message' => "Client special price deleted successfully!"
+                'status' => true,
+                'message' => "Client special price deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => false,
-                    'message' => "Retry deleting again! "
+                'status' => false,
+                'message' => "Retry deleting again! "
             ]);
         }
     }

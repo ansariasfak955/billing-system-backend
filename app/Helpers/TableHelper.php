@@ -232,6 +232,17 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic item metas table */
+        if (!Schema::hasTable('company_'.$company_id.'_item_metas')) {
+            Schema::create('company_'.$company_id.'_item_metas', function (Blueprint $table) {
+                $table->id();
+                $table->integer('reference_id');
+                $table->float('discount')->nullable();
+                $table->integer('income_tax')->nullable();
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic client assets table */
         if (!Schema::hasTable('company_'.$company_id.'_client_assets')) {
             Schema::create('company_'.$company_id.'_client_assets', function (Blueprint $table) {

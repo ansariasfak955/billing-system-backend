@@ -5,25 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Item extends Model
+class ItemMeta extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-    	'reference',
-		'name',
-		'description',
-		'base_price',
-		'quantity',
+    	'reference_id',
 		'discount',
-		'tax',
 		'income_tax'
     ];
 
-    protected static $globalTable = 'items' ;
+    protected static $globalTable = 'item_metas' ;
 
     public function getTable() {
-        return self::$globalTable;
+        return self::$globalTable ;
     }
     
     public static function setGlobalTable($table) {
