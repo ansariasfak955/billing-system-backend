@@ -58,6 +58,9 @@ Route::group(['namespace' => 'Api'], function() {
             /* Technical Service */
             Route::apiResource('technical-incidents', TechnicalIncidentController::class);
             Route::apiResource('technical-incident-attachments', TechnicalIncidentAttachmentController::class);
+
+            /* Items */
+            Route::apiResource('items', ItemController::class);
         });
     });
 });

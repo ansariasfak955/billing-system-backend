@@ -215,6 +215,23 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic items table */
+        if (!Schema::hasTable('company_'.$company_id.'_items')) {
+            Schema::create('company_'.$company_id.'_items', function (Blueprint $table) {
+                $table->id();
+                $table->string('reference');
+                $table->string('reference_id');
+                $table->string('name')->nullable();
+                $table->longText('description')->nullable();
+                $table->float('base_price')->nullable();
+                $table->string('quantity')->nullable();
+                $table->float('discount')->nullable();
+                $table->string('tax')->nullable();
+                $table->string('income_tax')->nullable();
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic client assets table */
         if (!Schema::hasTable('company_'.$company_id.'_client_assets')) {
             Schema::create('company_'.$company_id.'_client_assets', function (Blueprint $table) {
