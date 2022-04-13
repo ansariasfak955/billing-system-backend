@@ -11,6 +11,16 @@ class Product extends Model
 
     protected $fillable = ['name', 'price', 'reference', 'purchase_price', 'barcode', 'image', 'description', 'private_comments', 'created_from', 'purchase_margin', 'sales_margin', ' discount', 'minimum_price', 'tax', 'images'];
 
+    protected static $globalTable = 'products';
+
+    public function getTable() {
+        return self::$globalTable ;
+    }
+
+    public static function setGlobalTable($table) {
+        self::$globalTable = $table;
+    }
+
     public function getImageAttribute()
     {
         if ($this->attributes['image']) {
