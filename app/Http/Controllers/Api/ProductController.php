@@ -44,8 +44,9 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'name' => 'required',          
-            'price' => 'required|numeric'          
+            'name' => 'required',
+            'price' => 'required|numeric',  
+            'category' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -113,8 +114,9 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(),[
-            'name' => 'required',          
-            'price' => 'required|numeric'          
+            'name' => 'required',
+            'price' => 'required|numeric',
+            'category' => 'required'  
         ]);
 
         if ($validator->fails()) {

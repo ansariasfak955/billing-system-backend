@@ -15,11 +15,10 @@
 //use App\Http\Controllers\Api\UserController;
 use Spatie\Permission\Models\Permission;
 
-
 Auth::routes();
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/', function () {
-    return view('backend.dashboard');
+        return view('backend.dashboard');
     });
     
     Route::resource('users', UserController::class);
@@ -41,11 +40,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('/change-password', 'UserController@changePassword');
 });
 
- Route::get('login', function () { return view('backend.pages.auth.login'); })->name('login');
- Route::post('login', 'Auth\LoginController@login');
+Route::get('login', function () { return view('backend.pages.auth.login'); })->name('login');
+Route::post('login', 'Auth\LoginController@login');
 
-
- Route::get('/forgot-password', 'Auth\ForgotPasswordController@getForgetPassword')->name('password.request');
+Route::get('/forgot-password', 'Auth\ForgotPasswordController@getForgetPassword')->name('password.request');
 
 Route::post('/forgot-password', 'Auth\ForgotPasswordController@updateForgetPassword')->name('password.email');
 
@@ -53,20 +51,14 @@ Route::get('/reset-password/{token}', 'Auth\ResetPasswordController@getResetPass
 
 Route::post('/reset-password', 'Auth\ResetPasswordController@updateResetpassword')->name('password.update');
 
-
-
 Route::get('assign-roles', function(){
-    
     (new UserController())->setConfig(5);
     foreach(Permission::get() as $permission){
         $permission->assignRole(4);
     }
 });
 
-
-
 /* Oringinal theme links */
-
 Route::get('/dev', function () {
     return view('dashboard');
 });

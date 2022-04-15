@@ -137,13 +137,13 @@ class UserController extends Controller
     {
         if($user->delete()){
             return response()->json([
-                    'status' => true,
-                    'message' => "User deleted successfully!"
+                'status' => true,
+                'message' => "User deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => false,
-                    'message' => "Retry deleting again!"
+                'status' => false,
+                'message' => "Retry deleting again!"
             ]);
         }
     }
@@ -163,7 +163,6 @@ class UserController extends Controller
     public function getProfile()
     {
         $page_title = 'Profile';
-
         return view('backend.pages.users.profile', compact('page_title'));
     }
 
@@ -184,7 +183,7 @@ class UserController extends Controller
             $user->image = $imageName;
             $user->save();
         }
-       
+
         return redirect()->back()->with('success','Profile updated successfully');
        
     }
@@ -193,7 +192,7 @@ class UserController extends Controller
 
     public function changePassword(Request $request)
     {
-       if($request->isMethod('post')){
+        if($request->isMethod('post')){
             if(!isset($request->current_password)){
                 return redirect()->back()->with('error','Please enter current password!'); 
             }
@@ -202,20 +201,18 @@ class UserController extends Controller
                 return redirect()->back()->with('error','Please enter new password!'); 
             }
 
-
-        if(isset($request->new_password)){
-            if(!\Hash::check($request->current_password, \Auth::user()->password)){
-                return redirect()->back()->with('error','Current password does not matched');
-            } 
+            if(isset($request->new_password)){
+                if(!\Hash::check($request->current_password, \Auth::user()->password)){
+                    return redirect()->back()->with('error','Current password does not matched');
+                } 
+            }
+            
+            if(isset($request->new_password)){
+                \Auth::user()->password = bcrypt($request->new_password);
+                \Auth::user()->save();
+            }
+            return redirect()->to('/')->with('success','password updated successfully');
         }
-        if(isset($request->new_password)){
-            \Auth::user()->password = bcrypt($request->new_password);
-            \Auth::user()->save();
-        }
-
-        return redirect()->to('/')->with('success','password updated successfully');
-       }
-       return view('backend.pages.users.change-password');
+        return view('backend.pages.users.change-password');
     }
-
 }

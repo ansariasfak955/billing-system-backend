@@ -6,5 +6,3 @@
     </a>    
     {!! Form::button('<i class="fas fa-trash-alt text-danger font-16"></i>', ['class' => 'btn delete', 'type' => 'submit']) !!}   
 {!! Form::close() !!}
-
-

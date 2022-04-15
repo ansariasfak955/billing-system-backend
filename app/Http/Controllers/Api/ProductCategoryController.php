@@ -43,9 +43,8 @@ class ProductCategoryController extends Controller
      */
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(),[
-            'name' => 'required'          
+            'name' => 'required'        
         ]);
 
         if ($validator->fails()) {

@@ -61,6 +61,9 @@ Route::group(['namespace' => 'Api'], function() {
 
             /* Items */
             Route::apiResource('items', ItemController::class);
+
+            /* Subscriptions */
+            Route::apiResource('subscriptions', SubscriptionController::class);
         });
     });
 });

@@ -273,6 +273,17 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic subscriptions table */
+        if (!Schema::hasTable('company_'.$company_id.'_subscriptions')) {
+            Schema::create('company_'.$company_id.'_subscriptions', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->float('price')->nullable();
+                $table->longText('description')->nullable();
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic payment options table */
         if (!Schema::hasTable('company_'.$company_id.'_payment_options')) {
             Schema::create('company_'.$company_id.'_payment_options', function (Blueprint $table) {
