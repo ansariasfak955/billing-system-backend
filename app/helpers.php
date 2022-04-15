@@ -18,3 +18,11 @@ function get_product_name($company_id,$product_id)
     \App\Models\Product::setGlobalTable($table);
 	return \App\Models\Product::where('id', $product_id)->pluck('name')->first();
 }
+
+function get_company_country_name($company_id)
+{
+	if ($company_id != '') {
+		return \App\Models\Company::where('id', $company_id)->pluck('country')->first();
+	}
+	return '';
+}

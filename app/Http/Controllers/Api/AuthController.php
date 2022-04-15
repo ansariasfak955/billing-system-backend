@@ -19,9 +19,7 @@ class AuthController extends Controller
      * 
      * @return \Illuminate\Http\Response 
      */ 
-    public function login(Request $request){ 
-
-
+    public function login(Request $request){
         if($request->company_id != NULL){
             (new UserController())->setConfig($request->company_id);
             User::setGlobalTable('company_'.$request->company_id.'_users');
@@ -37,7 +35,6 @@ class AuthController extends Controller
                 'message' => $validator->errors()->first(),
             ]);
         }
-
         
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             if(Auth::user()->is_ban == 1){
@@ -64,8 +61,8 @@ class AuthController extends Controller
     public function register(Request $request) 
     { 
         $validator = Validator::make($request->all(), [
-            'email' => 'sometimes|required|email',
-            'name' => 'required|regex:/^[\pL\s\-]+$/u',
+            'email'   => 'sometimes|required|email',
+            'name'    => 'required|regex:/^[\pL\s\-]+$/u',
             'country' => 'required'
         ]);
 
@@ -75,8 +72,6 @@ class AuthController extends Controller
                 'message' => $validator->errors()->first(),
             ]);
         }
-
-       
 
         if(User::where('email', $request->email)->first() != NULL){
             return response()->json(['success' => false,
@@ -102,7 +97,6 @@ class AuthController extends Controller
             Auth::user()->setAttribute("token", $token);
         }
         
- 
         return response()->json([
             'success' => true,
             'user' =>  Auth::user(),
@@ -121,7 +115,7 @@ class AuthController extends Controller
         }
 
         if($user->is_ban == 1){
-             return response()->json([
+            return response()->json([
                 'status' => false,
                 'message' => "Your account has been suspended.Please contact admin",
             ]);
@@ -129,9 +123,12 @@ class AuthController extends Controller
         
         $token = \Str::random(64);
 
-        $user = \DB::table('password_resets')->insert(
-              ['email' => $request->email, 'token' => $token, 'created_at' => date("Y-m-d H:i:s"), 'type' => "user"]
-        );
+        $user = \DB::table('password_resets')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => date("Y-m-d H:i:s"),
+            'type' => "user"
+        ]);
 
         /* send emails on forgot password */
         SendEmailForgetPassword::dispatchNow($token, $request->email);
@@ -143,7 +140,6 @@ class AuthController extends Controller
     }
 
     /* Reset password */
-
     public function resetPassword(Request $request)
     {
         $request->validate([

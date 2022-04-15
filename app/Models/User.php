@@ -49,6 +49,8 @@ class User extends Authenticatable
         self::$globalTable = $table;
     }
 
+    protected $appends = ['company_country'];
+
     public function companies()
     {
         return $this->hasMany(Company::class, 'user_id', 'id');
@@ -61,5 +63,12 @@ class User extends Authenticatable
         } else {
             return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
         }
+    }
+
+    public function getCompanyCountryAttribute()
+    {
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        return get_company_country_name($company_id);
     }
 }
