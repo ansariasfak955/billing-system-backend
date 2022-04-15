@@ -7,6 +7,7 @@ use App\DataTables\UserDataTable;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -18,7 +19,7 @@ class UserController extends Controller
     public function index(UserDataTable $dataTable, Request $request)
     {
         $page_title = "Users";
-        $users_count = User::whereHas("roles", function($q){ $q->where("name", "user"); })->count();
+        $users_count = User::whereHas("roles", function($q){ $q->whereIn("name", ["user"]); })->count();
         return $dataTable->render('backend.pages.users.index', compact('page_title', 'users_count'));
     }
 
@@ -30,8 +31,9 @@ class UserController extends Controller
     public function create()
     {
         $page_title = "Create User";
-        $role = "user";
-        return view('backend.pages.users.create', compact('page_title', 'role'));
+        $roles = Role::all()->pluck('name','id')->toArray();
+        $role  = $user->roles->pluck('id')->first();
+        return view('backend.pages.users.create', compact('page_title', 'roles', 'role'));
     }
 
     /**
@@ -43,7 +45,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'name' => 'required',
+            'name'  => 'required',
             'email' => 'email|unique:users'
         ]);
 
@@ -57,7 +59,7 @@ class UserController extends Controller
         } else {
             $request['is_ban'] = 0;
         }*/
-        $user = User::create($request->all());
+        $user = User::create($request->except('role'));
         $user->assignRole($request->role);
         return redirect()->route('users.index')->withSuccess('New user is created successfully!');
     }
@@ -82,8 +84,9 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $page_title = "Edit User";
-        $role = "user";
-        return view('backend.pages.users.edit', compact('user', 'page_title', 'role'));
+        $roles = Role::all()->pluck('name','id')->toArray();
+        $role = $user->roles->pluck('id')->first();
+        return view('backend.pages.users.edit', compact('user', 'page_title', 'roles', 'role'));
     }
 
     /**
@@ -101,8 +104,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             return redirect()->back()->withError($validator->errors()->first())->withInput();
-        }        
-
+        }
         
         if ($request->password != '') {
             $request['password'] = Hash::make($request->password);

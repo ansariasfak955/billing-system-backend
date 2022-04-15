@@ -21,8 +21,7 @@
             <button class="btn btn-primary btn-sm grid-batch-delete mb-2" data-ajax-url="{{ url('/users/delete') }}" data-type="class">Delete All</button>
         @endif
         <div class="table-responsive">
-          {!! $dataTable->table() !!} 
-          
+          {!! $dataTable->table() !!}
         </div>
       </div>
     </div>

@@ -23,17 +23,17 @@ class UserDataTable extends DataTable
         return datatables()
             ->eloquent($query)->addIndexColumn()
             ->setRowClass(function ($user) {
-                    return '';
+                return '';
             })
             ->addColumn('checkbox', static function (User $user) {
                 return "<input type='checkbox' data-id='$user->id' class='select-checkbox' name='id[]'>";
             })
-
+            ->addColumn('role', static function (User $user) {
+                return $user->roles->pluck('name')->first();
+            })
             ->addColumn('action', static function (User $user) {
                 return view('backend.pages.users.action', compact('user'));
             })
-           
-            
             ->setRowId(function ($user) {
                 return 'user-'.$user->id;
             })
@@ -48,9 +48,8 @@ class UserDataTable extends DataTable
      */
     public function query(User $user)
     {
-       
-        return $user->whereHas("roles", function($q){ $q->where("name", "user"); })->orderBy('id', 'DESC')->newQuery();
-        
+        return $user->where('id', '!=', auth()->id())->orderBy('id', 'DESC')->newQuery();
+        // return $user->whereHas("roles", function($q){ $q->where("name", "user"); })->orderBy('id', 'DESC')->newQuery();
     }
 
     /**
@@ -85,7 +84,8 @@ class UserDataTable extends DataTable
             Column::make('checkbox')->title($checkbox)->className('all_items_checkbox')->searchable(false)->orderable(false),
             Column::make('DT_RowIndex')->title('Sr. no.')->searchable(false)->orderable(false),     
             Column::make('name'),        
-            Column::make('email'),    
+            Column::make('email'), 
+            Column::make('role')->className('text-capitalize'), 
             Column::make('action')->className('action-column'),        
         ];
     }
