@@ -205,10 +205,13 @@ class UserController extends Controller
         }
 
         $user = User::where('id', Auth::id())->first();
+
+        $token = Auth::user()->createToken('api')->accessToken;
+        Auth::user()->setAttribute("token", $token);
         return response()->json([
             'status'  => true,
             'message' => "Profile updated successfully!",
-            'user'    => $user,
+            'user'    => Auth::user(),
         ]);
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Auth;
 
 
 class User extends Authenticatable
@@ -49,7 +50,7 @@ class User extends Authenticatable
         self::$globalTable = $table;
     }
 
-    protected $appends = ['company_country'];
+    protected $appends = ['company_country','default_country'];
 
     public function companies()
     {
@@ -65,10 +66,25 @@ class User extends Authenticatable
         }
     }
 
-    public function getCompanyCountryAttribute()
+    public function getDefaultCountryAttribute()
     {
         $table = $this->getTable();
         $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-        return get_company_country_name($company_id);
+        $company = Company::where('user_id', Auth::id())->pluck('country')->first();
+
+        if (isset($company_id)) {
+            return get_company_country_name($company_id);
+        }
+
+        if ($company != NULL) {
+            return $company->name;
+        }
+
+        return '';
+    }
+
+    public function getCompanyCountryAttribute()
+    {
+        return Company::where('user_id', Auth::id())->pluck('country')->first();
     }
 }
