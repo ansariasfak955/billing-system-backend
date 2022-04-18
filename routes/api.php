@@ -25,6 +25,7 @@ Route::group(['namespace' => 'Api'], function() {
    
     Route::group(['middleware' => ['auth:api']], function(){
         Route::apiResource('companies', CompanyController::class);
+        Route::post('update-profile', 'UserController@updateProfile');
         Route::group(["prefix" => "{company_id}/"], function(){
             Route::apiResource('bank_accounts', BankAccountController::class);
             Route::apiResource('product_categories', ProductCategoryController::class);
@@ -33,7 +34,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('custom_states', CustomStateController::class);
             Route::apiResource('my_templates', MyTemplateController::class);
             Route::apiResource('users', UserController::class);
-            Route::post('update-profile', 'UserController@updateProfile');
+            
             Route::apiResource('rates', RateController::class);
             Route::apiResource('services', ServiceController::class);
             Route::apiResource('expense_investments', ExpenseAndInvestmentController::class);

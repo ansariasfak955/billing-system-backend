@@ -189,7 +189,6 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
-        User::setGlobalTable('company_'.$request->company_id.'_users');
         $user = User::where('id', Auth::id())->first();
 
         if($request->password != NULL) {
@@ -209,7 +208,7 @@ class UserController extends Controller
         return response()->json([
             'status'  => true,
             'message' => "Profile updated successfully!",
-            'data'    => $user,
+            'user'    => $user,
         ]);
     }
 }
