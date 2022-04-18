@@ -176,14 +176,40 @@ class UserController extends Controller
         $user = User::where('id', $request->user)->first();
         if($user->delete()){
             return response()->json([
-                    'status' => true,
-                    'message' => "User deleted successfully!"
+                'status' => true,
+                'message' => "User deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => true,
-                    'message' => "User deleted successfully!"
+                'status' => true,
+                'message' => "User deleted successfully!"
             ]);
         }
+    }
+
+    public function updateProfile(Request $request)
+    {
+        User::setGlobalTable('company_'.$request->company_id.'_users');
+        $user = User::where('id', Auth::id())->first();
+
+        if($request->password != NULL) {
+            $user->password = bcrypt($request->password);  
+        }
+
+        $user->update($request->except('password','image'));
+
+        if($request->image != NULL){
+            $imageName = time().'.'.$request->image->extension();  
+            $request->image->move(storage_path('app/public/users'), $imageName);
+            $user->image = $imageName;
+            $user->save();
+        }
+
+        $user = User::where('id', Auth::id())->first();
+        return response()->json([
+            'status'  => true,
+            'message' => "Profile updated successfully!",
+            'data'    => $user,
+        ]);
     }
 }

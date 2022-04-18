@@ -426,6 +426,7 @@ class TableHelper
                 $table->string('smtp_security_protocol')->nullable();
                 $table->string('smtp_password')->nullable();
                 $table->string('smtp_port')->nullable();
+                $table->string('mobile_number')->nullable();
                 $table->timestamps();
             });
         }

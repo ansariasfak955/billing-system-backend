@@ -60,6 +60,10 @@ class AuthController extends Controller
      */ 
     public function register(Request $request) 
     { 
+        if($request->company_id != NULL){
+            (new UserController())->setConfig($request->company_id);
+            User::setGlobalTable('company_'.$request->company_id.'_users');
+        }
         $validator = Validator::make($request->all(), [
             'email'   => 'sometimes|required|email',
             'name'    => 'required|regex:/^[\pL\s\-]+$/u',
@@ -86,7 +90,10 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
             'country' => $request->country
         ]);
-        $user->assignRole('user'); 
+
+        if($request->company_id == NULL){
+            $user->assignRole('user');
+        }
 
         /* send emails on registration */
         SendEmailsOnUserGeneration::dispatch($user, $request->password)->delay(now()->addSeconds(1));
