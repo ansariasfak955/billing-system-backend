@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\User;
 use App\Helpers\TableHelper;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use Auth;
 use Validator;
+use DB;
 
 class CompanyController extends Controller
 {
@@ -64,6 +67,31 @@ class CompanyController extends Controller
 
         TableHelper::createTables($company->id);
 
+        // Create Super Admin
+        $user_table = 'company_'.$company->id.'_users';
+        User::setGlobalTable($user_table);
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => bcrypt('superadmin@123'),
+        ]);
+
+        // Get and Assign Role
+        $role_table = 'company_'.$company->id.'_roles';
+        $role = DB::table($role_table)
+            ->where('name', 'Super Admin')
+            ->select('id')
+            ->first();
+
+        if (isset($role->id)) {
+            $role_model_table = 'company_'.$company->id.'_model_has_roles';
+            DB::table($role_model_table)->insert([
+                'role_id'    => $role->id,
+                'model_type' => 'App\Models\User',
+                'model_id'   => $user->id,
+            ]);
+        }
+        
         return response()->json([
             "status" => true,
             "company" => $company,
