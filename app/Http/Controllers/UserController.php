@@ -32,7 +32,7 @@ class UserController extends Controller
     {
         $page_title = "Create User";
         $roles = Role::all()->pluck('name','id')->toArray();
-        $role  = $user->roles->pluck('id')->first();
+        $role = '';
         return view('backend.pages.users.create', compact('page_title', 'roles', 'role'));
     }
 
