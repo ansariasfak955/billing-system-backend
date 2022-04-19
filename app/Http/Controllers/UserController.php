@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Company;
 use App\DataTables\UserDataTable;
 use Illuminate\Http\Request;
 use Validator;
@@ -86,7 +87,8 @@ class UserController extends Controller
         $page_title = "Edit User";
         $roles = Role::all()->pluck('name','id')->toArray();
         $role = $user->roles->pluck('id')->first();
-        return view('backend.pages.users.edit', compact('user', 'page_title', 'roles', 'role'));
+        $companies = Company::where('user_id', $user->id)->get();
+        return view('backend.pages.users.edit', compact('user', 'page_title', 'roles', 'role', 'companies'));
     }
 
     /**

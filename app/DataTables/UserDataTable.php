@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\User;
+use App\Models\Company;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -30,6 +31,12 @@ class UserDataTable extends DataTable
             })
             ->addColumn('role', static function (User $user) {
                 return $user->roles->pluck('name')->first();
+            })
+            ->addColumn('companies', static function (User $user) {
+                $companies = Company::where('user_id', $user->id)->pluck('name')->toArray();
+                if (is_array($companies)) {
+                    return implode(', ', $companies);
+                }
             })
             ->addColumn('action', static function (User $user) {
                 return view('backend.pages.users.action', compact('user'));
@@ -84,8 +91,9 @@ class UserDataTable extends DataTable
             Column::make('checkbox')->title($checkbox)->className('all_items_checkbox')->searchable(false)->orderable(false),
             Column::make('DT_RowIndex')->title('Sr. no.')->searchable(false)->orderable(false),     
             Column::make('name'),        
-            Column::make('email'), 
-            Column::make('role')->className('text-capitalize'), 
+            Column::make('email'),
+            Column::make('role')->className('text-capitalize'),
+            Column::make('companies'),
             Column::make('action')->className('action-column'),        
         ];
     }
