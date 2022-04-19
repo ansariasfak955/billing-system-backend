@@ -16,15 +16,6 @@ class SubscriptionController extends Controller
      */
     public function index(Request $request)
     {
-        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
-            return response()->json([
-                "status"  => false,
-                "message" => "Please select company"
-            ]);
-        }
-
-        $table = 'company_'.$request->company_id.'_subscriptions';
-        Subscription::setGlobalTable($table);
         $subscription = Subscription::get();
 
         if ($subscription->count() == 0) {
@@ -48,29 +39,29 @@ class SubscriptionController extends Controller
      */
     public function store(Request $request)
     {	
-    	$table = 'company_'.$request->company_id.'_subscriptions';
-        Subscription::setGlobalTable($table);
-        $validator = Validator::make($request->all(),[
-            'name' => "required"
-        ], [
-            'name.required' => 'Please enter name.'
-        ]);
+    	// $table = 'company_'.$request->company_id.'_subscriptions';
+     //    Subscription::setGlobalTable($table);
+     //    $validator = Validator::make($request->all(),[
+     //        'name' => "required"
+     //    ], [
+     //        'name.required' => 'Please enter name.'
+     //    ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                "status" => false,
-                "message" => $validator->errors()->first()
-            ]);
-        }
+     //    if ($validator->fails()) {
+     //        return response()->json([
+     //            "status" => false,
+     //            "message" => $validator->errors()->first()
+     //        ]);
+     //    }
         
-        $subscription = Subscription::create($request->except('company_id'));
-        $subscription->save();
+     //    $subscription = Subscription::create($request->except('company_id'));
+     //    $subscription->save();
 
-        return response()->json([
-            "status"       => true,
-            "subscription" => $subscription,
-            "message"      => "Subscription created successfully"
-        ]);
+     //    return response()->json([
+     //        "status"       => true,
+     //        "subscription" => $subscription,
+     //        "message"      => "Subscription created successfully"
+     //    ]);
     }
 
     /**
@@ -81,21 +72,21 @@ class SubscriptionController extends Controller
      */
     public function show(Request $request)
     {
-		$table = 'company_'.$request->company_id.'_subscriptions';
-        Subscription::setGlobalTable($table);
-        $subscription = Subscription::where('id', $request->subscription)->first();
+		// $table = 'company_'.$request->company_id.'_subscriptions';
+  //       Subscription::setGlobalTable($table);
+  //       $subscription = Subscription::where('id', $request->subscription)->first();
 
-        if($subscription ==  NULL){
-            return response()->json([
-                "status" => false,
-                "message" => "This entry does not exists"
-            ]);
-        }
+  //       if($subscription ==  NULL){
+  //           return response()->json([
+  //               "status" => false,
+  //               "message" => "This entry does not exists"
+  //           ]);
+  //       }
  
-        return response()->json([
-            "status"       => true,
-            "subscription" => $subscription
-        ]);
+  //       return response()->json([
+  //           "status"       => true,
+  //           "subscription" => $subscription
+  //       ]);
     }
 
     /**
@@ -107,18 +98,18 @@ class SubscriptionController extends Controller
      */
     public function update(Request $request)
     {
-        $table = 'company_'.$request->company_id.'_subscriptions';
-        Subscription::setGlobalTable($table);
-        $subscription = Subscription::where('id', $request->subscription)->first();
+        // $table = 'company_'.$request->company_id.'_subscriptions';
+        // Subscription::setGlobalTable($table);
+        // $subscription = Subscription::where('id', $request->subscription)->first();
         
-        $subscription->update($request->except('company_id', 'subscription'));
-        $subscription->save();
+        // $subscription->update($request->except('company_id', 'subscription'));
+        // $subscription->save();
 
-        return response()->json([
-            "status" => true,
-            "subscription" => $subscription,
-            "message" => "Subscription updated successfully"
-        ]);
+        // return response()->json([
+        //     "status" => true,
+        //     "subscription" => $subscription,
+        //     "message" => "Subscription updated successfully"
+        // ]);
     }
 
     /**
@@ -129,27 +120,27 @@ class SubscriptionController extends Controller
      */
     public function destroy(Request $request)
     {
-        $table = 'company_'.$request->company_id.'_subscriptions';
-        Subscription::setGlobalTable($table);
-        $subscription = Subscription::where('id', $request->subscription)->first();
+        // $table = 'company_'.$request->company_id.'_subscriptions';
+        // Subscription::setGlobalTable($table);
+        // $subscription = Subscription::where('id', $request->subscription)->first();
 
-        if($subscription ==  NULL){
-            return response()->json([
-                "status"  => false,
-                "message" => "This entry does not exists"
-            ]);
-        }
+        // if($subscription ==  NULL){
+        //     return response()->json([
+        //         "status"  => false,
+        //         "message" => "This entry does not exists"
+        //     ]);
+        // }
 
-        if($subscription->delete()){
-            return response()->json([
-                'status'  => true,
-                'message' => "Subscription deleted successfully!"
-            ]);
-        } else {
-            return response()->json([
-                'status'  => false,
-                'message' => "There is an error!"
-            ]);
-        }
+        // if($subscription->delete()){
+        //     return response()->json([
+        //         'status'  => true,
+        //         'message' => "Subscription deleted successfully!"
+        //     ]);
+        // } else {
+        //     return response()->json([
+        //         'status'  => false,
+        //         'message' => "There is an error!"
+        //     ]);
+        // }
     }
 }

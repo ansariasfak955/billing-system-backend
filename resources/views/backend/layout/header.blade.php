@@ -73,6 +73,19 @@
             </ul>
           </div>
         </li>
+        <li class="nav-item {{ active_class(['forms/*']) }}">
+          <a href="#" class="nav-link" onclick="return false">
+            <i class="link-icon" data-feather="subscriptions"></i>
+            <span class="menu-title">Subscriptions</span>
+            <i class="link-arrow"></i>
+          </a>
+          <div class="submenu">
+            <ul class="submenu-item">
+              <li class="nav-item"><a href="{{ url('/subscriptions') }}" class="nav-link {{ active_class(['subscriptions']) }}">Subscriptions</a></li>
+              <li class="nav-item"><a href="{{ url('/subscriptions/create') }}" class="nav-link {{ active_class(['subscriptions/create']) }}">Add subscription</a></li>
+            </ul>
+          </div>
+        </li>
       </ul>
     </div>
   </nav>

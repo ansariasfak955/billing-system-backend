@@ -22,6 +22,7 @@ Route::group(['namespace' => 'Api'], function() {
     Route::get('create-company-tables', function(){
         App\Helpers\TableHelper::createTables(10);
     });
+    Route::get('subscriptions', 'SubscriptionController@index');
    
     Route::group(['middleware' => ['auth:api']], function(){
         Route::apiResource('companies', CompanyController::class);
@@ -63,9 +64,6 @@ Route::group(['namespace' => 'Api'], function() {
 
             /* Items */
             Route::apiResource('items', ItemController::class);
-
-            /* Subscriptions */
-            Route::apiResource('subscriptions', SubscriptionController::class);
         });
     });
 });

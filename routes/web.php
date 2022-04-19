@@ -40,6 +40,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('/change-password', 'UserController@changePassword');
 });
 
+/* Subscriptions */
+Route::resource('subscriptions', SubscriptionController::class);
+
 Route::get('login', function () { return view('backend.pages.auth.login'); })->name('login');
 Route::post('login', 'Auth\LoginController@login');
 
