@@ -25,7 +25,7 @@ class ProductStockController extends Controller
 
         $table = 'company_'.$request->company_id.'_product_stocks';
         ProductStock::setGlobalTable($table);
-        $product_stock = ProductStock::get();
+        $product_stock = ProductStock::where('product_id', $request->product_id)->first();
 
         if ($product_stock->count() == 0) {
             return response()->json([
