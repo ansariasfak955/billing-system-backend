@@ -36,3 +36,21 @@ function get_product_stock($company_id,$product_stock_id)
     \App\Models\ProductStock::setGlobalTable($table);
 	return \App\Models\ProductStock::where('product_id', $product_stock_id)->first();
 }
+
+function get_client_latest_ref_number($company_id, $reference, $add)
+{
+	$table = 'company_'.$company_id.'_clients';
+    \App\Models\Client::setGlobalTable($table);
+    $client = \App\Models\Client::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
+    $reference_number = str_replace('0', '', $client->reference_number);
+    // die;
+    if ($client != NULL) {
+    	return generate_reference_num($reference_number+$add,5);
+    } else {
+    	return '00001';
+    }
+}
+
+function generate_reference_num ($input, $pad_len = 7) {
+    return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
+}

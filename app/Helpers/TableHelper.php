@@ -38,6 +38,7 @@ class TableHelper
             Schema::create('company_'.$company_id.'_clients', function (Blueprint $table) {
                 $table->id();
                 $table->string('reference')->nullable();
+                $table->string('reference_number')->nullable();
                 $table->string('legal_name')->nullable();
                 $table->string('tin')->nullable();
                 $table->string('phone_1')->nullable();

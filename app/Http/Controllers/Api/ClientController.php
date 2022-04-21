@@ -52,25 +52,49 @@ class ClientController extends Controller
     {
         $table = 'company_'.$request->company_id.'_clients';
         $validator = Validator::make($request->all(), [
-            'email' => "required|unique:$table|email",
+            'email'     => "required|unique:$table|email",
+            'reference' => "required",
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
+                'status'  => false,
                 'message' => $validator->errors()->first(),
             ]);
         }
 
-        $client =  new Client;
-        Client::setGlobalTable($table) ;
-        $client = $client->setTable($table)->create($request->except(['company_id', 'contacts', 'addresses']));
-        
-        return response()->json([
-            "status" => true,
-            "client" => $client,
-            "message" => "Client created successfully"
-        ]);
+        Client::setGlobalTable($table);
+        if ($request->reference_number == '') {
+            $client = Client::create($request->except(['company_id', 'contacts', 'addresses']));
+            $client->reference_number = get_client_latest_ref_number($request->company_id, $request->reference, 1);
+            $client->save();
+
+            return response()->json([
+                "status" => true,
+                "client" => $client,
+                "message" => "Client created successfully"
+            ]);
+        } else {
+            $client = Client::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
+
+            if ($client == NULL) {
+                $client = Client::create($request->except(['company_id', 'contacts', 'addresses']));
+                $client->reference_number = get_client_latest_ref_number($request->company_id, $request->reference, 0);
+                $client->save();
+
+                return response()->json([
+                    "status"  => true,
+                    "client"  => $client,
+                    "message" => "Client created successfully"
+                ]);
+            } else {
+                return response()->json([
+                    "status"  => false,
+                    "client"  => $client,
+                    "message" => "Please choose different reference number"
+                ]);
+            }
+        }
     }
 
     /**

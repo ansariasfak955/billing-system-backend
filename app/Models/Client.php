@@ -11,6 +11,7 @@ class Client extends Model
 
     protected $fillable = [
     	"reference",
+        "reference_number",
     	"legal_name",
     	"tin",
     	"phone_1",
