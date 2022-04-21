@@ -18,7 +18,7 @@
     <div class="card">
       <div class="card-body">
         <div class="table-responsive">
-          {!! $dataTable->table() !!}
+          {!! $dataTable->table(['class' => 'table table-hover table-bordered table-sm dataTable no-footer w-auto']) !!}
         </div>
       </div>
     </div>

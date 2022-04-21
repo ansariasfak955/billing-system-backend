@@ -15,6 +15,10 @@ class RoleSeeder extends Seeder
     public function run()
     {
         $roles = Role::all()->pluck('name')->toArray();
+        if (!Role::where('name', 'super admin')->exists()) {
+           Role::create(['name' => 'super admin']);
+        }
+
         if (!Role::where('name', 'admin')->exists()) {
            Role::create(['name' => 'admin']);
         }

@@ -9,3 +9,11 @@
 .table-responsive {
     overflow-x: hidden !important;
 }
+
+table td {
+    white-space: unset !important;
+}
+
+table form#form-4 {
+    width: 92px;
+}
