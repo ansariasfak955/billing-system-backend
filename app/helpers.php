@@ -26,3 +26,14 @@ function get_company_country_name($company_id)
 	}
 	return '';
 }
+
+function get_product_stock($company_id,$product_stock_id)
+{
+	$table = 'company_'.$company_id.'_product_stocks';
+    \App\Models\ProductStock::setGlobalTable($table);
+	return \App\Models\ProductStock::where('product_id', $product_stock_id)->first();
+	// if ($product_stock != NULL) {
+	// 	return $product_stock->stock;
+	// }
+	// return '';
+}

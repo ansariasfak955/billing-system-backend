@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\ProductStock;
 use Validator;
 
 class ProductController extends Controller
@@ -18,21 +19,26 @@ class ProductController extends Controller
     {
         if(($request->company_id ==  NULL)||($request->company_id ==  0)){
             return response()->json([
-                "status" => false,
-                "message" =>  "Please select company"
+                "status"  => false,
+                "message" => "Please select company"
             ]);
         }
-        $product =  new Product;
-        if($product->setTable('company_'.$request->company_id.'_products')->count() == 0){
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+        $products = Product::get();
+
+        if ($products->count() == 0) {
             return response()->json([
                 "status" => false,
-                "message" =>  "No data found"
+                "message" => "No product found!"
             ]);
+        } else {
+            return response()->json([
+                "status" => true,
+                "products" =>  $products
+            ]);  
         }
-        return response()->json([
-            "status" => true,
-            "products" =>  $product->setTable('company_'.$request->company_id.'_products')->get()
-        ]);
     }
 
     /**
@@ -46,7 +52,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(),[
             'name' => 'required',
             'price' => 'required|numeric',  
-            'category' => 'required'
+            // 'category' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -56,8 +62,10 @@ class ProductController extends Controller
             ]);
         }
 
-        $product =  new Product;
-        $product = $product->setTable('company_'.$request->company_id.'_products')->create($request->except('image', 'company_id', 'images'));
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $product = Product::create($request->except('image', 'company_id', 'images'));
 
         if($request->image != NULL){
             $imageName = time().'.'.$request->image->extension();  
@@ -71,6 +79,20 @@ class ProductController extends Controller
         $product->active_margin = $request->active_margin??'0';
         $product->is_promotional = $request->is_promotional??'0';
         $product->manage_stock = $request->manage_stock??'0';
+        if ($request->manage_stock == 1) {
+            $product_stock_table = 'company_'.$request->company_id.'_product_stocks';
+            ProductStock::setGlobalTable($product_stock_table);
+            $product_stock = ProductStock::where('product_id', $product->id)->first();
+            if ($product_stock == NULL) {
+                ProductStock::create([
+                    'product_id' => $product->id,
+                    'warehouse' => 'Main Warehouse',
+                    'stock' => 0,
+                    'virtual_stock' => 0,
+                    'minimum_stock' => 0,
+                ]);
+            }
+        }
         $product->save();
 
         return response()->json([
@@ -88,9 +110,9 @@ class ProductController extends Controller
      */
     public function show(Request $request)
     {
-        $product =  new Product;
-        $product = $product->setTable('company_'.$request->company_id.'_products')->where('id', $request->product)->first();
-
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+        $product = Product::where('id', $request->product)->first();
         if($product ==  NULL){
             return response()->json([
                 "status" => true,
@@ -126,9 +148,9 @@ class ProductController extends Controller
             ]);
         }
 
-        $product =  new Product;
-        $product = $product->setTable('company_'.$request->company_id.'_products')->where('id', $request->product)->first();
-        $product->setTable('company_'.$request->company_id.'_products')->where('id', $request->product)->update($request->except('image', 'company_id', 'images', '_method'));
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+        $product = Product::where('id', $request->product)->update($request->except('image', 'company_id', 'images', '_method'));
 
         if($request->image != NULL){
             $imageName = time().'.'.$request->image->extension();  
@@ -159,17 +181,18 @@ class ProductController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $product =  new Product;
-        $product = $product->setTable('company_'.$request->company_id.'_products')->where('id', $request->product)->first();
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+        $product = Product::where('id', $request->product)->first();
         if($product->delete()){
             return response()->json([
-                    'status' => true,
-                    'message' => "Product deleted successfully!"
+                'status' => true,
+                'message' => "Product deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => false,
-                    'message' => "Retry deleting again! "
+                'status' => false,
+                'message' => "Retry deleting again!"
             ]);
         }
     }

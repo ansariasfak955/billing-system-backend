@@ -21,6 +21,8 @@ class Product extends Model
         self::$globalTable = $table;
     }
 
+    protected $appends = ['stock', 'virtual_stock', 'minimum_stock'];
+
     public function getImageAttribute()
     {
         if ($this->attributes['image']) {
@@ -28,5 +30,38 @@ class Product extends Model
         } else {
             return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
         }
+    }
+
+    public function getStockAttribute()
+    {
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        $product_stock = get_product_stock($company_id, $this->attributes['id']);
+        if ($product_stock != NULL) {
+            return $product_stock->stock;
+        }
+        return '';
+    }
+
+    public function getVirtualStockAttribute()
+    {
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        $product_stock = get_product_stock($company_id, $this->attributes['id']);
+        if ($product_stock != NULL) {
+            return $product_stock->virtual_stock;
+        }
+        return '';
+    }
+
+    public function getMinimumStockAttribute()
+    {
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        $product_stock = get_product_stock($company_id, $this->attributes['id']);
+        if ($product_stock != NULL) {
+            return $product_stock->minimum_stock;
+        }
+        return '';
     }
 }

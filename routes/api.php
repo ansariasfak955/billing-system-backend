@@ -20,7 +20,7 @@ Route::group(['namespace' => 'Api'], function() {
     Route::post('forget-password', 'AuthController@forgetPassword');
     Route::post('reset-password', 'AuthController@resetPassword');
     Route::get('create-company-tables', function(){
-        App\Helpers\TableHelper::createTables(10);
+        App\Helpers\TableHelper::createTables(69);
     });
     Route::get('subscriptions', 'SubscriptionController@index');
    
@@ -31,6 +31,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('bank_accounts', BankAccountController::class);
             Route::apiResource('product_categories', ProductCategoryController::class);
             Route::apiResource('products', ProductController::class);
+            Route::apiResource('product-stock', ProductStockController::class);
             Route::apiResource('roles', RoleController::class);
             Route::apiResource('custom_states', CustomStateController::class);
             Route::apiResource('my_templates', MyTemplateController::class);

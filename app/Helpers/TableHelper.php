@@ -483,6 +483,20 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic product stocks table */
+        if (!Schema::hasTable('company_'.$company_id.'_product_stocks')) {
+            Schema::create('company_'.$company_id.'_product_stocks', function (Blueprint $table) {
+                $table->id();
+                $table->integer('product_id');
+                $table->string('warehouse');
+                $table->float('stock')->default(0);
+                $table->float('virtual_stock')->default(0);
+                $table->float('minimum_stock')->default(0);
+                $table->string('location')->nullable();
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic company based services table */
         if (!Schema::hasTable('company_'.$company_id.'_services')) {
             Schema::create('company_'.$company_id.'_services', function (Blueprint $table) {

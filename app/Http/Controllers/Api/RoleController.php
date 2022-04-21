@@ -62,7 +62,7 @@ class RoleController extends Controller
 
         if(Role::where('name', $request->name)->first() != NULL){
             return response()->json([
-                "status" => false,
+                "status"  => false,
                 "message" => "Role with same name already exists"
             ]);
         }
@@ -181,6 +181,8 @@ class RoleController extends Controller
         }
 
         return response()->json([
+            "status" => true,
+            "message" => "Role updated successfully!",
             "role" => $role
         ]);
     }
@@ -198,13 +200,13 @@ class RoleController extends Controller
         $role = Role::where('id', $request->role)->first();
         if($role->delete()){
             return response()->json([
-                    'status' => true,
-                    'message' => "Role deleted successfully!"
+                'status' => true,
+                'message' => "Role deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => false,
-                    'message' => "Retry deleting again! "
+                'status' => false,
+                'message' => "Retry deleting again! "
             ]);
         }
     }
@@ -217,13 +219,10 @@ class RoleController extends Controller
         (new UserController())->setConfig($request->company_id);
 
         $permissions = Permission::get();
-
-
         
         return response()->json([
-                'status' => true,
-                'permissions' => Permission::where('parent_id', 0)->with('children')->get()
+            'status' => true,
+            'permissions' => Permission::where('parent_id', 0)->with('children')->get()
         ]);
-        
     }
 }
