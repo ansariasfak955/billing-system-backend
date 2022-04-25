@@ -16,7 +16,7 @@
         </div>
         <div class="form-group py-2">
             {!! Form::label('type', 'Type', ['class' => 'form-label']) !!}
-            {!! Form::select('type', [ null=> 'Please Select' ] + $types, '', ['class' => 'form-control']) !!}
+            {!! Form::select('type', [ null=> 'Please Select' ] + $types, isset($subscription->type) ? $subscription->type : '', ['class' => 'form-control']) !!}
         </div>
     </div>
 </div>
