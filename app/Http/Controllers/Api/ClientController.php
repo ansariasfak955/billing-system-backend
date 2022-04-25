@@ -131,12 +131,11 @@ class ClientController extends Controller
      */
     public function update(Request $request)
     {
-        $client =  new Client;
-        $client = $client->setTable('company_'.$request->company_id.'_clients')->where('id', $request->client)->first();
-        
-        $client->update($request->except('company_id', '_method'));
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
 
-        $client->is_default = $request->is_default??$client->is_default;
+        $client = Client::where('id', $request->client)->first();
+        $client->update($request->except('company_id', '_method'));
         $client->save();
 
         return response()->json([
