@@ -43,6 +43,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('subscriptions', SubscriptionController::class);
 
     Route::resource('activity-type', ActivityTypeController::class);
+
+    Route::resource('roles', RoleController::class);
 });
 
 

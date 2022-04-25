@@ -99,6 +99,19 @@
             </ul>
           </div>
         </li>
+        <li class="nav-item {{ active_class(['forms/*']) }}">
+          <a href="#" class="nav-link" onclick="return false">
+            <i class="link-icon" data-feather="subscriptions"></i>
+            <span class="menu-title">Default Roles</span>
+            <i class="link-arrow"></i>
+          </a>
+          <div class="submenu">
+            <ul class="submenu-item">
+              <li class="nav-item"><a href="{{ url('/roles') }}" class="nav-link {{ active_class(['roles']) }}">Roles</a></li>
+              <li class="nav-item"><a href="{{ url('/roles/create') }}" class="nav-link {{ active_class(['roles/create']) }}">Add Role</a></li>
+            </ul>
+          </div>
+        </li>
       </ul>
     </div>
   </nav>
