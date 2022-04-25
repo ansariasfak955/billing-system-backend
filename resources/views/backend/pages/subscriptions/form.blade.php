@@ -14,5 +14,9 @@
             {!! Form::label('price', 'Price', ['class' => 'form-label']) !!}
             {!! Form::text('price', isset($subscription->price) ? $subscription->price : '', ['class' => 'form-control', isset($subscription->price) ? $subscription->price : '', 'placeholder' => 'Enter Price']) !!}
         </div>
+        <div class="form-group py-2">
+            {!! Form::label('type', 'Type', ['class' => 'form-label']) !!}
+            {!! Form::select('type', [ null=> 'Please Select' ] + $types, '', ['class' => 'form-control']) !!}
+        </div>
     </div>
 </div>

@@ -78,6 +78,7 @@ class SubscriptionDataTable extends DataTable
             Column::make('name'),
             Column::make('price'),
             Column::make('description'),
+            Column::make('type')->className('text-capitalize'),
             Column::make('action')->className('action-column'),
         ];
     }

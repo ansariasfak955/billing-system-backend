@@ -30,7 +30,11 @@ class SubscriptionController extends Controller
     public function create()
     {
         $page_title = "Create Subscription";
-        return view('backend.pages.subscriptions.create', compact('page_title'));
+        $types = array(
+            'monthly' => 'Monthly',
+            'annually' => 'Annually'
+        );
+        return view('backend.pages.subscriptions.create', compact('page_title', 'types'));
     }
 
     /**
@@ -81,7 +85,11 @@ class SubscriptionController extends Controller
     public function edit(Subscription $subscription)
     {
         $page_title = "Edit Subscription";
-        return view('backend.pages.subscriptions.edit', compact('subscription', 'page_title'));
+        $types = array(
+            'monthly' => 'Monthly',
+            'annually' => 'Annually'
+        );
+        return view('backend.pages.subscriptions.edit', compact('subscription', 'page_title', 'types'));
     }
 
     /**
