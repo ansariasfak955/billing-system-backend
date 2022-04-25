@@ -38,10 +38,13 @@ Route::group(['middleware' => 'auth'], function() {
     /* get and update password */
     Route::get('/change-password', 'UserController@changePassword');
     Route::post('/change-password', 'UserController@changePassword');
+
+    /* Subscriptions */
+    Route::resource('subscriptions', SubscriptionController::class);
+
+    Route::resource('activity-type', ActivityTypeController::class);
 });
 
-/* Subscriptions */
-Route::resource('subscriptions', SubscriptionController::class);
 
 Route::get('login', function () { return view('backend.pages.auth.login'); })->name('login');
 Route::post('login', 'Auth\LoginController@login');

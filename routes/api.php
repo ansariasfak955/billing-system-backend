@@ -66,5 +66,8 @@ Route::group(['namespace' => 'Api'], function() {
             /* Items */
             Route::apiResource('items', ItemController::class);
         });
+
+        /* Activity Type */
+        Route::get('activity-types', 'ActivityTypeController@index');
     });
 });
