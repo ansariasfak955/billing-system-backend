@@ -56,6 +56,7 @@ class RoleController extends Controller
         }
 
         $role = Role::create($request->all());
+        $role->guard_name = 'web';
         $role->save();
 
         return redirect()->route('roles.index')->withSuccess('New role is created successfully!');
