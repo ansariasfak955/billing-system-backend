@@ -20,6 +20,8 @@ class TableHelper
 {
     public static function createTables($company_id)
     {
+        $roles = Role::get();
+
         /* set tables in config files */
         (new UserController())->setConfig($company_id);
 
@@ -33,6 +35,15 @@ class TableHelper
             });
         }
 
+        if ($roles != NULL) {
+            foreach ($roles as $role) {
+                Role::create([
+                    'name' => $role->name,
+                    'guard_name' => 'web',
+                ]);
+            }
+        }
+        
         /* Creating dynamic clients table */
         if (!Schema::hasTable('company_'.$company_id.'_clients')) {
             Schema::create('company_'.$company_id.'_clients', function (Blueprint $table) {
@@ -2131,23 +2142,35 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
            $permission->save();
         }
 
-        if (!Role::where('name', 'Super Admin')->exists()) {
-            Role::create(['name' => 'Super Admin']);
-        }
+        // if (!Role::where('name', 'Super Admin')->exists()) {
+        //     Role::create(['name' => 'Super Admin']);
+        // }
 
-        if (!Role::where('name', 'Admin')->exists()) {
-            Role::create(['name' => 'Admin']);
-        }
+        // if (!Role::where('name', 'Admin')->exists()) {
+        //     Role::create(['name' => 'Admin']);
+        // }
+
+        // if (!Role::where('name', 'Sales Admin')->exists()) {
+        //     Role::create(['name' => 'Sales Admin']);
+        // }
+
+        // if (!Role::where('name', 'Salesperson')->exists()) {
+        //     Role::create(['name' => 'Salesperson']);
+        // }
+
+        // if (!Role::where('name', 'Technical Admin')->exists()) {
+        //     Role::create(['name' => 'Technical Admin']);
+        // }
+
+        // if (!Role::where('name', 'Technician')->exists()) {
+        //    Role::create(['name' => 'Technician']);
+        // }
 
         if (!Permission::where('name', 'Admin')->exists()) {
            $permission = Permission::create(['name' => 'Admin']);
            $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
            $permission->is_checkbox = 1;
            $permission->save();
-        }
-
-        if (!Role::where('name', 'Sales Admin')->exists()) {
-            Role::create(['name' => 'Sales Admin']);
         }
 
         if (!Permission::where('name', 'Sales Admin')->exists()) {
@@ -2157,31 +2180,18 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
             $permission->save();
         }
 
-        if (!Role::where('name', 'Salesperson')->exists()) {
-            Role::create(['name' => 'Salesperson']);
-        }
-
         if (!Permission::where('name', 'Salesperson')->exists()) {
             $permission = Permission::create(['name' => 'Salesperson']);
             $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
             $permission->is_checkbox = 1;
             $permission->save();
         }
-
-        if (!Role::where('name', 'Technical Admin')->exists()) {
-            Role::create(['name' => 'Technical Admin']);
-        }
-
+        
         if (!Permission::where('name', 'Technical Admin')->exists()) {
             $permission = Permission::create(['name' => 'Technical Admin']);
             $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
             $permission->is_checkbox = 1;
             $permission->save();
-        }
-
-        if (!Role::where('name', 'Technician')->exists()) {
-           Role::create(['name' => 'Technician']);
-           
         }
 
         if (!Permission::where('name', 'Technician')->exists()) {

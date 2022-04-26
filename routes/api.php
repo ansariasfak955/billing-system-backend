@@ -20,7 +20,7 @@ Route::group(['namespace' => 'Api'], function() {
     Route::post('forget-password', 'AuthController@forgetPassword');
     Route::post('reset-password', 'AuthController@resetPassword');
     Route::get('create-company-tables', function(){
-        App\Helpers\TableHelper::createTables(69);
+        App\Helpers\TableHelper::createTables(57);
     });
     Route::get('subscriptions', 'SubscriptionController@index');
    
