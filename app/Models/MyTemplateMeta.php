@@ -11,7 +11,7 @@ class MyTemplateMeta extends Model
     
     public $timestamps = false;
 
-    protected $fillable = ['template_id', 'option_name', 'option_value'];
+    protected $fillable = ['template_id', 'option_name', 'option_value', 'category', 'type'];
 
     protected static $globalTable = 'my_template_metas' ;
 

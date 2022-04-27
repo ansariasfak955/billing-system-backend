@@ -37,10 +37,12 @@ class TableHelper
 
         if ($roles != NULL) {
             foreach ($roles as $role) {
-                Role::create([
-                    'name' => $role->name,
-                    'guard_name' => 'web',
-                ]);
+                if (!Role::where('name', $role->name)->exists()) {
+                    Role::create([
+                        'name' => $role->name,
+                        'guard_name' => 'web',
+                    ]);
+                }
             }
         }
         
@@ -656,6 +658,8 @@ class TableHelper
                 $table->integer('template_id');
                 $table->string('option_name')->nullable();
                 $table->longText('option_value')->nullable();
+                $table->string('category')->nullable();
+                $table->string('type')->nullable();
             });
         }
 
@@ -682,672 +686,900 @@ class TableHelper
                 $template_created = MyTemplate::create(["name" => $template." Template", "document_type" => $template, "font" => "DejaVu Sans", "color" => "#fd6c00", "is_default" => "1", "hide_company_information" => "0", "hide_assets_information" => "0", "show_signature_box" => "0" ]);
                 MyTemplateMeta::setGlobalTable('company_'.$company_id.'_my_template_metas');
                 /* Company Information block starts here */
-                    /* logo */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "logo_heading",
-                        "option_value" => "Logo"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "logo_show",
-                        "option_value" => "1"
-                    ]);
+                /* logo */
+                MyTemplateMeta::create([
+                    "template_id"  => $template_created->id,
+                    "option_name"  => "logo_heading",
+                    "option_value" => "Logo",
+                    "category"     => 'Company Information',
+                    "type"         => "logo",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id"  => $template_created->id,
+                    "option_name"  => "logo_show",
+                    "option_value" => "1",
+                    "category"     => 'Company Information',
+                    "type"         => "logo",
+                ]);
 
-                    /* legal name */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "legal_name_heading",
-                        "option_value" => "Legal Name"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "legal_name_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "legal_name_text",
-                        "option_value" => ""
-                    ]);
+                /* legal name */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "legal_name_heading",
+                    "option_value" => "Legal Name",
+                    "category" => 'Company Information',
+                    "type" => "legal",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "legal_name_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "legal",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "legal_name_text",
+                    "option_value" => "",
+                    "category" => 'Company Information',
+                    "type" => "legal",
+                ]);
 
-                    /* name */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "name_heading",
-                        "option_value" => "Name"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "name_show",
-                        "option_value" => "1"
-                    ]);
+                /* name */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "name_heading",
+                    "option_value" => "Name",
+                    "category" => 'Company Information',
+                    "type" => "name",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "name_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "name",
+                ]);
 
-                    /* TIN */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "tin_heading",
-                        "option_value" => "TIN"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "tin_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "tin_text",
-                        "option_value" => ""
-                    ]);
+                /* TIN */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "tin_heading",
+                    "option_value" => "TIN",
+                    "category" => 'Company Information',
+                    "type" => "tin",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "tin_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "tin",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "tin_text",
+                    "option_value" => "",
+                    "category" => 'Company Information',
+                    "type" => "tin",
+                ]);
 
-                    /* Phone */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "phone_heading",
-                        "option_value" => "Phone"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "phone_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "phone_text",
-                        "option_value" => ""
-                    ]);
+                /* Phone */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "phone_heading",
+                    "option_value" => "Phone",
+                    "category" => 'Company Information',
+                    "type" => "phone",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "phone_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "phone",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "phone_text",
+                    "option_value" => "",
+                    "category" => 'Company Information',
+                    "type" => "phone",
+                ]);
 
-                    /* Fax */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "fax_heading",
-                        "option_value" => "Fax"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "fax_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "fax_text",
-                        "option_value" => ""
-                    ]);
+                /* Fax */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "fax_heading",
+                    "option_value" => "Fax",
+                    "category" => 'Company Information',
+                    "type" => "fax",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "fax_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "fax",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "fax_text",
+                    "option_value" => "",
+                    "category" => 'Company Information',
+                    "type" => "fax",
+                ]);
 
-                    /* Email */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "email_heading",
-                        "option_value" => "Email"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "email_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "email_text",
-                        "option_value" => ""
-                    ]);
+                /* Email */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "email_heading",
+                    "option_value" => "Email",
+                    "category" => 'Company Information',
+                    "type" => "email",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "email_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "email",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "email_text",
+                    "option_value" => "",
+                    "category" => 'Company Information',
+                    "type" => "email",
+                ]);
 
-                    /* Website */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "website_heading",
-                        "option_value" => "Website"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "website_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "website_text",
-                        "option_value" => ""
-                    ]);
+                /* Website */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "website_heading",
+                    "option_value" => "Website",
+                    "category" => 'Company Information',
+                    "type" => "website",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "website_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "website",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "website_text",
+                    "option_value" => "",
+                    "category" => 'Company Information',
+                    "type" => "website",
+                ]);
 
-                    /* Address */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "address_heading",
-                        "option_value" => "Address"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "address_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "address_text",
-                        "option_value" => ""
-                    ]);
+                /* Address */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "address_heading",
+                    "option_value" => "Address",
+                    "category" => 'Company Information',
+                    "type" => "address",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "address_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "address",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "address_text",
+                    "option_value" => "",
+                    "category" => 'Company Information',
+                    "type" => "address",
+                ]);
 
-                    /* Zip/Postal Code */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "zip_code_heading",
-                        "option_value" => "Zip/Postal Code"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "zip_code_show",
-                        "option_value" => "1"
-                    ]);
+                /* Zip/Postal Code */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "zip_code_heading",
+                    "option_value" => "Zip/Postal Code",
+                    "category" => 'Company Information',
+                    "type" => "zip",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "zip_code_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "zip",
+                ]);
 
-                    /* City/Town */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "city_heading",
-                        "option_value" => "City/Town Code"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "city_show",
-                        "option_value" => "1"
-                    ]);
+                /* City/Town */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "city_heading",
+                    "option_value" => "City/Town Code",
+                    "category" => 'Company Information',
+                    "type" => "city",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "city_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "city",
+                ]);
 
-                    /* State/Province */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "state_heading",
-                        "option_value" => "State/Province"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "state_show",
-                        "option_value" => "1"
-                    ]);
+                /* State/Province */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "state_heading",
+                    "option_value" => "State/Province",
+                    "category" => 'Company Information',
+                    "type" => "state",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "state_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "state",
+                ]);
 
-                    /* Country */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "country_heading",
-                        "option_value" => "Country"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "country_show",
-                        "option_value" => "1"
-                    ]);
-
+                /* Country */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "country_heading",
+                    "option_value" => "Country",
+                    "category" => 'Company Information',
+                    "type" => "country",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "country_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "country",
+                ]);
                 /* company information ends here*/
 
 
                 /* document information starts here */
-                    /* Document Type */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_type_heading",
-                        "option_value" => "Document Type"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_type_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_type_text",
-                        "option_value" => ""
-                    ]);
+                /* Document Type */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_type_heading",
+                    "option_value" => "Document Type",
+                    "category" => "Document Information",
+                    "type" => "document_type",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_type_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "document_type",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_type_text",
+                    "option_value" => "",
+                    "category" => "Document Information",
+                    "type" => "document_type",
+                ]);
 
-                    /* Document Title */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_title_heading",
-                        "option_value" => "Document Title"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_title_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_title_text",
-                        "option_value" => ""
-                    ]);
+                /* Document Title */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_title_heading",
+                    "option_value" => "Document Title",
+                    "category" => "Document Information",
+                    "type" => "document_title",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_title_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "document_title",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_title_text",
+                    "option_value" => "",
+                    "category" => "Document Information",
+                    "type" => "document_title",
+                ]);
 
-                    /* Section Title */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_section_title_heading",
-                        "option_value" => "Section Title"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_section_title_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_section_title_text",
-                        "option_value" => $template." INFO"
-                    ]);
+                /* Section Title */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_section_title_heading",
+                    "option_value" => "Section Title",
+                    "category" => "Document Information",
+                    "type" => "section",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_section_title_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "section",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_section_title_text",
+                    "option_value" => $template." INFO",
+                    "category" => "Document Information",
+                    "type" => "section",
+                ]);
 
-                    /* Reference */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_reference_heading",
-                        "option_value" => "Reference"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_reference_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_reference_text",
-                        "option_value" => "Number:"
-                    ]);
+                /* Reference */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_reference_heading",
+                    "option_value" => "Reference",
+                    "category" => "Document Information",
+                    "type" => "reference",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_reference_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "reference",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_reference_text",
+                    "option_value" => "Number:",
+                    "category" => "Document Information",
+                    "type" => "reference",
+                ]);
 
-                    /* Generated From */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_generated_from_heading",
-                        "option_value" => "Generated From"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_generated_from_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_generated_from_text",
-                        "option_value" => "Generated From:"
-                    ]);
+                /* Generated From */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_generated_from_heading",
+                    "option_value" => "Generated From",
+                    "category" => "Document Information",
+                    "type" => "document",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_generated_from_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "document",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_generated_from_text",
+                    "option_value" => "Generated From:",
+                    "category" => "Document Information",
+                    "type" => "document",
+                ]);
 
-                    /* Date */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_date_heading",
-                        "option_value" => "Date"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_date_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_date_text",
-                        "option_value" => "Date:"
-                    ]);
+                /* Date */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_date_heading",
+                    "option_value" => "Date",
+                    "category" => "Document Information",
+                    "type" => "date",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_date_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "date",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_date_text",
+                    "option_value" => "Date:",
+                    "category" => "Document Information",
+                    "type" => "date",
+                ]);
 
-                    /* Payment Option */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_payment_option_heading",
-                        "option_value" => "Payment Option"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_payment_option_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_payment_option_text",
-                        "option_value" => "Payment Option:"
-                    ]);
+                /* Payment Option */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_payment_option_heading",
+                    "option_value" => "Payment Option",
+                    "category" => "Document Information",
+                    "type" => "document_payment",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_payment_option_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "document_payment",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_payment_option_text",
+                    "option_value" => "Payment Option:",
+                    "category" => "Document Information",
+                    "type" => "document_payment",
+                ]);
 
-                    /* Bank Account */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_bank_account_heading",
-                        "option_value" => "Bank Account"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_bank_account_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_bank_account_text",
-                        "option_value" => "Account:"
-                    ]);
+                /* Bank Account */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_bank_account_heading",
+                    "option_value" => "Bank Account",
+                    "category" => "Document Information",
+                    "type" => "document_bank",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_bank_account_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "document_bank",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_bank_account_text",
+                    "option_value" => "Account:",
+                    "category" => "Document Information",
+                    "type" => "document_bank",
+                ]);
 
-                    /* BIC/SWIFT */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_bic_heading",
-                        "option_value" => "BIC/SWIFT"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_bic_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_bic_text",
-                        "option_value" => "BIC:"
-                    ]);
+                /* BIC/SWIFT */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_bic_heading",
+                    "option_value" => "BIC/SWIFT",
+                    "category" => "Document Information",
+                    "type" => "document_bic",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_bic_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "document_bic",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_bic_text",
+                    "option_value" => "BIC:",
+                    "category" => "Document Information",
+                    "type" => "document_bic",
+                ]);
 
-                    /* Status */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_status_heading",
-                        "option_value" => "Status"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_status_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_status_text",
-                        "option_value" => "Status:"
-                    ]);
+                /* Status */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_status_heading",
+                    "option_value" => "Status",
+                    "category" => "Document Information",
+                    "type" => "document_status",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_status_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "document_status",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_status_text",
+                    "option_value" => "Status:",
+                    "category" => "Document Information",
+                    "type" => "document_status",
+                ]);
 
-                    /* Created By */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_created_by_heading",
-                        "option_value" => "Created by"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_created_by_show",
-                        "option_value" => "0"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_created_by_text",
-                        "option_value" => "Created by:"
-                    ]);
+                /* Created By */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_created_by_heading",
+                    "option_value" => "Created by",
+                    "category" => "Document Information",
+                    "type" => "document_created",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_created_by_show",
+                    "option_value" => "0",
+                    "category" => "Document Information",
+                    "type" => "document_created",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_created_by_text",
+                    "option_value" => "Created by:",
+                    "category" => "Document Information",
+                    "type" => "document_created",
+                ]);
 
-                    /* Agent */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_agent_heading",
-                        "option_value" => "Agent"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_agent_show",
-                        "option_value" => "0"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_agent_text",
-                        "option_value" => "Agent:"
-                    ]);
+                /* Agent */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_agent_heading",
+                    "option_value" => "Agent",
+                    "category" => "Document Information",
+                    "type" => "document_agent",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_agent_show",
+                    "option_value" => "0",
+                    "category" => "Document Information",
+                    "type" => "document_agent",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_agent_text",
+                    "option_value" => "Agent:",
+                    "category" => "Document Information",
+                    "type" => "document_agent",
+                ]);
 
-                    /* Purchase Document Ref. */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "purchase_document_ref_heading",
-                        "option_value" => "Purchase Document Ref."
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "purchase_document_ref_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "purchase_document_ref_text",
-                        "option_value" => "Purchase Document Ref.:"
-                    ]);
+                /* Purchase Document Ref. */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "purchase_document_ref_heading",
+                    "option_value" => "Purchase Document Ref.",
+                    "category" => "Document Information",
+                    "type" => "purchase_document",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "purchase_document_ref_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "purchase_document",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "purchase_document_ref_text",
+                    "option_value" => "Purchase Document Ref.:",
+                    "category" => "Document Information",
+                    "type" => "purchase_document",
+                ]);
 
-                    /* Sent Date: */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_sent_date_heading",
-                        "option_value" => "Sent Date"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_sent_date_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_sent_date_text",
-                        "option_value" => "Delivery Date:"
-                    ]);
+                /* Sent Date: */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_sent_date_heading",
+                    "option_value" => "Sent Date",
+                    "category" => "Document Information",
+                    "type" => "document_sent",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_sent_date_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "document_sent",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_sent_date_text",
+                    "option_value" => "Delivery Date:",
+                    "category" => "Document Information",
+                    "type" => "document_sent",
+                ]);
 
-                    /* Delivery Option: */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_delivery_option_heading",
-                        "option_value" => "Delivery Option"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_delivery_option_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "document_delivery_option_text",
-                        "option_value" => "Delivery Option:"
-                    ]);
+                /* Delivery Option: */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_delivery_option_heading",
+                    "option_value" => "Delivery Option",
+                    "category" => "Document Information",
+                    "type" => "document_delivery",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_delivery_option_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "document_delivery",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_delivery_option_text",
+                    "option_value" => "Delivery Option:",
+                    "category" => "Document Information",
+                    "type" => "document_delivery",
+                ]);
 
                 /* document information ends here*/
 
                 /* Client/Supplier Information starts here */
-                    /* Section Title: */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_section_title_heading",
-                        "option_value" => "Section Title"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_section_title_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_section_title_text",
-                        "option_value" => "CLIENT INFO"
-                    ]);
+                /* Section Title: */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_section_title_heading",
+                    "option_value" => "Section Title",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_section",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_section_title_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_section",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_section_title_text",
+                    "option_value" => "CLIENT INFO",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_section",
+                ]);
 
-                    /* Reference */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_reference_heading",
-                        "option_value" => "Reference"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_reference_show",
-                        "option_value" => "0"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_reference_text",
-                        "option_value" => ""
-                    ]);
+                /* Reference */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_reference_heading",
+                    "option_value" => "Reference",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_reference",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_reference_show",
+                    "option_value" => "0",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_reference",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_reference_text",
+                    "option_value" => "",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_reference",
+                ]);
 
-                    /* Legal Name */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_legal_name_heading",
-                        "option_value" => "Reference"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_legal_name_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_legal_name_text",
-                        "option_value" => ""
-                    ]);
+                /* Legal Name */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_legal_name_heading",
+                    "option_value" => "Reference",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_legal_name",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_legal_name_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_legal_name",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_legal_name_text",
+                    "option_value" => "",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_legal_name",
+                ]);
 
-                    /* Name */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_name_heading",
-                        "option_value" => "Name"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_name_show",
-                        "option_value" => "1"
-                    ]);
+                /* Name */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_name_heading",
+                    "option_value" => "Name",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_name",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_name_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_name",
+                ]);
 
-                    /* TIN */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_tin_heading",
-                        "option_value" => "TIN"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_tin_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_tin_text",
-                        "option_value" => ""
-                    ]);
+                /* TIN */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_tin_heading",
+                    "option_value" => "TIN",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_tin",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_tin_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_tin",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_tin_text",
+                    "option_value" => "",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_tin",
+                ]);
 
-                    /* Phone */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_phone_heading",
-                        "option_value" => "Phone"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_phone_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_phone_text",
-                        "option_value" => "Phone:"
-                    ]);
+                /* Phone */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_phone_heading",
+                    "option_value" => "Phone",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_phone",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_phone_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_phone",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_phone_text",
+                    "option_value" => "Phone:",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_phone",
+                ]);
 
-                    /* Fax */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_fax_heading",
-                        "option_value" => "Phone"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_fax_show",
-                        "option_value" => "0"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_fax_text",
-                        "option_value" => "Fax:"
-                    ]);
+                /* Fax */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_fax_heading",
+                    "option_value" => "Phone",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_fax",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_fax_show",
+                    "option_value" => "0",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_fax",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_fax_text",
+                    "option_value" => "Fax:",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_fax",
+                ]);
 
-                    /* Email */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_email_heading",
-                        "option_value" => "Email"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_email_show",
-                        "option_value" => "0"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_email_text",
-                        "option_value" => ""
-                    ]);
+                /* Email */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_email_heading",
+                    "option_value" => "Email",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_supplier",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_email_show",
+                    "option_value" => "0",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_supplier",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_email_text",
+                    "option_value" => "",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_supplier",
+                ]);
 
-                    /* Website */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_website_heading",
-                        "option_value" => "Email"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_website_show",
-                        "option_value" => "0"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_website_text",
-                        "option_value" => ""
-                    ]);
+                /* Website */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_website_heading",
+                    "option_value" => "Email",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_website",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_website_show",
+                    "option_value" => "0",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_website",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_website_text",
+                    "option_value" => "",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_website",
+                ]);
 
-                    /* Billing Address */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_billing_address_heading",
-                        "option_value" => "Billing Address"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_billing_address_show",
-                        "option_value" => "1"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_billing_address_text",
-                        "option_value" => ""
-                    ]);
+                /* Billing Address */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_billing_address_heading",
+                    "option_value" => "Billing Address",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_billing",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_billing_address_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_billing",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_billing_address_text",
+                    "option_value" => "",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_billing",
+                ]);
 
-                    /* Zip/Postal Code */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_zip_code_heading",
-                        "option_value" => "Zip/Postal Code"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_zip_code_show",
-                        "option_value" => "1"
-                    ]);
+                /* Zip/Postal Code */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_zip_code_heading",
+                    "option_value" => "Zip/Postal Code",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_zip_code",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_zip_code_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_zip_code",
+                ]);
 
-                    /* City/Town */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_city_heading",
-                        "option_value" => "City/Town Code"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_city_show",
-                        "option_value" => "1"
-                    ]);
+                /* City/Town */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_city_heading",
+                    "option_value" => "City/Town Code",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_city",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_city_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_city",
+                ]);
 
-                    /* State/Province */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_state_heading",
-                        "option_value" => "State/Province"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_state_show",
-                        "option_value" => "1"
-                    ]);
+                /* State/Province */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_state_heading",
+                    "option_value" => "State/Province",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_state",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_state_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_state",
+                ]);
 
-                    /* Country */
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_country_heading",
-                        "option_value" => "Country"
-                    ]);
-                    MyTemplateMeta::create([
-                        "template_id" => $template_created->id,
-                        "option_name" => "client_country_show",
-                        "option_value" => "1"
-                    ]);
-                    
+                /* Country */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_country_heading",
+                    "option_value" => "Country",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_country",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_country_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_country",
+                ]);
                 /* Client/Supplier Information ends here */
 
                 /* Items starts here */
@@ -1355,75 +1587,101 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_reference_column_heading",
-                        "option_value" => "Reference Col."
+                        "option_value" => "Reference Col.",
+                        "category" => "Items",
+                        "type" => "items_reference",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_reference_column_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Items",
+                        "type" => "items_reference",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_reference_column_text",
-                        "option_value" => "REF."
+                        "option_value" => "REF.",
+                        "category" => "Items",
+                        "type" => "items_reference",
                     ]);
 
                     /* Barcode */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_barcode_heading",
-                        "option_value" => "Barcode"
+                        "option_value" => "Barcode",
+                        "category" => "Items",
+                        "type" => "items_barcode",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_barcode_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Items",
+                        "type" => "items_barcode",
                     ]);
 
                     /* Name column */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_name_column_heading",
-                        "option_value" => "Name Col."
+                        "option_value" => "Name Col.",
+                        "category" => "Items",
+                        "type" => "items_name",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_name_column_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Items",
+                        "type" => "items_name",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_name_column_text",
-                        "option_value" => "NAME"
+                        "option_value" => "NAME",
+                        "category" => "Items",
+                        "type" => "items_name",
                     ]);
 
                     /* Description */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_description_heading",
-                        "option_value" => "Description"
+                        "option_value" => "Description",
+                        "category" => "Items",
+                        "type" => "items_description",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_description_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Items",
+                        "type" => "items_description",
                     ]);
 
                     /* Unit Price column */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_unit_price_column_heading",
-                        "option_value" => "Unit Price Col."
+                        "option_value" => "Unit Price Col.",
+                        "category" => "Items",
+                        "type" => "items_unit_price",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_unit_price_column_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Items",
+                        "type" => "items_unit_price",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_unit_price_column_text",
-                        "option_value" => "PRICE"
+                        "option_value" => "PRICE",
+                        "category" => "Items",
+                        "type" => "items_unit_price",
                     ]);
 
 
@@ -1431,104 +1689,140 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_column_heading",
-                        "option_value" => "Discount Col."
+                        "option_value" => "Discount Col.",
+                        "category" => "Items",
+                        "type" => "items_discount",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_column_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Items",
+                        "type" => "items_discount",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_column_text",
-                        "option_value" => "DISC."
+                        "option_value" => "DISC.",
+                        "category" => "Items",
+                        "type" => "items_discount",
                     ]);
 
                     /* Units column */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_units_column_heading",
-                        "option_value" => "Units Col."
+                        "option_value" => "Units Col.",
+                        "category" => "Items",
+                        "type" => "items_units",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_units_column_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Items",
+                        "type" => "items_units",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_units_column_text",
-                        "option_value" => "QTY."
+                        "option_value" => "QTY.",
+                        "category" => "Items",
+                        "type" => "items_units",
                     ]);
 
                     /* Price column */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_price_column_heading",
-                        "option_value" => "Price Col."
+                        "option_value" => "Price Col.",
+                        "category" => "Items",
+                        "type" => "items_price",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_price_column_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Items",
+                        "type" => "items_price",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_price_column_text",
-                        "option_value" => "SUBTOTAL"
+                        "option_value" => "SUBTOTAL",
+                        "category" => "Items",
+                        "type" => "items_price",
                     ]);
 
                     /* Tax column */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_tax_column_heading",
-                        "option_value" => "Tax Col."
+                        "option_value" => "Tax Col.",
+                        "category" => "Items",
+                        "type" => "items_tax",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_tax_column_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Items",
+                        "type" => "items_tax",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_tax_column_text",
-                        "option_value" => "TAXES"
+                        "option_value" => "TAXES",
+                        "category" => "Items",
+                        "type" => "items_tax",
                     ]);
 
                     /* Discount text */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_heading",
-                        "option_value" => "Discount text"
+                        "option_value" => "Discount text",
+                        "category" => "Items",
+                        "type" => "discount",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_text",
-                        "option_value" => "Disc.:"
+                        "option_value" => "Disc.:",
+                        "category" => "Items",
+                        "type" => "discount",
                     ]);
 
                     /* Subtotal text */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_subtotal_text_heading",
-                        "option_value" => "Subtotal text"
+                        "option_value" => "Subtotal text",
+                        "category" => "Items",
+                        "type" => "items_subtotal",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_subtotal_text_text",
-                        "option_value" => "Subtotal:"
+                        "option_value" => "Subtotal:",
+                        "category" => "Items",
+                        "type" => "items_subtotal",
                     ]);
 
                     /* Discount line */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_line_heading",
-                        "option_value" => "Discount line"
+                        "option_value" => "Discount line",
+                        "category" => "Items",
+                        "type" => "items_discount_line",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_line_text",
-                        "option_value" => "Discount on subtotal:"
+                        "option_value" => "Discount on subtotal:",
+                        "category" => "Items",
+                        "type" => "items_discount_line",
                     ]);
 
                 /* Items ends here */
@@ -1538,75 +1832,101 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_signature_title_heading",
-                        "option_value" => "Signature Title"
+                        "option_value" => "Signature Title",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_signature_title",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_signature_title_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_signature_title",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_signature_title_text",
-                        "option_value" => "Signed:"
+                        "option_value" => "Signed:",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_signature_title",
                     ]);
 
                     /* Signature Name */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_signature_name_heading",
-                        "option_value" => "Signature Name"
+                        "option_value" => "Signature Name",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_signature_name",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_signature_name_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_signature_name",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_signature_name_text",
-                        "option_value" => "Name:"
+                        "option_value" => "Name:",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_signature_name",
                     ]);
 
                     /* TIN Signature */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_tin_signature_heading",
-                        "option_value" => "Signature Name"
+                        "option_value" => "Signature Name",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_tin_signature",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_tin_signature_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_tin_signature",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_tin_signature_text",
-                        "option_value" => "TIN:"
+                        "option_value" => "TIN:",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_tin_signature",
                     ]);
 
                     /* Base Text */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_base_text_heading",
-                        "option_value" => "Base text"
+                        "option_value" => "Base text",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_base_text",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_base_text_text",
-                        "option_value" => "BASE"
+                        "option_value" => "BASE",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_base_text",
                     ]);
 
                     /* Total Text */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_total_text_heading",
-                        "option_value" => "Total text"
+                        "option_value" => "Total text",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_total_text",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_total_text_text",
-                        "option_value" => "TOTAL"
+                        "option_value" => "TOTAL",
+                        "category" => "Signature and Summary",
+                        "type" => "sign_total_text",
                     ]);
 
 
@@ -1617,34 +1937,46 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "footer_heading",
-                        "option_value" => "Footer"
+                        "option_value" => "Footer",
+                        "category" => "Footer and Legal Note",
+                        "type" => "footer_heading",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "footer_show",
-                        "option_value" => "0"
+                        "option_value" => "0",
+                        "category" => "Footer and Legal Note",
+                        "type" => "footer_heading",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "footer_text",
-                        "option_value" => ""
+                        "option_value" => "",
+                        "category" => "Footer and Legal Note",
+                        "type" => "footer_heading",
                     ]);
 
                     /* Legal Note */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "legal_note_heading",
-                        "option_value" => "Legal Note"
+                        "option_value" => "Legal Note",
+                        "category" => "Footer and Legal Note",
+                        "type" => "legal_note",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "legal_note_show",
-                        "option_value" => "Down"
+                        "option_value" => "Down",
+                        "category" => "Footer and Legal Note",
+                        "type" => "legal_note",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "legal_note_text",
-                        "option_value" => ""
+                        "option_value" => "",
+                        "category" => "Footer and Legal Note",
+                        "type" => "legal_note",
                     ]);
 
                 /* Footer and Legal Note ends here */
@@ -1654,70 +1986,94 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "comments_heading",
-                        "option_value" => "Comments"
+                        "option_value" => "Comments",
+                        "category" => "Comments and Addendums",
+                        "type" => "comments",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "comments_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Comments and Addendums",
+                        "type" => "comments",
                     ]);
 
                     /* Comments Title */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "comments_title_heading",
-                        "option_value" => "Comments"
+                        "option_value" => "Comments",
+                        "category" => "Comments and Addendums",
+                        "type" => "comments_title",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "comments_title_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Comments and Addendums",
+                        "type" => "comments_title",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "comments_title_text",
-                        "option_value" => "COMMENTS"
+                        "option_value" => "COMMENTS",
+                        "category" => "Comments and Addendums",
+                        "type" => "comments_title",
                     ]);
 
                     /* Addendum */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "addendum_heading",
-                        "option_value" => "Addendum"
+                        "option_value" => "Addendum",
+                        "category" => "Comments and Addendums",
+                        "type" => "addendum",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "addendum_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Comments and Addendums",
+                        "type" => "addendum",
                     ]);
 
                     /* Addendum Title*/
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "addendum_title_heading",
-                        "option_value" => "Addendum"
+                        "option_value" => "Addendum",
+                        "category" => "Comments and Addendums",
+                        "type" => "addendum_title",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "addendum_title_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Comments and Addendums",
+                        "type" => "addendum_title",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "addendum_title_text",
-                        "option_value" => "ADDENDUM"
+                        "option_value" => "ADDENDUM",
+                        "category" => "Comments and Addendums",
+                        "type" => "addendum_title",
                     ]);
 
                     /* Addendum as image*/
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "addendum_as_image_heading",
-                        "option_value" => "Addendum"
+                        "option_value" => "Addendum",
+                        "category" => "Comments and Addendums",
+                        "type" => "addendum_as_image",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "addendum_as_image_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Comments and Addendums",
+                        "type" => "addendum_as_image",
                     ]);
 
 
@@ -1729,80 +2085,108 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_section_title_heading",
-                            "option_value" => "Section Title"
+                            "option_value" => "Section Title",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_section",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_section_title_show",
-                            "option_value" => "1"
+                            "option_value" => "1",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_section",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_section_title_text",
-                            "option_value" => "ASSETS INFO"
+                            "option_value" => "ASSETS INFO",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_section",
                         ]);
 
                         /* Image */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_image_heading",
-                            "option_value" => "Image"
+                            "option_value" => "Image",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_image",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_image_show",
-                            "option_value" => "1"
+                            "option_value" => "1",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_image",
                         ]);
 
                         /* Reference */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_reference_heading",
-                            "option_value" => "Reference"
+                            "option_value" => "Reference",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_reference",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_reference_show",
-                            "option_value" => "0"
+                            "option_value" => "0",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_reference",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_reference_text",
-                            "option_value" => ""
+                            "option_value" => "",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_reference",
                         ]);
 
                         /* Name */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_name_heading",
-                            "option_value" => "Name"
+                            "option_value" => "Name",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_name",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_name_show",
-                            "option_value" => "1"
+                            "option_value" => "1",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_name",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_name_text",
-                            "option_value" => "NAME:"
+                            "option_value" => "NAME:",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_name",
                         ]);
 
                         /* Identifier */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_identifier_heading",
-                            "option_value" => "Identifier"
+                            "option_value" => "Identifier",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_identifier",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_identifier_show",
-                            "option_value" => "1"
+                            "option_value" => "1",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_identifier",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_identifier_text",
-                            "option_value" => "Identifier:"
+                            "option_value" => "Identifier:",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_identifier",
                         ]);
 
 
@@ -1810,102 +2194,138 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_serial_no_heading",
-                            "option_value" => "Serial Number"
+                            "option_value" => "Serial Number",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_serial_no",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_serial_no_show",
-                            "option_value" => "1"
+                            "option_value" => "1",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_serial_no",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_serial_no_text",
-                            "option_value" => "Serial Number:"
+                            "option_value" => "Serial Number:",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_serial_no",
                         ]);
 
                         /* Brand */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_brand_heading",
-                            "option_value" => "Brand"
+                            "option_value" => "Brand",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_brand",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_brand_show",
-                            "option_value" => "1"
+                            "option_value" => "1",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_brand",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_brand_text",
-                            "option_value" => "Brand:"
+                            "option_value" => "Brand:",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_brand",
                         ]);
 
                         /* Model */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_model_heading",
-                            "option_value" => "Brand"
+                            "option_value" => "Brand",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_model",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_model_show",
-                            "option_value" => "1"
+                            "option_value" => "1",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_model",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_model_text",
-                            "option_value" => "Brand:"
+                            "option_value" => "Brand:",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_model",
                         ]);
 
                         /* Start of the Warranty */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_start_warranty_heading",
-                            "option_value" => "Start of the Warranty"
+                            "option_value" => "Start of the Warranty",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_start_warranty",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_start_warranty_show",
-                            "option_value" => "0"
+                            "option_value" => "0",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_start_warranty",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_start_warranty_text",
-                            "option_value" => ""
+                            "option_value" => "",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_start_warranty",
                         ]);
 
                         /* End of the Warranty */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_end_warranty_heading",
-                            "option_value" => "End of the Warranty"
+                            "option_value" => "End of the Warranty",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_end_warranty",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_end_warranty_show",
-                            "option_value" => "0"
+                            "option_value" => "0",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_end_warranty",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_end_warranty_text",
-                            "option_value" => ""
+                            "option_value" => "",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_end_warranty",
                         ]);
 
                         /* Description */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_description_heading",
-                            "option_value" => "End of the Warranty"
+                            "option_value" => "End of the Warranty",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_description",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_description_show",
-                            "option_value" => "0"
+                            "option_value" => "0",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_description",
                         ]);
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_end_description_text",
-                            "option_value" => ""
+                            "option_value" => "",
+                            "category" => "Client Assets",
+                            "type" => "client_assets_description",
                         ]);
                         
                         
@@ -1918,94 +2338,126 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_heading",
-                        "option_value" => "Payment Terms"
+                        "option_value" => "Payment Terms",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms",
                     ]);
 
                     /* Payment Terms Title  */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_title_heading",
-                        "option_value" => "Payment Terms"
+                        "option_value" => "Payment Terms",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_title",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_title_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_title",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_title_text",
-                        "option_value" => "Payment Terms:"
+                        "option_value" => "Payment Terms:",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_title",
                     ]);
 
                     /* Date Column  */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_date_heading",
-                        "option_value" => "Date Col."
+                        "option_value" => "Date Col.",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_date",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_date_text",
-                        "option_value" => "DATE"
+                        "option_value" => "DATE",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_date",
                     ]);
 
                     /* Amount Column  */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_amount_heading",
-                        "option_value" => "Amount Col."
+                        "option_value" => "Amount Col.",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_amount",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_amount_text",
-                        "option_value" => "AMOUNT"
+                        "option_value" => "AMOUNT",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_amount",
                     ]);
 
                     /* Paid Column  */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_paid_heading",
-                        "option_value" => "Paid Col."
+                        "option_value" => "Paid Col.",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_paid",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_paid_show",
-                        "option_value" => "1"
+                        "option_value" => "1",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_paid",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_paid_text",
-                        "option_value" => "PAID"
+                        "option_value" => "PAID",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_paid",
                     ]);
 
                     /* Paid text  */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_paid_text_heading",
-                        "option_value" => "Paid text"
+                        "option_value" => "Paid text",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_paid_text",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_paid_text_text",
-                        "option_value" => "Yes"
+                        "option_value" => "Yes",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_paid_text",
                     ]);
                    
                     /* Unpaid text  */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_unpaid_text_heading",
-                        "option_value" => "Unpaid text"
+                        "option_value" => "Unpaid text",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_unpaid_text",
                     ]);
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_unpaid_text_text",
-                        "option_value" => "No"
+                        "option_value" => "No",
+                        "category" => "Payment Terms",
+                        "type" => "payment_terms_unpaid_text",
                     ]);
 
                 }

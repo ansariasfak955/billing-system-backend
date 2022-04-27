@@ -186,17 +186,44 @@ class MyTemplateController extends Controller
         if($template->delete()){
             $template->metas()->delete();
             return response()->json([
-                    'status' => true,
-                    'message' => "Template deleted successfully!"
+                'status' => true,
+                'message' => "Template deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => true,
-                    'message' => "Template deleted successfully!"
+                'status' => true,
+                'message' => "Template deleted successfully!"
             ]);
         }
     }
 
+    public function getTemplateFields(Request $request)
+    {
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+
+        $company_information = MyTemplateMeta::where('category', 'Company Information')->get();
+        $document_information = MyTemplateMeta::where('category', 'Document Information')->get();
+        $client_information = MyTemplateMeta::where('category', 'Client/Supplier Information')->get();
+        $items = MyTemplateMeta::where('category', 'Items')->get();
+        $signature_summary = MyTemplateMeta::where('category', 'Signature and Summary')->get();
+        $footer_legal = MyTemplateMeta::where('category', 'Footer and Legal Note')->get();
+        $comments_and_addendums = MyTemplateMeta::where('category', 'Comments and Addendums')->get();
+
+        $templates = MyTemplateMeta::where('template_id', 1)->groupBy('type')->orderBy('id', 'ASC')->get();
+
+        $response = [];
+        foreach($templates as $template) {
+            $template_metas = MyTemplateMeta::where('template_id', 1)->where('type', $template->type)->get();
+            foreach ($template_metas as $template_meta) {
+                $response[$template_meta->category][$template_meta->type][] = $template_meta;
+            }
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $response
+        ]);
+    }
 }
 
 

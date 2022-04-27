@@ -18,6 +18,7 @@ class CreateMyTemplateMetasTable extends Migration
             $table->integer('template_id');
             $table->string('option_name')->nullable();
             $table->string('option_value')->nullable();
+            $table->string('category')->nullable();
         });
     }
 
