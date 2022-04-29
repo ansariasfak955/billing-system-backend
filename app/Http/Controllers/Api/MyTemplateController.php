@@ -199,6 +199,7 @@ class MyTemplateController extends Controller
 
     public function getTemplateFields(Request $request)
     {
+        $table = 'company_'.$request->company_id.'_my_template_metas';
         MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
 
         $company_information = MyTemplateMeta::where('category', 'Company Information')->get();
@@ -209,21 +210,16 @@ class MyTemplateController extends Controller
         $footer_legal = MyTemplateMeta::where('category', 'Footer and Legal Note')->get();
         $comments_and_addendums = MyTemplateMeta::where('category', 'Comments and Addendums')->get();
 
-        $templates = MyTemplateMeta::where('template_id', 1)->groupBy('type')->orderBy('id', 'ASC')->get();
+        $template_metas = MyTemplateMeta::where('template_id', $request->template_id)->groupBy('type')->orderBy('id', 'ASC')->get();
 
-        $response = [];
-        foreach($templates as $template) {
-            $template_metas = MyTemplateMeta::where('template_id', 1)->where('type', $template->type)->get();
-            foreach ($template_metas as $template_meta) {
-                $response[$template_meta->category][$template_meta->type][] = $template_meta;
-            }
+        $arr = [];
+        foreach ($template_metas as $template_meta) {
+            $arr[$template_meta->category][] = MyTemplateMeta::where('template_id', $request->template_id)->where('type', $template_meta->type)->get()->toArray();
         }
 
         return response()->json([
             'status' => true,
-            'data' => $response
+            'data'   => $arr
         ]);
     }
 }
-
-
