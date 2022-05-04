@@ -210,11 +210,15 @@ class MyTemplateController extends Controller
         $footer_legal = MyTemplateMeta::where('category', 'Footer and Legal Note')->get();
         $comments_and_addendums = MyTemplateMeta::where('category', 'Comments and Addendums')->get();
 
-        $template_metas = MyTemplateMeta::where('template_id', $request->template_id)->groupBy('type')->orderBy('id', 'ASC')->get();
+        $template_metas = MyTemplateMeta::where('template_id', $request->template_id)->groupBy('category')->orderBy('id', 'ASC')->get();
 
         $arr = [];
+        $counter = 0;
         foreach ($template_metas as $template_meta) {
-            $arr[$template_meta->category][] = MyTemplateMeta::where('template_id', $request->template_id)->where('type', $template_meta->type)->get()->toArray();
+            $arr[$counter]['tab_name'] = $template_meta->category;
+            $arr[$counter]['data'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->get();
+            
+            $counter++;
         }
 
         return response()->json([
