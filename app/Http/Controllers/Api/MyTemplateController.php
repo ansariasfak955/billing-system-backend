@@ -212,13 +212,23 @@ class MyTemplateController extends Controller
 
         $template_metas = MyTemplateMeta::where('template_id', $request->template_id)->groupBy('category')->orderBy('id', 'ASC')->get();
 
-        $arr = [];
+        /*$arr = [];
         $counter = 0;
         foreach ($template_metas as $template_meta) {
             $arr[$counter]['tab_name'] = $template_meta->category;
             $arr[$counter]['data'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->get();
-            
             $counter++;
+        }*/
+        $arr = [];
+        foreach ($template_metas as $template_meta) {
+            $types = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->groupBy('type')->get();
+            $counter = 0;
+            
+            foreach ($types as $type) {
+                $arr[$template_meta->category][$counter]['id'] = $counter;
+                $arr[$template_meta->category][$counter]['more'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->where('type', $type->type)->get();
+                $counter++;
+            }
         }
 
         return response()->json([

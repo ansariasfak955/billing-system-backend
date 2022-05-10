@@ -18,7 +18,18 @@ class MyTemplateMeta extends Model
     public function getTable() {
         return self::$globalTable ;
     }
+    
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
+    }
+
+    public function getOptionNameAttribute()
+    {
+        if($this->attributes['option_name']) {
+            $arr = explode('_',$this->attributes['option_name']);
+            if(isset($arr[1])) {
+                return $arr[1];
+            }
+        }
     }
 }
