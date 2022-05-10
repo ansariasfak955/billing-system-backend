@@ -220,23 +220,26 @@ class MyTemplateController extends Controller
             $counter++;
         }*/
         $arr = [];
+        $final_arr = [];
         $templateCounter = 0;
         foreach ($template_metas as $template_meta) {
             $types = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->groupBy('type')->get();
             $counter = 0;
             
             foreach ($types as $type) {
-                $arr[$templateCounter][$counter]['id'] = $counter;
-                $arr[$templateCounter][$counter]['tab_name'] =  $template_meta->category;
-                $arr[$templateCounter][$counter]['more'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->where('type', $type->type)->get();
+                $arr[$counter]['id'] = $counter;
+                $arr[$counter]['tab_name'] =  $template_meta->category;
+                $arr[$counter]['more'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->where('type', $type->type)->get();
                 $counter++;
             }
+            $final_arr[$templateCounter]['tab_name'] =  $template_meta->category;
+            $final_arr[$templateCounter]['tab_data'] =  $arr;
             $templateCounter++;
         }
 
         return response()->json([
             'status' => true,
-            'data'   => $arr
+            'data'   => $final_arr
         ]);
     }
 }
