@@ -55,6 +55,10 @@ class RoleController extends Controller
             ]);
         }
 
+        if(Role::where('name' , $request->name )->first()){
+            return redirect()->route('roles.index')->withError('Role already exists!');
+        }
+        
         $role = Role::create($request->all());
         $role->guard_name = 'web';
         $role->save();

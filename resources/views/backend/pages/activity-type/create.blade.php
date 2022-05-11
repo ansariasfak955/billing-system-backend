@@ -21,9 +21,9 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-body">
-                        {!! Form::open(['route' => 'activity-type.store', 'files' => true]) !!}
+                        {!! Form::open(['route' => 'activity-type.store', 'files' => true , 'id' => 'create_activity_form']) !!}
                             @include('backend.pages.activity-type.form')
-                            {!! Form::submit('Create', ['class' => 'btn btn-primary mr-2 my-2']) !!}
+                            {!! Form::submit('Create', ['class' => 'btn btn-primary mr-2 my-2', 'id' => 'activity_create_btn']) !!}
                         {!! Form::close() !!}
                     </div>
                 </div> <!-- end card body-->
@@ -34,7 +34,21 @@
 
 </div> <!-- container -->
 @endsection
+@push('plugin-scripts')
+  <script type="text/javascript">
+      $(document).ready(function(){
+        //disable create button after clicked once
+        $(document).on('click' , '#activity_create_btn', function(){
+            if( $('#activity_type').val() ){
 
+              $(this).prop('disabled', true);
+              $(this).parents('form').submit();
+
+            }
+        });
+      });
+  </script>      
+@endpush
 @section('script')
   
 @stop

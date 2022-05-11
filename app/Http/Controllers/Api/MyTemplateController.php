@@ -228,7 +228,6 @@ class MyTemplateController extends Controller
             
             foreach ($types as $type) {
                 $arr[$counter]['id'] = $counter;
-                $arr[$counter]['tab_name'] =  $template_meta->category;
                 $arr[$counter]['more'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->where('type', $type->type)->get();
                 $counter++;
             }

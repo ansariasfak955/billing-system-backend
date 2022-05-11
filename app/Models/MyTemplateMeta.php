@@ -27,8 +27,10 @@ class MyTemplateMeta extends Model
     {
         if($this->attributes['option_name']) {
             $arr = explode('_',$this->attributes['option_name']);
-            if(isset($arr[1])) {
-                return $arr[1];
+            $count = count($arr);
+            if($count > 0 ){
+                $key = $count-1;
+                return $arr[$key];
             }
         }
     }
