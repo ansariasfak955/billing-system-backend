@@ -228,7 +228,20 @@ class MyTemplateController extends Controller
             
             foreach ($types as $type) {
                 $arr[$counter]['id'] = $counter;
-                $arr[$counter]['more'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->where('type', $type->type)->get();
+
+                //show 'show' on first
+                $moreObject = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->where('type', $type->type)->get();
+                $showObject = [];
+                $otherObjet = [];
+
+                foreach($moreObject as $more ){
+                    if($more->option_name == 'show'){
+                        $showObject[] = $more;
+                    }else{
+                        $otherObjet[] = $more;
+                    }
+                }
+                $arr[$counter]['more'] = array_merge($showObject, $otherObjet);
                 $counter++;
             }
             $final_arr[$templateCounter]['tab_name'] =  $template_meta->category;
