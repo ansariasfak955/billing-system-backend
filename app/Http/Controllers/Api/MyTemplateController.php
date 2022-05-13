@@ -254,4 +254,24 @@ class MyTemplateController extends Controller
             'data'   => $final_arr
         ]);
     }
+
+    public function updateTemplateField(Request $request)
+    {
+        $template_meta = MyTemplateMeta::where('template_id', $request->template_id)->where('id', $request->field_id)->first();
+        if ($template_meta == NULL) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Please enter correct template field id!',
+            ]);
+        }
+
+        MyTemplateMeta::where('template_id', $request->template_id)->where('id', $request->field_id)->update([
+            'option_value' => $request->value
+        ]);  
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Template fields updated successfully!',
+        ]);
+    }
 }

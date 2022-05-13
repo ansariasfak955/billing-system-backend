@@ -36,6 +36,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('custom_states', CustomStateController::class);
             Route::apiResource('my_templates', MyTemplateController::class);
             Route::get('template-fields', 'MyTemplateController@getTemplateFields');
+            Route::post('update-template-field', 'MyTemplateController@updateTemplateField');
             Route::apiResource('users', UserController::class);
             
             Route::apiResource('rates', RateController::class);
