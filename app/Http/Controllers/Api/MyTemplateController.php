@@ -257,6 +257,8 @@ class MyTemplateController extends Controller
 
     public function updateTemplateField(Request $request)
     {
+        $table = 'company_'.$request->company_id.'_my_template_metas';
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
         $template_meta = MyTemplateMeta::where('template_id', $request->template_id)->where('id', $request->field_id)->first();
         if ($template_meta == NULL) {
             return response()->json([
