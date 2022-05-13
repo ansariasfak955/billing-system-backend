@@ -219,6 +219,7 @@ class MyTemplateController extends Controller
             $arr[$counter]['data'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->get();
             $counter++;
         }*/
+
         $arr = [];
         $final_arr = [];
         $templateCounter = 0;
@@ -233,13 +234,28 @@ class MyTemplateController extends Controller
                 $moreObject = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->where('type', $type->type)->get();
                 $showObject = [];
                 $otherObjet = [];
+                $optionName = [];
 
                 foreach($moreObject as $more ){
-                    if($more->option_name == 'show'){
+                    /*if($more->option_name == 'show'){
                         $showObject[] = $more;
-                    }else{
+                    }else{*/
                         $otherObjet[] = $more;
-                    }
+                    // }
+                    $optionName[] = $more->option_name;
+                }
+                if ($moreObject->count() < 3) {
+                    $optionArr = ['show', 'heading', 'text'];
+                    $finalArr = array_diff($optionArr,$optionName);
+                    $missingValue = array_values($finalArr);
+                    $counter_new = 3 - $counter;
+                    
+                    $otherObjet[$counter]['id'] = NULL;
+                    $otherObjet[$counter]['template_id'] = NULL;
+                    $otherObjet[$counter]['option_name'] = NULL;
+                    $otherObjet[$counter]['option_value'] = $missingValue ? $missingValue[0] : '';
+                    $otherObjet[$counter]['category'] = NULL;
+                    $otherObjet[$counter]['type'] = NULL;
                 }
                 $arr[$counter]['more'] = array_merge($showObject, $otherObjet);
                 $counter++;
