@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Mail; 
 use Illuminate\Support\Facades\Auth; 
@@ -11,6 +12,8 @@ use Validator;
 use App\Jobs\SendEmailsOnUserGeneration;
 use App\Jobs\SendEmailForgetPassword;
 use App\Jobs\PasswordChangeSuccess;
+use App\Helpers\TableHelper;
+use DB;
 
 class AuthController extends Controller
 {
@@ -59,11 +62,7 @@ class AuthController extends Controller
      * @return \Illuminate\Http\Response 
      */ 
     public function register(Request $request) 
-    { 
-        if($request->company_id != NULL){
-            (new UserController())->setConfig($request->company_id);
-            User::setGlobalTable('company_'.$request->company_id.'_users');
-        }
+    {
         $validator = Validator::make($request->all(), [
             'email'   => 'sometimes|required|email',
             'name'    => 'required|regex:/^[\pL\s\-]+$/u',
@@ -78,11 +77,13 @@ class AuthController extends Controller
         }
 
         if(User::where('email', $request->email)->first() != NULL){
-            return response()->json(['success' => false,
-            'message' => "You are already registered"]);
+            return response()->json([
+                'success' => false,
+                'message' => "You are already registered"
+            ]);
         }
+
         /* Update user */
-        //$request['password'] = "123456";
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -95,11 +96,37 @@ class AuthController extends Controller
             $user->assignRole('user');
         }
 
+        $name = $request->name;
+        $arr = explode(' ', $name);
+
+        $company = Company::create([
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'fiscal_start_date' => 1,
+            'fiscal_start_month' => 1,
+            'number_of_decimal' => 2,
+            'decimal_separator' => '.',
+            'pdf_file_download_date_format' => 'yyyy-mm-dd',
+            'name' => $arr ? $arr[0]."'s company" : $request->name."'s company",
+        ]);
+
+        TableHelper::createTables($company->id);
+
+        // Create user in company table
+        $table = 'company_'.$company->id.'_users';
+        DB::table($table)->insert([
+            'name' => $request->name,
+            'email' => $request->email,
+            'mobile_number' => $request->mobile_number,
+            'password' => bcrypt($request->password),
+            'country' => $request->country,
+        ]);
+
+
         /* send emails on registration */
         SendEmailsOnUserGeneration::dispatch($user, $request->password)->delay(now()->addSeconds(1));
 
         if (Auth::attempt(['email' => $user->email, 'password' => $request['password']])) {
-            
             $token = Auth::user()->createToken('api')->accessToken;
             Auth::user()->setAttribute("token", $token);
         }

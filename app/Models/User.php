@@ -50,7 +50,7 @@ class User extends Authenticatable
         self::$globalTable = $table;
     }
 
-    protected $appends = ['company_country','default_country'];
+    protected $appends = ['company_country','default_country','company_id'];
 
     public function companies()
     {
@@ -86,5 +86,10 @@ class User extends Authenticatable
     public function getCompanyCountryAttribute()
     {
         return Company::where('user_id', Auth::id())->pluck('country')->first();
+    }
+
+    public function getCompanyIdAttribute()
+    {
+        return Company::where('user_id', Auth::id())->pluck('id')->first();
     }
 }
