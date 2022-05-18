@@ -90,6 +90,11 @@ class User extends Authenticatable
 
     public function getCompanyIdAttribute()
     {
-        return Company::where('user_id', Auth::id())->pluck('id')->first();
+        $company_name = str_replace(' ', '', request()->company_name);
+        $company = Company::where('name', request()->company_name)->orWhere('name', $company_name)->first();
+        if ($company != NULL) {
+            return $company->id;
+        }
+        return '';
     }
 }

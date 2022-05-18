@@ -216,9 +216,8 @@ class RoleController extends Controller
     */
     public function getPermissions(Request $request)
     {
-        (new UserController())->setConfig($request->company_id);
-
-        $permissions = Permission::get();
+        $table = 'company_'.$request->company_id.'_permissions';
+        Permission::setGlobalTable($table);
         
         return response()->json([
             'status' => true,
