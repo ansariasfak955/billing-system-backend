@@ -241,6 +241,10 @@ class RoleController extends Controller
 
     public function getRolePermissions(Request $request)
     {
-        return get_roles_permissions($request->company_id);
+        $permission_arr = get_roles_permissions($request->company_id);
+        return response()->json([
+            'status' => true,
+            'permissions' => $permission_arr ? $permission_arr->original : []
+        ]);
     }
 }

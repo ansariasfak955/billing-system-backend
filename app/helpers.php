@@ -132,8 +132,5 @@ function get_roles_permissions($company_id)
         );
     }
 
-    return response()->json([
-        'success' => true,
-        'permissions' => $permission_arr,
-    ]);
+    return response()->json([$permission_arr]);
 }

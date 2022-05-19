@@ -69,7 +69,7 @@ class AuthController extends Controller
             return response()->json([
                 'status'      => true,
                 'user'        => Auth::user(),
-                'permissions' => $permission_arr
+                'permissions' => $permission_arr ? $permission_arr->original : []
             ]);
         } else {
             return response()->json(['status' => false, 'message' => 'Please check your login credentials!']);
@@ -94,6 +94,13 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors()->first(),
+            ]);
+        }
+
+        if ($request->company_name == '') {
+            return response()->json([
+                'status' => false,
+                'message' => 'Company name is required',
             ]);
         }
 
@@ -149,11 +156,15 @@ class AuthController extends Controller
             $token = Auth::user()->createToken('api')->accessToken;
             Auth::user()->setAttribute("token", $token);
         }
+
+        // Permissions
+        $permission_arr = get_roles_permissions($company->id);
         
         return response()->json([
             'success' => true,
             'message' => "You are registered successfully.",
             'user'    =>  Auth::user(),
+            'permissions' => $permission_arr ? $permission_arr->original : []
         ]);
     }
 
