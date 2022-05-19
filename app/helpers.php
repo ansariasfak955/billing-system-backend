@@ -112,8 +112,10 @@ function get_roles_permissions($company_id)
             ->where('permission_id', $permission_key_new[0]->children->where('name', "delete $permission_key")->pluck('id')->first())
             ->first();
 
-        $permission_arr[$permission_key] = array(
-            "$permission_key" => array(
+        $new_key = str_replace(' ','_', $permission_key);
+
+        $permission_arr[$new_key] = array(
+            "$new_key" => array(
                 'view'   => array(
                     'is_checked' => $view != NULL ? 1 : 0
                 ),
