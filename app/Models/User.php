@@ -111,6 +111,16 @@ class User extends Authenticatable
 
     public function getRoleAttribute()
     {
-        // return Auth::user()->id;
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        $model_has_role = "company_".$company_id."_model_has_roles";
+
+        if (isset(request()->user)) {
+            $user_id = request()->user;
+        } else {
+            $user_id = Auth::id();
+        }
+
+        return \DB::table($model_has_role)->where('model_id', $user_id)->pluck('role_id')->first();
     }
 }
