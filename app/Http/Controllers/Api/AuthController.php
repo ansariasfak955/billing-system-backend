@@ -26,6 +26,12 @@ class AuthController extends Controller
     public function login(Request $request){
         if($request->company_name != NULL){
             $company_id = Company::where('name', $request->company_name)->pluck('id')->first();
+            if ($company_id == '') {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Company not exist',
+                ]);
+            }
             (new UserController())->setConfig($company_id);
             User::setGlobalTable('company_'.$company_id.'_users');
         }
@@ -57,36 +63,8 @@ class AuthController extends Controller
             // Permission::setGlobalTable($table);
             // $permissions = Permission::where('parent_id', 0)->with('children')->get();
 
-            // Auth::user()->givePermissionTo('Home');
             // Permissions
-            $table = 'company_'.$company_id.'_permissions';
-            Permission::setGlobalTable($table);
-            
-            $permissions_arr = [
-                'roles'    => 'Roles',
-                'products' => 'Products'
-            ];
-
-            $permission_arr = [];
-            foreach ($permissions_arr as $permission_key => $permission_value) {
-                $permission_key_new = Permission::where('name', $permission_value)->with('children')->get();
-                $permission_arr[$permission_key] = array(
-                    "$permission_key" => array(
-                        'view'   => array(
-                            'is_checked' => $permission_key_new[0]->children->where('name', "view $permission_key")->pluck('is_checkbox')->first()
-                        ),
-                        'edit'   => array(
-                            'is_checked' => $permission_key_new[0]->children->where('name', "edit $permission_key")->pluck('is_checkbox')->first()
-                        ),
-                        'create' => array(
-                            'is_checked' => $permission_key_new[0]->children->where('name', "create $permission_key")->pluck('is_checkbox')->first()
-                        ),
-                        'delete' => array(
-                            'is_checked' => $permission_key_new[0]->children->where('name', "delete $permission_key")->pluck('is_checkbox')->first()
-                        )
-                    )
-                );
-            }
+            $permission_arr = get_roles_permissions($company_id);
             
             return response()->json([
                 'status'      => true,

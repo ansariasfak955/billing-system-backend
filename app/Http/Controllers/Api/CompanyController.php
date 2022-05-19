@@ -19,10 +19,12 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // $table = 'company_'.$request->company_id.'_companies';
+        // Company::setGlobalTable($table);
 
-        if(Auth::user()->companies->count() == 0){
+        if(Company::where('id', $request->company_id)->count() == 0){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -30,7 +32,7 @@ class CompanyController extends Controller
         }
         return response()->json([
             "status" => true,
-            "companies" => Auth::user()->companies
+            "companies" => Company::where('id', $request->company_id)->get()
         ]);
     }
 

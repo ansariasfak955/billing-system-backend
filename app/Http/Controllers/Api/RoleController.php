@@ -241,38 +241,6 @@ class RoleController extends Controller
 
     public function getRolePermissions(Request $request)
     {
-        $table = 'company_'.$request->company_id.'_permissions';
-        Permission::setGlobalTable($table);
-        
-        $permissions_arr = [
-            'roles'    => 'Roles',
-            'products' => 'Products'
-        ];
-
-        $permission_arr = [];
-        foreach ($permissions_arr as $permission_key => $permission_value) {
-            $permission_key_new = Permission::where('name', $permission_value)->with('children')->get();
-            $permission_arr[$permission_key] = array(
-                "$permission_key" => array(
-                    'view'   => array(
-                        'is_checked' => $permission_key_new[0]->children->where('name', "view $permission_key")->pluck('is_checkbox')->first()
-                    ),
-                    'edit'   => array(
-                        'is_checked' => $permission_key_new[0]->children->where('name', "edit $permission_key")->pluck('is_checkbox')->first()
-                    ),
-                    'create' => array(
-                        'is_checked' => $permission_key_new[0]->children->where('name', "create $permission_key")->pluck('is_checkbox')->first()
-                    ),
-                    'delete' => array(
-                        'is_checked' => $permission_key_new[0]->children->where('name', "delete $permission_key")->pluck('is_checkbox')->first()
-                    )
-                )
-            );
-        }
-
-        return response()->json([
-            'success' => true,
-            'permissions' => $permission_arr,
-        ]);
+        return get_roles_permissions($request->company_id);
     }
 }

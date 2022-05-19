@@ -66,3 +66,72 @@ function get_product_latest_ref_number($company_id, $reference, $add)
 function generate_reference_num ($input, $pad_len = 7) {
     return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
 }
+
+function get_roles_permissions($company_id)
+{
+    $table = 'company_'.$company_id.'_permissions';
+    \App\Models\Permission::setGlobalTable($table);
+    
+    $permissions_arr = [
+        'users'    => 'Users',
+        'roles'    => 'Roles',
+        'bank accounts'    => 'Bank accounts',
+        'my templates'    => 'My templates',
+        'custom states'    => 'Custom states',
+        'price rates'    => 'Price Rates',
+        'services'    => 'Services',
+        'email configuration'    => 'Email Configuration',
+        'products' => 'Products',
+        'product categories' => 'Product Categories',
+        'clients' => 'Clients',
+    ];
+
+    $role_id = Auth::user()->roles->pluck('id')->first();
+
+    $permission_arr = [];
+    foreach ($permissions_arr as $permission_key => $permission_value) {
+        $permission_key_new = \App\Models\Permission::where('name', $permission_value)->with('children')->get();
+        $role_has_permissions = 'company_'.$company_id.'_role_has_permissions';
+        $view = \DB::table($role_has_permissions)
+            ->where('role_id', $role_id)
+            ->where('permission_id', $permission_key_new[0]->children->where('name', "view $permission_key")->pluck('id')->first())
+            ->first();
+
+        $edit = \DB::table($role_has_permissions)
+            ->where('role_id', $role_id)
+            ->where('permission_id', $permission_key_new[0]->children->where('name', "edit $permission_key")->pluck('id')->first())
+            ->first();
+
+        $create = \DB::table($role_has_permissions)
+            ->where('role_id', $role_id)
+            ->where('permission_id', $permission_key_new[0]->children->where('name', "create $permission_key")->pluck('id')->first())
+            ->first();
+
+        $delete = \DB::table($role_has_permissions)
+            ->where('role_id', $role_id)
+            ->where('permission_id', $permission_key_new[0]->children->where('name', "delete $permission_key")->pluck('id')->first())
+            ->first();
+
+        $permission_arr[$permission_key] = array(
+            "$permission_key" => array(
+                'view'   => array(
+                    'is_checked' => $view != NULL ? 1 : 0
+                ),
+                'edit'   => array(
+                    'is_checked' => $edit != NULL ? 1 : 0
+                ),
+                'create' => array(
+                    'is_checked' => $create != NULL ? 1 : 0
+                ),
+                'delete' => array(
+                    'is_checked' => $delete != NULL ? 1 : 0
+                )
+            )
+        );
+    }
+
+    return response()->json([
+        'success' => true,
+        'permissions' => $permission_arr,
+    ]);
+}
