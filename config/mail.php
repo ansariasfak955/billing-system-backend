@@ -92,8 +92,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'pranav.bhardwaj@codingcafe.website'),
-        'name' => env('MAIL_FROM_NAME', 'pranav.bhardwaj@codingcafe.website'),
+        'address' => env('MAIL_FROM_ADDRESS', 'do-no-reply@codingcafe.website'),
+        'name' => env('MAIL_FROM_NAME', 'do-no-reply@codingcafe.website'),
     ],
 
     /*

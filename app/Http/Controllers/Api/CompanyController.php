@@ -46,7 +46,7 @@ class CompanyController extends Controller
 
         $validator = Validator::make($request->all(),[
             'name' => 'required|unique:companies',
-            'phone' => 'digits:10'            
+            'phone' => 'required'            
         ]);
 
         if ($validator->fails()) {
@@ -122,10 +122,9 @@ class CompanyController extends Controller
      */
     public function update(Request $request, Company $company)
     {
-
         $validator = Validator::make($request->all(),[
             'name' => 'required|unique:companies,name,'.$company->id,
-            'phone' => 'digits:10'            
+            'phone' => 'required'        
         ]);
 
         if ($validator->fails()) {
@@ -135,12 +134,13 @@ class CompanyController extends Controller
             ]);
         }
         
-        $company->update($request->all());
+        $company->update($request->except('logo'));
 
         if($request->logo != NULL){
             $imageName = time().'.'.$request->logo->extension();  
             $request->logo->move(storage_path('app/public/company/logo'), $imageName);
             $company->logo = $imageName;
+            $company->save();
         }
 
         return response()->json([
@@ -160,13 +160,13 @@ class CompanyController extends Controller
     {
         if($company->delete()){
             return response()->json([
-                    'status' => true,
-                    'message' => "Company deleted successfully!"
+                'status' => true,
+                'message' => "Company deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => false,
-                    'message' => "Retry deleting again! "
+                'status' => false,
+                'message' => "Retry deleting again! "
             ]);
         }
     }

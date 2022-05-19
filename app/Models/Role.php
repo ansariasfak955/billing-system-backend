@@ -9,6 +9,8 @@ class Role extends Model
 {
     protected static $globalTable = 'roles' ;
 
+    protected $guard_name = 'api';
+
     public function getTable() {
         return self::$globalTable ;
     }

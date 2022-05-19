@@ -43,11 +43,23 @@ function get_client_latest_ref_number($company_id, $reference, $add)
     \App\Models\Client::setGlobalTable($table);
     $client = \App\Models\Client::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     $reference_number = str_replace('0', '', $client->reference_number);
-    // die;
     if ($client != NULL) {
     	return generate_reference_num($reference_number+$add,5);
     } else {
     	return '00001';
+    }
+}
+
+function get_product_latest_ref_number($company_id, $reference, $add)
+{
+    $table = 'company_'.$company_id.'_products';
+    \App\Models\Product::setGlobalTable($table);
+    $product = \App\Models\Product::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
+    $reference_number = str_replace('0', '', $product->reference_number);
+    if ($product != NULL) {
+        return generate_reference_num($reference_number+$add,5);
+    } else {
+        return '00001';
     }
 }
 

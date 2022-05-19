@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Config;
 use Validator;
 use Auth;
+use DB;
 
 class UserController extends Controller
 {
@@ -91,6 +93,17 @@ class UserController extends Controller
 
         $user->has_access = $request->is_default??'1';
         $user->use_email_configuartion = $request->use_email_configuartion??"gmail";
+        $model_has_roles_table = 'company_'.$request->company_id.'_model_has_roles';
+        // Delete old role
+        DB::table($model_has_roles_table)->where('model_id', $user->id)->delete();
+
+        // Assign new role
+        DB::table($model_has_roles_table)->insert([
+            'role_id'    => $request->role,
+            'model_type' => 'App\Models\User',
+            'model_id' => $user->id,
+        ]);
+
         $user->save();
 
         return response()->json([
@@ -155,6 +168,19 @@ class UserController extends Controller
         }
         $user->has_access = $request->has_access??$user->has_access;
         $user->use_email_configuartion = $request->use_email_configuartion??$user->use_email_configuartion;
+        $roles_table = 'company_'.$request->company_id.'_roles';
+        Role::setGlobalTable($roles_table);
+        
+        $model_has_roles_table = 'company_'.$request->company_id.'_model_has_roles';
+        // Delete old role
+        DB::table($model_has_roles_table)->where('model_id', $user->id)->delete();
+
+        // Assign new role
+        DB::table($model_has_roles_table)->insert([
+            'role_id'    => $request->role,
+            'model_type' => 'App\Models\User',
+            'model_id' => $user->id,
+        ]);
         $user->save();
 
         return response()->json([

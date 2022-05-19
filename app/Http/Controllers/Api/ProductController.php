@@ -66,6 +66,20 @@ class ProductController extends Controller
         Product::setGlobalTable($table);
 
         $product = Product::create($request->except('image', 'company_id', 'images'));
+        if ($request->reference_number == '') {
+            $product->reference_number = get_product_latest_ref_number($request->company_id, $request->reference, 1);
+        } else {
+            $product = Product::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
+            if ($product == NULL) {
+                $product->reference_number = get_product_latest_ref_number($request->company_id, $request->reference, 0);
+            } else {
+                return response()->json([
+                    "status"  => false,
+                    "client"  => $product,
+                    "message" => "Please choose different reference number"
+                ]);
+            }
+        }
 
         if($request->image != NULL){
             $imageName = time().'.'.$request->image->extension();  
