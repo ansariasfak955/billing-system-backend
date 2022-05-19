@@ -56,10 +56,14 @@ function get_product_latest_ref_number($company_id, $reference, $add)
     \App\Models\Product::setGlobalTable($table);
     $product = \App\Models\Product::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     $reference_number = str_replace('0', '', $product->reference_number);
-    if ($product != NULL) {
-        return generate_reference_num($reference_number+$add,5);
-    } else {
+    if ($reference_number == NULL) {
         return '00001';
+    } else {
+        if ($product != NULL) {
+            return generate_reference_num($reference_number+$add,5);
+        } else {
+            return '00001';
+        }
     }
 }
 
@@ -86,7 +90,8 @@ function get_roles_permissions($company_id)
         'clients' => 'Clients',
     ];
 
-    $role_id = Auth::user()->roles->pluck('id')->first();
+    $model_has_roles_table = "company_".$company_id."_model_has_roles";
+    $role_id = \DB::table($model_has_roles_table)->where('model_id', Auth::user()->id)->pluck('role_id')->first();
 
     $permission_arr = [];
     foreach ($permissions_arr as $permission_key => $permission_value) {
@@ -132,5 +137,5 @@ function get_roles_permissions($company_id)
         );
     }
 
-    return response()->json([$permission_arr]);
+    return response()->json($permission_arr);
 }

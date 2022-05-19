@@ -48,7 +48,8 @@ class CompanyController extends Controller
 
         $validator = Validator::make($request->all(),[
             'name' => 'required|unique:companies',
-            'phone' => 'required'            
+            'phone' => 'required',
+            'tin' => 'numeric',       
         ]);
 
         if ($validator->fails()) {
@@ -126,7 +127,8 @@ class CompanyController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name' => 'required|unique:companies,name,'.$company->id,
-            'phone' => 'required'        
+            'phone' => 'required',
+            'tin' => 'numeric',
         ]);
 
         if ($validator->fails()) {

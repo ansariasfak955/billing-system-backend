@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Permission;
 use App\Models\Company;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Mail; 
 use Illuminate\Support\Facades\Auth; 
@@ -156,6 +157,15 @@ class AuthController extends Controller
             $token = Auth::user()->createToken('api')->accessToken;
             Auth::user()->setAttribute("token", $token);
         }
+
+        $model_has_roles_table = "company_".$company->id."_model_has_roles";
+            
+        // Assign new role
+        \DB::table($model_has_roles_table)->insert([
+            'role_id'    => Role::where('name', 'Super admin')->pluck('id')->first(),
+            'model_type' => 'App\Models\User',
+            'model_id'   => $user->id,
+        ]);
 
         // Permissions
         $permission_arr = get_roles_permissions($company->id);

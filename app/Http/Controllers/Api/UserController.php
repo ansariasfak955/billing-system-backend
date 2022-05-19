@@ -70,7 +70,8 @@ class UserController extends Controller
             'email' => 'required|email',         
             'username' => 'required|alpha_dash',         
             'role' => 'required',
-            'password' => 'required|min:8|alpha_dash',       
+            'password' => 'required|min:8|alpha_dash',
+            'tin' => 'numeric',   
         ]);
 
         if ($validator->fails()) {
@@ -142,7 +143,8 @@ class UserController extends Controller
             'name' => 'required',          
             'email' => 'required|email',         
             'username' => 'required|alpha_dash',         
-            'role' => 'required'     
+            'role' => 'required',
+            'tin' => 'numeric',
         ]);
 
         if ($validator->fails()) {

@@ -40,7 +40,7 @@ class TableHelper
                 if (!Role::where('name', $role->name)->exists()) {
                     Role::create([
                         'name' => $role->name,
-                        'guard_name' => 'web',
+                        'guard_name' => 'api',
                     ]);
                 }
             }
@@ -4898,5 +4898,22 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
             $permission->save();
         }
 
+        $permissions_table_name = "company_".$company_id."_permissions";
+        \DB::table($permissions_table_name)->update([
+            'guard_name' => 'api'
+        ]);
+
+        // Assign permissions to role
+        $permissions = Permission::all();
+        $roles = Role::all();
+        $table_name = "company_".$company_id."_role_has_permissions";
+        foreach ($roles as $role) {
+            foreach ($permissions as $permission) {
+                \DB::table($table_name)->insert([
+                    'permission_id' => $permission->id,
+                    'role_id' => $role->id,
+                ]);
+            }
+        }
     }
 }

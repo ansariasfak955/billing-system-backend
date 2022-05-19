@@ -13,6 +13,17 @@ use Auth;
 class User extends Authenticatable
 {
     use Notifiable, HasRoles, HasApiTokens;
+    
+    protected static $globalTable = 'users' ;
+    
+    public function __construct(array $attributes = array()) 
+    {
+        parent::__construct($attributes);
+        
+        if (request()->company_id != '') {
+            self::$globalTable = 'company_'.request()->company_id.'_users';
+        }
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -41,11 +52,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected static $globalTable = 'users' ;
 
     public function getTable() {
         return self::$globalTable ;
     }
+
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
@@ -96,5 +107,10 @@ class User extends Authenticatable
             return $company->id;
         }
         return '';
+    }
+
+    public function getRoleAttribute()
+    {
+        // return Auth::user()->id;
     }
 }

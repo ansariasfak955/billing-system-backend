@@ -65,6 +65,9 @@ class RoleController extends Controller
             ]);
         }
 
+        $roles_table = 'company_'.$request->company_id.'_roles';
+        Role::setGlobalTable($roles_table);
+
         if(Role::where('name', $request->name)->first() != NULL){
             return response()->json([
                 "status"  => false,
@@ -181,14 +184,20 @@ class RoleController extends Controller
         
         $role->update($request->except('company_id', '_method', 'permissions'));
         if(isset($request->permissions)){
-            foreach(Permission::get() as $permission){
+            foreach(Permission::get() as $permission) {
                 if(in_array($permission->id, $request->permissions)){
                     if($role->hasPermissionTo($permission->name) != 1){
-                        $role->givePermissionTo($permission);
+                        $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
+                        \DB::table($role_has_permissions)->insert([
+                            'permission_id' => $permission->id,
+                            'role_id' => $request->role,
+                        ]);
                     }
                 } else {
                     if($role->hasPermissionTo($permission->name) == 1){
-                        $role->revokePermissionTo($permission);
+                        // $role->revokePermissionTo($permission);
+                        $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
+                        \DB::table($role_has_permissions)->where('permission_id', $permission->id)->where('role_id', $request->role)->delete();
                     }
                 }
             }

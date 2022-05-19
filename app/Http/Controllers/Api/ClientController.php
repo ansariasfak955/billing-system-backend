@@ -54,6 +54,7 @@ class ClientController extends Controller
         $validator = Validator::make($request->all(), [
             'email'     => "required|unique:$table|email",
             'reference' => "required",
+            'tin' => 'numeric',
         ]);
 
         if ($validator->fails()) {
@@ -133,6 +134,16 @@ class ClientController extends Controller
     {
         $table = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($table);
+        $validator = Validator::make($request->all(), [
+            'tin' => 'numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
 
         $client = Client::where('id', $request->client)->first();
         $client->update($request->except('company_id', '_method'));
