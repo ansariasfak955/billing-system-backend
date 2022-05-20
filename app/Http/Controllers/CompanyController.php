@@ -69,19 +69,23 @@ class CompanyController extends Controller
 
         // Get and Assign Role
         $role_table = 'company_'.$company->id.'_roles';
-        $role = DB::table($role_table)
-            ->where('name', 'Super admin')
-            ->select('id')
+        $role_id = DB::table($role_table)
+            ->where('name', 'Admin')
+            ->pluck('id')
             ->first();
 
-        if (isset($role->id)) {
+        if (isset($role_id)) {
             $role_model_table = 'company_'.$company->id.'_model_has_roles';
             DB::table($role_model_table)->insert([
-                'role_id'    => $role->id,
+                'role_id'    => $role_id,
                 'model_type' => 'App\Models\User',
                 'model_id'   => $user->id,
             ]);
         }
+
+        $company->update([
+            'user_id' => $user->id
+        ]);
 
         return redirect()->route('companies.index')->withSuccess('New company has been created successfully!');
     }

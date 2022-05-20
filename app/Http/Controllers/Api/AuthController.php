@@ -162,7 +162,7 @@ class AuthController extends Controller
             
         // Assign new role
         \DB::table($model_has_roles_table)->insert([
-            'role_id'    => Role::where('name', 'Super admin')->pluck('id')->first(),
+            'role_id'    => Role::where('name', 'Admin')->pluck('id')->first(),
             'model_type' => 'App\Models\User',
             'model_id'   => $user->id,
         ]);

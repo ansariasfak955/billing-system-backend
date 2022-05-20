@@ -82,7 +82,7 @@ class CompanyController extends Controller
         // Get and Assign Role
         $role_table = 'company_'.$company->id.'_roles';
         $role = DB::table($role_table)
-            ->where('name', 'Super admin')
+            ->where('name', 'Admin')
             ->select('id')
             ->first();
 
