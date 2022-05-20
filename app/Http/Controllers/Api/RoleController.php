@@ -68,6 +68,9 @@ class RoleController extends Controller
         $roles_table = 'company_'.$request->company_id.'_roles';
         Role::setGlobalTable($roles_table);
 
+        $permissions_table = 'company_'.$request->company_id.'_permissions';
+        Permission::setGlobalTable($permissions_table);
+
         if(Role::where('name', $request->name)->first() != NULL){
             return response()->json([
                 "status"  => false,
@@ -81,7 +84,12 @@ class RoleController extends Controller
         if(isset($request->permissions)){
             foreach(Permission::get() as $permission){
                 if(in_array($permission->id, $request->permissions)){ 
-                    $role->givePermissionTo($permission);
+                    // $role->givePermissionTo($permission);
+                    $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
+                    \DB::table($role_has_permissions)->insert([
+                        'permission_id' => $permission->id,
+                        'role_id' => $role->id,
+                    ]);
                 }
             }
         }

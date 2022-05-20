@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth'], function() {
         \Auth::logout();
         return redirect('/login');
     });
+    Route::resource('companies', CompanyController::class);
     
     /* Delete Links */
     Route::post('users/delete', 'UserController@deleteAll');
