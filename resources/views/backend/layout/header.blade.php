@@ -99,6 +99,19 @@
             </ul>
           </div>
         </li>
+        <li class="nav-item {{ active_class(['companies/*']) }}">
+          <a href="#" class="nav-link" onclick="return false">
+            <i class="link-icon" data-feather="subscriptions"></i>
+            <span class="menu-title">Companies</span>
+            <i class="link-arrow"></i>
+          </a>
+          <div class="submenu">
+            <ul class="submenu-item">
+              <li class="nav-item"><a href="{{ url('/companies') }}" class="nav-link {{ active_class(['companies']) }}">Companies</a></li>
+              <li class="nav-item"><a href="{{ url('/companies/create') }}" class="nav-link {{ active_class(['companies/create']) }}">Add Company</a></li>
+            </ul>
+          </div>
+        </li>
         <li class="nav-item {{ active_class(['forms/*']) }}">
           <a href="#" class="nav-link" onclick="return false">
             <i class="link-icon" data-feather="subscriptions"></i>
