@@ -21,3 +21,7 @@ table form#form-4 {
 form#form-3 {
     width: 92px;
 }
+
+.fixed-width td, .fixed-width th {
+    min-width: 46px;
+}

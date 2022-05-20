@@ -76,13 +76,13 @@ class CompanyController extends Controller
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
-            'password' => bcrypt('superadmin@123'),
+            'password' => Hash::make($request->password),
         ]);
 
         // Get and Assign Role
         $role_table = 'company_'.$company->id.'_roles';
         $role = DB::table($role_table)
-            ->where('name', 'Super Admin')
+            ->where('name', 'Super admin')
             ->select('id')
             ->first();
 

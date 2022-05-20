@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\User;
+use App\Models\Role;
 use App\DataTables\CompanyDataTable;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
+use App\Helpers\TableHelper;
+use DB;
 
 class CompanyController extends Controller
 {
@@ -44,20 +47,42 @@ class CompanyController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name'  => 'required',
-            'email' => 'email|unique:companies'
+            'email' => 'email|unique:companies',
+            'password' => 'required',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withError($validator->errors()->first())->withInput();
         }
 
-        $request['password'] = Hash::make($request->password);
-        /*if ($request->is_ban == 'on') {
-            $request['is_ban'] = 1;
-        } else {
-            $request['is_ban'] = 0;
-        }*/
         $company = Company::create($request->all());
+        TableHelper::createTables($company->id);
+
+        // Create Super Admin
+        $user_table = 'company_'.$company->id.'_users';
+        User::setGlobalTable($user_table);
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Get and Assign Role
+        $role_table = 'company_'.$company->id.'_roles';
+        $role = DB::table($role_table)
+            ->where('name', 'Super admin')
+            ->select('id')
+            ->first();
+
+        if (isset($role->id)) {
+            $role_model_table = 'company_'.$company->id.'_model_has_roles';
+            DB::table($role_model_table)->insert([
+                'role_id'    => $role->id,
+                'model_type' => 'App\Models\User',
+                'model_id'   => $user->id,
+            ]);
+        }
+
         return redirect()->route('companies.index')->withSuccess('New company has been created successfully!');
     }
 
@@ -81,7 +106,11 @@ class CompanyController extends Controller
     public function edit(Company $company)
     {
         $page_title = "Edit Company";
-        return view('backend.pages.companies.edit', compact('company', 'page_title'));
+        $users_table = "company_".$company->id."_users";
+
+        User::setGlobalTable($users_table);
+        $user = User::where('id', $company->user_id)->first();
+        return view('backend.pages.companies.edit', compact('company', 'page_title', 'user'));
     }
 
     /**
@@ -100,24 +129,19 @@ class CompanyController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withError($validator->errors()->first())->withInput();
         }
+
+        $users_table = "company_".$company->id."_users";
+
+        User::setGlobalTable($users_table);
+        $user = User::where('id', $company->user_id)->first();
         
         if ($request->password != '') {
-            $request['password'] = Hash::make($request->password);
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
         }
-
-        /*if ($request->is_ban == 'on') {
-            $request['is_ban'] = 1;
-        } else {
-            $request['is_ban'] = 0;
-        }*/
         
-        /*if ($request->password == '') {
-            $company->update($request->except(['_method', '_token', 'role', 'password']));
-        } else {
-            $company->update($request->except(['_method', '_token', 'role']));
-        } */
-
-        $company->update($request->except(['_method', '_token']));   
+        $company->update($request->except(['_method', '_token', 'password']));  
         
         return redirect()->route('companies.index')->withSuccess('Company Updated Successfully!');
     }

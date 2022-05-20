@@ -51,8 +51,7 @@ class CompanyDataTable extends DataTable
      */
     public function query(Company $company)
     {
-        return $company->where('id', '!=', auth()->id())->orderBy('id', 'DESC')->newQuery();
-        // return $company->whereHas("roles", function($q){ $q->where("name", "user"); })->orderBy('id', 'DESC')->newQuery();
+        return $company->orderBy('id', 'DESC')->newQuery();
     }
 
     /**
