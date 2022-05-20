@@ -113,16 +113,12 @@ class AuthController extends Controller
             ]);
         }
 
-        /*if(User::where('email', $request->email)->first() != NULL){
+        if(Company::where('email', $request->email)->first() != NULL){
             return response()->json([
                 'success' => false,
-                'message' => "You are already registered"
+                'message' => "You are already registered, Please enter different email or contact with support!"
             ]);
-        }*/
-
-        /*if($request->company_id == NULL){
-            $user->assignRole('user');
-        }*/
+        }
         
         $company = Company::create([
             'fiscal_start_date' => 1,
@@ -159,6 +155,8 @@ class AuthController extends Controller
         }
 
         $model_has_roles_table = "company_".$company->id."_model_has_roles";
+        $roles_table = 'company_'.$company->id.'_roles';
+        Role::setGlobalTable($roles_table);
             
         // Assign new role
         \DB::table($model_has_roles_table)->insert([

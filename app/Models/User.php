@@ -13,6 +13,8 @@ use Auth;
 class User extends Authenticatable
 {
     use Notifiable, HasRoles, HasApiTokens;
+
+    protected $guard_name = 'api';
     
     protected static $globalTable = 'users' ;
     

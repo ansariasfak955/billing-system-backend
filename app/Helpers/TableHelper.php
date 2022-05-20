@@ -4904,7 +4904,21 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
         ]);
 
         // Assign permissions to role
+        $roles = Role::all();
         $permissions = Permission::all();
+        $table_name = "company_".$company_id."_role_has_permissions";
+        foreach ($roles as $role) {
+            $role_permissions = Role::findByName($role->name)->permissions->pluck('id')->toArray();
+            foreach ($role_permissions as $role_permission) {
+                // echo 'permission----'.$role_permission;
+                \DB::table($table_name)->insert([
+                    'permission_id' => $role_permission,
+                    'role_id' => $role->id,
+                ]);
+            }
+        }
+
+        /*$permissions = Permission::all();
         $roles = Role::all();
         $table_name = "company_".$company_id."_role_has_permissions";
         foreach ($roles as $role) {
@@ -4914,6 +4928,6 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
                     'role_id' => $role->id,
                 ]);
             }
-        }
+        }*/
     }
 }

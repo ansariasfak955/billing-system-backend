@@ -11,7 +11,7 @@
     <!-- Breadcrumbs -->
     <nav class="page-breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{route('roles.index')}}">Subscriptions</a></li>
+        <li class="breadcrumb-item"><a href="{{route('roles.index')}}">Roles</a></li>
         <li class="breadcrumb-item active" aria-current="page">Create</li>
       </ol>
     </nav>
@@ -35,6 +35,6 @@
 </div> <!-- container -->
 @endsection
 
-@section('script')
-  
-@stop
+@push('plugin-scripts')
+  <script src="{{ URL::asset('assets/js/custom.js')}}"></script>
+@endpush

@@ -121,3 +121,7 @@ $('#select').on('click', function(){
         $(this).prop("checked", !$(this).prop("checked"));
     });
 });
+
+$('.select-all-permissions').on('click', function() {
+  $('input:checkbox').not(this).prop('checked', true);
+});

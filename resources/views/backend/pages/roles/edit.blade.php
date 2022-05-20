@@ -36,6 +36,6 @@
 </div> <!-- container -->
 @endsection
 
-@section('script')
-  
-@stop
+@push('plugin-scripts')
+  <script src="{{ URL::asset('assets/js/custom.js')}}"></script>
+@endpush
