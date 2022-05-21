@@ -45,7 +45,7 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        if(User::whereHas("roles", function($q){ $q->where("name", "super admin"); })->where('email', $request->email)->first() == NULL){
+        if(User::whereHas("roles", function($q){ $q->where("name", "Admin"); })->where('email', $request->email)->first() == NULL){
             return redirect()->back()->withError('Email address is incorrect');
         }
         $credentials = $request->only('email', 'password');
