@@ -39,7 +39,7 @@
 		      	@foreach($permission->children as $children)
 		      		<div class="col-md-7">
 		      			@if($children->is_checkbox != 0)
-			      			<input class="p-0 d-inline-block {{ $children->name == 'All permissions' ? 'select-all-permissions' : ''}}" type="checkbox" name="permissions[]" value="{{$children->id}}" {{ @in_array($children->id, @$selected_permissions) ? 'checked' : '' }}>&nbsp; {{$children->name}}
+			      			<input class="p-0 d-inline-block {{ str_replace(' ','_', $permission->name) }} {{ $children->name == 'All permissions' ? 'select-all-permissions' : ''}}" type="checkbox" name="permissions[]" value="{{$children->id}}" {{ @in_array($children->id, @$selected_permissions) ? 'checked' : '' }}>&nbsp; {{$children->name}}
 			      		@else
 			      			{{$children->name}}
 			      		@endif

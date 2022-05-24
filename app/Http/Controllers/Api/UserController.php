@@ -22,11 +22,11 @@ class UserController extends Controller
     {
         
         config([
-            'permission.table_names.roles' => 'company_'.$company_id.'_roles',
+            //'permission.table_names.roles' => 'company_'.$company_id.'_roles',
             'permission.table_names.permissions' => 'company_'.$company_id.'_permissions',
             'permission.table_names.model_has_permissions' => 'company_'.$company_id.'_model_has_permissions',
             'permission.table_names.model_has_roles' => 'company_'.$company_id.'_model_has_roles',
-            'permission.table_names.role_has_permissions' => 'company_'.$company_id.'_role_has_permissions',
+            //'permission.table_names.role_has_permissions' => 'company_'.$company_id.'_role_has_permissions',
         ]);
     }
 

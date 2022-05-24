@@ -9,7 +9,8 @@ use App\Models\MyTemplateMeta;
 use App\Models\DefaultPdfSendOption;
 use App\Models\Setting;
 use App\Models\PaymentOption;
-use Spatie\Permission\Models\Role;
+// use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\Api\UserController;
 
@@ -36,6 +37,8 @@ class TableHelper
         }
 
         if ($roles != NULL) {
+            $roles_table = 'company_'.$company_id.'_roles';
+            Role::setGlobalTable($roles_table);
             foreach ($roles as $role) {
                 if (!Role::where('name', $role->name)->exists()) {
                     Role::create([
@@ -2595,30 +2598,6 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
            $permission->save();
         }
 
-        // if (!Role::where('name', 'Super Admin')->exists()) {
-        //     Role::create(['name' => 'Super Admin']);
-        // }
-
-        // if (!Role::where('name', 'Admin')->exists()) {
-        //     Role::create(['name' => 'Admin']);
-        // }
-
-        // if (!Role::where('name', 'Sales Admin')->exists()) {
-        //     Role::create(['name' => 'Sales Admin']);
-        // }
-
-        // if (!Role::where('name', 'Salesperson')->exists()) {
-        //     Role::create(['name' => 'Salesperson']);
-        // }
-
-        // if (!Role::where('name', 'Technical Admin')->exists()) {
-        //     Role::create(['name' => 'Technical Admin']);
-        // }
-
-        // if (!Role::where('name', 'Technician')->exists()) {
-        //    Role::create(['name' => 'Technician']);
-        // }
-
         if (!Permission::where('name', 'Admin')->exists()) {
            $permission = Permission::create(['name' => 'Admin']);
            $permission->parent_id = Permission::where('name' ,'Visible Roles')->pluck('id')->first();
@@ -4903,29 +4882,25 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
             'guard_name' => 'api'
         ]);
 
-        // Assign permissions to role
-        /*$roles = Role::all();
-        $permissions = Permission::all();
-        $table_name = "company_".$company_id."_role_has_permissions";
-        foreach ($roles as $role) {
-            $role_permissions = Role::findByName($role->name)->permissions->pluck('id')->toArray();
-            foreach ($role_permissions as $role_permission) {
-                // echo 'permission----'.$role_permission;
-                \DB::table($table_name)->insert([
-                    'permission_id' => $role_permission,
-                    'role_id' => $role->id,
-                ]);
-            }
-        }*/
+        $roles_table = 'roles';
+        Role::setGlobalTable($roles_table);
 
-        $permissions = Permission::all();
+        // Assign permissions to role
         $roles = Role::all();
+        $permissions = Permission::all();
         $table_name = "company_".$company_id."_role_has_permissions";
+
         foreach ($roles as $role) {
-            foreach ($permissions as $permission) {
+            $company_role_id = \DB::table("company_".$company_id."_roles")->where('name', $role->name)->pluck('id')->first();
+
+            $main_role_id = Role::where('name', $role->name)->pluck('id')->first();
+
+            $role_permissions = \DB::table('role_has_permissions')->where('role_id', $main_role_id)->get()->toArray();
+            
+            foreach ($role_permissions as $role_permission) {
                 \DB::table($table_name)->insert([
-                    'permission_id' => $permission->id,
-                    'role_id' => $role->id,
+                    'permission_id' => $role_permission->permission_id,
+                    'role_id' => $company_role_id,
                 ]);
             }
         }

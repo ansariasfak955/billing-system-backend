@@ -84,6 +84,7 @@ class AuthController extends Controller
      */ 
     public function register(Request $request) 
     {
+        // $roles = Role::all();
         $validator = Validator::make($request->all(), [
             'email'   => 'sometimes|required|email',
             'name'    => 'required|regex:/^[\pL\s\-]+$/u',

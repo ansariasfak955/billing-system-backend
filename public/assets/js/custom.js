@@ -118,10 +118,15 @@ $(document).on( 'click', '.grid-batch-delete' ,function(){
 
 $('#select').on('click', function(){
     $('.select-checkbox').each(function(){
-        $(this).prop("checked", !$(this).prop("checked"));
+      $(this).prop("checked", !$(this).prop("checked"));
     });
 });
 
 $('.select-all-permissions').on('click', function() {
-  $('input:checkbox').not(this).prop('checked', true);
+  if ($(this).is(":checked")) {
+    $('input:checkbox').not(this).toggleClass('checked');
+    $('input:checkbox').not(this).prop('checked', true);
+  } else {
+    $('input:checkbox').not(this).not('input.Visible_Roles').prop('checked', false);
+  }
 });
