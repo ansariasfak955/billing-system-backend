@@ -6,7 +6,7 @@
         </div>
         <div class="form-group py-2">
             {!! Form::label('name', 'Name', ['class' => 'form-label']) !!}
-            {!! Form::text('name', isset($user->name) ? $user->name : Request::old('name'), ['class' => 'form-control', 'placeholder' => 'Enter Name']) !!}
+            {!! Form::text('name', isset($company_user->name) ? $company_user->name : Request::old('name'), ['class' => 'form-control', 'placeholder' => 'Enter Name']) !!}
         </div>
     </div>
     <div class="col-md-6">

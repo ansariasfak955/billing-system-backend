@@ -11,10 +11,10 @@
 
     <!-- Breadcrumbs -->
     <nav class="page-breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{route('companies.index')}}">Companies</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Edit</li>
-      </ol>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{route('companies.index')}}">Companies</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit</li>
+        </ol>
     </nav>
 
     <div class="row">
@@ -31,28 +31,39 @@
             </div> <!-- end card -->
         </div>
 
-        {{-- @if($companies != NULL)
-            <div class="table-responsive pt-3">
-                <table class="table table-bordered">
-                    <th>#</th>
-                    <th>Company Name</th>
-                    <th>Country</th>
-                    <th>State</th>
-                    <th>City</th>
-                    <th>Address</th>
-                    @foreach($companies as $company)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $company->name }}</td>
-                            <td>{{ $company->country }}</td>
-                            <td>{{ $company->state }}</td>
-                            <td>{{ $company->city }}</td>
-                            <td>{{ $company->address }}</td>
-                        </tr>
-                    @endforeach
-                </table>
+        @if($users != NULL)
+        <div class="row mt-4">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Users</h6>
+                        <div class="table-responsive pt-3">
+                            <table class="table table-bordered" id="dataTableExample">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($users as $user)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $user->name }}</td>
+                                            <td>{{ $user->email }}</td>
+                                            <td>{{ get_user_role($company->id, $user->role) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-        @endif --}}
+        </div>
+        @endif
         <!-- end col-12 -->
     </div> <!-- end row -->
 
@@ -60,5 +71,14 @@
 @endsection
 
 @section('script')
-  
+
+@push('plugin-scripts')
+<script src="{{ asset('assets/plugins/datatables-net/jquery.dataTables.js') }}"></script>
+{{-- <script src="{{ asset('assets/plugins/datatables-net-bs5/dataTables.bootstrap5.js') }}"></script> --}}
+@endpush
+
+@push('custom-scripts')
+<script src="{{ asset('assets/js/data-table.js') }}"></script>
+@endpush
+
 @stop

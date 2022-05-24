@@ -114,7 +114,8 @@ class CompanyController extends Controller
 
         User::setGlobalTable($users_table);
         $user = User::where('id', $company->user_id)->first();
-        return view('backend.pages.companies.edit', compact('company', 'page_title', 'user'));
+        $users = User::where('id', $company->user_id)->get();
+        return view('backend.pages.companies.edit', compact('company', 'page_title', 'user', 'users'));
     }
 
     /**
