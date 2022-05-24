@@ -1,7 +1,9 @@
 @extends('backend.layout.master')
 
 @section('css')
-   
+   @push('style')
+        <link href="{{ asset('assets/plugins/datatables-net/dataTables.bootstrap4.css')}}" rel="stylesheet" />
+   @endpush
 @stop
 
 @section('content')
