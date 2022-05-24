@@ -43,9 +43,10 @@ class RateController extends Controller
      */
     public function store(Request $request)
     {
-        Rate::setGlobalTable('company_'.$request->company_id.'_rates');
+        $table = 'company_'.$request->company_id.'_rates';
+        Rate::setGlobalTable($table);
         $validator = Validator::make($request->all(),[
-            'name' => 'required'          
+            'name' => 'required|unique:'.$table.'',
         ]);
 
         if ($validator->fails()) {
