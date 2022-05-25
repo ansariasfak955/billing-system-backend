@@ -56,6 +56,64 @@ $(document).on("submit", ".first", function(e) {
     })
 });
 
+// Delete company user
+$(document).on("submit", ".del-company-user", function(e) {
+    e.preventDefault();
+
+    var id = $(this).children('.item-id').val();
+    var searlised = $( this ).serialize();
+    var action = $(this).closest('form').attr('action');
+    
+    swal({
+        title: "Delete?",
+        text: "Please ensure and then confirm!",
+        type: "warning",
+        showCancelButton: !0,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: !0
+    }).then(function (e) {
+
+        if (e.value === true) {
+            var CSRF_TOKEN = $('meta[name="_token"]').attr('content');
+
+            $.ajax({
+                type: 'POST',
+                url: action,
+                data: searlised ,
+                dataType: 'JSON',
+                success: function (results) {
+                    console.log(results);
+                    if (results.status === true) {
+                      swal({
+                        title: "Done!", 
+                        text: results.message, 
+                        type: "success"
+                      }).then(function(){ 
+                         location.reload();
+                      });
+                    } else {
+                      swal({
+                             title: "Error!", 
+                             text: results.message, 
+                             type: "error"
+                           }).then(function(){ 
+                             location.reload();
+                         }
+                      );
+                    }
+                }
+            });
+
+        } else {
+            e.dismiss;
+        }
+
+    }, function (dismiss) {
+        return false;
+    })
+});
+
 
 $(document).on( 'click', '.grid-batch-delete' ,function(){
             var gridarray = [];

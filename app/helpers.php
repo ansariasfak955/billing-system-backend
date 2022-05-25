@@ -71,8 +71,10 @@ function generate_reference_num ($input, $pad_len = 7) {
     return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
 }
 
-function get_user_role($company_id, $role_id)
+function get_user_role($company_id, $user_id)
 {
+    $model_has_roles_table = "company_".$company_id."_model_has_roles";
+    $role_id = \DB::table($model_has_roles_table)->where('model_id', $user_id)->pluck('role_id')->first();
     $table = 'company_'.$company_id.'_roles';
     \App\Models\Role::setGlobalTable($table);
     return \App\Models\Role::where('id', $role_id)->pluck('name')->first();

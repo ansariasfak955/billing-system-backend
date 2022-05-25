@@ -3,6 +3,7 @@
 @section('css')
    @push('style')
         <link href="{{ asset('assets/plugins/datatables-net/dataTables.bootstrap4.css')}}" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
    @endpush
 @stop
 
@@ -47,6 +48,7 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Role</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -55,7 +57,12 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
-                                            <td>{{ get_user_role($company->id, $user->role) }}</td>
+                                            <td>{{ get_user_role($company->id, $user->id) }}</td>
+                                            <td>
+                                                @if(get_user_role($company->id, $user->id) == 'Admin')
+                                                    @include('backend.pages.companies.user-action')
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -76,6 +83,8 @@
 
 @push('plugin-scripts')
 <script src="{{ asset('assets/plugins/datatables-net/jquery.dataTables.js') }}"></script>
+<script src="{{ asset('assets/js/custom.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
 {{-- <script src="{{ asset('assets/plugins/datatables-net-bs5/dataTables.bootstrap5.js') }}"></script> --}}
 @endpush
 

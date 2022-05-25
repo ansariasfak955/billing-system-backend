@@ -22,7 +22,6 @@ class CompanyController extends Controller
     public function index(CompanyDataTable $dataTable, Request $request)
     {
         $page_title = "Companies";
-        // $companys_count = Company::whereHas("roles", function($q){ $q->whereIn("name", ["company"]); })->count();
         return $dataTable->render('backend.pages.companies.index', compact('page_title'));
     }
 
@@ -114,7 +113,7 @@ class CompanyController extends Controller
 
         User::setGlobalTable($users_table);
         $user = User::where('id', $company->user_id)->first();
-        $users = User::where('id', $company->user_id)->get();
+        $users = User::get();
         return view('backend.pages.companies.edit', compact('company', 'page_title', 'user', 'users'));
     }
 
@@ -177,6 +176,50 @@ class CompanyController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => "Retry deleting again!"
+            ]);
+        }
+    }
+
+    public function editUser(Request $request)
+    {
+        $company_id = $request->id;
+        $user_id = $request->user_id;
+        $user_table = 'company_'.$company_id.'_users';
+        User::setGlobalTable($user_table);
+        $user = User::where('id', $user_id)->first();
+        $page_title = '';
+        return view('backend.pages.companies.users.edit', compact('page_title', 'user', 'company_id'));
+    }
+
+    public function updateUser(Request $request)
+    {
+        $company_id = $request->id;
+        $user_id = $request->user_id;
+        
+        $user_table = 'company_'.$company_id.'_users';
+        User::setGlobalTable($user_table);
+        $user = User::where('id', $user_id)->first();
+        
+        if ($request->password) {
+            $request['password'] = bcrypt($request->password);
+            $user->update($request->all());
+        } else {
+            $user->update($request->except('password'));
+        }
+        return redirect()->route('companies.index')->withSuccess('Company User Updated Successfully!');
+    }
+
+    public function deleteUser(Request $request)
+    {
+        $company_id = $request->id;
+        $user_id = $request->user_id;
+        $user_table = 'company_'.$company_id.'_users';
+        User::setGlobalTable($user_table);
+        $user = User::where('id', $user_id)->first();
+        if($user->delete()){
+            return response()->json([
+                'status' => true,
+                'message' => "Company User deleted successfully!"
             ]);
         }
     }
