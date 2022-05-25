@@ -193,6 +193,14 @@ class CompanyController extends Controller
 
     public function updateUser(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'tin' => 'required|alpha_num'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withError($validator->errors()->first())->withInput();
+        }
+
         $company_id = $request->id;
         $user_id = $request->user_id;
         
