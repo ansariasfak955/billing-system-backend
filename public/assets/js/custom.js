@@ -183,7 +183,7 @@ $('#select').on('click', function(){
 $('.select-all-permissions').on('click', function() {
   if ($(this).is(":checked")) {
     $('input:checkbox').not(this).toggleClass('checked');
-    $('input:checkbox').not(this).prop('checked', true);
+    $('input:checkbox').not('input.Visible_Roles').not(this).prop('checked', true);
   } else {
     $('input:checkbox').not(this).not('input.Visible_Roles').prop('checked', false);
   }
