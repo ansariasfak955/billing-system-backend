@@ -15,397 +15,155 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('test-pdf', function(){
     $pdf = App::make('dompdf.wrapper');
-    $html = "
-    <style>
-    @import url(https://fonts.googleapis.com/css?family=Roboto:100,300,400,900,700,500,300,100);
-        *{
-          margin: 0;
-          box-sizing: border-box;
-          -webkit-print-color-adjust: exact;
-        }
-        body{
-          background: #E0E0E0;
-          font-family: 'Roboto', sans-serif;
-        }
-        ::selection {background: #f31544; color: #FFF;}
-        ::moz-selection {background: #f31544; color: #FFF;}
-        .clearfix::after {
-            content: '';
-            clear: both;
-            display: table;
-        }
-        .col-left {
-            float: left;
-        }
-        .col-right {
-            float: right;
-        }
-        h1{
-          font-size: 1.5em;
-          color: #444;
-        }
-        h2{font-size: .9em;}
-        h3{
-          font-size: 1.2em;
-          font-weight: 300;
-          line-height: 2em;
-        }
-        p{
-          font-size: .75em;
-          color: #666;
-          line-height: 1.2em;
-        }
-        a {
-            text-decoration: none;
-            color: #00a63f;
-        }
+    $html = '
+        <body>
+            <div style="position:relative;">
+                <img src="watermark.png" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px">
+                <div style="margin-top: 20px;">
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                <img src="logoinimg.png" alt="" srcset="" style="width: 340px; height: 120px; object-fit: cover;">
+                            </td>
+                            <td style="border-left: 2px solid orange;">
+                                <span style="margin-left: 15px;">Company Demo</span> <br>
+                                <span style="margin-left: 15px;">India</span>
+                            </td>
+                            <td style="border-left: 2px solid orange;">
+                                <span style="margin-left: 15px;">email</span> <br>
+                                <span style="margin-left: 15px;">website</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <h2>DOCUMENT TYPE</h2>
+                    <span>You can insert a title here</span>
+                </div>
+                <div style="margin-top: 20px;font-size: 13px">
+                    <table style="width:50%; float: right; padding: 10px">
+                        <th style="color: orange; border-bottom: 1px solid gray;text-align: left">CLIENT INFO</th>
+                        <tr><td>Number: 34234 <b>INV00006</b></td></tr>
+                        <tr><td>Date: <b>24 May 2022 01/12/2015</b></td></tr>
+                        <tr><td>Payment Option: <b>Online Bank Transfer</b></td></tr>
+                        <tr><td>Status: <b>Test Pending</b></td></tr>
+                        <tr><td>Created by: <b>Test View Account</b></td></tr>
+                        <tr><td>Delivery to: <b>HongKong 9205 Olive Ave., 10977, Spring Valley, NY, United States</b></td></tr>
+                        <tr><td>Delivery Option: <b>test delivery A domicilio</b></td></tr>
+                        <tr><td>Agent: <b>Test View Account</b></td></tr>
+                    </table>
+                    <table style="width:50%;border-right: 2px solid orange; padding: 10px">
+                        <th style="color: orange; border-bottom: 1px solid gray;text-align: left">PURCHASE DELIVERY NOTE INFO</th>
+                        <tr><td>Number: 34234 <b>INV00006</b></td></tr>
+                        <tr><td>Date: <b>24 May 2022 01/12/2015</b></td></tr>
+                        <tr><td>Payment Option: <b>Online Bank Transfer</b></td></tr>
+                        <tr><td>Status: <b>Test Pending</b></td></tr>
+                        <tr><td>Created by: <b>Test View Account</b></td></tr>
+                        <tr><td>Delivery to: <b>HongKong 9205 Olive Ave., 10977, Spring Valley, NY, United States</b></td></tr>
+                        <tr><td>Delivery Option: <b>test delivery A domicilio</b></td></tr>
+                        <tr><td>Agent: <b>Test View Account</b></td></tr>
+                    </table>
+                </div>
+                <div style="margin-top: 20px;">
+                    <table style="width:100%">
+                        <tr style="color: orange; border-bottom: 1px solid gray;">
+                            <th style="color: orange;">REF.</th>
+                            <th style="color: orange;">NAME</th>
+                            <th style="color: orange;">PRICE</th>
+                            <th style="color: orange;">DISC.</th>
+                            <th style="color: orange;">QTY.</th>
+                            <th style="color: orange;">SUBTOTAL</th>
+                            <th style="color: orange;">TAXES</th>
+                        </tr>
+                        <tr style="border-bottom: 1px solid gray;">
+                            <td>
+                                <p>PRO00012</p>
+                                <img src="refimg.png" alt="" srcset="">
+                            </td>
+                            <td>
+                                <p>Heading</p>
+                                <span>this is description </span>
+                            </td>
+                            <td>
+                                <p>29.00</p>
+                            </td>
+                            <td>
+                                <p>0.00%</p>
+                            </td>
+                            <td>
+                                <p>5.00</p>
+                            </td>
+                            <td>
+                                <p>145.00</p>
+                            </td>
+                            <td>
+                                <p>VAT 21.00%</p>
+                            </td>
 
-        #invoiceholder{
-          width:100%;
-          height: 100%;
-          padding: 50px 0;
-        }
-        #invoice{
-          position: relative;
-          margin: 0 auto;
-          width: 700px;
-          background: #FFF;
-        }
+                        </tr>
+                    </table>
+                </div>
 
-        [id*='invoice-']{ /* Targets all id with 'col-' */
-        /*  border-bottom: 1px solid #EEE;*/
-          padding: 20px;
-        }
-
-        #invoice-top{border-bottom: 2px solid #00a63f;}
-        #invoice-mid{min-height: 110px;}
-        #invoice-bot{ min-height: 240px;}
-
-        .logo{
-            display: inline-block;
-            vertical-align: middle;
-            width: 110px;
-            overflow: hidden;
-        }
-        .info{
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 20px;
-        }
-        .logo img,
-        .clientlogo img {
-            width: 100%;
-        }
-        .clientlogo{
-            display: inline-block;
-            vertical-align: middle;
-            width: 50px;
-        }
-        .clientinfo {
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 20px
-        }
-        .title{
-          float: right;
-        }
-        .title p{text-align: right;}
-        #message{margin-bottom: 30px; display: block;}
-        h2 {
-            margin-bottom: 5px;
-            color: #444;
-        }
-        .col-right td {
-            color: #666;
-            padding: 5px 8px;
-            border: 0;
-            font-size: 0.75em;
-            border-bottom: 1px solid #eeeeee;
-        }
-        .col-right td label {
-            margin-left: 5px;
-            font-weight: 600;
-            color: #444;
-        }
-        .cta-group a {
-            display: inline-block;
-            padding: 7px;
-            border-radius: 4px;
-            background: rgb(196, 57, 10);
-            margin-right: 10px;
-            min-width: 100px;
-            text-align: center;
-            color: #fff;
-            font-size: 0.75em;
-        }
-        .cta-group .btn-primary {
-            background: #00a63f;
-        }
-        .cta-group.mobile-btn-group {
-            display: none;
-        }
-        table{
-          width: 100%;
-          border-collapse: collapse;
-        }
-        td{
-            padding: 10px;
-            border-bottom: 1px solid #cccaca;
-            font-size: 0.70em;
-            text-align: left;
-        }
-
-        .tabletitle th {
-          border-bottom: 2px solid #ddd;
-          text-align: right;
-        }
-        .tabletitle th:nth-child(2) {
-            text-align: left;
-        }
-        th {
-            font-size: 0.7em;
-            text-align: left;
-            padding: 5px 10px;
-        }
-        .item{width: 50%;}
-        .list-item td {
-            text-align: right;
-        }
-        .list-item td:nth-child(2) {
-            text-align: left;
-        }
-        .total-row th,
-        .total-row td {
-            text-align: right;
-            font-weight: 700;
-            font-size: .75em;
-            border: 0 none;
-        }
-        .table-main {
-            
-        }
-        footer {
-            border-top: 1px solid #eeeeee;;
-            padding: 15px 20px;
-        }
-        .effect2
-        {
-          position: relative;
-        }
-        @media screen and (max-width: 767px) {
-            h1 {
-                font-size: .9em;
-            }
-            #invoice {
-                width: 100%;
-            }
-            #message {
-                margin-bottom: 20px;
-            }
-            [id*='invoice-'] {
-                padding: 20px 10px;
-            }
-            .logo {
-                width: 140px;
-            }
-            .title {
-                float: none;
-                display: inline-block;
-                vertical-align: middle;
-                margin-left: 40px;
-            }
-            .title p {
-                text-align: left;
-            }
-            .col-left,
-            .col-right {
-                width: 100%;
-            }
-            .table {
-                margin-top: 20px;
-            }
-            #table {
-                white-space: nowrap;
-                overflow: auto;
-            }
-            td {
-                white-space: normal;
-            }
-            .cta-group {
-                text-align: center;
-            }
-            .cta-group.mobile-btn-group {
-                display: block;
-                margin-bottom: 20px;
-            }
-             /*==================== Table ====================*/
-            .table-main {
-                border: 0 none;
-            }  
-              .table-main thead {
-                border: none;
-                clip: rect(0 0 0 0);
-                height: 1px;
-                margin: -1px;
-                overflow: hidden;
-                padding: 0;
-                position: absolute;
-                width: 1px;
-              }
-              .table-main tr {
-                border-bottom: 2px solid #eee;
-                display: block;
-                margin-bottom: 20px;
-              }
-              .table-main td {
-                font-weight: 700;
-                display: block;
-                padding-left: 40%;
-                max-width: none;
-                position: relative;
-                border: 1px solid #cccaca;
-                text-align: left;
-              }
-              .table-main td:before {
-                /*
-                * aria-label has no advantage, it won't be read inside a table
-                content: attr(aria-label);
-                */
-                content: attr(data-label);
-                position: absolute;
-                left: 10px;
-                font-weight: normal;
-                text-transform: uppercase;
-              }
-            .total-row th {
-                display: none;
-            }
-            .total-row td {
-                text-align: left;
-            }
-            footer {text-align: center;}
-        }
-
-    </style>
-
-    <body>
-  <div id='invoiceholder'>
-  <div id='invoice' class='effect2'>
-    
-    <div id='invoice-top'>
-      <div class='logo'><img src='https://www.almonature.com/wp-content/uploads/2018/01/logo_footer_v2.png' alt='Logo' /></div>
-      <div class='title'>
-        <h1>Invoice #<span class='invoiceVal invoice_num'>tst-inv-23</span></h1>
-        <p>Invoice Date: <span id='invoice_date'>01 Feb 2018</span><br>
-           GL Date: <span id='gl_date'>23 Feb 2018</span>
-        </p>
-      </div><!--End Title-->
-    </div><!--End InvoiceTop-->
-
-
-    
-    <div id='invoice-mid'>   
-      <div id='message'>
-        <h2>Hello Andrea De Asmundis,</h2>
-        <p>An invoice with invoice number #<span id='invoice_num'>tst-inv-23</span> is created for <span id='supplier_name'>TESI S.P.A.</span> which is 100% matched with PO and is waiting for your approval. <a href='javascript:void(0);'>Click here</a> to login to view the invoice.</p>
-      </div>
-       <div class='cta-group mobile-btn-group'>
-            <a href='javascript:void(0);' class='btn-primary'>Approve</a>
-            <a href='javascript:void(0);' class='btn-default'>Reject</a>
-        </div> 
-        <div class='clearfix'>
-            <div class='col-left'>
-                <div class='clientlogo'><img src='https://cdn3.iconfinder.com/data/icons/daily-sales/512/Sale-card-address-512.png' alt='Sup' /></div>
-                <div class='clientinfo'>
-                    <h2 id='supplier'>TESI S.P.A.</h2>
-                    <p><span id='address'>VIA SAVIGLIANO, 48</span><br><span id='city'>RORETO DI CHERASCO</span><br><span id='country'>IT</span> - <span id='zip'>12062</span><br><span id='tax_num'>555-555-5555</span><br></p>
+                <div>
+                    <p style="font-weight: bold;">Signed:</p>
+                </div>
+                <div>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <div style="border: 1px solid gray">
+                                    <img width="210" height="100" object-fit="cover"
+                                        src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" />
+                                    <p style="font-weight: bold; position: relative; bottom: 0;">Name:</p>
+                                    <p style="font-weight: bold; position: relative; bottom: 0;">TIN:</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="padding-left:150px">
+                                    <table style="border-bottom: 1px solid gray;">
+                                        <tr style="border-bottom: 1px solid gray;">
+                                            <th style="color: orange;">BASE</th>
+                                            <th></th>
+                                            <th style="color: orange; padding-left: 30px;">$ 1,386.80</th>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid gray;">
+                                            <td>1,386.80</td>
+                                            <td style="padding-left: 30px; text-align: right">VAT 21.00%</td>
+                                            <td style="padding-left: 30px; text-align: right">291.23</td>
+                                        </tr>
+                                        <tr>
+                                            <th style="color: orange;">TOTAL</th>
+                                            <td></td>
+                                            <th style="padding-left: 30px">$ 1,678.03</th>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h5 style="border-bottom: 1px solid black ;">ADDENDUM</h5>
+                    <ul>
+                        <li>
+                            You can also type in more detailed comments which will be included as an Addendum at the bottom of
+                            your
+                            documents.
+                        </li>
+                        <li>
+                            You can use this to include contracts, conditions, promotions and legal writings.
+                        </li>
+                        <li>
+                            From Settings > Management Listings > References, you can define Addendums that you want to add into
+                            your estimates,
+                            orders, invoices and any other commercial document reference.
+                            2 / 2
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class='col-right'>
-                <table class='table'>
-                    <tbody>
-                        <tr>
-                            <td><span>Invoice Total</span><label id='invoice_total'>61.2</label></td>
-                            <td><span>Currency</span><label id='currency'>EUR</label></td>
-                        </tr>
-                        <tr>
-                            <td><span>Payment Term</span><label id='payment_term'>60 gg DFFM</label></td>
-                            <td><span>Invoice Type</span><label id='invoice_type'>EXP REP INV</label></td>
-                        </tr>
-                        <tr><td colspan='2'><span>Note</span>#<label id='note'>None</label></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>       
-    </div><!--End Invoice Mid-->
-    
-    <div id='invoice-bot'>
-      
-      <div id='table'>
-        <table class='table-main'>
-          <thead>    
-              <tr class='tabletitle'>
-                <th>Type</th>
-                <th>Description</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Taxable Amount</th>
-                <th>Tax Code</th>
-                <th>%</th>
-                <th>Tax Amount</th>
-                <th>AWT</th>
-                <th>Total</th>
-              </tr>
-          </thead>
-          <tr class='list-item'>
-            <td data-label='Type' class='tableitem'>ITEM</td>
-            <td data-label='Description' class='tableitem'>Servizio EDI + Traffico mese di novembre 2017</td>
-            <td data-label='Quantity' class='tableitem'>46.6</td>
-            <td data-label='Unit Price' class='tableitem'>1</td>
-            <td data-label='Taxable Amount' class='tableitem'>46.6</td>
-            <td data-label='Tax Code' class='tableitem'>DP20</td>
-            <td data-label='%' class='tableitem'>20</td>
-            <td data-label='Tax Amount' class='tableitem'>9.32</td>
-            <td data-label='AWT' class='tableitem'>None</td>
-            <td data-label='Total' class='tableitem'>55.92</td>
-          </tr>
-         <tr class='list-item'>
-            <td data-label='Type' class='tableitem'>ITEM</td>
-            <td data-label='Description' class='tableitem'>Traffico mese di novembre 2017 FRESSNAPF TIERNAHRUNGS GMBH riadd. Almo DE</td>
-            <td data-label='Quantity' class='tableitem'>4.4</td>
-            <td data-label='Unit Price' class='tableitem'>1</td>
-            <td data-label='Taxable Amount' class='tableitem'>46.6</td>
-            <td data-label='Tax Code' class='tableitem'>DP20</td>
-            <td data-label='%' class='tableitem'>20</td>
-            <td data-label='Tax Amount' class='tableitem'>9.32</td>
-            <td data-label='AWT' class='tableitem'>None</td>
-            <td data-label='Total' class='tableitem'>55.92</td>
-          </tr>
-            <tr class='list-item total-row'>
-                <th colspan='9' class='tableitem'>Grand Total</th>
-                <td data-label='Grand Total' class='tableitem'>111.84</td>
-            </tr>
-        </table>
-      </div><!--End Table-->
-      <div class='cta-group'>
-        <a href='javascript:void(0);' class='btn-primary'>Approve</a>
-        <a href='javascript:void(0);' class='btn-default'>Reject</a>
-    </div> 
-      
-    </div><!--End InvoiceBot-->
-    <footer>
-      <div id='legalcopy' class='clearfix'>
-        <p class='col-right'>Our mailing address is:
-            <span class='email'><a href='mailto:supplier.portal@almonature.com'>supplier.portal@almonature.com</a></span>
-        </p>
-      </div>
-    </footer>
-  </div><!--End Invoice-->
-</div><!-- End Invoice Holder-->
-  
-  
-
-</body>";
+        </body>
+    ';
 
     $pdf->loadHTML($html);
     return $pdf->stream();
@@ -447,6 +205,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::get('permissions', 'RoleController@getPermissions');
             Route::get('role-permissions', 'RoleController@getRolePermissions');
             Route::post('update-settings', 'SettingController@updateSettings');
+            Route::get('send-test-email', 'SettingController@sendTestEmail');
 
             /* client routes */
             Route::apiResource('clients', ClientController::class);
@@ -466,6 +225,8 @@ Route::group(['namespace' => 'Api'], function() {
 
             /* Items */
             Route::apiResource('items', ItemController::class);
+
+            Route::get('template-preview', 'MyTemplateController@getTemplatePreview');
         });
 
         /* Activity Type */

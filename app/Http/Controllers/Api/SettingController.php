@@ -5,6 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Setting;
+use App\Models\Company;
+use App\Models\User;
+use App\Jobs\SendTestMailJob;
+use App\Mail\SendTestMail;
+use Mail;
+use Auth;
 
 class SettingController extends Controller
 {
@@ -28,6 +34,17 @@ class SettingController extends Controller
                 "option_value" => $option_value
             ]);
         }
+
+        $users_table = 'company_'.$request->company_id.'_users';
+        User::setGlobalTable($users_table);
+
+        $user = User::where('id', 1)->first();
+        $user->smtp_email_address = $request->smtp_email_address;
+        $user->smtp_server = $request->smtp_server;
+        $user->smtp_security_protocol = $request->smtp_security_protocol;
+        $user->smtp_password = $request->smtp_password;
+        $user->smtp_port = $request->smtp_port;
+        $user->save();
        
         // foreach($request->update_data as $item){
         //     Setting::where('option_name', $item['option_name'])->update([
@@ -39,6 +56,54 @@ class SettingController extends Controller
             "status" => true,
             "settings" =>  Setting::pluck('option_value', 'option_name'),
             "message" => "Settings updated successfully"
+        ]);
+    }
+
+    public function sendTestEmail(Request $request)
+    {
+        $company = Company::where('id',$request->company_id)->first();
+
+        $settings_table = 'company_'.$request->company_id.'_settings';
+        Setting::setGlobalTable($settings_table);
+
+        $settings = Setting::where('option_name', 'email_configuration_signature')->first();
+
+        $users_table = 'company_'.$request->company_id.'_users';
+        User::setGlobalTable($users_table);
+        $user = User::where('id', Auth::id())->first();
+
+        if($user == NULL){
+            return response()->json([
+                "status" => false,
+                "message" => "User not exist!"
+            ]);
+        }
+
+        /*$configuration = [
+            'smtp_host'       => 'smtp.gmail.com',
+            'smtp_port'       => '465',
+            'smtp_username'   => 'cctest452@gmail.com',
+            'smtp_password'   => 'imubhzovupqoavnt',
+            'smtp_encryption' => 'SSL',
+            'from_email'      => 'tushar.khanna@codingcafe.website',
+            'from_name'       => 'Tushar Khanna',
+        ];*/
+
+        $configuration = [
+            'smtp_host'       => $user->smtp_host,
+            'smtp_port'       => $user->smtp_port,
+            'smtp_username'   => $user->smtp_username,
+            'smtp_password'   => $user->smtp_password,
+            'smtp_encryption' => $user->smtp_encryption,
+            'from_email'      => $user->from_email,
+            'from_name'       => $user->from_name,
+        ];
+
+        SendTestMailJob::dispatch($configuration, $user->email, new SendTestMail($configuration, $user->email, $company, $settings));
+
+        return response()->json([
+            "status" => true,
+            "message" => "Test mail sent successfully!"
         ]);
     }
 }

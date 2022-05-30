@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MyTemplate;
+use App\Models\Company;
+use App\Models\Product;
 use App\Models\MyTemplateMeta;
 use Validator;
+use App;
 
 class MyTemplateController extends Controller
 {
@@ -291,5 +294,18 @@ class MyTemplateController extends Controller
             'status'  => true,
             'message' => 'Template fields updated successfully!',
         ]);
+    }
+
+    public function getTemplatePreview(Request $request)
+    {
+        $pdf = App::make('dompdf.wrapper');
+        $company = Company::where('id', $request->company_id)->first();
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+        $products = Product::limit(2)->get();
+
+        $pdf->loadView('pdf.template', compact('company', 'products'));
+        return $pdf->stream();
     }
 }

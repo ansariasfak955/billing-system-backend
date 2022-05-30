@@ -16,9 +16,12 @@ class MyTemplate extends Model
     public function getTable() {
         return self::$globalTable ;
     }
+
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+
+    protected $appends = ['template_preview'];
 
     public function getWatermarkAttribute()
     {
@@ -32,5 +35,12 @@ class MyTemplate extends Model
     public function metas()
     {
         return $this->hasMany(MyTemplateMeta::class, 'template_id', 'id');
+    }
+
+    public function getTemplatePreviewAttribute()
+    {
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        return 'https://billing.testingcafe.website/'.$company_id.'/template-preview/';
     }
 }

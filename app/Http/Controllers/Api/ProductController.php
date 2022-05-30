@@ -101,9 +101,9 @@ class ProductController extends Controller
                 ProductStock::create([
                     'product_id' => $product->id,
                     'warehouse' => 'Main Warehouse',
-                    'stock' => 0,
-                    'virtual_stock' => 0,
-                    'minimum_stock' => 0,
+                    'stock' => $request->stock,
+                    'virtual_stock' => $request->virtual_stock,
+                    'minimum_stock' => $request->minimum_stock,
                 ]);
             }
         }
