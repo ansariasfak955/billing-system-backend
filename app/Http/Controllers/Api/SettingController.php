@@ -71,7 +71,6 @@ class SettingController extends Controller
     public function sendTestEmail(Request $request)
     {
         $company = Company::where('id',$request->company_id)->first();
-
         $settings_table = 'company_'.$request->company_id.'_settings';
         Setting::setGlobalTable($settings_table);
 
