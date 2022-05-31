@@ -45,6 +45,7 @@ class SettingController extends Controller
             $user->smtp_security_protocol = $request->smtp_security_protocol;
             $user->smtp_password = $request->smtp_password;
             $user->smtp_port = $request->smtp_port;
+            $user->smtp_sender_name = $request->email_configuration_sender_name;
             $user->save();
         }
 
@@ -112,7 +113,7 @@ class SettingController extends Controller
             'smtp_password'   => $user->smtp_password,
             'smtp_encryption' => $user->smtp_security_protocol,
             'from_email'      => $user->smtp_email_address,
-            'from_name'       => $user->smtp_sender_name,
+            'from_name'       => $user->smtp_sender_name ? $user->smtp_sender_name : 'test',
         ];
 
         SendTestMailJob::dispatch($configuration, $company->email, new SendTestMail($configuration, $user->email, $company, $settings));
