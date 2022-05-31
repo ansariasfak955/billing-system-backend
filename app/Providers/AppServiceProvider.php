@@ -33,11 +33,11 @@ class AppServiceProvider extends ServiceProvider
             $transport->setEncryption($smtp_encryption);
              
             $swift_mailer = new Swift_Mailer($transport);
-             
             $mailer = new Mailer('test', $app->get('view'), $swift_mailer, $app->get('events'));
+
             $mailer->alwaysFrom($from_email, $from_name);
             $mailer->alwaysReplyTo($from_email, $from_name);
-             
+
             return $mailer;
         });
     }

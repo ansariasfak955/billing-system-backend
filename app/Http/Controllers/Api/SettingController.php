@@ -38,13 +38,20 @@ class SettingController extends Controller
         $users_table = 'company_'.$request->company_id.'_users';
         User::setGlobalTable($users_table);
 
-        $user = User::where('id', 1)->first();
-        $user->smtp_email_address = $request->smtp_email_address;
-        $user->smtp_server = $request->smtp_server;
-        $user->smtp_security_protocol = $request->smtp_security_protocol;
-        $user->smtp_password = $request->smtp_password;
-        $user->smtp_port = $request->smtp_port;
-        $user->save();
+        $user = User::where('id', Auth::id())->first();
+        if ($user != NULL) {
+            $user->smtp_email_address = $request->smtp_email_address;
+            $user->smtp_server = $request->smtp_server;
+            $user->smtp_security_protocol = $request->smtp_security_protocol;
+            $user->smtp_password = $request->smtp_password;
+            $user->smtp_port = $request->smtp_port;
+            $user->save();
+        }
+
+        $token = $request->bearerToken();
+        Auth::user()->setAttribute("token", $token);
+
+        $user_data = User::where('id', Auth::id())->first();
        
         // foreach($request->update_data as $item){
         //     Setting::where('option_name', $item['option_name'])->update([
@@ -55,6 +62,7 @@ class SettingController extends Controller
         return response()->json([
             "status" => true,
             "settings" =>  Setting::pluck('option_value', 'option_name'),
+            "user" =>  Auth::user(),
             "message" => "Settings updated successfully"
         ]);
     }
@@ -79,6 +87,14 @@ class SettingController extends Controller
             ]);
         }
 
+        if($user->smtp_server == NULL || $user->smtp_port == NULL || $user->smtp_email_address == NULL || $user->smtp_password == NULL || $user->smtp_security_protocol == NULL || $user->smtp_sender_name == NULL) {
+            return response()->json([
+                "status" => false,
+                "user" => $user,
+                "message" => "Please enter SMTP details first!"
+            ]);
+        }
+
         /*$configuration = [
             'smtp_host'       => 'smtp.gmail.com',
             'smtp_port'       => '465',
@@ -90,16 +106,16 @@ class SettingController extends Controller
         ];*/
 
         $configuration = [
-            'smtp_host'       => $user->smtp_host,
+            'smtp_host'       => $user->smtp_server,
             'smtp_port'       => $user->smtp_port,
-            'smtp_username'   => $user->smtp_username,
+            'smtp_username'   => $user->smtp_email_address,
             'smtp_password'   => $user->smtp_password,
-            'smtp_encryption' => $user->smtp_encryption,
-            'from_email'      => $user->from_email,
-            'from_name'       => $user->from_name,
+            'smtp_encryption' => $user->smtp_security_protocol,
+            'from_email'      => $user->smtp_email_address,
+            'from_name'       => $user->smtp_sender_name,
         ];
 
-        SendTestMailJob::dispatch($configuration, $user->email, new SendTestMail($configuration, $user->email, $company, $settings));
+        SendTestMailJob::dispatch($configuration, $company->email, new SendTestMail($configuration, $user->email, $company, $settings));
 
         return response()->json([
             "status" => true,

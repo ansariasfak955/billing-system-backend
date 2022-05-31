@@ -179,7 +179,7 @@ Route::group(['namespace' => 'Api'], function() {
     });
 
     Route::get('subscriptions', 'SubscriptionController@index');
-    Route::get('{company_id}/template-preview', 'MyTemplateController@getTemplatePreview');
+    Route::get('{company_id}/template-preview/{template_id}', 'MyTemplateController@getTemplatePreview');
    
     Route::group(['middleware' => ['auth:api']], function(){
         Route::apiResource('companies', CompanyController::class);

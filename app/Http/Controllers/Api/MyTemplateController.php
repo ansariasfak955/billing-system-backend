@@ -305,7 +305,11 @@ class MyTemplateController extends Controller
         Product::setGlobalTable($table);
         $products = Product::limit(2)->get();
 
-        $pdf->loadView('pdf.template', compact('company', 'products'));
+        MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+        $template = MyTemplate::where('id', $request->template_id)->first();
+
+        $pdf->loadView('pdf.template', compact('company', 'products', 'template'));
         return $pdf->stream();
     }
 }

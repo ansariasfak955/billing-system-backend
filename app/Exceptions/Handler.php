@@ -52,4 +52,23 @@ class Handler extends ExceptionHandler
     {
         return parent::render($request, $exception);
     }
+
+    public function register()
+    {
+        $this->reportable(function (Throwable $e) {
+            $exception = [
+                "name" => get_class($e),
+                "message" => $e->getMessage(),
+                "file" => $e->getFile(),
+                "line" => $e->getLine(),
+            ];
+
+
+            $error['status']  = false;
+            $error['message'] = $exception['message'];
+            
+            echo json_encode($error);
+            die;
+        });
+    }
 }

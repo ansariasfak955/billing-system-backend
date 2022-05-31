@@ -10,18 +10,18 @@ use Illuminate\Queue\SerializesModels;
 class SendTestMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $configuration, $recipient, $company, $email;
+    public $configuration, $recipient, $company, $settings;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($configuration, $recipient, $company, $email)
+    public function __construct($configuration, $recipient, $company, $settings)
     {
         $this->configuration = $configuration;
         $this->recipient = $recipient;
-        $this->email = $email;
+        $this->settings = $settings;
         $this->company = $company;
     }
 
@@ -32,7 +32,7 @@ class SendTestMail extends Mailable
      */
     public function build()
     {
-        $this->from('example@example.com', 'Example')->markdown('emails.send-test-mail');
+        $this->from($this->configuration['from_email'], $this->configuration['from_name'])->replyTo($this->configuration['from_email'])->markdown('emails.send-test-mail');
         $this->withSwiftMessage(function ($message) {
             $message->getHeaders()->addTextHeader(
                 'IsTransactional', 'true'

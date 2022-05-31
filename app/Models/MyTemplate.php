@@ -41,6 +41,6 @@ class MyTemplate extends Model
     {
         $table = $this->getTable();
         $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-        return 'https://billing.testingcafe.website/'.$company_id.'/template-preview/';
+        return \URL::to('/')."/api/$company_id"."/template-preview/".$this->attributes['id'];
     }
 }
