@@ -111,21 +111,37 @@
         @endif
     @endforeach
 
-    <div style="position:relative;">
-        <img src="default_watermark.png" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px">
-        <div style="margin-top: 20px;">
-            <table style="width:100%">
+    @if(strpos($template->watermark,"via.placeholder") !== false)
+        @php
+        $watermark_image = 'default_watermark.png';
+        @endphp
+    @else
+        @php
+        $watermark_image = $template->watermark;
+        @endphp
+    @endif
+
+    <style>
+        th, td {
+            vertical-align: top;
+        }
+    </style>
+
+    <div style="position:relative; font-size: 13px; font-family:Helvetica;">
+        <img src="{{ $watermark_image }}" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px">
+        <div style="margin-top: 0px;">
+            <table style="border-collapse: collapse; width:100%">
                 <tr>
-                    <td>
+                    <td style="padding: 0; margin: 0;">
                         <img src="{{ asset('light.png') }}" alt="" srcset="" style="width: 120px; height: auto; object-fit: cover;">
                     </td>
                     <td style="border-left: 2px solid orange;">
-                        <span style="margin-left: 60px;">{{ $company_name_show == 1 ? $company->name : '' }}</span> <br>
-                        <span style="margin-left: 60px;">{{ $company_country_show == 1 ? $company->country : '' }}</span>
+                        <span style="margin-left: 30px;">{{ $company_name_show == 1 ? $company->name : '' }}</span> <br>
+                        <span style="margin-left: 30px;">{{ $company_country_show == 1 ? $company->country : '' }}</span>
                     </td>
-                    <td style="border-left: 2px solid orange;">
-                        <span style="margin-left: 60px;">Email</span> {{ $company_email_show == 1 ?  $company->email : '' }}<br>
-                        <span style="margin-left: 60px;">website</span> {{ $company_website_show == 1 ?  $company->website : '' }}
+                    <td style="border-left: 2px solid orange; width: 300px; ">
+                        <span style="margin-left: 30px;">Email</span> {{ $company_email_show == 1 ?  $company->email : '' }}<br>
+                        <span style="margin-left: 30px;">website</span> {{ $company_website_show == 1 ?  $company->website : '' }}
                     </td>
                 </tr>
             </table>
@@ -135,13 +151,13 @@
             <h2>{{ $template->name }}</h2>
         </div>
         <div style="margin-top: 20px;font-size: 13px">
-            <table style="width:50%; padding: 10px">
+            <table style="border-collapse: collapse; width:50%; padding: 10px">
                 <th style="color: orange; border-bottom: 1px solid gray;text-align: left">{{ strtoupper($template->document_type) }} INFO</th>
-                <tr><td>Number: <b>INV00001</b></td></tr>
-                <tr><td>Date: <b>{{ date('d F Y') }}</b></td></tr>
+                <tr><td style="padding: 0; margin: 0;">Number: <b>INV00001</b></td></tr>
+                <tr><td style="padding: 0; margin: 0;">Date: <b>{{ date('d F Y') }}</b></td></tr>
                 @if($document_payment_info_show == 1)
                     <tr>
-                        <td>
+                        <td style="padding: 0; margin: 0;">
                             {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}}<b>Online Bank Transfer</b>
                         </td>
                     </tr>
@@ -149,7 +165,7 @@
 
                 @if($document_status_show == 1)
                     <tr>
-                        <td>
+                        <td style="padding: 0; margin: 0;">
                             {{ $document_status_text ? $document_status_text : 'Status:'}}<b>Pending</b>
                         </td>
                     </tr>
@@ -157,21 +173,21 @@
                 
                 @if($document_created_by_show == 1)
                     <tr>
-                        <td>
+                        <td style="padding: 0; margin: 0;">
                             {{ $document_created_by_text ? $document_created_by_text : 'Created by:'}}<b>Test View Account</b>
                         </td>
                     </tr>
                 @endif
 
                 <tr>
-                    <td>
+                    <td style="padding: 0; margin: 0;">
                         Delivery to: <b>HongKong 9205 Olive Ave., 10977, Spring Valley, NY, United States</b>
                     </td>
                 </tr>
 
                 @if($document_delivery_by_show == 1)
                     <tr>
-                        <td>
+                        <td style="padding: 0; margin: 0;">
                             {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>test delivery A domicilio</b>
                         </td>
                     </tr>
@@ -179,7 +195,7 @@
 
                 @if($document_agent_show == 1)
                     <tr>
-                        <td>
+                        <td style="padding: 0; margin: 0;">
                             {{ $document_agent_text ? $document_agent_text : 'Agent:'}} <b>Test View Account</b>
                         </td>
                     </tr>
@@ -188,23 +204,23 @@
         </div>
 
         <div style="margin-top: 20px;">
-            <table style="width:100%">
+            <table style="border-collapse: collapse; width:100%; ">
                 <tr style="color: orange; border-bottom: 1px solid gray;">
-                    <th style="color: orange;">REF.</th>
-                    <th style="color: orange;">NAME</th>
-                    <th style="color: orange;">PRICE</th>
-                    <th style="color: orange;">DISC.</th>
-                    <th style="color: orange;">QTY.</th>
-                    <th style="color: orange;">SUBTOTAL</th>
-                    <th style="color: orange;">TAXES</th>
+                    <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>
+                    <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">NAME</th>
+                    <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">PRICE</th>
+                    <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
+                    <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">QTY.</th>
+                    <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">SUBTOTAL</th>
+                    <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">TAXES</th>
                 </tr>
                 @php
                 $subtotal = 0;
                 @endphp
                 @foreach($products as $product)
-                    <tr style="border-bottom: 1px solid gray;">
-                        <td>
-                            <p>{{ $product->id }}</p>
+                    <tr>
+                        <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <p style="marging: 0; padding: 0">{{ $product->id }}</p>
                             
                             @if(strpos($product->image,"via.placeholder") !== false)
                                 @php
@@ -216,26 +232,26 @@
                                 @endphp
                             @endif
 
-                            <img src="{{ $image }}" alt="" srcset="">
+                            <img height="45" src="{{ $image }}" alt="" srcset="">
                         </td>
-                        <td>
-                            <p>{{ $product->name }}</p>
+                        <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <p style="marging: 0; padding: 0">{{ $product->name }}</p>
                             <span>{{ $product->description }}</span>
                         </td>
-                        <td>
-                            <p>{{ $product->price }}</p>
+                        <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <p style="marging: 0; padding: 0">{{ $product->price }}</p>
                         </td>
-                        <td>
-                            <p>0</p>
+                        <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <p style="marging: 0; padding: 0">0</p>
                         </td>
-                        <td>
-                            <p>1</p>
+                        <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <p style="marging: 0; padding: 0">1</p>
                         </td>
-                        <td>
-                            <p>{{ $product->price }}</p>
+                        <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <p style="marging: 0; padding: 0">{{ $product->price }}</p>
                         </td>
-                        <td>
-                            <p>VAT 21%</p>
+                        <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <p style="marging: 0; padding: 0">VAT 21%</p>
                         </td>
                         @php
                         $subtotal += $product->price;
@@ -254,33 +270,33 @@
             <p style="font-weight: bold;">Signed:</p>
         </div>
         <div>
-            <table style="width: 100%;">
+            <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                 <tr>
-                    <td>
-                        <div style="border: 1px solid gray">
+                    <td style="margin: 0;">
+                        <div style="border: 1px solid gray; padding: 10px;">
                             <img width="210" height="100" object-fit="cover"
                                 src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" />
                             <p style="font-weight: bold; position: relative; bottom: 0;">Name:</p>
                             <p style="font-weight: bold; position: relative; bottom: 0;">TIN:</p>
                         </div>
                     </td>
-                    <td>
-                        <div style="padding-left:150px">
-                            <table style="border-bottom: 1px solid gray;">
+                    <td style="padding: 0; margin: 0; padding-left: 120px;">
+                        <div>
+                            <table style="border-collapse: collapse; width: 100%; ">
                                 <tr style="border-bottom: 1px solid gray;">
-                                    <th style="color: orange;">BASE</th>
+                                    <th style="color: orange; padding: 5px 0; text-align: left;">BASE</th>
                                     <th></th>
-                                    <th style="color: orange; padding-left: 30px;">$ {{ $subtotal }}</th>
+                                    <th style="color: orange; padding: 5px 0; text-align: right;">$ {{ $subtotal }}</th>
                                 </tr>
                                 <tr style="border-bottom: 1px solid gray;">
-                                    <td>{{ $subtotal }}</td>
-                                    <td style="padding-left: 30px; text-align: right">VAT 21%</td>
-                                    <td style="padding-left: 30px; text-align: right">{{ $vat }}</td>
+                                    <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $subtotal }}</td>
+                                    <td style="padding: 5px 0; text-align: center"><span> VAT 21%</span></td>
+                                    <td style="padding: 5px 0; text-align: right">{{ $vat }}</td>
                                 </tr>
                                 <tr>
-                                    <th style="color: orange;">TOTAL</th>
-                                    <td></td>
-                                    <th style="padding-left: 30px">$ {{ $total }}</th>
+                                    <th style="color: orange; padding: 5px 0; text-align: left">TOTAL</th>
+                                    <td style="padding: 0; margin: 0;"></td>
+                                    <th style="text-align: right">$ {{ $total }}</th>
                                 </tr>
                             </table>
                         </div>
