@@ -114,6 +114,8 @@ class RoleController extends Controller
         Role::setGlobalTable($roles_table);
         $role = Role::where('id', $request->role)->first();
 
+        $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
+
         $permissions_table = 'company_'.$request->company_id.'_permissions';
         Permission::setGlobalTable($permissions_table);
 
@@ -124,8 +126,8 @@ class RoleController extends Controller
             if(count($permission->children) != 0){
 
                 foreach($permission->children as $second_permission){
-                    $exists = $role->permissions->contains($second_permission->id);
-                    if($exists == true){
+                    $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $second_permission->id)->first();
+                    if( $exists ){
                         $second_permission->setAttribute('is_checked', 'yes');
                     } else {
                         $second_permission->setAttribute('is_checked', 'no');
@@ -133,8 +135,9 @@ class RoleController extends Controller
                     if(count($second_permission->children) != 0){
                     
                         foreach($second_permission->children as $third_permission){
-                            $exists = $role->permissions->contains($third_permission->id);
-                            if($exists == true){
+                            // $exists = $role->permissions->contains($third_permission->id);
+                            $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $third_permission->id)->first();
+                            if($exists){
                                 $third_permission->setAttribute('is_checked', 'yes');
                             } else {
                                 $third_permission->setAttribute('is_checked', 'no');
@@ -145,8 +148,9 @@ class RoleController extends Controller
 
             }
 
-            $exists = $role->permissions->contains($permission->id);
-            if($exists == true){
+            // $exists = $role->permissions->contains($permission->id);
+            $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $permission->id)->first();
+            if($exists ){
                 $permission->setAttribute('is_checked', 'yes');
             } else {
                 $permission->setAttribute('is_checked', 'no');
