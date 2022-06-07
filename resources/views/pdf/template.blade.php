@@ -1,7 +1,8 @@
 <body>
     @php
-    $company_email_show = 0;
-    $company_website_show = 0;
+    $company_email_show = [];
+    $company_logo_show = 0;
+    $company_website_show = [];
     $company_name_show = 0;
     $company_country_show = 0;
     $document_payment_info_show = 0;
@@ -12,6 +13,12 @@
     @endphp
 
     @foreach($template->metas as $meta)
+        @if($meta->category == 'Company Information' && $meta->type == 'logo' && $meta->option_name == 'show')
+            @php
+            $company_logo_show = $meta->option_value;
+            @endphp
+        @endif
+
         @if($meta->category == 'Company Information' && $meta->type == 'name' && $meta->option_name == 'show')
             @php
             $company_name_show = $meta->option_value;
@@ -20,13 +27,23 @@
 
         @if($meta->category == 'Company Information' && $meta->type == 'email' && $meta->option_name == 'show')
             @php
-            $company_email_show = $meta->option_value;
+            $company_email_show['show'] = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'email' && $meta->option_name == 'text')
+            @php
+            $company_email_show['value'] = $meta->option_value;
             @endphp
         @endif
 
         @if($meta->category == 'Company Information' && $meta->type == 'website' && $meta->option_name == 'show')
             @php
-            $company_website_show = $meta->option_value;
+            $company_website_show['show'] = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'website' && $meta->option_name == 'text')
+            @php
+            $company_website_show['value'] = $meta->option_value;
             @endphp
         @endif
 
@@ -133,15 +150,31 @@
             <table style="border-collapse: collapse; width:100%">
                 <tr>
                     <td style="padding: 0; margin: 0;">
+                    @if($company_logo_show)
                         <img src="{{ asset('light.png') }}" alt="" srcset="" style="width: 120px; height: auto; object-fit: cover;">
+                    @endif
                     </td>
-                    <td style="border-left: 2px solid orange;">
+                    <td @if($company_name_show || $company_country_show) style="border-left: 2px solid orange;" @endif>
                         <span style="margin-left: 30px;">{{ $company_name_show == 1 ? $company->name : '' }}</span> <br>
                         <span style="margin-left: 30px;">{{ $company_country_show == 1 ? $company->country : '' }}</span>
                     </td>
-                    <td style="border-left: 2px solid orange; width: 300px; ">
-                        <span style="margin-left: 30px;">Email</span> {{ $company_email_show == 1 ?  $company->email : '' }}<br>
-                        <span style="margin-left: 30px;">website</span> {{ $company_website_show == 1 ?  $company->website : '' }}
+                    <td @if($company_email_show['show'] || $company_website_show['show']) style="border-left: 2px solid orange; width: 300px; " @endif>
+                        @if($company_email_show['show'] ==1)
+                            <span style="margin-left: 30px;">Email:</span> 
+                            @if(@$company_email_show['show'] ==1 && @$company_email_show['value'])
+                                {{$company_email_show['value']}}
+                            @elseif(@$company_email_show['show'] ==1 && @!$company_email_show['value'])
+                                {{ $company->email}}
+                            @endif
+                            <br>
+                        @endif
+                        @if($company_website_show['show'])    
+                            <span style="margin-left: 30px;">website</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                                {{$company_website_show['value']}}
+                            @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
+                                {{ $company->website}}
+                            @endif
+                        @endif
                     </td>
                 </tr>
             </table>
