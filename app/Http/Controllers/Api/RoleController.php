@@ -128,9 +128,9 @@ class RoleController extends Controller
                 foreach($permission->children as $second_permission){
                     $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $second_permission->id)->first();
                     if( $exists ){
-                        $second_permission->setAttribute('is_checked', 1);
+                        $second_permission->setAttribute('is_checked', 'yes');
                     } else {
-                        $second_permission->setAttribute('is_checked', 0);
+                        $second_permission->setAttribute('is_checked', 'no');
                     } 
                     if(count($second_permission->children) != 0){
                     
@@ -138,9 +138,9 @@ class RoleController extends Controller
                             // $exists = $role->permissions->contains($third_permission->id);
                             $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $third_permission->id)->first();
                             if($exists){
-                                $third_permission->setAttribute('is_checked', 1);
+                                $third_permission->setAttribute('is_checked', 'yes');
                             } else {
-                                $third_permission->setAttribute('is_checked', 0);
+                                $third_permission->setAttribute('is_checked', 'no');
                             } 
                         }
                     }
@@ -151,9 +151,9 @@ class RoleController extends Controller
             // $exists = $role->permissions->contains($permission->id);
             $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $permission->id)->first();
             if($exists ){
-                $permission->setAttribute('is_checked', 1);
+                $permission->setAttribute('is_checked', 'yes');
             } else {
-                $permission->setAttribute('is_checked', 0);
+                $permission->setAttribute('is_checked', 'no');
             }
            
         }
