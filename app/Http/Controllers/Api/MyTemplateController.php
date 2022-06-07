@@ -260,6 +260,7 @@ class MyTemplateController extends Controller
                     $otherObjet[$counter]['category'] = NULL;
                     $otherObjet[$counter]['type'] = NULL;
                 }
+
                 $arr[$counter]['more'] = array_merge($showObject, $otherObjet);
                 $counter++;
             }

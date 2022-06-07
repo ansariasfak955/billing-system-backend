@@ -690,6 +690,22 @@ class TableHelper
                 $template_created = MyTemplate::create(["name" => $template." Template", "document_type" => $template, "font" => "DejaVu Sans", "color" => "#fd6c00", "is_default" => "1", "hide_company_information" => "0", "hide_assets_information" => "0", "show_signature_box" => "0" ]);
                 MyTemplateMeta::setGlobalTable('company_'.$company_id.'_my_template_metas');
                 /* Company Information block starts here */
+                /* Hide company information */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "hide_company_information_heading",
+                    "option_value" => "Hide Company Information",
+                    "category" => 'Company Information',
+                    "type" => "hide_company_information",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "hide_company_information_show",
+                    "option_value" => "1",
+                    "category" => 'Company Information',
+                    "type" => "hide_company_information",
+                ]);
+
                 /* logo */
                 MyTemplateMeta::create([
                     "template_id"  => $template_created->id,
