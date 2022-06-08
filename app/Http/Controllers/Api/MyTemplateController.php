@@ -215,35 +215,43 @@ class MyTemplateController extends Controller
 
         $template_metas = MyTemplateMeta::where('template_id', $request->template_id)->groupBy('category')->orderBy('id', 'ASC')->get();
 
-        /*$arr = [];
-        $counter = 0;
-        foreach ($template_metas as $template_meta) {
-            $arr[$counter]['tab_name'] = $template_meta->category;
-            $arr[$counter]['data'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->get();
-            $counter++;
-        }*/
-
         $arr = [];
         $final_arr = [];
         $templateCounter = 0;
         foreach ($template_metas as $template_meta) {
             $types = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->groupBy('type')->get();
-            $counter = 0;
+            $counter = 1;
+            $arr[0]['id'] = 0;
+            $arr[0]['more'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', 'Company Information')->where('type', 'hide_company_information')->get();
+
+            $hide_company_info[0]['id'] = NULL;
+            $hide_company_info[0]['template_id'] = NULL;
+            $hide_company_info[0]['option_name'] = NULL;
+            $hide_company_info[0]['option_value'] = 'text';
+            $hide_company_info[0]['category'] = NULL;
+            $hide_company_info[0]['type'] = NULL;
+
+            $arr[0]['more'][2] = $hide_company_info;
             
             foreach ($types as $type) {
                 $arr[$counter]['id'] = $counter;
 
+                // Skip hide company information
+                if($type->type == 'hide_company_information'){
+                    continue;
+                }
+
                 //show 'show' on first
                 $moreObject = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->where('type', $type->type)->get();
                 $showObject = [];
-                $otherObjet = [];
+                $otherObject = [];
                 $optionName = [];
 
                 foreach($moreObject as $more ){
                     /*if($more->option_name == 'show'){
                         $showObject[] = $more;
                     }else{*/
-                        $otherObjet[] = $more;
+                        $otherObject[] = $more;
                     // }
                     $optionName[] = $more->option_name;
                 }
@@ -253,15 +261,15 @@ class MyTemplateController extends Controller
                     $missingValue = array_values($finalArr);
                     $counter_new = 3 - $counter;
                     
-                    $otherObjet[$counter]['id'] = NULL;
-                    $otherObjet[$counter]['template_id'] = NULL;
-                    $otherObjet[$counter]['option_name'] = NULL;
-                    $otherObjet[$counter]['option_value'] = $missingValue ? $missingValue[0] : '';
-                    $otherObjet[$counter]['category'] = NULL;
-                    $otherObjet[$counter]['type'] = NULL;
+                    $otherObject[$counter]['id'] = NULL;
+                    $otherObject[$counter]['template_id'] = NULL;
+                    $otherObject[$counter]['option_name'] = NULL;
+                    $otherObject[$counter]['option_value'] = $missingValue ? $missingValue[0] : '';
+                    $otherObject[$counter]['category'] = NULL;
+                    $otherObject[$counter]['type'] = NULL;
                 }
 
-                $arr[$counter]['more'] = array_merge($showObject, $otherObjet);
+                $arr[$counter]['more'] = array_merge($showObject, $otherObject);
                 $counter++;
             }
             $final_arr[$templateCounter]['tab_name'] =  $template_meta->category;

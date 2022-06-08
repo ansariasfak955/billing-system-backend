@@ -701,7 +701,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "hide_company_information_show",
-                    "option_value" => "1",
+                    "option_value" => "0",
                     "category" => 'Company Information',
                     "type" => "hide_company_information",
                 ]);
