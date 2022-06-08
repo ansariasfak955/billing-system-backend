@@ -268,4 +268,51 @@ class RoleController extends Controller
             'permissions' => $permission_arr ? $permission_arr->original : []
         ]);
     }
+
+    public function duplicateRole(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'role_id' => 'required'          
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+
+        $role_table = 'company_'.$request->company_id.'_roles';
+        Role::setGlobalTable($role_table);
+
+        $permission_table = 'company_'.$request->company_id.'_permissions';
+        Permission::setGlobalTable($permission_table);
+
+        $role = Role::where('id', $request->role_id)->first();
+        if ($role == NULL){
+            return response()->json([
+                'status' => false,
+                'message' => 'Role does not exist'
+            ]);
+        }
+
+        $new_role = Role::create([
+            'name' => $role->name.'-copy',
+            'guard_name' => 'api',
+        ]);
+
+        $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
+        $permissions = \DB::table($role_has_permissions)->where('role_id', $request->role_id)->get();
+        foreach ($permissions as $permission) {
+            \DB::table($role_has_permissions)->insert([
+                'permission_id' => $permission->permission_id,
+                'role_id' => $new_role->id,
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Role and permissions copied successfully'
+        ]);
+    }
 }

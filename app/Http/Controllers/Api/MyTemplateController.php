@@ -218,21 +218,28 @@ class MyTemplateController extends Controller
         $arr = [];
         $final_arr = [];
         $templateCounter = 0;
+
+        // Append Hide Company Information
+        $arr[0]['id'] = 0;
+        $arr[0]['more'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', 'Company Information')->where('type', 'hide_company_information')->get();
+
+        $hide_company_info[0]['id'] = NULL;
+        $hide_company_info[0]['template_id'] = NULL;
+        $hide_company_info[0]['option_name'] = NULL;
+        $hide_company_info[0]['option_value'] = 'text';
+        $hide_company_info[0]['category'] = NULL;
+        $hide_company_info[0]['type'] = NULL;
+        $arr[0]['more'][2] = $hide_company_info;
+
         foreach ($template_metas as $template_meta) {
             $types = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->groupBy('type')->get();
-            $counter = 1;
-            $arr[0]['id'] = 0;
-            $arr[0]['more'] = MyTemplateMeta::where('template_id', $request->template_id)->where('category', 'Company Information')->where('type', 'hide_company_information')->get();
-
-            $hide_company_info[0]['id'] = NULL;
-            $hide_company_info[0]['template_id'] = NULL;
-            $hide_company_info[0]['option_name'] = NULL;
-            $hide_company_info[0]['option_value'] = 'text';
-            $hide_company_info[0]['category'] = NULL;
-            $hide_company_info[0]['type'] = NULL;
-
-            $arr[0]['more'][2] = $hide_company_info;
             
+            if ($template_meta->category == 'Company Information'){
+                $counter = 1;
+            } else {
+                $counter = 0;
+            }
+
             foreach ($types as $type) {
                 $arr[$counter]['id'] = $counter;
 
@@ -261,12 +268,12 @@ class MyTemplateController extends Controller
                     $missingValue = array_values($finalArr);
                     $counter_new = 3 - $counter;
                     
-                    $otherObject[$counter]['id'] = NULL;
-                    $otherObject[$counter]['template_id'] = NULL;
-                    $otherObject[$counter]['option_name'] = NULL;
-                    $otherObject[$counter]['option_value'] = $missingValue ? $missingValue[0] : '';
-                    $otherObject[$counter]['category'] = NULL;
-                    $otherObject[$counter]['type'] = NULL;
+                    $otherObject[$counter_new]['id'] = NULL;
+                    $otherObject[$counter_new]['template_id'] = NULL;
+                    $otherObject[$counter_new]['option_name'] = NULL;
+                    $otherObject[$counter_new]['option_value'] = $missingValue ? $missingValue[0] : '';
+                    $otherObject[$counter_new]['category'] = NULL;
+                    $otherObject[$counter_new]['type'] = NULL;
                 }
 
                 $arr[$counter]['more'] = array_merge($showObject, $otherObject);

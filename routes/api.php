@@ -204,6 +204,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::get('custom_state_types', 'CustomStateController@getCustomStateTypes');
             Route::get('get-settings', 'SettingController@getSettings');
             Route::get('permissions', 'RoleController@getPermissions');
+            Route::post('duplicate-role', 'RoleController@duplicateRole');
             Route::get('role-permissions', 'RoleController@getRolePermissions');
             Route::post('update-settings', 'SettingController@updateSettings');
             Route::get('send-test-email', 'SettingController@sendTestEmail');

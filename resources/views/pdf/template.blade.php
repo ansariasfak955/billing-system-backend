@@ -11,6 +11,8 @@
     $document_created_by_show = 0;
     $document_created_by_text = 'Created by:';
     $company_company_info_show = 0;
+    $document_title_show = 0;
+    $document_title_text = '';
     @endphp
 
     @foreach($template->metas as $meta)
@@ -120,6 +122,24 @@
             @endphp
         @endif
 
+        @if($meta->category == 'Document Information' && $meta->type == 'document_type' && $meta->option_name == 'show')
+            @php
+            $document_type_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'document_title' && $meta->option_name == 'show')
+            @php
+            $document_title_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'document_title' && $meta->option_name == 'text')
+            @php
+            $document_title_text = $meta->option_value;
+            @endphp
+        @endif
+
         @if($meta->category == 'Comments and Addendums' && $meta->type == 'addendum' && $meta->option_name == 'show')
             @php
             $comments_show = $meta->option_value;
@@ -187,9 +207,14 @@
             </div>
         @endif
 
-        <div style="text-align: center; margin-top: 20px;">
-            <h2>{{ $template->name }}</h2>
-        </div>
+        @if($document_type_show == 1)
+            <div style="text-align: center; margin-top: 20px;">
+                <h2>{{ $template->name }}</h2>
+                @if($document_title_show && $document_title_text)
+                    {{ $document_title_text }}
+                @endif
+            </div>
+        @endif
         <div style="margin-top: 20px;font-size: 13px">
             <table style="border-collapse: collapse; width:50%; padding: 10px">
                 <th style="color: orange; border-bottom: 1px solid gray;text-align: left">{{ strtoupper($template->document_type) }} INFO</th>
