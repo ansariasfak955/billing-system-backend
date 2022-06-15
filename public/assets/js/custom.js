@@ -127,3 +127,14 @@ $('.main_permission_input').on('click', function() {
     $('input.'+permission+'').not(this).prop('checked', false);
   }
 });
+
+// Show all checked if all subpermissions checked
+$('input.main_permission_input').each(function(){
+  var permission_name = $(this).attr('data-permission');
+  var numberOfChecked = $('.edit-page input.'+permission_name+':checked:checked').length;
+  var totalCheckboxes = $('.edit-page input.'+permission_name+':checkbox').length;
+
+  if (numberOfChecked == totalCheckboxes) {
+    $('.permission-'+permission_name+'').prop('checked', true);
+  }
+});
