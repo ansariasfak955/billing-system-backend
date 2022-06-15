@@ -22,7 +22,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-body">
-                        {!! Form::open(['route' => ['roles.update', $role->id], 'files' => true,  'method' => 'PUT', 'class' => 'forms-sample']) !!}                  
+                        {!! Form::open(['route' => ['roles.update', $role->id], 'files' => true,  'method' => 'PUT', 'class' => 'forms-sample edit-page']) !!}                  
                             @include('backend.pages.roles.form')
                             {!! Form::submit('Update', ['class' => 'btn btn-primary my-2']) !!}
                         {!! Form::close() !!}
