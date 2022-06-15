@@ -3,13 +3,13 @@
         <div class="form-group">
             {!! Form::label('name', 'Role', ['class' => 'form-label']) !!}
             {!! Form::text('name', isset($role->name) ? $role->name : Request::old('name'), ['class' => 'form-control', 'placeholder' => 'Enter Role']) !!}
-        </div>        
+        </div>
     </div>
 </div>
 
 @foreach($permissions as $permission)
    	<div class="row border-bottom py-4">
-   		<div class="col-md-3"><label><input type="checkbox" class="main_permission_input" data-permission="{{ str_replace(' ','_', $permission->name) }}"> {{ $permission->name }}</label></div>
+   		<div class="col-md-3"><label><input type="checkbox" class="main_permission_input permission-{{ str_replace(' ','_', $permission->name) }}" data-permission="{{ str_replace(' ','_', $permission->name) }}"> {{ $permission->name }}</label></div>
    		<div class="col-md-9">
    			@if(isset($permission->children))
 			    <div class="row">
@@ -34,7 +34,7 @@
 			      	</div>
 			    </div>
 			@endif
-		
+
 			<div class="row">
 		      	@foreach($permission->children as $children)
 		      		<div class="col-md-7">
