@@ -157,11 +157,15 @@ class RoleController extends Controller
             }
            
         }
+
+        $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
+        $selected_permissions = \DB::table($role_has_permissions)->where('role_id', $request->role)->pluck('permission_id');
  
         return response()->json([
             "status" => true,
             "role" => $role,
             "permissions" => $permissions,
+            "selected_permissions" => $selected_permissions,
         ]);
     }
 
@@ -196,9 +200,10 @@ class RoleController extends Controller
         
         $role->update($request->except('company_id', '_method', 'permissions'));
         if(isset($request->permissions)){
-            foreach(Permission::get() as $permission) {
+            /*foreach(Permission::get() as $permission) {
                 if(in_array($permission->id, $request->permissions)){
                     if($role->hasPermissionTo($permission->name) != 1){
+                        // echo 'notexist----';
                         $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
                         \DB::table($role_has_permissions)->insert([
                             'permission_id' => $permission->id,
@@ -207,18 +212,32 @@ class RoleController extends Controller
                     }
                 } else {
                     if($role->hasPermissionTo($permission->name) == 1){
-                        // $role->revokePermissionTo($permission);
+                        // echo 'exist---';
+                        $role->revokePermissionTo($permission);
                         $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
                         \DB::table($role_has_permissions)->where('permission_id', $permission->id)->where('role_id', $request->role)->delete();
                     }
                 }
+            }*/
+
+            $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
+            \DB::table($role_has_permissions)->where('role_id', $request->role)->delete();
+
+            foreach($request->permissions as $permission_new) {
+                \DB::table($role_has_permissions)->insert([
+                    'permission_id' => $permission_new,
+                    'role_id' => $request->role,
+                ]);
             }
         }
+
+        $selected_permissions = \DB::table($role_has_permissions)->where('role_id', $request->role)->pluck('permission_id');
 
         return response()->json([
             "status" => true,
             "message" => "Role updated successfully!",
-            "role" => $role
+            "role" => $role,
+            "selected_permissions" => $selected_permissions,
         ]);
     }
 
