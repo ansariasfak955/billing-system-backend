@@ -118,3 +118,12 @@ $('.select-all-permissions').on('click', function() {
     $('input:checkbox').not(this).not('input.Visible_Roles').prop('checked', false);
   }
 });
+
+$('.main_permission_input').on('click', function() {
+  var permission = $(this).attr('data-permission');
+  if ($(this).is(":checked")) {
+    $('input.'+permission+'').not(this).prop('checked', true);
+  } else {
+    $('input.'+permission+'').not(this).prop('checked', false);
+  }
+});

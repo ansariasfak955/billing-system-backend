@@ -9,7 +9,7 @@
 
 @foreach($permissions as $permission)
    	<div class="row border-bottom py-4">
-   		<div class="col-md-3"><label>{{ $permission->name }}</label></div>
+   		<div class="col-md-3"><label><input type="checkbox" class="main_permission_input" data-permission="{{ str_replace(' ','_', $permission->name) }}"> {{ $permission->name }}</label></div>
    		<div class="col-md-9">
    			@if(isset($permission->children))
 			    <div class="row">
@@ -52,35 +52,35 @@
 				          		<td>
 						      		@foreach($children->children as $new_child)
 					          			@if (strpos($new_child->name, 'view') !== false)
-									    	<input class="p-0 d-inline-block" name="permissions[]" type="checkbox" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
+									    	<input class="p-0 d-inline-block {{ str_replace(' ','_', $permission->name) }}" name="permissions[]" type="checkbox" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
 										@endif
 									@endforeach
 								</td>
 								<td>
 									@foreach($children->children as $new_child)
 										@if (strpos($new_child->name, 'edit') !== false)
-									   		<input class="p-0 d-inline-block" name="permissions[]" type="checkbox" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
+									   		<input class="p-0 d-inline-block {{ str_replace(' ','_', $permission->name) }}" name="permissions[]" type="checkbox" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
 										@endif
 									@endforeach
 								</td>	
 								<td>
 									@foreach($children->children as $new_child)
 										@if (strpos($new_child->name, 'create') !== false)
-									    	<input class="p-0 d-inline-block" name="permissions[]" type="checkbox" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
+									    	<input class="p-0 d-inline-block {{ str_replace(' ','_', $permission->name) }}" name="permissions[]" type="checkbox" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
 										@endif
 									@endforeach
 								</td>
 								<td>
 									@foreach($children->children as $new_child)
 										@if (strpos($new_child->name, 'delete') !== false)
-									    	<input class="p-0 d-inline-block" name="permissions[]" type="checkbox" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
+									    	<input class="p-0 d-inline-block {{ str_replace(' ','_', $permission->name) }}" name="permissions[]" type="checkbox" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
 										@endif
 									@endforeach
 								</td>
 								<td>
 									@foreach($children->children as $new_child)
 										@if (strpos($new_child->name, 'send') !== false)
-									    	<input class="p-0 d-inline-block" type="checkbox" name="permissions[]" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
+									    	<input class="p-0 d-inline-block {{ str_replace(' ','_', $permission->name) }}" type="checkbox" name="permissions[]" value="{{$new_child->id}}" {{ @in_array($new_child->id, @$selected_permissions) ? 'checked' : '' }}>
 										@endif
 									@endforeach
 								</td>
