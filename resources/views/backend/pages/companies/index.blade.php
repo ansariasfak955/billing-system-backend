@@ -11,6 +11,9 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item active" aria-current="page">Companies</li>
   </ol>
+  @if(\Auth::user()->hasRole('Admin'))
+    <span class="btn btn-outline-danger grid-batch-delete" aria-current="page" data-ajax-url={{ route('companies.batch-delete') }}>Batch Delete</span>
+  @endif  
 </nav>
  
 <div class="row">

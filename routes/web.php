@@ -30,7 +30,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('companies', CompanyController::class);
     
     /* Delete Links */
-    Route::post('users/delete', 'UserController@deleteAll');
+    Route::post('users/delete', 'UserController@deleteAll');  
+    Route::post('companies/delete', 'CompanyController@batchDelete')->name('companies.batch-delete');
 
     /* get and update profile links */
     Route::get('/profile', 'UserController@getProfile');
