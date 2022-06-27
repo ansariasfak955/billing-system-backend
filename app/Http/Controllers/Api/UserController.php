@@ -65,10 +65,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $tableName = 'company_'.$request->company_id.'_users';
         $validator = Validator::make($request->all(),[
             'name' => 'required',          
-            'email' => 'required|email',         
-            'username' => 'required|alpha_dash',         
+            'email' => 'required|email|unique:'.$tableName.'',         
+            'username' => 'required|alpha_dash|unique:'.$tableName.'',         
             'role' => 'required',
             'password' => 'required|min:8|alpha_dash',
             'tin' => 'required|alpha_num',   

@@ -231,4 +231,29 @@ class CompanyController extends Controller
             ]);
         }
     }
+    public function batchDelete(Request $request){
+         // Delete all tables of company
+        foreach($request->ids as $company_id){
+
+            foreach(\DB::select('SHOW TABLES') as $table) {
+                $all_table_names = get_object_vars($table);
+                foreach ($all_table_names as $key => $table_name) {
+                    if (strpos($table_name, "company_".$company_id."") !== false) {
+                        \Schema::drop($table_name);
+                    }
+                }
+            }
+
+            $company = Company::find($company_id);
+
+            if($company){
+
+                $company->delete();
+            }
+        }
+        return response()->json([
+            'status' => true,
+            'message' => "Companies deleted successfully!"
+        ]);
+    }
 }
