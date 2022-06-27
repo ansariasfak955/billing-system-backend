@@ -160,12 +160,17 @@ class RoleController extends Controller
 
         $role_has_permissions = "company_".$request->company_id."_role_has_permissions";
         $selected_permissions = \DB::table($role_has_permissions)->where('role_id', $request->role)->pluck('permission_id');
+
+        $selected_permission_ids = [];
+        foreach ($selected_permissions as $permission_id) {
+            $selected_permission_ids[] =  "$permission_id";
+        }
  
         return response()->json([
             "status" => true,
             "role" => $role,
             "permissions" => $permissions,
-            "selected_permissions" => $selected_permissions,
+            "selected_permissions" => $selected_permission_ids,
         ]);
     }
 
