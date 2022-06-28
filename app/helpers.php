@@ -120,6 +120,13 @@ function get_roles_permissions($company_id)
             ->where('role_id', $role_id)
             ->where('permission_id', $permission_key_new[0]->children->where('name', "create $permission_key")->pluck('id')->first())
             ->first();
+        // to fix new client permission
+        if($permission_key == 'clients'){
+            $create = \DB::table($role_has_permissions)
+            ->where('role_id', $role_id)
+            ->where('permission_id', $permission_key_new[0]->children[0]->children->where('name', "create $permission_key")->pluck('id')->first())
+            ->first();
+        }
 
         $delete = \DB::table($role_has_permissions)
             ->where('role_id', $role_id)
