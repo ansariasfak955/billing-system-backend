@@ -279,6 +279,17 @@ class TableHelper
                 $table->string('main_image')->nullable();
                 $table->timestamps();
             });
+        } 
+        /* Creating dynamic client assets attachment table */
+        if (!Schema::hasTable('company_'.$company_id.'_client_asset_attachments')) {
+            Schema::create('company_'.$company_id.'_client_asset_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->integer('asset_id')->nullable();
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->string('type')->nullable();
+                $table->timestamps();
+            });
         }
 
         /* Creating dynamic client attachments table */

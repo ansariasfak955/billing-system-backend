@@ -214,6 +214,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('client-contacts', ClientContactController::class);
             Route::apiResource('client-special-prices', ClientSpecialPriceController::class);
             Route::apiResource('client-assets', ClientAssetController::class);
+            Route::apiResource('client-asset-attachments', ClientAssetAttachmentController::class);
             Route::apiResource('client-attachments', ClientAttachmentController::class);
             Route::apiResource('client-addresses', ClientAddressController::class);
 
