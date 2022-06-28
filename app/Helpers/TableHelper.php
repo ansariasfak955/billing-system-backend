@@ -262,6 +262,8 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_client_assets')) {
             Schema::create('company_'.$company_id.'_client_assets', function (Blueprint $table) {
                 $table->id();
+                $table->string('reference')->nullable();
+                $table->string('reference_number')->nullable();
                 $table->string('client_id')->nullable();
                 $table->string('address')->nullable();
                 $table->string('name')->nullable();

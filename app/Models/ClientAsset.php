@@ -11,6 +11,8 @@ class ClientAsset extends Model
 
     protected $fillable = [
         "client_id",
+        "reference",
+        "reference_number",
         "address",
         "name",
         "identifier",

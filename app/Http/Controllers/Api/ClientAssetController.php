@@ -60,7 +60,8 @@ class ClientAssetController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'client_id' => 'required',          
-            'name' => 'required'          
+            'name' => 'required',
+            'reference' => "required",          
         ], [
             'client_id.required' => 'Please select client ',
             'name.required' => 'Please select name ',
@@ -75,19 +76,38 @@ class ClientAssetController extends Controller
 
         $table = 'company_'.$request->company_id.'_client_assets';
         ClientAsset::setGlobalTable($table);
-        $client_asset = ClientAsset::create($request->except('company_id', 'main_image'));
 
-        if($request->main_image != NULL){
-            $imageName = time().'.'.$request->main_image->extension();  
-            $request->main_image->move(storage_path('app/public/clients/assets'), $imageName);
-            $client_asset->main_image = $imageName;
-            $client_asset->save();
+
+        if ($request->reference_number == '') {
+            $request['reference_number'] = get_client_asset_latest_ref_number($request->company_id, $request->reference, 1);
+        }else{
+            $client_asset = ClientAsset::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
+
+            if ($client_asset) {
+                $request->reference_number = '';
+            }
+        }
+        if( $request->reference_number  ){
+
+            $client_asset = ClientAsset::create($request->except('company_id', 'main_image'));
+
+            if($request->main_image != NULL){
+                $imageName = time().'.'.$request->main_image->extension();  
+                $request->main_image->move(storage_path('app/public/clients/assets'), $imageName);
+                $client_asset->main_image = $imageName;
+                $client_asset->save();
+            }
+
+            return response()->json([
+                "status" => true,
+                "client" => $client_asset,
+                "message" => "Client asset created successfully"
+            ]);
         }
 
         return response()->json([
-            "status" => true,
-            "client_asset" => $client_asset,
-            "message" => "Client asset created successfully"
+            "status"  => false,
+            "message" => "Please choose different reference number"
         ]);
     }
 
