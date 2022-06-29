@@ -203,6 +203,7 @@ class TableHelper
             Schema::create('company_'.$company_id.'_technical_incidents', function (Blueprint $table) {
                 $table->id();
                 $table->string('reference')->nullable();
+                $table->string('reference_number')->nullable();
                 $table->string('notifications')->nullable();
                 $table->string('client_id')->nullable();
                 $table->string('address')->nullable();

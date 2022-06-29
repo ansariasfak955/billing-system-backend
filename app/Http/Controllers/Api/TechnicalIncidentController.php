@@ -65,16 +65,35 @@ class TechnicalIncidentController extends Controller
 
         $table = 'company_'.$request->company_id.'_technical_incidents';
         TechnicalIncident::setGlobalTable($table);
-        $technical_incidents = TechnicalIncident::create($request->except('company_id', 'type'));
-        $technical_incidents->created_by = Auth::id();
-        $technical_incidents->notifications = $notifications;
-        $technical_incidents->save();
 
-        return response()->json([
-            "status" => true,
-            "technical_incidents" => $technical_incidents,
-            "message" => "Incident created successfully"
-        ]);
+        if ($request->reference_number == '') {
+            $request['reference_number'] = get_technical_incident_latest_ref_number($request->company_id, $request->reference, 1);
+        }else{
+            $technical_incident = TechnicalIncident::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
+
+            if ($technical_incident) {
+                $request->reference_number = '';
+            }
+        }
+
+        if( $request->reference_number  ){
+
+            $technical_incidents = TechnicalIncident::create($request->except('company_id', 'type'));
+            $technical_incidents->created_by = Auth::id();
+            $technical_incidents->notifications = $notifications;
+            $technical_incidents->save();
+
+            return response()->json([
+                "status" => true,
+                "technical_incidents" => $technical_incidents,
+                "message" => "Incident created successfully"
+            ]);
+        }else{
+            return response()->json([
+                "status" => false,
+                "message" => "Please choose different reference number"
+            ]);
+        }
     }
 
     /**
