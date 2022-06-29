@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\ClientAssetAttachment;
+use App\Models\TechnicalTableAttachment;
 use Illuminate\Http\Request;
 use Validator;
 
-class ClientAssetAttachmentController extends Controller
+class TechnicalTableAttachmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,11 +22,11 @@ class ClientAssetAttachmentController extends Controller
                 "message" =>  "Please select company"
             ]);
         }
-        $table = 'company_'.$request->company_id.'_client_asset_attachments';
-        ClientAssetAttachment::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_technical_table_attachments';
+        TechnicalTableAttachment::setGlobalTable($table);
 
         if($request->asset_id == NULL){
-            if(ClientAssetAttachment::count() == 0){
+            if(TechnicalTableAttachment::count() == 0){
                 return response()->json([
                     "status" => false,
                     "message" =>  "No data found"
@@ -34,11 +34,11 @@ class ClientAssetAttachmentController extends Controller
             }
             return response()->json([
                 "status" => true,
-                "client_attachments" =>  ClientAssetAttachment::get()
+                "technical_attachments" =>  TechnicalTableAttachment::get()
             ]);
         }
 
-        if(ClientAssetAttachment::where('asset_id', $request->asset_id)->count() == 0){
+        if(TechnicalTableAttachment::where('technical_id', $request->technical_id)->count() == 0){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -46,7 +46,7 @@ class ClientAssetAttachmentController extends Controller
         }
         return response()->json([
             "status" => true,
-            "client_attachments" =>  ClientAssetAttachment::where('asset_id', $request->asset_id)->get()
+            "technical_attachments" =>  TechnicalTableAttachment::where('technical_id', $request->technical_id)->get()
         ]);
     }
 
@@ -69,7 +69,7 @@ class ClientAssetAttachmentController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'asset_id' => 'required',          
+            'technical_id' => 'required',          
             'document' => 'required'          
         ], [
             'document.required' => 'Please select document. ',
@@ -82,21 +82,21 @@ class ClientAssetAttachmentController extends Controller
             ]);
         }
 
-        $table = 'company_'.$request->company_id.'_client_asset_attachments';
-        ClientAssetAttachment::setGlobalTable($table);
-        $client_attachment = ClientAssetAttachment::create($request->except('company_id', 'document'));
+        $table = 'company_'.$request->company_id.'_technical_table_attachments';
+        TechnicalTableAttachment::setGlobalTable($table);
+        $technical_attachment = TechnicalTableAttachment::create($request->except('company_id', 'document'));
 
         if($request->document != NULL){
             $imageName = time().'.'.$request->document->extension();  
-            $request->document->move(storage_path('app/public/clients/assets/documents/'), $imageName);
-            $client_attachment->document = $imageName;
-            $client_attachment->save();
+            $request->document->move(storage_path('app/public/technical/documents/'), $imageName);
+            $technical_attachment->document = $imageName;
+            $technical_attachment->save();
         }
 
         return response()->json([
             "status" => true,
-            "client_attachment" => $client_attachment,
-            "message" => "Client asset attachment created successfully"
+            "technical_attachment" => $technical_attachment,
+            "message" => "Attachment created successfully"
         ]);
     }
 
@@ -108,11 +108,11 @@ class ClientAssetAttachmentController extends Controller
      */
     public function show(Request $request)
     {
-        $table = 'company_'.$request->company_id.'_client_asset_attachments';
-        ClientAssetAttachment::setGlobalTable($table);
-        $client_attachment = ClientAssetAttachment::where('id', $request->client_asset_attachment)->first();
+        $table = 'company_'.$request->company_id.'_technical_table_attachments';
+        TechnicalTableAttachment::setGlobalTable($table);
+        $technical_attachment = TechnicalTableAttachment::where('id', $request->technical_table_attachment)->first();
 
-        if($client_attachment ==  NULL){
+        if($technical_attachment ==  NULL){
             return response()->json([
                 "status" => true,
                 "message" => "This entry does not exists"
@@ -121,7 +121,7 @@ class ClientAssetAttachmentController extends Controller
  
         return response()->json([
             "status" => true,
-            "client_attachment" => $client_attachment
+            "technical_attachment" => $technical_attachment
         ]);
     }
 
@@ -145,8 +145,8 @@ class ClientAssetAttachmentController extends Controller
      */
     public function update(Request $request)
     {
-        $table = 'company_'.$request->company_id.'_client_asset_attachments';
-        ClientAssetAttachment::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_technical_table_attachments';
+        TechnicalTableAttachment::setGlobalTable($table);
 
         $validator = Validator::make($request->all(),[        
             'document' => 'required'          
@@ -158,20 +158,20 @@ class ClientAssetAttachmentController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        $client_attachment = ClientAssetAttachment::where('id', $request->client_asset_attachment)->first();
+        $technical_attachment = TechnicalTableAttachment::where('id', $request->technical_table_attachment)->first();
         
-        $client_attachment->update($request->except('company_id', '_method', 'document'));
+        $technical_attachment->update($request->except('company_id', '_method', 'document'));
 
         if($request->document != NULL){
             $imageName = time().'.'.$request->document->extension();  
-            $request->document->move(storage_path('app/public/clients/assets/documents/'), $imageName);
-            $client_attachment->document = $imageName;
-            $client_attachment->save();
+            $request->document->move(storage_path('app/public/technical/documents/'), $imageName);
+            $technical_attachment->document = $imageName;
+            $technical_attachment->save();
         }
 
         return response()->json([
             "status" => true,
-            "client_attachment" => $client_attachment
+            "technical_attachment" => $technical_attachment
         ]);
     }
 
@@ -183,10 +183,10 @@ class ClientAssetAttachmentController extends Controller
      */
     public function destroy(Request $request)
     {
-        $table = 'company_'.$request->company_id.'_client_asset_attachments';
+        $table = 'company_'.$request->company_id.'_technical_table_attachments';
         ClientAssetAttachment::setGlobalTable($table);
-        $client_attachment = ClientAssetAttachment::where('id', $request->client_asset_attachment)->first();
-        if($client_attachment->delete()){
+        $technical_attachment = ClientAssetAttachment::where('id', $request->technical_table_attachment)->first();
+        if($technical_attachment->delete()){
             return response()->json([
                     'status' => true,
                     'message' => "Client attachment deleted successfully!"

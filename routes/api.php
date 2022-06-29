@@ -225,6 +225,8 @@ Route::group(['namespace' => 'Api'], function() {
             /* Technical Service */
             Route::apiResource('technical-incidents', TechnicalIncidentController::class);
             Route::apiResource('technical-incident-attachments', TechnicalIncidentAttachmentController::class);
+            Route::apiResource('technical-tables', TechnicalTableController::class);
+            Route::apiResource('technical-table-attachments', TechnicalTableAttachmentController::class);
 
             /* Items */
             Route::apiResource('items', ItemController::class);

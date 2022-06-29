@@ -77,7 +77,7 @@ class ItemController extends Controller
             $meta_discount    = $item['meta_discount'];
             $meta_income_tax  = $item['meta_income_tax'];
 
-			Item::create([
+			$createdItem = Item::create([
 				'reference'     => $reference,
                 'reference_id'  => $reference_id,
 				'name'          => $name,
