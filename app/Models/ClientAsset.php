@@ -44,4 +44,11 @@ class ClientAsset extends Model
             return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
         }
     }
+    public function images(){
+
+        return $this->hasMany(ClientAssetAttachment::class, 'asset_id')->where('type', 'images');
+    } 
+    public function attachments(){
+        return $this->hasMany(ClientAssetAttachment::class, 'asset_id')->where('type', 'attachments');
+    }
 }

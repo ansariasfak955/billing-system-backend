@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClientAsset;
+use App\Models\ClientAssetAttachment;
 use Illuminate\Http\Request;
 use Validator;
 class ClientAssetController extends Controller
@@ -75,7 +76,9 @@ class ClientAssetController extends Controller
         }
 
         $table = 'company_'.$request->company_id.'_client_assets';
-        ClientAsset::setGlobalTable($table);
+        ClientAsset::setGlobalTable($table); 
+        $assetTable = 'company_'.$request->company_id.'_client_asset_attachments';
+        ClientAssetAttachment::setGlobalTable($assetTable);
 
 
         if ($request->reference_number == '') {
@@ -89,7 +92,7 @@ class ClientAssetController extends Controller
         }
         if( $request->reference_number  ){
 
-            $client_asset = ClientAsset::create($request->except('company_id', 'main_image'));
+            $client_asset = ClientAsset::create($request->except('company_id', 'main_image', 'images'));
 
             if($request->main_image != NULL){
                 $imageName = time().'.'.$request->main_image->extension();  
@@ -97,10 +100,25 @@ class ClientAssetController extends Controller
                 $client_asset->main_image = $imageName;
                 $client_asset->save();
             }
+            $counter= 0;
+            if($request->hasFile('images')){
+                foreach($request->file('images') as $image){
+
+                    $imageName = time().$counter.'.'.$image->extension();  
+                    $image->move(storage_path('app/public/clients/assets'), $imageName);
+
+                    ClientAssetAttachment::create([
+                        'asset_id' => $client_asset->id,
+                        'type' => 'images',
+                        'document' => $imageName,
+                    ]);
+                    $counter++;
+                }
+            }
 
             return response()->json([
                 "status" => true,
-                "client" => $client_asset,
+                "client" => ClientAsset::with('images')->find($client_asset->id),
                 "message" => "Client asset created successfully"
             ]);
         }
@@ -121,7 +139,9 @@ class ClientAssetController extends Controller
     {
         $table = 'company_'.$request->company_id.'_client_assets';
         ClientAsset::setGlobalTable($table);
-        $client_asset = ClientAsset::where('id', $request->client_asset)->first();
+        $assetTable = 'company_'.$request->company_id.'_client_asset_attachments';
+        ClientAssetAttachment::setGlobalTable($assetTable);
+        $client_asset = ClientAsset::with('images')->find($request->client_asset);
 
         if($client_asset ==  NULL){
             return response()->json([
@@ -147,6 +167,9 @@ class ClientAssetController extends Controller
     {
         $table = 'company_'.$request->company_id.'_client_assets';
         ClientAsset::setGlobalTable($table);
+        
+        $assetTable = 'company_'.$request->company_id.'_client_asset_attachments';
+        ClientAssetAttachment::setGlobalTable($assetTable);
 
         $validator = Validator::make($request->all(),[
             'client_id' => 'required',          
@@ -172,7 +195,21 @@ class ClientAssetController extends Controller
             $client_asset->main_image = $imageName;
             $client_asset->save();
         }
+         $counter= 0;
+            if($request->hasFile('images')){
+                foreach($request->file('images') as $image){
 
+                    $imageName = time().$counter.'.'.$image->extension();  
+                    $image->move(storage_path('app/public/clients/assets'), $imageName);
+
+                    ClientAssetAttachment::create([
+                        'asset_id' => $client_asset->id,
+                        'type' => 'images',
+                        'document' => $imageName,
+                    ]);
+                    $counter++;
+                }
+            }
         return response()->json([
             "status" => true,
             "client_asset" => $client_asset
