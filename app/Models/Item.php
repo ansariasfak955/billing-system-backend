@@ -11,13 +11,15 @@ class Item extends Model
 
     protected $fillable = [
     	'reference',
+        'parent_id',
 		'name',
 		'description',
 		'base_price',
 		'quantity',
 		'discount',
 		'tax',
-		'income_tax'
+		'income_tax',
+        'type'
     ];
 
     protected static $globalTable = 'items' ;

@@ -17,4 +17,12 @@ class TechnicalTable extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    public function items(){
+
+        return $this->hasMany(Item::class, 'parent_id');
+    }
+    public function itemMeta(){
+
+        return $this->hasMany(ItemMeta::class, 'parent_id');
+    }
 }

@@ -10,7 +10,8 @@ class ItemMeta extends Model
     use HasFactory;
 
     protected $fillable = [
-    	'reference_id',
+    	'parent_id',
+        'reference_id',
 		'discount',
 		'income_tax'
     ];

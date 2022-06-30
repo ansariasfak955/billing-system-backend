@@ -293,6 +293,7 @@ class TableHelper
                 $table->id();
                 $table->string('reference');
                 $table->string('reference_id');
+                $table->integer('parent_id')->nullable();
                 $table->string('name')->nullable();
                 $table->longText('description')->nullable();
                 $table->float('base_price')->nullable();
@@ -300,6 +301,7 @@ class TableHelper
                 $table->float('discount')->nullable();
                 $table->string('tax')->nullable();
                 $table->string('income_tax')->nullable();
+                $table->string('type')->nullable();
                 $table->timestamps();
             });
         }
@@ -308,6 +310,7 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_item_metas')) {
             Schema::create('company_'.$company_id.'_item_metas', function (Blueprint $table) {
                 $table->id();
+                $table->integer('parent_id')->nullable();
                 $table->integer('reference_id');
                 $table->float('discount')->nullable();
                 $table->integer('income_tax')->nullable();

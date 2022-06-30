@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TechnicalTable;
+use App\Models\Item;
+use App\Models\ItemMeta;
 use Validator;
 use Storage;
 
@@ -34,7 +36,7 @@ class TechnicalTableController extends Controller
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
 
-        $technical_incidents = TechnicalTable::where('type', $request->type)->get();
+        $technical_incidents = TechnicalTable::where('reference', $request->type)->get();
 
         if($technical_incidents->count() == 0) {
             return response()->json([
@@ -65,7 +67,7 @@ class TechnicalTableController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'client_id' => 'required',
-            'type' => 'required'
+            'reference' => 'required',
         ], [
             'client_id.required' => 'Please select client.'
         ]);
@@ -80,9 +82,16 @@ class TechnicalTableController extends Controller
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
 
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
         if ($request->reference_number == '') {
-            $request['reference_number'] = get_technical_table_latest_ref_number($request->company_id, $request->reference, 1 , $request->type);
+            $request['reference_number'] = get_technical_table_latest_ref_number($request->company_id, $request->reference, 1 );
         }else{
+
             $technical_incident = TechnicalTable::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
 
             if ($technical_incident) {
@@ -91,14 +100,62 @@ class TechnicalTableController extends Controller
         }
 
         if( $request->reference_number  ){
-
             $technical_incidents = TechnicalTable::create($request->except('company_id'));
-            $technical_incidents->created_by = Auth::id();
+            $technical_incidents->created_by = \Auth::id();
             $technical_incidents->save();
+            // dd($request->all());
+            if($request->item){
+                $items = $request->all()['item'];
+
+                $meta_discount    = $request->meta_discount;
+                $meta_income_tax  = $request->meta_income_tax;
+                //save item meta
+                if ($meta_discount) {
+
+                    ItemMeta::create([
+                        'reference_id'  => $technical_incidents->id,
+                        'parent_id'     => $technical_incidents->id,
+                        'discount'      => $meta_discount,
+                        'income_tax'    => $meta_income_tax
+                    ]);
+                }
+                // items
+                foreach ($items as $item) {
+                    $reference        = $item['reference'];
+                    if (isset($item['reference_id'])) {
+                        $reference_id     = $item['reference_id'];
+                    } else {
+                        $reference_id     = NULL;
+                    }
+                    
+                    $name             = $item['name'];
+                    $parent_id        = $technical_incidents->id;
+                    $type             = $technical_incidents->reference;
+                    $description      = $item['description'];
+                    $base_price       = $item['base_price'];
+                    $quantity         = $item['quantity'];
+                    $discount         = $item['discount'];
+                    $tax              = $item['tax'];
+                    $income_tax       = $item['income_tax'];
+                    $createdItem = Item::create([
+                        'reference'     => $reference,
+                        'reference_id'  => $reference_id,
+                        'parent_id'     => $parent_id,
+                        'type'          => $type,
+                        'name'          => $name,
+                        'description'   => $description,
+                        'base_price'    => $base_price,
+                        'quantity'      => $quantity,
+                        'discount'      => $discount,
+                        'tax'           => $tax,
+                        'income_tax'    => $income_tax
+                    ]);
+                }
+            }
 
             return response()->json([
                 "status" => true,
-                "data" => $technical_incidents,
+                "data" => TechnicalTable::with(['items', 'itemMeta'])->find($technical_incidents->id),
                 "message" => "Saved successfully"
             ]);
         }else{
@@ -119,9 +176,16 @@ class TechnicalTableController extends Controller
     {
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
-        $technical_incident = TechnicalTable::where('id', $request->technical_table)->first();
 
-        if($technical_incidents ==  NULL){
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $technical_incident = TechnicalTable::with(['items', 'itemMeta'])->where('id', $request->technical_table)->first();
+
+        if($technical_incident ==  NULL){
             return response()->json([
                 "status" => false,
                 "message" => "This entry does not exists"
@@ -155,13 +219,13 @@ class TechnicalTableController extends Controller
         $technical_incident = TechnicalTable::where('id', $request->technical_table)->first();
         
         $technical_incident->update($request->except('company_id', 'technical_table', '_method'));
-        $technical_incident->create_by = Auth::id();
+        $technical_incident->created_by = \Auth::id();
         $technical_incident->save();
 
         return response()->json([
             "status" => true,
             "data" => $technical_incident,
-            "message" => "Incident updated successfully"
+            "message" => "Updated successfully"
         ]);
     }
 
@@ -173,15 +237,25 @@ class TechnicalTableController extends Controller
      */
     public function destroy(Request $request)
     {
-        $table = 'company_'.$request->company_id.'_technical_table';
+        $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
         $technical_incident = TechnicalTable::where('id', $request->technical_table)->first();
+
         if ($technical_incident == NULL) {
             return response()->json([
                 'status' => false,
                 'message' => "Entry not exist!"
             ]);
         }
+        
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        Item::where('parent_id', $technical_incident->id)->delete();
+        ItemMeta::where('parent_id', $technical_incident->id)->delete();
 
         if($technical_incident->delete()){
             return response()->json([
