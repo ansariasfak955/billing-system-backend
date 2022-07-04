@@ -63,7 +63,7 @@ function get_client_asset_latest_ref_number($company_id, $reference, $add)
 }
 function get_technical_incident_latest_ref_number($company_id, $reference, $add)
 {
-    $table = 'company_'.$company_id.'_client_assets';
+    $table = 'company_'.$company_id.'_technical_incidents';
     \App\Models\TechnicalIncident::setGlobalTable($table);
     $TechnicalIncident = \App\Models\TechnicalIncident::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($TechnicalIncident != NULL) {
@@ -81,6 +81,18 @@ function get_technical_table_latest_ref_number($company_id, $reference, $add)
     $TechnicalIncident = \App\Models\TechnicalIncident::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($TechnicalIncident != NULL) {
         $reference_number = str_replace('0', '', $TechnicalIncident->reference_number);
+        return generate_reference_num((int)$reference_number+$add,5);
+    } else {
+        return '00001';
+    }
+}
+function get_invoice_table_latest_ref_number($company_id, $reference, $add)
+{
+    $table = 'company_'.$company_id.'_invoice_tables';
+    \App\Models\InvoiceTable::setGlobalTable($table);
+    $InvoiceTable = \App\Models\InvoiceTable::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
+    if ($InvoiceTable != NULL) {
+        $reference_number = str_replace('0', '', $InvoiceTable->reference_number);
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';

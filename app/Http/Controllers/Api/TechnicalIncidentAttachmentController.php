@@ -26,7 +26,12 @@ class TechnicalIncidentAttachmentController extends Controller
 
         $table = 'company_'.$request->company_id.'_technical_incident_attachments';
         TechnicalIncidentAttachment::setGlobalTable($table);
-        $technical_incident_attachments = TechnicalIncidentAttachment::get();
+        if(!$request->technical_incident_id){
+
+            $technical_incident_attachments = TechnicalIncidentAttachment::get();
+        }else{
+            $technical_incident_attachments = TechnicalIncidentAttachment::where('technical_incident_id' , $request->technical_incident_id)->get();
+        }
         
         if ($technical_incident_attachments == NULL) {
             return response()->json([

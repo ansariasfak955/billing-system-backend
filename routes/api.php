@@ -228,6 +228,10 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('technical-tables', TechnicalTableController::class);
             Route::apiResource('technical-table-attachments', TechnicalTableAttachmentController::class);
 
+            // Invoicing 
+            Route::apiResource('invoices', InvoiceTableController::class);
+            Route::apiResource('invoice-attachments', InvoiceAttachmentController::class);
+            Route::apiResource('invoice-receipts', InvoiceReceiptController::class);
             /* Items */
             Route::apiResource('items', ItemController::class);
         });

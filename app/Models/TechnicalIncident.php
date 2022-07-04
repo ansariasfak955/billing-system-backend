@@ -11,6 +11,7 @@ class TechnicalIncident extends Model
 
     protected $fillable = [
     	'reference',
+    	'reference_number',
 		'notifications',
 		'client_id',
 		'address',
@@ -22,7 +23,8 @@ class TechnicalIncident extends Model
 		'date',
 		'assigned_date',
 		'invoice_to',
-		'closing_date'
+		'closing_date',
+		'asset_id',
     ];
 
     protected static $globalTable = 'technical_incidents';

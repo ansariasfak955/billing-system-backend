@@ -9,7 +9,7 @@ class InvoiceTable extends Model
 {
     use HasFactory;
     protected $guarded = ['id' , 'created_at', 'updated_at'];
-    protected static $globalTable = 'technical_tables' ;
+    protected static $globalTable = 'invoice_tables' ;
 
     public function getTable() {
         return self::$globalTable ;
