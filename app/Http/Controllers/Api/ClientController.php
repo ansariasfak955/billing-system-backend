@@ -54,6 +54,7 @@ class ClientController extends Controller
         $validator = Validator::make($request->all(), [
             'email'     => "required|unique:$table|email",
             'reference' => "required",
+            'legal_name' => "required",
             'tin' => 'required|alpha_num',
         ]);
 
@@ -136,6 +137,7 @@ class ClientController extends Controller
         Client::setGlobalTable($table);
         $validator = Validator::make($request->all(), [
             'tin' => 'required|alpha_num',
+            'legal_name' => "required"
         ]);
 
         if ($validator->fails()) {
