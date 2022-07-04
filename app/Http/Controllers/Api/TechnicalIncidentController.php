@@ -108,7 +108,7 @@ class TechnicalIncidentController extends Controller
         TechnicalIncident::setGlobalTable($table);
         $technical_incident = TechnicalIncident::where('id', $request->technical_incident)->first();
 
-        if($technical_incidents ==  NULL){
+        if($technical_incident ==  NULL){
             return response()->json([
                 "status" => false,
                 "message" => "This entry does not exists"

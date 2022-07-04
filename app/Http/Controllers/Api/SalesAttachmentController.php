@@ -80,9 +80,11 @@ class SalesAttachmentController extends Controller
         $sale_attachment = SalesAttachment::create($request->except('company_id', 'document'));
 
         if($request->document != NULL){
+            $originName = $request->file('document')->getClientOriginalName();
             $imageName = time().'.'.$request->document->extension();  
             $request->document->move(storage_path('app/public/sales/documents'), $imageName);
             $sale_attachment->document = $imageName;
+            $sale_attachment->name = $originName;
             $sale_attachment->save();
         }
 
@@ -157,9 +159,11 @@ class SalesAttachmentController extends Controller
         $sale_attachment->update($request->except('company_id', '_method', 'document'));
 
         if($request->document != NULL){
+            $originName = $request->file('document')->getClientOriginalName();
             $doc_name = time().'.'.$request->document->extension();  
             $request->document->move(storage_path('app/public/sales/documents'), $doc_name);
             $sale_attachment->document = $doc_name;
+            $sale_attachment->name = $originName;
             $sale_attachment->save();
         }
 

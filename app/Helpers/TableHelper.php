@@ -192,6 +192,7 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_sales_attachments')) {
             Schema::create('company_'.$company_id.'_sales_attachments', function (Blueprint $table) {
                 $table->id();
+                $table->string('name')->after('id')->nullable();
                 $table->integer('sales_id');
                 $table->string('document')->nullable();
                 $table->longText('description')->nullable();
@@ -269,6 +270,7 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_technical_incident_attachments')) {
             Schema::create('company_'.$company_id.'_technical_incident_attachments', function (Blueprint $table) {
                 $table->id();
+                $table->string('name')->after('id')->nullable();
                 $table->integer('technical_incident_id');
                 $table->string('document')->nullable();
                 $table->longText('description')->nullable();
@@ -279,6 +281,7 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_technical_table_attachments')) {
             Schema::create('company_'.$company_id.'_technical_table_attachments', function (Blueprint $table) {
                 $table->id();
+                $table->string('name')->after('id')->nullable();
                 $table->integer('technical_id')->nullable();
                 $table->string('document')->nullable();
                 $table->longText('description')->nullable();
@@ -287,6 +290,72 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic invoice table */
+        if (!Schema::hasTable('company_'.$company_id.'_invoice_tables')) {
+            Schema::create('company_'.$company_id.'_invoice_tables', function (Blueprint $table) {
+               $table->id();
+                $table->string('reference')->nullable();
+                $table->string('reference_number')->nullable();
+                $table->string('date')->nullable();
+                $table->integer('client_id')->nullable();
+                $table->string('status')->nullable();
+                $table->string('payment_option')->nullable();
+                $table->integer('created_by')->nullable();
+                $table->string('bank_account')->nullable();
+                $table->string('title')->nullable();
+                $table->string('agent_id')->nullable();
+                $table->string('payment_term')->nullable();
+                $table->string('rate')->nullable();
+                $table->integer('set_as_paid')->default(0);
+                $table->integer('subject_to_vat')->default(0);
+                $table->integer('subject_to_income_tax')->default(0);
+
+                /* More Information Fields*/
+                $table->string('asset_id')->nullable();
+                $table->string('delivery_option')->nullable();
+                $table->string('inv_address')->nullable();
+                $table->string('del_address')->nullable();
+                $table->string('email_sent_date')->nullable();
+                $table->string('currency')->nullable();
+                $table->float('currency_rate')->nullable();
+                $table->string('comments')->nullable();
+                $table->string('private_comments')->nullable();
+                $table->string('addendum')->nullable();
+                $table->string('create_from')->nullable();
+
+                /* Signature Fields*/
+                $table->string('name')->nullable();
+                $table->string('tin')->nullable();
+                $table->string('signature')->nullable();
+                $table->string('type')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic invoice  attachment table */
+        if (!Schema::hasTable('company_'.$company_id.'invoice_attachments')) {
+            Schema::create('company_'.$company_id.'invoice_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->integer('invoice_id')->nullable();
+                $table->string('name')->nullable();
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->string('type')->nullable();
+                $table->timestamps();
+            });
+        }
+        /* Creating dynamic invoice  attachment table */
+        if (!Schema::hasTable('company_'.$company_id.'invoice_receipts')) {
+            Schema::create('company_'.$company_id.'invoice_receipts', function (Blueprint $table) {
+                $table->id();
+                $table->integer('invoice_id')->nullable();
+                $table->string('concept')->nullable();
+                $table->string('payment_option')->nullable();
+                $table->string('bank_account')->nullable();
+                $table->dateTime('payment_date')->nullable();
+                $table->timestamps();
+            });
+        }
         /* Creating dynamic items table */
         if (!Schema::hasTable('company_'.$company_id.'_items')) {
             Schema::create('company_'.$company_id.'_items', function (Blueprint $table) {
@@ -344,6 +413,7 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_client_asset_attachments')) {
             Schema::create('company_'.$company_id.'_client_asset_attachments', function (Blueprint $table) {
                 $table->id();
+                $table->string('name')->after('id')->nullable();
                 $table->integer('asset_id')->nullable();
                 $table->string('document')->nullable();
                 $table->longText('description')->nullable();
@@ -356,6 +426,7 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_client_attachments')) {
             Schema::create('company_'.$company_id.'_client_attachments', function (Blueprint $table) {
                 $table->id();
+                $table->string('name')->after('id')->nullable();
                 $table->string('client_id')->nullable();
                 $table->string('document')->nullable();
                 $table->longText('description')->nullable();

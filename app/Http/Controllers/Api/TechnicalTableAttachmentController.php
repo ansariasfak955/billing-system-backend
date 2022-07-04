@@ -87,9 +87,11 @@ class TechnicalTableAttachmentController extends Controller
         $technical_attachment = TechnicalTableAttachment::create($request->except('company_id', 'document'));
 
         if($request->document != NULL){
+            $originName = $request->file('document')->getClientOriginalName();
             $imageName = time().'.'.$request->document->extension();  
             $request->document->move(storage_path('app/public/technical/documents/'), $imageName);
             $technical_attachment->document = $imageName;
+            $technical_attachment->name = $originName;
             $technical_attachment->save();
         }
 
@@ -163,9 +165,11 @@ class TechnicalTableAttachmentController extends Controller
         $technical_attachment->update($request->except('company_id', '_method', 'document'));
 
         if($request->document != NULL){
+            $originName = $request->file('document')->getClientOriginalName();
             $imageName = time().'.'.$request->document->extension();  
             $request->document->move(storage_path('app/public/technical/documents/'), $imageName);
             $technical_attachment->document = $imageName;
+            $technical_attachment->name = $originName;
             $technical_attachment->save();
         }
 

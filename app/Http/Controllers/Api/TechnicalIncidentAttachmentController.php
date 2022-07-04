@@ -69,9 +69,11 @@ class TechnicalIncidentAttachmentController extends Controller
         $technical_incident_attachment = TechnicalIncidentAttachment::create($request->except('company_id', 'document'));
 
         if($request->document != NULL){
+            $originName = $request->file('document')->getClientOriginalName();
             $imageName = time().'.'.$request->document->extension();  
             $request->document->move(storage_path('app/public/technical-incidents/documents'), $imageName);
             $technical_incident_attachment->document = $imageName;
+            $technical_incident_attachment->name = $originName;
             $technical_incident_attachment->save();
         }
 
@@ -144,9 +146,11 @@ class TechnicalIncidentAttachmentController extends Controller
         $incident_attachment->update($request->except('company_id', '_method', 'document'));
 
         if($request->document != NULL){
+            $originName = $request->file('document')->getClientOriginalName();
             $doc_name = time().'.'.$request->document->extension();  
             $request->document->move(storage_path('app/public/technical-incidents/documents'), $doc_name);
             $incident_attachment->document = $doc_name;
+            $incident_attachment->name = $originName;
             $incident_attachment->save();
         }
 

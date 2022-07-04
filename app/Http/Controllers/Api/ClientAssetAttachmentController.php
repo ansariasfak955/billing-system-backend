@@ -87,9 +87,11 @@ class ClientAssetAttachmentController extends Controller
         $client_attachment = ClientAssetAttachment::create($request->except('company_id', 'document'));
 
         if($request->document != NULL){
+            $originName = $request->file('document')->getClientOriginalName();
             $imageName = time().'.'.$request->document->extension();  
             $request->document->move(storage_path('app/public/clients/assets/documents/'), $imageName);
             $client_attachment->document = $imageName;
+            $client_attachment->name = $originName;
             $client_attachment->save();
         }
 
@@ -163,9 +165,11 @@ class ClientAssetAttachmentController extends Controller
         $client_attachment->update($request->except('company_id', '_method', 'document'));
 
         if($request->document != NULL){
+            $originName = $request->file('document')->getClientOriginalName();
             $imageName = time().'.'.$request->document->extension();  
             $request->document->move(storage_path('app/public/clients/assets/documents/'), $imageName);
             $client_attachment->document = $imageName;
+            $client_attachment->name = $originName;
             $client_attachment->save();
         }
 
