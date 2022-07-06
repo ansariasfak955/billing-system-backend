@@ -217,6 +217,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('client-asset-attachments', ClientAssetAttachmentController::class);
             Route::apiResource('client-attachments', ClientAttachmentController::class);
             Route::apiResource('client-addresses', ClientAddressController::class);
+            Route::apiResource('client-categories', ClientCategoryController::class);
 
             /* Sales Routes */
             Route::apiResource('sales-estimates', SalesEstimateController::class);

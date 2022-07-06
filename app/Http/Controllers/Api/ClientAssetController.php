@@ -74,7 +74,16 @@ class ClientAssetController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
+        //change format of date
+        if($request->start_of_warranty){
 
+            $request['start_of_warranty'] = get_formatted_datetime($request->start_of_warranty);
+        }
+
+        if($request->end_of_warranty){
+
+            $request['end_of_warranty'] = get_formatted_datetime($request->end_of_warranty);
+        }
         $table = 'company_'.$request->company_id.'_client_assets';
         ClientAsset::setGlobalTable($table); 
         $assetTable = 'company_'.$request->company_id.'_client_asset_attachments';
@@ -184,6 +193,16 @@ class ClientAssetController extends Controller
                 "status" => false,
                 "message" => $validator->errors()->first()
             ]);
+        }
+        //change format of date
+        if($request->start_of_warranty){
+
+            $request['start_of_warranty'] = get_formatted_datetime($request->start_of_warranty);
+        }
+
+        if($request->end_of_warranty){
+
+            $request['end_of_warranty'] = get_formatted_datetime($request->end_of_warranty);
         }
         $client_asset = ClientAsset::where('id', $request->client_asset)->first();
         

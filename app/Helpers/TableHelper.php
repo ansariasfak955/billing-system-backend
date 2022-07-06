@@ -150,6 +150,16 @@ class TableHelper
                 $table->timestamps();
             });
         }
+        /* Creating dynamic client category table */
+        if (!Schema::hasTable('company_'.$company_id.'_client_categories')) {
+            Schema::create('company_'.$company_id.'_client_categories', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('rate')->nullable();
+                $table->string('description')->nullable();
+                $table->timestamps();
+            });
+        }
 
         /* Creating dynamic sales estimates table */
         if (!Schema::hasTable('company_'.$company_id.'_sales_estimates')) {

@@ -85,9 +85,9 @@ class TechnicalTableController extends Controller
             $request['date'] = get_formatted_datetime($request->date);
         }
 
-        if($request->assigned_date){
+        if($request->end_of_warranty){
 
-            $request['assigned_date'] = get_formatted_datetime($request->assigned_date);
+            $request['end_of_warranty'] = get_formatted_datetime($request->end_of_warranty);
         }
 
         if($request->start_date){
