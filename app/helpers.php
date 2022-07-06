@@ -44,7 +44,7 @@ function get_client_latest_ref_number($company_id, $reference, $add)
     $client = \App\Models\Client::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     $reference_number = str_replace('0', '', $client->reference_number);
     if ($client != NULL) {
-    	return generate_reference_num($reference_number+$add,5);
+    	return generate_reference_num((int)$reference_number+$add,5);
     } else {
     	return '00001';
     }

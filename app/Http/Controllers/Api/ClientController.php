@@ -57,6 +57,8 @@ class ClientController extends Controller
             'legal_name' => "required|unique:$table",
             'tin' => "required|alpha_num|unique:$table",
             'bank_account_account' => "unique:$table",
+            'phone_1' => "unique:$table",
+            'phone_2' => "unique:$table"
         ]);
 
         if ($validator->fails()) {
