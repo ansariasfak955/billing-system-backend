@@ -54,8 +54,9 @@ class ClientController extends Controller
         $validator = Validator::make($request->all(), [
             'email'     => "required|unique:$table|email",
             'reference' => "required",
-            'legal_name' => "required",
-            'tin' => 'required|alpha_num',
+            'legal_name' => "required|unique:$table",
+            'tin' => "required|alpha_num|unique:$table",
+            'bank_account_account' => "unique:$table",
         ]);
 
         if ($validator->fails()) {
