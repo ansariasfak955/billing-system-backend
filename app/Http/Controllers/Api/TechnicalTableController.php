@@ -79,6 +79,35 @@ class TechnicalTableController extends Controller
             ]);
         }
 
+        //change format of date
+        if($request->date){
+
+            $request['date'] = get_formatted_datetime($request->date);
+        }
+
+        if($request->assigned_date){
+
+            $request['assigned_date'] = get_formatted_datetime($request->assigned_date);
+        }
+
+        if($request->start_date){
+
+            $request['start_date'] = get_formatted_datetime($request->start_date);
+        }
+
+        if($request->end_date){
+
+            $request['end_date'] = get_formatted_datetime($request->end_date);
+        }
+        if($request->due_date){
+
+            $request['due_date'] = get_formatted_datetime($request->due_date);
+        }
+        if($request->valid_until){
+
+            $request['valid_until'] = get_formatted_datetime($request->valid_until);
+        }
+
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
 
@@ -218,6 +247,35 @@ class TechnicalTableController extends Controller
         TechnicalTable::setGlobalTable($table);
         $technical_incident = TechnicalTable::where('id', $request->technical_table)->first();
         
+         //change format of date
+        if($request->date){
+
+            $request['date'] = get_formatted_datetime($request->date);
+        }
+
+        if($request->assigned_date){
+
+            $request['assigned_date'] = get_formatted_datetime($request->assigned_date);
+        }
+
+        if($request->start_date){
+
+            $request['start_date'] = get_formatted_datetime($request->start_date);
+        }
+
+        if($request->end_date){
+
+            $request['end_date'] = get_formatted_datetime($request->end_date);
+        }
+        if($request->due_date){
+
+            $request['due_date'] = get_formatted_datetime($request->due_date);
+        }
+        if($request->valid_until){
+
+            $request['valid_until'] = get_formatted_datetime($request->valid_until);
+        }
+
         $technical_incident->update($request->except('company_id', 'technical_table', '_method'));
         $technical_incident->created_by = \Auth::id();
         $technical_incident->save();

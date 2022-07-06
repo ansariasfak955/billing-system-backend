@@ -62,7 +62,34 @@ class TechnicalIncidentController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
+         //change format of date
+        if($request->date){
 
+            $request['date'] = get_formatted_datetime($request->date);
+        }
+
+        if($request->assigned_date){
+
+            $request['assigned_date'] = get_formatted_datetime($request->assigned_date);
+        }
+
+        if($request->start_date){
+
+            $request['start_date'] = get_formatted_datetime($request->start_date);
+        }
+
+        if($request->end_date){
+
+            $request['end_date'] = get_formatted_datetime($request->end_date);
+        }
+        if($request->due_date){
+
+            $request['due_date'] = get_formatted_datetime($request->due_date);
+        }
+        if($request->valid_until){
+
+            $request['valid_until'] = get_formatted_datetime($request->valid_until);
+        }
         $table = 'company_'.$request->company_id.'_technical_incidents';
         TechnicalIncident::setGlobalTable($table);
 
@@ -132,6 +159,36 @@ class TechnicalIncidentController extends Controller
     {
         $table = 'company_'.$request->company_id.'_technical_incidents';
         TechnicalIncident::setGlobalTable($table);
+        
+         //change format of date
+        if($request->date){
+
+            $request['date'] = get_formatted_datetime($request->date);
+        }
+
+        if($request->assigned_date){
+
+            $request['assigned_date'] = get_formatted_datetime($request->assigned_date);
+        }
+
+        if($request->start_date){
+
+            $request['start_date'] = get_formatted_datetime($request->start_date);
+        }
+
+        if($request->end_date){
+
+            $request['end_date'] = get_formatted_datetime($request->end_date);
+        }
+        if($request->due_date){
+
+            $request['due_date'] = get_formatted_datetime($request->due_date);
+        }
+        if($request->valid_until){
+
+            $request['valid_until'] = get_formatted_datetime($request->valid_until);
+        }
+
         $technical_incident = TechnicalIncident::where('id', $request->technical_incident)->first();
         
         $technical_incident->update($request->except('company_id', 'technical_incident', '_method'));

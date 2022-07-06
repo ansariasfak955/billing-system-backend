@@ -204,3 +204,8 @@ function get_roles_permissions($company_id)
 
     return response()->json($permission_arr);
 }
+function get_formatted_datetime($date_time){
+    $strDate = substr($date_time,4,20);
+    $date = strtotime($strDate);
+    return date('Y-m-d H:i:s',$date);
+}

@@ -62,6 +62,35 @@ class SalesEstimateController extends Controller
             ]);
         }
 
+        //change format of date
+        if($request->date){
+
+            $request['date'] = get_formatted_datetime($request->date);
+        }
+
+        if($request->assigned_date){
+
+            $request['assigned_date'] = get_formatted_datetime($request->assigned_date);
+        }
+
+        if($request->start_date){
+
+            $request['start_date'] = get_formatted_datetime($request->start_date);
+        }
+
+        if($request->end_date){
+
+            $request['end_date'] = get_formatted_datetime($request->end_date);
+        }
+        if($request->due_date){
+
+            $request['due_date'] = get_formatted_datetime($request->due_date);
+        }
+        if($request->valid_until){
+
+            $request['valid_until'] = get_formatted_datetime($request->valid_until);
+        }
+
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
         $sales_estimate = SalesEstimate::create($request->except('company_id'));
@@ -116,6 +145,36 @@ class SalesEstimateController extends Controller
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
         $sales_estimate = SalesEstimate::where('id', $request->sales_estimate)->first();
+        
+        //change format of date
+        if($request->date){
+
+            $request['date'] = get_formatted_datetime($request->date);
+        }
+
+        if($request->assigned_date){
+
+            $request['assigned_date'] = get_formatted_datetime($request->assigned_date);
+        }
+
+        if($request->start_date){
+
+            $request['start_date'] = get_formatted_datetime($request->start_date);
+        }
+
+        if($request->end_date){
+
+            $request['end_date'] = get_formatted_datetime($request->end_date);
+        }
+        if($request->due_date){
+
+            $request['due_date'] = get_formatted_datetime($request->due_date);
+        }
+        if($request->valid_until){
+
+            $request['valid_until'] = get_formatted_datetime($request->valid_until);
+        }
+
         $sales_estimate->update($request->except('company_id'));
         if ($request->signature) {
             $signature_name = time().'.'.$request->signature->extension();  

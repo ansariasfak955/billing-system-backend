@@ -102,6 +102,35 @@ class InvoiceTableController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+        
+        //change format of date
+        if($request->date){
+
+            $request['date'] = get_formatted_datetime($request->date);
+        }
+
+        if($request->assigned_date){
+
+            $request['assigned_date'] = get_formatted_datetime($request->assigned_date);
+        }
+
+        if($request->start_date){
+
+            $request['start_date'] = get_formatted_datetime($request->start_date);
+        }
+
+        if($request->end_date){
+
+            $request['end_date'] = get_formatted_datetime($request->end_date);
+        }
+        if($request->due_date){
+
+            $request['due_date'] = get_formatted_datetime($request->due_date);
+        }
+        if($request->valid_until){
+
+            $request['valid_until'] = get_formatted_datetime($request->valid_until);
+        }
 
         if ($request->reference_number == '') {
             $request['reference_number'] = get_invoice_table_latest_ref_number($request->company_id, $request->reference, 1 );
@@ -236,7 +265,35 @@ class InvoiceTableController extends Controller
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
         $invoice = InvoiceTable::where('id', $request->invoice)->first();
-        
+
+        //change format of date
+        if($request->date){
+
+            $request['date'] = get_formatted_datetime($request->date);
+        }
+
+        if($request->assigned_date){
+
+            $request['assigned_date'] = get_formatted_datetime($request->assigned_date);
+        }
+
+        if($request->start_date){
+
+            $request['start_date'] = get_formatted_datetime($request->start_date);
+        }
+
+        if($request->end_date){
+
+            $request['end_date'] = get_formatted_datetime($request->end_date);
+        }
+        if($request->due_date){
+
+            $request['due_date'] = get_formatted_datetime($request->due_date);
+        }
+        if($request->valid_until){
+
+            $request['valid_until'] = get_formatted_datetime($request->valid_until);
+        }
         $invoice->update($request->except('company_id', 'invoice', '_method'));
         $invoice->created_by = \Auth::id();
         $invoice->save();
