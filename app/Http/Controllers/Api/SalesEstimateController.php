@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SalesEstimate;
+use App\Models\Item;
+use App\Models\ItemMeta;
 use Validator;
 use Storage;
 
@@ -93,17 +95,72 @@ class SalesEstimateController extends Controller
 
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
         $sales_estimate = SalesEstimate::create($request->except('company_id'));
         if ($request->signature) {
             $signature_name = time().'.'.$request->signature->extension();  
             $request->signature->move(storage_path('app/public/sales/signature'), $signature_name);
             $sales_estimate->signature = $signature_name;    
         }
+        if($request->item){
+            $items = $request->all()['item'];
+
+            $meta_discount    = $request->meta_discount;
+            $meta_income_tax  = $request->meta_income_tax;
+            //save item meta
+            if ($meta_discount) {
+
+                ItemMeta::create([
+                    'reference_id'  => $sales_estimate->id,
+                    'parent_id'     => $sales_estimate->id,
+                    'discount'      => $meta_discount,
+                    'income_tax'    => $meta_income_tax
+                ]);
+            }
+            // items
+            foreach ($items as $item) {
+                $reference        = $item['reference'];
+                if (isset($item['reference_id'])) {
+                    $reference_id     = $item['reference_id'];
+                } else {
+                    $reference_id     = NULL;
+                }
+                
+                $name             = $item['name'];
+                $parent_id        = $sales_estimate->id;
+                $type             = $sales_estimate->reference;
+                $description      = $item['description'];
+                $base_price       = $item['base_price'];
+                $quantity         = $item['quantity'];
+                $discount         = $item['discount'];
+                $tax              = $item['tax'];
+                $income_tax       = $item['income_tax'];
+                $createdItem = Item::create([
+                    'reference'     => $reference,
+                    'reference_id'  => $reference_id,
+                    'parent_id'     => $parent_id,
+                    'type'          => $type,
+                    'name'          => $name,
+                    'description'   => $description,
+                    'base_price'    => $base_price,
+                    'quantity'      => $quantity,
+                    'discount'      => $discount,
+                    'tax'           => $tax,
+                    'income_tax'    => $income_tax
+                ]);
+            }
+        }
         $sales_estimate->save();
 
         return response()->json([
             "status" => true,
-            "sales_estimate" => $sales_estimate,
+            "sales_estimate" => SalesEstimate::with(['items', 'itemMeta'])->find($sales_estimate->id),
             "message" => "Sales estimate created successfully"
         ]);
     }
@@ -118,7 +175,13 @@ class SalesEstimateController extends Controller
     {
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
-        $sales_estimate = SalesEstimate::where('id', $request->sales_estimate)->first();
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $sales_estimate = SalesEstimate::with(['items', 'itemMeta'])->where('id', $request->sales_estimate)->first();
 
         if($sales_estimate ==  NULL){
             return response()->json([

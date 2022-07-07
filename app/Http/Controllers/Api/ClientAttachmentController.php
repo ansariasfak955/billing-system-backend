@@ -132,10 +132,10 @@ class ClientAttachmentController extends Controller
 
         $validator = Validator::make($request->all(),[
             'client_id' => 'required',          
-            'document' => 'required'          
+            // 'document' => 'required'          
         ], [
             'client_id.required' => 'Please select client. ',
-            'document.required' => 'Please select document. ',
+            // 'document.required' => 'Please select document. ',
         ]);
 
         if ($validator->fails()) {

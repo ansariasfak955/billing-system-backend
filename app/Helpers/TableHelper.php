@@ -300,11 +300,207 @@ class TableHelper
                 $table->timestamps();
             });
         }
+        //creating dynamic purchases table
+        if (!Schema::hasTable('company_'.$company_id.'_suppliers')) {
+            Schema::create('company_'.$company_id.'_suppliers', function (Blueprint $table) {
+                $table->id();
+                $table->string('reference')->nullable();
+                $table->string('reference_number')->nullable();
+                $table->string('legal_name')->nullable();
+                $table->string('name')->nullable();
+                $table->string('tin')->nullable();
+                $table->string('email')->nullable();
+                $table->string('phone_1')->nullable();
+                $table->string('address')->nullable();
+                $table->string('city')->nullable();
+                $table->string('state')->nullable();
+                $table->string('zip_code')->nullable();
+                $table->string('country')->nullable();
+                $table->string('address_latitude')->nullable();
+                $table->string('address_longitude')->nullable();
+
+                /* general fields */
+                $table->string('fax')->nullable();
+                $table->string('phone_2')->nullable();
+                $table->string('website')->nullable();
+                $table->integer('supplier_category')->default(0);
+                $table->string('comments')->nullable();
+                $table->string('popup_notice')->nullable();
+                $table->string('created_from')->default('web');
+
+                /* commercial fields */
+                $table->string('payment_option_id')->nullable();
+                $table->string('payment_terms_id')->nullable();
+                $table->string('payment_date')->nullable();
+                $table->string('payment_adjustment')->default("unspecified");
+                $table->float('discount')->nullable();
+                $table->integer('agent')->default(0);
+                $table->string('rate')->nullable();
+                $table->string('currency')->nullable();
+                $table->enum('subject_to_vat', ['0', '1'])->default(0);
+                $table->float('maximum_risk')->nullable();
+                $table->integer('invoice_to')->default(0);
+                $table->enum('subject_to_income_tax', ['0', '1'])->default(0);
+
+                /* bank account fields */
+                $table->string('bank_account_format')->nullable();
+                $table->string('bank_account_account')->nullable();
+                $table->string('bank_account_bic')->nullable();
+                $table->string('bank_account_name')->nullable();
+                $table->string('bank_account_description')->nullable();
+                $table->timestamps();
+            });
+        }
+        /* Creating dynamic purchase table */
+        if (!Schema::hasTable('company_'.$company_id.'_purchase_tables')) {
+            Schema::create('company_'.$company_id.'_purchase_tables', function (Blueprint $table) {
+                $table->id();
+            $table->string('reference')->nullable();
+            $table->string('reference_number')->nullable();
+            $table->string('date')->nullable();
+            $table->integer('supplier_id')->nullable();
+            $table->string('status')->nullable();
+            $table->string('payment_option')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->string('bank_account')->nullable();
+            $table->string('title')->nullable();
+            $table->string('agent_id')->nullable();
+            $table->string('payment_term')->nullable();
+            $table->string('purchase_document_ref')->nullable();
+            $table->string('rate')->nullable();
+            $table->integer('set_as_paid')->default(0);
+            $table->integer('subject_to_vat')->default(0);
+            $table->integer('subject_to_income_tax')->default(0);
+
+            /* More Information Fields*/
+            $table->string('sent_date')->nullable();
+            $table->string('delivery_option')->nullable();
+            // $table->string('inv_address')->nullable();
+            // $table->string('del_address')->nullable();
+            $table->string('email_sent_date')->nullable();
+            $table->string('currency')->nullable();
+            $table->float('currency_rate')->nullable();
+            $table->string('comments')->nullable();
+            $table->string('private_comments')->nullable();
+            $table->string('addendum')->nullable();
+            $table->string('create_from')->nullable();
+
+            /* Signature Fields*/
+            $table->string('name')->nullable();
+            $table->string('tin')->nullable();
+            $table->string('signature')->nullable();
+            $table->string('type')->nullable();
+            $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic supplier contact  table */
+        if (!Schema::hasTable('company_'.$company_id.'_supplier_contacts')) {
+            Schema::create('company_'.$company_id.'_supplier_contacts', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('phone')->nullable();
+                $table->string('fax')->nullable();
+                $table->string('email')->nullable();
+                $table->string('position')->nullable();
+                $table->longText('comments')->nullable();
+                $table->integer('supplier_id');
+                $table->timestamps();
+            });
+        }
+        /* Creating dynamic supplier contact  table */
+        if (!Schema::hasTable('company_'.$company_id.'_supplier_contacts')) {
+            Schema::create('company_'.$company_id.'_supplier_contacts', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('phone')->nullable();
+                $table->string('fax')->nullable();
+                $table->string('email')->nullable();
+                $table->string('position')->nullable();
+                $table->longText('comments')->nullable();
+                $table->integer('supplier_id');
+                $table->timestamps();
+            });
+        }
+        /* Creating dynamic supplier addresses  table */
+        if (!Schema::hasTable('company_'.$company_id.'_supplier_addresses')) {
+            Schema::create('company_'.$company_id.'_supplier_addresses', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('phone')->nullable();
+                $table->string('fax')->nullable();
+                $table->string('email')->nullable();
+                $table->string('position')->nullable();
+                $table->longText('comments')->nullable();
+                $table->integer('supplier_id');
+                $table->timestamps();
+            });
+        }
+        /* Creating dynamic supplier addresses  table */
+        if (!Schema::hasTable('company_'.$company_id.'_purchase_attachments')) {
+            Schema::create('company_'.$company_id.'_purchase_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->integer('purchase_id')->nullable();
+                $table->string('name')->nullable();
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->string('type')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic supplier special prices  table */
+        if (!Schema::hasTable('company_'.$company_id.'_supplier_special_prices')) {
+            Schema::create('company_'.$company_id.'_supplier_special_prices', function (Blueprint $table) {
+                $table->id();
+                $table->string('supplier_id');
+                $table->string('product_id')->nullable();
+                $table->float('purchase_price')->nullable();
+                $table->float('sales_price')->nullable();
+                $table->string('purchase_margin')->nullable();
+                $table->string('sales_margin')->nullable();
+                $table->float('discount')->nullable();
+                $table->float('special_price')->nullable();
+                $table->timestamps();
+            });
+        }
+        /* Creating dynamic purchase receipts  table */
+        if (!Schema::hasTable('company_'.$company_id.'_purchase_receipts')) {
+            Schema::create('company_'.$company_id.'_purchase_receipts', function (Blueprint $table) {
+                $table->id();
+                $table->integer('purchase_id')->nullable();
+                $table->string('concept')->nullable();
+                $table->string('payment_option')->nullable();
+                $table->string('bank_account')->nullable();
+                $table->dateTime('payment_date')->nullable();
+                $table->timestamps();
+            });
+        }
+        /* Creating dynamic purchase ticket  table */
+        if (!Schema::hasTable('company_'.$company_id.'_purchase_tickets')) {
+            Schema::create('company_'.$company_id.'_purchase_tickets', function (Blueprint $table) {
+                $table->id();
+                $table->string('reference')->nullable();
+                $table->string('reference_number')->nullable();
+                $table->dateTime('date')->nullable();
+                $table->integer('supplier_id')->nullable();
+                $table->integer('category_id')->nullable();
+                $table->float('amount')->nullable();
+                $table->string('description')->nullable();
+                $table->string('payment_option')->nullable();
+                $table->string('employee')->nullable();
+                $table->string('bank_account')->nullable();
+                $table->string('status')->nullable();
+                $table->string('paid_by')->nullable();
+                $table->dateTime('payment_date')->nullable();
+                $table->timestamps();
+            });
+        }
 
         /* Creating dynamic invoice table */
         if (!Schema::hasTable('company_'.$company_id.'_invoice_tables')) {
             Schema::create('company_'.$company_id.'_invoice_tables', function (Blueprint $table) {
-               $table->id();
+                $table->id();
                 $table->string('reference')->nullable();
                 $table->string('reference_number')->nullable();
                 $table->string('date')->nullable();

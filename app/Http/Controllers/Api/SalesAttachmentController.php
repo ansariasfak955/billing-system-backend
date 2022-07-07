@@ -16,10 +16,10 @@ class SalesAttachmentController extends Controller
      */
     public function index(Request $request)
     {
-        if(($request->sales_id ==  NULL)||($request->company_id ==  0)){
+        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
             return response()->json([
                 "status" => false,
-                "message" =>  "Please select sales."
+                "message" =>  "Please select company."
             ]);
         }
 
@@ -132,20 +132,16 @@ class SalesAttachmentController extends Controller
         $table = 'company_'.$request->company_id.'_sales_attachments';
         SalesAttachment::setGlobalTable($table);
 
-        $validator = Validator::make($request->all(),[
-            'sales_id' => 'required',          
-            'document' => 'required'          
-        ], [
-            'sales_id.required' => 'Please select sales.',
-            'document.required' => 'Please select document.',
-        ]);
+        // $validator = Validator::make($request->all(),[
+        //     'sales_attachment' => 'required',                 
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                "status" => false,
-                "message" => $validator->errors()->first()
-            ]);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         "status" => false,
+        //         "message" => $validator->errors()->first()
+        //     ]);
+        // }
 
         $sale_attachment = SalesAttachment::where('id', $request->sales_attachment)->first();
 

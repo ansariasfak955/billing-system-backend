@@ -38,7 +38,8 @@ class Client extends Model
     	"bank_account_account",
     	"bank_account_bic",
     	"bank_account_name",
-    	"bank_account_description"
+    	"bank_account_description",
+        "client_category",
     ];
 
     protected static $globalTable = 'clients' ;

@@ -233,6 +233,17 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('invoices', InvoiceTableController::class);
             Route::apiResource('invoice-attachments', InvoiceAttachmentController::class);
             Route::apiResource('invoice-receipts', InvoiceReceiptController::class);
+
+            // Purchases 
+            Route::apiResource('suppliers', SupplierController::class);
+            Route::apiResource('purchase-attachments', PurchaseAttachmentController::class);
+            Route::apiResource('supplier-addresses', SupplierAddressController::class);
+            Route::apiResource('supplier-special-prices', SupplierSpecialPriceController::class);
+            Route::apiResource('supplier-contacts', SupplierContactController::class);
+            Route::apiResource('purchase-tables', PurchaseTableController::class);
+            Route::apiResource('purchase-receipts', PurchaseReceiptController::class);
+            Route::apiResource('purchase-tickets', PurchaseTicketController::class);
+            
             /* Items */
             Route::apiResource('items', ItemController::class);
         });

@@ -190,6 +190,13 @@ class ClientAssetAttachmentController extends Controller
         $table = 'company_'.$request->company_id.'_client_asset_attachments';
         ClientAssetAttachment::setGlobalTable($table);
         $client_attachment = ClientAssetAttachment::where('id', $request->client_asset_attachment)->first();
+        
+        if(!$client_attachment){
+            return response()->json([
+                    'status' => false,
+                    'message' => "Not found! "
+            ]);
+        }
         if($client_attachment->delete()){
             return response()->json([
                     'status' => true,

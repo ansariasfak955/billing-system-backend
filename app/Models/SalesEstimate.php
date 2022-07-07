@@ -52,4 +52,12 @@ class SalesEstimate extends Model
     	}
     	return '';
     }
+    public function items(){
+
+        return $this->hasMany(Item::class, 'parent_id');
+    }
+    public function itemMeta(){
+
+        return $this->hasMany(ItemMeta::class, 'parent_id');
+    }
 }

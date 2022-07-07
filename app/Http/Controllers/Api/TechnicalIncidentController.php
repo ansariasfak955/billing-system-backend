@@ -192,7 +192,7 @@ class TechnicalIncidentController extends Controller
         $technical_incident = TechnicalIncident::where('id', $request->technical_incident)->first();
         
         $technical_incident->update($request->except('company_id', 'technical_incident', '_method'));
-        $technical_incident->create_by = Auth::id();
+        $technical_incident->created_by = Auth::id();
         $technical_incident->save();
 
         return response()->json([
