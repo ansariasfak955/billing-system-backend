@@ -19,6 +19,13 @@ function get_product_name($company_id,$product_id)
 	return \App\Models\Product::where('id', $product_id)->pluck('name')->first();
 }
 
+function get_category_name($company_id,$category_id)
+{
+    $table = 'company_'.$company_id.'_client_categories';
+    \App\Models\ClientCategory::setGlobalTable($table);
+    return \App\Models\ClientCategory::where('id', $category_id)->pluck('name')->first();
+}
+
 function get_company_country_name($company_id)
 {
 	if ($company_id != '') {
@@ -61,6 +68,18 @@ function get_client_asset_latest_ref_number($company_id, $reference, $add)
         return '00001';
     }
 }
+function get_supplier_latest_ref_number($company_id, $reference, $add)
+{
+    $table = 'company_'.$company_id.'_suppliers';
+    \App\Models\Supplier::setGlobalTable($table);
+    $Supplier = \App\Models\Supplier::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
+    if ($Supplier != NULL) {
+        $reference_number = str_replace('0', '', $Supplier->reference_number);
+        return generate_reference_num((int)$reference_number+$add,5);
+    } else {
+        return '00001';
+    }
+}
 function get_technical_incident_latest_ref_number($company_id, $reference, $add)
 {
     $table = 'company_'.$company_id.'_technical_incidents';
@@ -73,14 +92,50 @@ function get_technical_incident_latest_ref_number($company_id, $reference, $add)
         return '00001';
     }
 }
+function get_sales_estimate_latest_ref_number($company_id, $reference, $add)
+{
+    $table = 'company_'.$company_id.'_sales_estimates';
+    \App\Models\SalesEstimate::setGlobalTable($table);
+    $SalesEstimate = \App\Models\SalesEstimate::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
+    if ($SalesEstimate != NULL) {
+        $reference_number = str_replace('0', '', $SalesEstimate->reference_number);
+        return generate_reference_num((int)$reference_number+$add,5);
+    } else {
+        return '00001';
+    }
+}
 
 function get_technical_table_latest_ref_number($company_id, $reference, $add)
 {
     $table = 'company_'.$company_id.'_technical_tables';
-    \App\Models\TechnicalIncident::setGlobalTable($table);
-    $TechnicalIncident = \App\Models\TechnicalIncident::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
-    if ($TechnicalIncident != NULL) {
-        $reference_number = str_replace('0', '', $TechnicalIncident->reference_number);
+    \App\Models\TechnicalTable::setGlobalTable($table);
+    $TechnicalTable = \App\Models\TechnicalTable::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
+    if ($TechnicalTable != NULL) {
+        $reference_number = str_replace('0', '', $TechnicalTable->reference_number);
+        return generate_reference_num((int)$reference_number+$add,5);
+    } else {
+        return '00001';
+    }
+}
+function get_purchase_table_latest_ref_number($company_id, $reference, $add)
+{
+    $table = 'company_'.$company_id.'_purchase_tables';
+    \App\Models\PurchaseTable::setGlobalTable($table);
+    $PurchaseTable = \App\Models\PurchaseTable::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
+    if ($PurchaseTable != NULL) {
+        $reference_number = str_replace('0', '', $PurchaseTable->reference_number);
+        return generate_reference_num((int)$reference_number+$add,5);
+    } else {
+        return '00001';
+    }
+}
+function get_purchase_ticket_table_latest_ref_number($company_id, $reference, $add)
+{
+    $table = 'company_'.$company_id.'_purchase_tickets';
+    \App\Models\PurchaseTicket::setGlobalTable($table);
+    $PurchaseTicket = \App\Models\PurchaseTicket::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
+    if ($PurchaseTicket != NULL) {
+        $reference_number = str_replace('0', '', $PurchaseTicket->reference_number);
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';

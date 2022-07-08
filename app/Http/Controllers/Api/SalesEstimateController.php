@@ -102,61 +102,74 @@ class SalesEstimateController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        $sales_estimate = SalesEstimate::create($request->except('company_id'));
-        if ($request->signature) {
-            $signature_name = time().'.'.$request->signature->extension();  
-            $request->signature->move(storage_path('app/public/sales/signature'), $signature_name);
-            $sales_estimate->signature = $signature_name;    
-        }
-        if($request->item){
-            $items = $request->all()['item'];
+        if ($request->reference_number == '') {
+            $request['reference_number'] = get_sales_estimate_latest_ref_number($request->company_id, $request->reference, 1 );
+        }else{
 
-            $meta_discount    = $request->meta_discount;
-            $meta_income_tax  = $request->meta_income_tax;
-            //save item meta
-            if ($meta_discount) {
+            $technical_incident = SalesEstimate::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
 
-                ItemMeta::create([
-                    'reference_id'  => $sales_estimate->id,
-                    'parent_id'     => $sales_estimate->id,
-                    'discount'      => $meta_discount,
-                    'income_tax'    => $meta_income_tax
-                ]);
+            if ($technical_incident) {
+                $request->reference_number = '';
             }
-            // items
-            foreach ($items as $item) {
-                $reference        = $item['reference'];
-                if (isset($item['reference_id'])) {
-                    $reference_id     = $item['reference_id'];
-                } else {
-                    $reference_id     = NULL;
+        }
+        if( $request->reference_number ){
+            
+            $sales_estimate = SalesEstimate::create($request->except('company_id'));
+            if ($request->signature) {
+                $signature_name = time().'.'.$request->signature->extension();  
+                $request->signature->move(storage_path('app/public/sales/signature'), $signature_name);
+                $sales_estimate->signature = $signature_name;    
+            }
+            if($request->item){
+                $items = $request->all()['item'];
+
+                $meta_discount    = $request->meta_discount;
+                $meta_income_tax  = $request->meta_income_tax;
+                //save item meta
+                if ($meta_discount) {
+
+                    ItemMeta::create([
+                        'reference_id'  => $sales_estimate->id,
+                        'parent_id'     => $sales_estimate->id,
+                        'discount'      => $meta_discount,
+                        'income_tax'    => $meta_income_tax
+                    ]);
                 }
-                
-                $name             = $item['name'];
-                $parent_id        = $sales_estimate->id;
-                $type             = $sales_estimate->reference;
-                $description      = $item['description'];
-                $base_price       = $item['base_price'];
-                $quantity         = $item['quantity'];
-                $discount         = $item['discount'];
-                $tax              = $item['tax'];
-                $income_tax       = $item['income_tax'];
-                $createdItem = Item::create([
-                    'reference'     => $reference,
-                    'reference_id'  => $reference_id,
-                    'parent_id'     => $parent_id,
-                    'type'          => $type,
-                    'name'          => $name,
-                    'description'   => $description,
-                    'base_price'    => $base_price,
-                    'quantity'      => $quantity,
-                    'discount'      => $discount,
-                    'tax'           => $tax,
-                    'income_tax'    => $income_tax
-                ]);
+                // items
+                foreach ($items as $item) {
+                    $reference        = $item['reference'];
+                    if (isset($item['reference_id'])) {
+                        $reference_id     = $item['reference_id'];
+                    } else {
+                        $reference_id     = NULL;
+                    }
+                    
+                    $name             = $item['name'];
+                    $parent_id        = $sales_estimate->id;
+                    $type             = $sales_estimate->reference;
+                    $description      = $item['description'];
+                    $base_price       = $item['base_price'];
+                    $quantity         = $item['quantity'];
+                    $discount         = $item['discount'];
+                    $tax              = $item['tax'];
+                    $income_tax       = $item['income_tax'];
+                    $createdItem = Item::create([
+                        'reference'     => $reference,
+                        'reference_id'  => $reference_id,
+                        'parent_id'     => $parent_id,
+                        'type'          => $type,
+                        'name'          => $name,
+                        'description'   => $description,
+                        'base_price'    => $base_price,
+                        'quantity'      => $quantity,
+                        'discount'      => $discount,
+                        'tax'           => $tax,
+                        'income_tax'    => $income_tax
+                    ]);
+                }
             }
+            $sales_estimate->save();
         }
-        $sales_estimate->save();
 
         return response()->json([
             "status" => true,

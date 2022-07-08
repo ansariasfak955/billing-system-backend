@@ -4,17 +4,49 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\PurchaseReceipt;
+use App\Models\PurchaseTable;
+use App\Models\Item;
+use App\Models\ItemMeta;
+use Validator;
+use Storage;
 
 class PurchaseReceiptController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index( Request $request )
     {
-        //
+        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        if($request->purchase_id == NULL){
+            if(PurchaseReceipt::count() == 0){
+                return response()->json([
+                    "status" => false,
+                    "message" =>  "No data found"
+                ]);
+            }
+            return response()->json([
+                "status" => true,
+                "purchase_receipts" =>  PurchaseReceipt::get()
+            ]);
+        }
+
+        if(PurchaseReceipt::where('purchase_id', $request->purchase_id)->count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
+        return response()->json([
+            "status" => true,
+            "purchase_receipts" =>  PurchaseReceipt::where('purchase_id', $request->purchase_id)->get()
+        ]);
     }
 
     /**
@@ -35,7 +67,43 @@ class PurchaseReceiptController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'purchase_ids' => 'required',                  
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+        $receipt_table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($receipt_table);
+
+        $receiptIds = explode(',' , $request->purchase_ids);
+
+        foreach($receiptIds as $receiptId){
+
+            PurchaseReceipt::create([
+                'purchase_id' => $receiptId,
+                'concept' => $request->concept,
+                'payment_option' => $request->payment_option,
+                'bank_account' => $request->bank_account,
+                'payment_option' => $request->payment_option,
+                'payment_date' => $request->payment_date
+            ]);
+            PurchaseTable::where('id', $receiptId)->update([
+                'status' => 'paid'
+            ]);
+        }
+
+        return response()->json([
+            "status" => true,
+            "message" => "Purchase receipt created successfully"
+        ]);
     }
 
     /**
@@ -44,9 +112,23 @@ class PurchaseReceiptController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+        $receipt = PurchaseReceipt::where('id', $request->purchase_receipt)->first();
+
+        if($receipt ==  NULL){
+            return response()->json([
+                "status" => true,
+                "message" => "This entry does not exists"
+            ]);
+        }
+ 
+        return response()->json([
+            "status" => true,
+            "Purchase" => $receipt
+        ]);
     }
 
     /**
@@ -67,9 +149,19 @@ class PurchaseReceiptController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+        $receipt = PurchaseReceipt::where('id', $request->purchase_receipt)->first();
+        
+        $receipt->update($request->except('company_id', '_method'));
+
+
+        return response()->json([
+            "status" => true,
+            "Purchase" => $receipt
+        ]);
     }
 
     /**
@@ -78,8 +170,22 @@ class PurchaseReceiptController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+        $receipt = PurchaseReceipt::where('id', $request->purchase_receipt)->first();
+        if($receipt->delete()){
+
+            return response()->json([
+                    'status' => true,
+                    'message' => "Deleted successfully!"
+            ]);
+        } else {
+            return response()->json([
+                    'status' => false,
+                    'message' => "Retry deleting again! "
+            ]);
+        }
     }
 }

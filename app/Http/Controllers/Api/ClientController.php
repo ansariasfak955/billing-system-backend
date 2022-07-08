@@ -58,7 +58,8 @@ class ClientController extends Controller
             'tin' => "required|alpha_num|unique:$table",
             'bank_account_account' => "sometimes|nullable|unique:$table",
             'phone_1' => "sometimes|nullable|unique:$table",
-            'phone_2' => "sometimes|nullable|unique:$table"
+            'phone_2' => "sometimes|nullable|unique:$table",
+            'client_category' => "integer",
         ]);
 
         if ($validator->fails()) {

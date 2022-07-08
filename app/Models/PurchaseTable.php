@@ -8,4 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class PurchaseTable extends Model
 {
     use HasFactory;
+    protected $guarded = ['id' , 'created_at', 'updated_at'];
+    protected static $globalTable = 'supplier_tables' ;
+
+    public function getTable() {
+        return self::$globalTable ;
+    }
+    public static function setGlobalTable($table) {
+        self::$globalTable = $table;
+    }
+    public function items(){
+
+        return $this->hasMany(Item::class, 'parent_id');
+    }
+    public function itemMeta(){
+
+        return $this->hasMany(ItemMeta::class, 'parent_id');
+    }
 }

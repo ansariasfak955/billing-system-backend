@@ -20,6 +20,7 @@ class CreateSupplierContactsTable extends Migration
             $table->string('fax')->nullable();
             $table->string('email')->nullable();
             $table->string('position')->nullable();
+            $table->string('created_from')->nullable();
             $table->longText('comments')->nullable();
             $table->integer('supplier_id');
             $table->timestamps();

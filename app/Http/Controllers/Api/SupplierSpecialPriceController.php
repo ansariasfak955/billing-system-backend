@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\SupplierSpecialPrice;
 use Illuminate\Http\Request;
+use Validator;
 
 class SupplierSpecialPriceController extends Controller
 {
@@ -12,19 +14,46 @@ class SupplierSpecialPriceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
+   /**
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function index(Request $request)
     {
-        //
+        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_supplier_special_prices';
+        SupplierSpecialPrice::setGlobalTable($table);
+
+        if($request->supplier_id == NULL){
+            if(SupplierSpecialPrice::count() == 0){
+                return response()->json([
+                    "status" => false,
+                    "message" =>  "No data found"
+                ]);
+            }
+            return response()->json([
+                "status" => true,
+                "supplier_special_prices" =>  SupplierSpecialPrice::get()
+            ]);
+        }
+
+        if(SupplierSpecialPrice::where('supplier_id', $request->supplier_id)->count() == 0){
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found"
+            ]);
+        }
+        
+        return response()->json([
+            "status" => true,
+            "supplier_special_prices" =>  SupplierSpecialPrice::where('supplier_id', $request->supplier_id)->get()
+        ]);
     }
 
     /**
@@ -35,51 +64,115 @@ class SupplierSpecialPriceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'supplier_id' => 'required',
+            'product_id' => 'required'
+        ], [
+            'supplier_id.required' => 'Please select client ',
+            'product_id.required' => 'Please select product ',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+
+        $table = 'company_'.$request->company_id.'_supplier_special_prices';
+        SupplierSpecialPrice::setGlobalTable($table);
+        $supplier_special_price = SupplierSpecialPrice::create($request->except('company_id'));
+
+        return response()->json([
+            "status" => true,
+            "supplier_special_price" => $supplier_special_price,
+            "message" => "Client special price created successfully"
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\SupplierSpecialPrice  $SupplierSpecialPrice
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $table = 'company_'.$request->company_id.'_supplier_special_prices';
+        SupplierSpecialPrice::setGlobalTable($table);
+        $supplier_special_price = SupplierSpecialPrice::where('id', $request->supplier_special_price)->first();
+
+        if($supplier_special_price ==  NULL){
+            return response()->json([
+                "status" => true,
+                "message" => "This entry does not exists"
+            ]);
+        }
+ 
+        return response()->json([
+            "status" => true,
+            "supplier_special_price" => $supplier_special_price
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\SupplierSpecialPrice  $SupplierSpecialPrice
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_supplier_special_prices';
+        SupplierSpecialPrice::setGlobalTable($table);
+
+        $validator = Validator::make($request->all(),[
+            'supplier_id' => 'required',          
+            'product_id' => 'required'          
+        ], [
+            'supplier_id.required' => 'Please select client ',
+            'product_id.required' => 'Please select product ',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+        $supplier_special_price = SupplierSpecialPrice::where('id', $request->supplier_special_price)->first();
+        
+        $supplier_special_price->update($request->except('company_id', '_method'));
+
+        return response()->json([
+            "status" => true,
+            "supplier_special_price" => $supplier_special_price
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\SupplierSpecialPrice  $SupplierSpecialPrice
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $table = 'company_'.$request->company_id.'_supplier_special_prices';
+        SupplierSpecialPrice::setGlobalTable($table);
+        $supplier_special_price = SupplierSpecialPrice::where('id', $request->supplier_special_price)->first();
+        if($supplier_special_price->delete()){
+            return response()->json([
+                'status' => true,
+                'message' => "Client special price deleted successfully!"
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "Retry deleting again! "
+            ]);
+        }
     }
 }

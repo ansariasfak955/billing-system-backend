@@ -42,6 +42,8 @@ class Client extends Model
         "client_category",
     ];
 
+    public $appends = ['client_category_name'];
+
     protected static $globalTable = 'clients' ;
 
     public function getTable() {
@@ -49,5 +51,13 @@ class Client extends Model
     }
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
+    }
+    public function getClientCategoryNameAttribute(){
+        
+        if(isset( $this->attributes['client_category'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_category_name($company_id, $this->attributes['client_category']);
+        }
     }
 }

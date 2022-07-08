@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class PurchaseReceipt extends Model
 {
     use HasFactory;
+    
+    protected $guarded = ['id' , 'created_at', 'updated_at'];
+
+    protected static $globalTable = 'purchase_receipts' ;
+
+    public function getTable() {
+        return self::$globalTable ;
+    }
+    public static function setGlobalTable($table) {
+        self::$globalTable = $table;
+    }
 }

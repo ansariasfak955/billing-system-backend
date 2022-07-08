@@ -12,6 +12,7 @@ class SalesEstimate extends Model
 
     protected $fillable = [
     	'reference',
+    	'reference_number',
 		'date',
 		'client_id',
 		'status',

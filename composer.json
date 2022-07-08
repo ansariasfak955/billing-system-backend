@@ -6,8 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "barryvdh/laravel-dompdf": "^1.0",
         "fideloper/proxy": "^4.3",
-        "fruitcake/laravel-cors": "^3.0",
+        "fruitcake/laravel-cors": "^2.1",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/validation": "^3.1",
         "laravel/framework": "^8.75",
