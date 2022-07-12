@@ -133,7 +133,7 @@ class PurchaseTableController extends Controller
             $purchase_table->save();
             // dd($request->all());
             if($request->item){
-                $items = $request->all()['item'];
+                 $items = json_decode($request->item, true);
 
                 $meta_discount    = $request->meta_discount;
                 $meta_income_tax  = $request->meta_income_tax;

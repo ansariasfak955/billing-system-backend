@@ -58,7 +58,7 @@ class ItemController extends Controller
     {
     	$table = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($table);
-    	$items = $request->all()['item'];
+    	$items = json_decode($request->item, true);
     	foreach ($items as $item) {
     		$reference        = $item['reference'];
             if (isset($item['reference_id'])) {
@@ -145,7 +145,7 @@ class ItemController extends Controller
     {
     	$table = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($table);
-    	$items = $request->all()['item'];
+    	 $items = json_decode($request->item, true);
     	$item_ids = array_keys($items);
     	foreach ($items as $item_id => $item) {
     		Item::where('id', $item_id)->update([
