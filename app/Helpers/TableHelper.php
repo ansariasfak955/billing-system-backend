@@ -95,6 +95,8 @@ class TableHelper
                 $table->string('bank_account_format')->nullable();
                 $table->string('bank_account_account')->nullable();
                 $table->string('bank_account_bic')->nullable();
+                $table->string('ced_ruc')->nullable();
+                $table->string('swift_aba')->nullable();
                 $table->string('bank_account_name')->nullable();
                 $table->string('bank_account_description')->nullable();
                 $table->timestamps();
@@ -128,6 +130,15 @@ class TableHelper
                 $table->integer('client_id');
                 $table->string('fax')->nullable();
                 $table->string('position')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic client rate table */
+        if (!Schema::hasTable('company_'.$company_id.'_client_rates')) {
+            Schema::create('company_'.$company_id.'_client_rates', function (Blueprint $table) {
+                $table->id();
+                $table->float('rate',10,2)->nullable();
                 $table->timestamps();
             });
         }
@@ -225,6 +236,7 @@ class TableHelper
                 $table->longText('description')->nullable();
                 $table->string('created_by')->nullable();
                 $table->dateTime('date')->nullable();
+                $table->string('assigned_to')->nullable();
                 $table->dateTime('assigned_date')->nullable();
                 $table->string('invoice_to')->nullable();
                 $table->dateTime('closing_date')->nullable();

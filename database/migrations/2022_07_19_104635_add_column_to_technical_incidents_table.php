@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNameColumnToClientAttachmentsTable extends Migration
+class AddColumnToTechnicalIncidentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddNameColumnToClientAttachmentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('client_attachments', function (Blueprint $table) {
-            $table->string('name')->after('id')->nullable();
+        Schema::table('technical_incidents', function (Blueprint $table) {
+            $table->string('assigned_to')->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ class AddNameColumnToClientAttachmentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('client_attachments', function (Blueprint $table) {
+        Schema::table('technical_incidents', function (Blueprint $table) {
             //
         });
     }

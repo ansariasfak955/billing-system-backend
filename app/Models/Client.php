@@ -31,6 +31,7 @@ class Client extends Model
     	"payment_date",
     	"discount",
     	"rate",
+        "agent",
     	"currency",
     	"subject_to_vat",
     	"maximum_risk",
@@ -49,9 +50,15 @@ class Client extends Model
     public function getTable() {
         return self::$globalTable ;
     }
+
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+
+    public function clientAttachment(){
+        return $this->hasMany(Client::class, 'client_id');
+    }
+
     public function getClientCategoryNameAttribute(){
         
         if(isset( $this->attributes['client_category'] )){

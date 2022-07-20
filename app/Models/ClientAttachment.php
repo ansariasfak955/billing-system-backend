@@ -20,6 +20,7 @@ class ClientAttachment extends Model
     public function getTable() {
         return self::$globalTable ;
     }
+
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }

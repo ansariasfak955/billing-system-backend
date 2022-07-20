@@ -8,6 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
+    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount'];
+
+    public function getAmountAttribute(){
+        if(isset($this->attributes['price'])){
+
+            $basePrice = $this->attributes['price'];
+            $discount = isset($this->attributes['discount'])
+            ? $this->attributes['discount'] : 0;
+            $amount = ($basePrice - ($basePrice * $discount / 100)) ;
+            return $amount;
+        }
+    }
 
     protected $fillable = ['name', 'price', 'reference', 'reference_number', 'purchase_price', 'barcode', 'image', 'description', 'private_comments', 'created_from', 'purchase_margin', 'sales_margin', ' discount', 'minimum_price', 'tax', 'images'];
 
@@ -20,8 +32,6 @@ class Product extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
-
-    protected $appends = ['stock', 'virtual_stock', 'minimum_stock'];
 
     public function getImageAttribute()
     {

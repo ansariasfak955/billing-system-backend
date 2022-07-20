@@ -26,6 +26,27 @@ function get_category_name($company_id,$category_id)
     return \App\Models\ClientCategory::where('id', $category_id)->pluck('name')->first();
 }
 
+function get_client_name($company_id,$client_id)
+{
+    $table = 'company_'.$company_id.'_clients';
+    \App\Models\Client::setGlobalTable($table);
+    return \App\Models\Client::where('id', $client_id)->pluck('name')->first();
+}
+
+function get_asset_name($company_id,$asset_id)
+{
+    $table = 'company_'.$company_id.'_client_assets';
+    \App\Models\ClientAsset::setGlobalTable($table);
+    return \App\Models\ClientAsset::where('id', $asset_id)->pluck('name')->first();
+}
+
+function get_payment_option_name($company_id,$payment_option_id)
+{
+    $table = 'company_'.$company_id.'_payment_options';
+    \App\Models\PaymentOption::setGlobalTable($table);
+    return \App\Models\PaymentOption::where('id', $payment_option_id)->pluck('name')->first();
+}
+
 function get_company_country_name($company_id)
 {
 	if ($company_id != '') {

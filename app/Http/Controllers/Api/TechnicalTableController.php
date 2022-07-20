@@ -65,7 +65,9 @@ class TechnicalTableController extends Controller
      */
     public function store(Request $request)
     {
+        $table = 'company_'.$request->company_id.'_technical_tables';
         $validator = Validator::make($request->all(),[
+            'title' => "required|unique:$table",
             'client_id' => 'required',
             'reference' => 'required',
         ], [
@@ -81,34 +83,33 @@ class TechnicalTableController extends Controller
 
         //change format of date
         if($request->date){
-
             $request['date'] = get_formatted_datetime($request->date);
         }
 
         if($request->end_of_warranty){
-
             $request['end_of_warranty'] = get_formatted_datetime($request->end_of_warranty);
         }
 
         if($request->start_date){
-
             $request['start_date'] = get_formatted_datetime($request->start_date);
         }
 
         if($request->end_date){
-
             $request['end_date'] = get_formatted_datetime($request->end_date);
         }
-        if($request->due_date){
 
+        if($request->due_date){
             $request['due_date'] = get_formatted_datetime($request->due_date);
         }
-        if($request->valid_until){
 
+        if($request->email_sent_date){
+            $request['email_sent_date'] = get_formatted_datetime($request->email_sent_date);
+        }
+
+        if($request->valid_until){
             $request['valid_until'] = get_formatted_datetime($request->valid_until);
         }
 
-        $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
 
         $itemTable = 'company_'.$request->company_id.'_items';
@@ -270,6 +271,10 @@ class TechnicalTableController extends Controller
         if($request->due_date){
 
             $request['due_date'] = get_formatted_datetime($request->due_date);
+        }
+        if($request->email_sent_date){
+
+            $request['email_sent_date'] = get_formatted_datetime($request->email_sent_date);
         }
         if($request->valid_until){
 

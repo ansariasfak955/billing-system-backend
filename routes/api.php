@@ -218,6 +218,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('client-attachments', ClientAttachmentController::class);
             Route::apiResource('client-addresses', ClientAddressController::class);
             Route::apiResource('client-categories', ClientCategoryController::class);
+            Route::apiResource('client-rates', ClientRateController::class);
 
             /* Sales Routes */
             Route::apiResource('sales-estimates', SalesEstimateController::class);
@@ -246,6 +247,14 @@ Route::group(['namespace' => 'Api'], function() {
             
             /* Items */
             Route::apiResource('items', ItemController::class);
+            //payment option
+            Route::apiResource('payment-options', PaymentOptionController::class);
+
+            // Reports
+            Route::prefix('reports')->group(function () {
+                Route::get('invoices', 'ReportController@invoicing');
+            });
+
         });
 
         /* Activity Type */

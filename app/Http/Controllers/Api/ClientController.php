@@ -59,7 +59,7 @@ class ClientController extends Controller
             'bank_account_account' => "sometimes|nullable|unique:$table",
             'phone_1' => "sometimes|nullable|unique:$table",
             'phone_2' => "sometimes|nullable|unique:$table",
-            'client_category' => "integer",
+            'client_category' => "integer"
         ]);
 
         if ($validator->fails()) {
@@ -113,7 +113,11 @@ class ClientController extends Controller
     {
         $table = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($table);
-        $client = Client::where('id', $request->client)->first();
+
+        $clientTable = 'company_'.$request->company_id.'_client_attachments';
+        Client::setGlobalTable($itemTable);
+
+        $client = Client::with(['client_attachments'])->::where('id', $request->client)->first();
 
         if($client ==  NULL){
             return response()->json([

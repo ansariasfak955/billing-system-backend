@@ -20,6 +20,7 @@ class TechnicalIncident extends Model
 		'status_changed_by',
 		'description',
 		'created_by',
+		'assigned_to',
 		'date',
 		'assigned_date',
 		'invoice_to',

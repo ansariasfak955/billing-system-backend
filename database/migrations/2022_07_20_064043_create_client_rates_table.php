@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNameColumnToClientAttachmentsTable extends Migration
+class CreateClientRatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddNameColumnToClientAttachmentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('client_attachments', function (Blueprint $table) {
-            $table->string('name')->after('id')->nullable();
+        Schema::create('client_rates', function (Blueprint $table) {
+            $table->id();
+            $table->float('rate',10,2)->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AddNameColumnToClientAttachmentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('client_attachments', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('client_rates');
     }
 }

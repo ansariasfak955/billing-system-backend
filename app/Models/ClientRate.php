@@ -5,19 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentOption extends Model
+class ClientRate extends Model
 {
     use HasFactory;
+    protected $guarded = ['id' , 'created_at', 'updated_at'];
 
-    protected $fillable = [
-        "name",
-        "by_default",
-        "link_bank_account",
-        "description"
-    ];
-
-    protected static $globalTable = 'payment_options' ;
-
+    protected static $globalTable = 'client_rates' ;
+    
     public function getTable() {
         return self::$globalTable ;
     }

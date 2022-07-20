@@ -86,6 +86,10 @@ class TechnicalIncidentController extends Controller
 
             $request['due_date'] = get_formatted_datetime($request->due_date);
         }
+        if($request->closing_date){
+
+            $request['closing_date'] = get_formatted_datetime($request->closing_date);
+        }
         if($request->valid_until){
 
             $request['valid_until'] = get_formatted_datetime($request->valid_until);

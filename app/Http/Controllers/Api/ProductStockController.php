@@ -25,7 +25,7 @@ class ProductStockController extends Controller
 
         $table = 'company_'.$request->company_id.'_product_stocks';
         ProductStock::setGlobalTable($table);
-        $product_stock = ProductStock::where('product_id', $request->product_id)->first();
+        $product_stock = ProductStock::where('product_id', $request->product_id)->get();
 
         if ($product_stock->count() == 0) {
             return response()->json([
@@ -64,11 +64,10 @@ class ProductStockController extends Controller
         $table = 'company_'.$request->company_id.'_product_stocks';
         ProductStock::setGlobalTable($table);
         $product_stock = ProductStock::where('product_id', $request->product_id)->first();
-        if($product_stock == NULL) {
-            $product_stock = ProductStock::create($request->except('company_id'));
-            $product_stock->warehouse = 'Main Warehouse';
-            $product_stock->save();
-        }
+        
+        $product_stock = ProductStock::create($request->except('company_id'));
+        
+        
 
         return response()->json([
             "status" => true,
@@ -85,7 +84,21 @@ class ProductStockController extends Controller
      */
     public function show(Request $request)
     {
-        
+        $table = 'company_'.$request->company_id.'_product_stocks';
+        ProductStock::setGlobalTable($table);
+        $product_stock = ProductStock::where('id', $request->product_stock)->first();
+
+        if($product_stock ==  NULL){
+            return response()->json([
+                "status" => true,
+                "message" => "This entry does not exists"
+            ]);
+        }
+ 
+        return response()->json([
+            "status" => true,
+            "product_stock" => $product_stock
+        ]);
     }
 
     /**
@@ -127,8 +140,22 @@ class ProductStockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request)
     {
-        
+        $table = 'company_'.$request->company_id.'_product_stocks';
+        ProductStock::setGlobalTable($table);
+        $product_stock = ProductStock::where('id', $request->product_stock)->first();
+        if($product_stock){
+            $product_stock->delete();
+            return response()->json([
+                'status' => true,
+                'message' => "Product Stock deleted successfully!"
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "Retry deleting again! "
+            ]);
+        } 
     }
 }

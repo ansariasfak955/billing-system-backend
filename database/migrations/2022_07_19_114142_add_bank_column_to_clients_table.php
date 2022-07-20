@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNameColumnToClientAttachmentsTable extends Migration
+class AddBankColumnToClientsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddNameColumnToClientAttachmentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('client_attachments', function (Blueprint $table) {
-            $table->string('name')->after('id')->nullable();
+        Schema::table('clients', function (Blueprint $table) {
+            $table->string('ced_ruc')->nullable();
+            $table->string('swift_aba')->nullable();
         });
     }
 
@@ -25,7 +26,7 @@ class AddNameColumnToClientAttachmentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('client_attachments', function (Blueprint $table) {
+        Schema::table('clients', function (Blueprint $table) {
             //
         });
     }
