@@ -138,7 +138,7 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_client_rates')) {
             Schema::create('company_'.$company_id.'_client_rates', function (Blueprint $table) {
                 $table->id();
-                $table->float('rate',10,2)->nullable();
+                $table->float('rate' , 10, 2)->nullable();
                 $table->timestamps();
             });
         }
@@ -832,6 +832,8 @@ class TableHelper
                 $table->string('name')->nullable();
                 $table->enum('is_default', ['0', '1'])->default('0');
                 $table->longText('description')->nullable();
+                $table->string('ced_ruc')->nullable();
+                $table->string('swift_aba')->nullable();
                 $table->timestamps();
             });
         }

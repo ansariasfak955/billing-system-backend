@@ -115,6 +115,18 @@ class SettingController extends Controller
             'from_name'       => $user->smtp_sender_name ? $user->smtp_sender_name : 'test',
         ];
 
+        if( $request->reply_to ){
+            $configuration['from_email'] = $request->reply_to;
+        }
+
+        if( $request->send_to ){
+            SendTestMailJob::dispatch($configuration, $request->send_to, new SendTestMail($configuration, $user->email, $company, $settings));
+        }
+
+        if( $request->send_receipt_to ){
+            SendTestMailJob::dispatch($configuration, $request->send_receipts_to, new SendTestMail($configuration, $user->email, $company, $settings));
+        }       
+
         SendTestMailJob::dispatch($configuration, $company->email, new SendTestMail($configuration, $user->email, $company, $settings));
 
         return response()->json([

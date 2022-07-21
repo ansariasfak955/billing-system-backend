@@ -41,6 +41,8 @@ class Client extends Model
     	"bank_account_name",
     	"bank_account_description",
         "client_category",
+        "swift_aba",
+        "ced_ruc",
     ];
 
     public $appends = ['client_category_name'];

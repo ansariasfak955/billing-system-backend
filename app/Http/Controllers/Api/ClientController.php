@@ -65,7 +65,7 @@ class ClientController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status'  => false,
-                'message' => $validator->errors()->first(),
+                'message' => $validator->errors()->first()
             ]);
         }
 
@@ -117,7 +117,7 @@ class ClientController extends Controller
         $clientTable = 'company_'.$request->company_id.'_client_attachments';
         Client::setGlobalTable($itemTable);
 
-        $client = Client::with(['client_attachments'])->::where('id', $request->client)->first();
+        $client = Client::with(['client_attachments'])->where('id', $request->client)->first();
 
         if($client ==  NULL){
             return response()->json([

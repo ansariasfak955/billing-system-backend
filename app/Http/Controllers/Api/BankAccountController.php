@@ -110,13 +110,13 @@ class BankAccountController extends Controller
         $bank_account = $bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->where('id', $request->bank_account)->first();
         if($bank_account->delete()){
             return response()->json([
-                    'status' => true,
-                    'message' => "Bank account deleted successfully!"
+                'status' => true,
+                'message' => "Bank account deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => false,
-                    'message' => "Retry deleting again! "
+                'status' => false,
+                'message' => "Retry deleting again! "
             ]);
         }
     }

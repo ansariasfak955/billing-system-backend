@@ -9,7 +9,7 @@ class BankAccount extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['format', 'account', 'bic_swift', 'name', 'description'];
+    protected $fillable = ['format', 'account', 'bic_swift', 'name', 'description', 'ced_ruc', 'swift_aba'];
 
     public function getIsDefaultAttribute()
     {

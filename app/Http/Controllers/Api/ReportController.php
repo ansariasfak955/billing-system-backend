@@ -22,22 +22,7 @@ class ReportController extends Controller
 
     public function invoicing(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTable);
-
-            //arry = [];
-
-            //foreach(){
-                //$data['clt_id'] = $clt_id,
-                //InvoiceTable::with(['items', 'itemMeta'])->where('client_id',$client_id)->get(); 
-                //$sum = 0;
-                //foreach($invoiceDatas as $invoiceData){
-                    //$sum = $sum+$invoiceData->items()->sum('base_price');
-                //}
-            //$data['sum'] = $sum,
-            //arry[] = $data;
-            //}
-
-        }
+        Client::setGlobalTable($clientsTables);
 
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($invoiceTable);
@@ -50,11 +35,12 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        $invoiceDatas = InvoiceTable::with(['items', 'itemMeta'])->whereIn('client_id',$client_ids)->get(); 
-
+        $invoiceDatas = InvoiceTable::with(['items', 'itemMeta'])->where('client_id',$client_ids)->get(); 
+    
         $sum = 0;
+
         foreach($invoiceDatas as $invoiceData){
-            $sum = $sum + $invoiceData->items()->sum('base_price');
+           $sum = $sum + $invoiceData->items()->sum('base_price');
         }
 
         return $sum;

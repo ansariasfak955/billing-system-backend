@@ -69,8 +69,10 @@ class ClientRateController extends Controller
      */
     public function show(Request $request)
     {
-        $client_rate =  new ClientRate;
-        $client_rate = $client_rate->setTable('company_'.$request->company_id.'_client_rates')->where('id', $request->client_rate)->first();
+        $table = 'company_'.$request->company_id.'_client_rates';
+        ClientRate::setGlobalTable($table);
+       
+        $client_rate = ClientRate::where('id', $request->client_rate)->first();
  
         return response()->json([
             "status" => true,
