@@ -366,7 +366,7 @@ class TableHelper
         /* Creating dynamic purchase table */
         if (!Schema::hasTable('company_'.$company_id.'_purchase_tables')) {
             Schema::create('company_'.$company_id.'_purchase_tables', function (Blueprint $table) {
-                $table->id();
+            $table->id();
             $table->string('reference')->nullable();
             $table->string('reference_number')->nullable();
             $table->string('date')->nullable();
@@ -650,6 +650,19 @@ class TableHelper
                 $table->string('client_id')->nullable();
                 $table->string('document')->nullable();
                 $table->longText('description')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic Product attachments table */
+        if (!Schema::hasTable('company_'.$company_id.'_product_attachments')) {
+            Schema::create('company_'.$company_id.'_product_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('product_id')->nullable();
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->string('type')->nullable();
                 $table->timestamps();
             });
         }

@@ -189,6 +189,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('product_categories', ProductCategoryController::class);
             Route::apiResource('products', ProductController::class);
             Route::apiResource('product-stock', ProductStockController::class);
+            Route::apiResource('product-attachments', ProductAttachmentController::class);
             Route::apiResource('roles', RoleController::class);
             Route::apiResource('custom_states', CustomStateController::class);
             Route::apiResource('my_templates', MyTemplateController::class);
@@ -253,6 +254,8 @@ Route::group(['namespace' => 'Api'], function() {
             // Reports
             Route::prefix('reports')->group(function () {
                 Route::get('invoices', 'ReportController@invoicing');
+                Route::get('technical', 'ReportController@technicalService');
+                Route::get('sales', 'ReportController@sales');
             });
 
         });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\ClientAttachment;
 use App\Models\ClientSpecialPrice;
 use Illuminate\Http\Request;
 use Validator;
@@ -115,7 +116,7 @@ class ClientController extends Controller
         Client::setGlobalTable($table);
 
         $clientTable = 'company_'.$request->company_id.'_client_attachments';
-        Client::setGlobalTable($itemTable);
+        ClientAttachment::setGlobalTable($clientTable);
 
         $client = Client::with(['client_attachments'])->where('id', $request->client)->first();
 

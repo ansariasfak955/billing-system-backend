@@ -22,7 +22,7 @@ class ReportController extends Controller
 
     public function invoicing(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTables);
+        Client::setGlobalTable($clientsTables); 
 
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($invoiceTable);
@@ -34,33 +34,50 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-
-        $invoiceDatas = InvoiceTable::with(['items', 'itemMeta'])->where('client_id',$client_ids)->get(); 
-    
-        $sum = 0;
-
-        foreach($invoiceDatas as $invoiceData){
-           $sum = $sum + $invoiceData->items()->sum('base_price');
+        $data = [];
+        foreach($client_ids as $client_id){
+            $invoiceDatas = InvoiceTable::with(['items', 'itemMeta'])->where('client_id', $client_id)->get();
+            $sum = 0;
+            $arr['client_id'] = $client_id;
+            foreach($invoiceDatas as $invoiceData){
+               $sum = $sum + $invoiceData->items()->sum('base_price');
+            }
+            $arr['sum'] = $sum;
+            $data[] = $arr;
         }
 
-        return $sum;
-
-        //return response()->json([
-            //"status" => true,
-            //"data" =>  $sum
-        //]);
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
     }
     
     public function cashFlow(){
 
     }
 
-    public function sales(){
+    public function sales( Request $request ){
+        $salesTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($salesTables); 
 
+        $data['pending'] = PurchaseTable::where('status', 'pending')->count();
+        $data['closed'] = PurchaseTable::where('status', 'closed')->count();
+        $data['resolved'] = PurchaseTable::where('status', 'resolved')->count();
+        $data['refused'] = PurchaseTable::where('status', 'refused')->count();
+    
+        return $data;
     }
 
-    public function technicalService(){
+    public function technicalService( Request $request ){
+        $technicalTables = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($technicalTables); 
 
+        $data['pending'] = TechnicalTable::where('status', 'pending')->count();
+        $data['closed'] = TechnicalTable::where('status', 'closed')->count();
+        $data['resolved'] = TechnicalTable::where('status', 'resolved')->count();
+        $data['refused'] = TechnicalTable::where('status', 'refused')->count();
+    
+        return $data;
     }
 
     public function purchases(){

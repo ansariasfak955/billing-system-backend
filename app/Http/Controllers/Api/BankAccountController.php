@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BankAccount;
 use Illuminate\Http\Request;
+use Validator;
 
 class BankAccountController extends Controller
 {
@@ -44,6 +45,17 @@ class BankAccountController extends Controller
      */
     public function store(Request $request)
     {
+        $table = 'company_'.$request->company_id.'_bank_accounts';
+        $validator = Validator::make($request->all(), [
+            'account' => "sometimes|nullable|unique:$table",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
         $bank_account =  new BankAccount;
         $bank_account = $bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->create($request->except('company_id'));
 

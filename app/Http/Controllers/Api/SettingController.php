@@ -124,7 +124,7 @@ class SettingController extends Controller
         }
 
         if( $request->send_receipt_to ){
-            SendTestMailJob::dispatch($configuration, $request->send_receipts_to, new SendTestMail($configuration, $user->email, $company, $settings));
+            SendTestMailJob::dispatch($configuration, $request->send_receipt_to, new SendTestMail($configuration, $user->email, $company, $settings));
         }       
 
         SendTestMailJob::dispatch($configuration, $company->email, new SendTestMail($configuration, $user->email, $company, $settings));

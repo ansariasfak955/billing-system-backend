@@ -26,9 +26,14 @@ class ProductController extends Controller
 
         $table = 'company_'.$request->company_id.'_products';
         Product::setGlobalTable($table);
-        $products = Product::get();
 
-        if ($products->count() == 0) {
+        if ( $request->type ){
+            $products = Product::whereDate('created_at' ,'<', date('Y-m-d'))->get();
+        }else {
+            $products = Product::get();
+        }
+    
+        if ( $products->count() == 0 ) {
             return response()->json([
                 "status" => false,
                 "message" => "No product found!"

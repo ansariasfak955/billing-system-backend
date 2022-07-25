@@ -57,8 +57,8 @@ class Client extends Model
         self::$globalTable = $table;
     }
 
-    public function clientAttachment(){
-        return $this->hasMany(Client::class, 'client_id');
+    public function client_attachments(){
+        return $this->hasMany(ClientAttachment::class, 'client_id');
     }
 
     public function getClientCategoryNameAttribute(){

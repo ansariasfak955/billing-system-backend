@@ -33,6 +33,14 @@ class Product extends Model
         self::$globalTable = $table;
     }
 
+    public function product_attachments(){
+        return $this->hasMany(ProductAttachment::class, 'product_id')->where('type' , attachment);
+    }
+
+    public function product_images(){
+        return $this->hasMany(ProductAttachment::class, 'product_id')->where('type' , image);
+    }
+    
     public function getImageAttribute()
     {
         if ($this->attributes['image']) {
