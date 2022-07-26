@@ -49,6 +49,7 @@ class PaymentOptionController extends Controller
      */
     public function store(Request $request)
     {
+       
         $table = 'company_'.$request->company_id.'_payment_options';
         $validator = Validator::make($request->all(), [
             'name'     => "required",

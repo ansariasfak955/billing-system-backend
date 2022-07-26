@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            {!! Form::label('company_name', 'Company Name', ['class' => 'form-label']) !!}
-            {!! Form::text('company_name', isset($company->name) ? $company->name : Request::old('name'), ['class' => 'form-control', 'placeholder' => 'Enter Company Name']) !!}
+            {!! Form::label('commercial_name', 'Company Name', ['class' => 'form-label']) !!}
+            {!! Form::text('commercial_name', isset($company->commercial_name) ? $company->commercial_name : Request::old('commercial_name'), ['class' => 'form-control', 'placeholder' => 'Enter Company Name']) !!}
         </div>
         <div class="form-group py-2">
             {!! Form::label('name', 'Name', ['class' => 'form-label']) !!}

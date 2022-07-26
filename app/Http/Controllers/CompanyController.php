@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\Role;
+use App\Helpers\TableHelper;
 use App\DataTables\CompanyDataTable;
 use Illuminate\Http\Request;
-use Validator;
 use Illuminate\Support\Facades\Hash;
-use App\Helpers\TableHelper;
+use Validator;
 use DB;
 
 class CompanyController extends Controller
@@ -44,6 +44,7 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
+    //dd($request->all());
         $validator = Validator::make($request->all(),[
             'name'  => 'required',
             'email' => 'email|unique:companies',

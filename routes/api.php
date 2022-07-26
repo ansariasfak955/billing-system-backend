@@ -248,14 +248,19 @@ Route::group(['namespace' => 'Api'], function() {
             
             /* Items */
             Route::apiResource('items', ItemController::class);
+            
             //payment option
             Route::apiResource('payment-options', PaymentOptionController::class);
+
+            // Related
+            Route::get('related', 'RelatedController@related');
 
             // Reports
             Route::prefix('reports')->group(function () {
                 Route::get('invoices', 'ReportController@invoicing');
                 Route::get('technical', 'ReportController@technicalService');
                 Route::get('sales', 'ReportController@sales');
+                Route::get('overview', 'ReportController@overview');
             });
 
         });

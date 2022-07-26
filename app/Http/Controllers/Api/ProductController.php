@@ -28,7 +28,7 @@ class ProductController extends Controller
         Product::setGlobalTable($table);
 
         if ( $request->type ){
-            $products = Product::whereDate('created_at' ,'<', date('Y-m-d'))->get();
+            $products = Product::whereDate('created_at' ,'<=', date('Y-m-d'))->get();
         }else {
             $products = Product::get();
         }

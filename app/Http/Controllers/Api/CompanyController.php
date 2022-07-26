@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Helpers\TableHelper;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use Auth;
 use Validator;
 use DB;
@@ -48,6 +49,7 @@ class CompanyController extends Controller
 
         $validator = Validator::make($request->all(),[
             'name' => 'required|unique:companies',
+            'commercial_name' => 'required|unique:companies',
             'phone' => 'required',
             'tin' => 'required|alpha_num',  
         ]);
