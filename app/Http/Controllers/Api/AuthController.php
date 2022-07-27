@@ -128,6 +128,7 @@ class AuthController extends Controller
             'decimal_separator' => '.',
             'pdf_file_download_date_format' => 'yyyy-mm-dd',
             'name' => $request->company_name,
+            'commercial_name' => $request->company_name
         ]);
 
         TableHelper::createTables($company->id);
@@ -140,7 +141,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'mobile_number' => $request->mobile_number,
             'password' => bcrypt($request->password),
-            'country' => $request->country
+            'country' => $request->country,
         ]);
         $company->where('id', $company->id)->update([
             'user_id' => $user->id,

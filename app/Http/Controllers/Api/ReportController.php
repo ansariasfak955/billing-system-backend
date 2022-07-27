@@ -12,52 +12,55 @@ use App\Models\SalesAttachment;
 use App\Models\SalesEstimate;
 use App\Models\PurchaseTable;
 use App\Models\TechnicalTable;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    // public function overview(Request $request){
-    //     $clientsTables = 'company_'.$request->company_id.'_clients';
-    //     Client::setGlobalTable($clientsTables); 
+    public function overview(Request $request){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables); 
 
-    //     $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
-    //     PurchaseTable::setGlobalTable($purchaseTables); 
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
 
-    //     $itemTable = 'company_'.$request->company_id.'_items';
-    //     Item::setGlobalTable($itemTable);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
 
-    //     $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-    //     ItemMeta::setGlobalTable($item_meta_table);
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
 
-    //     $paids = PurchaseTable::where('status', 'paid')->get();
-    //     $unpaids = PurchaseTable::where('status', 'unpaid')->get();
-    //     $invoiceds = PurchaseTable::where('status', 'invoiced')->get();
-        
-    //     $data = [];
-    //     $client_ids  = Client::pluck('id')->toArray();
-        
-    //     foreach($paids as $paid){
-    //         $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->where('id', $client_id)->get();
-    //         $sum = 0;
-    //         $arr['client_id'] = $client_id;
-    //         foreach($purchaseDatas as $purchaseData){
-    //            $sum = $sum + $purchaseData->items()->sum('base_price');
-    //         }
-    //         $arr['sum'] = $sum;
-    //         $data[] = $arr;
-    //     }
+        $paids = PurchaseTable::where('status', 'paid')->get();
+        $unpaids = PurchaseTable::where('status', 'unpaid')->get();
 
-    //     foreach($unpaids as $unpaid){
-    //         $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->where('id', $client_id)->get();
-    //         $sum = 0;
-    //         $arr['client_id'] = $client_id;
-    //         foreach($purchaseDatas as $purchaseData){
-    //            $sum = $sum + $purchaseData->items()->sum('base_price');
-    //         }
-    //         $arr['sum'] = $sum;
-    //         $data[] = $arr;
-    //     }
-    // }
+        $paid_sum = 0;
+        $unpaid_sum = 0;
+        $data = [];
+        $client_id  = Client::pluck('id')->toArray();
+        foreach($paids as $paid){
+            $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->where('supplier_id', $client_id)->get();
+            foreach($purchaseDatas as $purchaseData){
+               $paid_sum = $paid_sum + $purchaseData->items()->sum('base_price');
+            }
+            $arr['status'] = 'paid';
+            $arr['sum'] = $paid_sum;
+        }
+        $data[] = $arr;
+        foreach($unpaids as $unpaid){
+            $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->where('supplier_id', $client_id)->get();
+            foreach($purchaseDatas as $purchaseData){
+               $unpaid_sum = $unpaid_sum + $purchaseData->items()->sum('base_price');
+            }
+            $arr['status'] = 'unpaid';
+            $arr['sum'] = $unpaid_sum;
+        }
+        $data[] = $arr;
+
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+    }
 
     public function invoicing(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
@@ -73,7 +76,7 @@ class ReportController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
         
         if($request->type == "agent"){
-            $agent_ids  = InvoiceTable::pluck('agent_id')->toArray();        
+            $agent_ids  = InvoiceTable::pluck('agent_id')->groupBy('agent_id')->toArray();        
             $client_ids = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
         }else{
             $client_ids  = Client::pluck('id')->toArray();
@@ -144,7 +147,6 @@ class ReportController extends Controller
             "status" => true,
             "data" =>  $data
         ]);
-
     }
 
     public function technicalService( Request $request ){
@@ -193,15 +195,54 @@ class ReportController extends Controller
         ]);
     }
 
-    public function purchases(){
+    public function purchases( Request $request ){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
 
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        if($request->type == "supplier"){
+            $supplierArr  = PurchaseTable::pluck('supplier_id')->toArray();        
+            $supplier_ids = Supplier::whereIn('id', $supplierArr)->pluck('id')->toArray();
+            $data = [];
+            foreach($supplier_ids as $supplier_id){
+                $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->where('supplier_id', $supplier_id)->get();
+                $sum = 0;
+                $arr['supplier_id'] = $supplier_id;
+                foreach($purchaseDatas as $purchaseData){
+                    $sum = $sum + $purchaseData->items()->sum('base_price');
+                }
+                $arr['sum'] = $sum;
+                $data[] = $arr;
+            }
+
+        }else{
+            $data = [];
+            $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->get();
+            
+            $sum = 0;
+            foreach($purchaseDatas as $purchaseData){
+                $arr['name'] = $purchaseData->title;
+                $sum = $sum + $purchaseData->items()->sum('base_price');
+                $arr['sum'] = $sum;
+            }
+            $data[] = $arr;
+        }
+        
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
     }
 
     public function stockValuation(){
-
-    }
-
-    public function ofEvolution(){
 
     }
 

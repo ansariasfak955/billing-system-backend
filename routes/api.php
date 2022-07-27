@@ -261,6 +261,7 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('technical', 'ReportController@technicalService');
                 Route::get('sales', 'ReportController@sales');
                 Route::get('overview', 'ReportController@overview');
+                Route::get('purchases', 'ReportController@purchases');
             });
 
         });
