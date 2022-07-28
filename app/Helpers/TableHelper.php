@@ -977,6 +977,12 @@ class TableHelper
                 $table->increments('id');
                 $table->string('name');
                 $table->longText('description')->nullable();
+                $table->float('purchase_price')->nullable();
+                $table->float('sales_price')->nullable();
+                $table->string('purchase_margin')->nullable();
+                $table->string('sales_margin')->nullable();
+                $table->float('discount')->nullable();
+                $table->float('special_price')->nullable();
                 $table->timestamps();
             });
         }

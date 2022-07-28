@@ -9,7 +9,16 @@ class Rate extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = [
+        'name',
+        'description',
+        "purchase_price",
+		"sales_price",
+		"purchase_margin",
+		"sales_margin",
+		"discount",
+		"special_price"
+    ];
 
     protected static $globalTable = 'rates' ;
 

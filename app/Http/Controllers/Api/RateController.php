@@ -98,7 +98,6 @@ class RateController extends Controller
      */
     public function update(Request $request)
     {
-        
         Rate::setGlobalTable('company_'.$request->company_id.'_rates');
         $validator = Validator::make($request->all(),[
             'name' => 'required'          
@@ -132,13 +131,13 @@ class RateController extends Controller
         $rate = Rate::where('id', $request->rate)->first();
         if($rate->delete()){
             return response()->json([
-                    'status' => true,
-                    'message' => "Rate deleted successfully!"
+                'status' => true,
+                'message' => "Rate deleted successfully!"
             ]);
         } else {
             return response()->json([
-                    'status' => false,
-                    'message' => "Retry deleting again! "
+                'status' => false,
+                'message' => "Retry deleting again! "
             ]);
         }
     }

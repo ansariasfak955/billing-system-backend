@@ -47,7 +47,6 @@ class MyTemplateController extends Controller
      */
     public function store(Request $request)
     {
-        
         $validator = Validator::make($request->all(),[
             'name' => 'required',          
             'document_type' => 'required',          
@@ -107,7 +106,7 @@ class MyTemplateController extends Controller
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
         MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
         $template = MyTemplate::where('id', $request->my_template)->first();
-
+        
         $data = [];
         foreach($template->metas as $meta){
             $data[$meta->option_name] =  $meta->option_value;

@@ -99,10 +99,6 @@ class ReportController extends Controller
             "data" =>  $data
         ]);
     }
-    
-    public function cashFlow(){
-
-    }
 
     public function sales( Request $request ){
         $salesTables = 'company_'.$request->company_id.'_purchase_tables';
@@ -240,13 +236,5 @@ class ReportController extends Controller
             "status" => true,
             "data" =>  $data
         ]);
-    }
-
-    public function stockValuation(){
-
-    }
-
-    public function taxSummary(){
-
     }
 }
