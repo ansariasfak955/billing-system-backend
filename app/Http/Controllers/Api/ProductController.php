@@ -71,6 +71,7 @@ class ProductController extends Controller
         Product::setGlobalTable($table);
 
         $product = Product::create($request->except('image', 'company_id', 'images'));
+        // dd($request->all());
         if ($request->reference_number == '') {
             $product->reference_number = get_product_latest_ref_number($request->company_id, $request->reference, 1);
         } else {

@@ -111,7 +111,8 @@ class RateController extends Controller
         }
         $rate = Rate::where('id', $request->rate)->first();
         
-        $rate->update($request->except('company_id', '_method'));
+        $updateRate = $rate->update($request->except('company_id', '_method'));
+        // dd($updateRate);
 
         return response()->json([
             "status" => true,

@@ -21,7 +21,7 @@ class Product extends Model
         }
     }
 
-    protected $fillable = ['name', 'price', 'reference', 'reference_number', 'purchase_price', 'barcode', 'image', 'description', 'private_comments', 'created_from', 'purchase_margin', 'sales_margin', ' discount', 'minimum_price', 'tax', 'images'];
+    protected $fillable = ['name', 'price', 'reference', 'reference_number', 'purchase_price', 'barcode', 'image', 'description', 'private_comments', 'created_from', 'purchase_margin', 'sales_margin', 'discount', 'minimum_price', 'tax', 'images'];
 
     protected static $globalTable = 'products';
 
