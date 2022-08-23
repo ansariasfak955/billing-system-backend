@@ -147,17 +147,24 @@ class InvoiceAttachmentController extends Controller
         $table = 'company_'.$request->company_id.'_invoice_attachments';
         InvoiceAttachment::setGlobalTable($table);
 
-        $validator = Validator::make($request->all(),[        
-            'document' => 'required'          
-        ]);
+        // $validator = Validator::make($request->all(),[        
+        //     'document' => 'required'          
+        // ]);
 
-        if ($validator->fails()) {
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         "status" => false,
+        //         "message" => $validator->errors()->first()
+        //     ]);
+        // }
+        $invoice = InvoiceAttachment::find($request->invoice_attachment);
+
+        if(!$invoice){
             return response()->json([
                 "status" => false,
-                "message" => $validator->errors()->first()
+                "message" => 'Not found!'
             ]);
         }
-        $invoice = InvoiceAttachment::where('id', $request->invoice_attachment)->first();
         
         $invoice->update($request->except('company_id', '_method', 'document'));
 
