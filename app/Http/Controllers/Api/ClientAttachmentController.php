@@ -130,22 +130,28 @@ class ClientAttachmentController extends Controller
         $table = 'company_'.$request->company_id.'_client_attachments';
         ClientAttachment::setGlobalTable($table);
 
-        $validator = Validator::make($request->all(),[
-            'client_id' => 'required',          
-            // 'document' => 'required'          
-        ], [
-            'client_id.required' => 'Please select client. ',
-            // 'document.required' => 'Please select document. ',
-        ]);
+        // $validator = Validator::make($request->all(),[
+        //     'client_id' => 'required',          
+        //     // 'document' => 'required'          
+        // ], [
+        //     'client_id.required' => 'Please select client. ',
+        //     // 'document.required' => 'Please select document. ',
+        // ]);
 
-        if ($validator->fails()) {
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         "status" => false,
+        //         "message" => $validator->errors()->first()
+        //     ]);
+        // }
+        $client_attachment = ClientAttachment::find($request->client_attachment);
+        
+        if(!$client_attachment){
             return response()->json([
                 "status" => false,
-                "message" => $validator->errors()->first()
+                "message" => "Attachment not found!"
             ]);
         }
-        $client_attachment = ClientAttachment::where('id', $request->client_attachment)->first();
-        
         $client_attachment->update($request->except('company_id', '_method', 'document'));
 
         if($request->document != NULL){
@@ -173,7 +179,16 @@ class ClientAttachmentController extends Controller
     {
         $table = 'company_'.$request->company_id.'_client_attachments';
         ClientAttachment::setGlobalTable($table);
-        $client_attachment = ClientAttachment::where('id', $request->client_attachment)->first();
+
+        $client_attachment = ClientAttachment::find($request->client_attachment);
+        
+        if(!$client_attachment){
+            return response()->json([
+                "status" => false,
+                "message" => "Attachment not found!"
+            ]);
+        }
+        
         if($client_attachment->delete()){
             return response()->json([
                     'status' => true,

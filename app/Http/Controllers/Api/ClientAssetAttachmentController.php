@@ -150,18 +150,26 @@ class ClientAssetAttachmentController extends Controller
         $table = 'company_'.$request->company_id.'_client_asset_attachments';
         ClientAssetAttachment::setGlobalTable($table);
 
-        $validator = Validator::make($request->all(),[        
-            'document' => 'required'          
-        ]);
+        // $validator = Validator::make($request->all(),[        
+        //     'document' => 'required'          
+        // ]);
 
-        if ($validator->fails()) {
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         "status" => false,
+        //         "message" => $validator->errors()->first()
+        //     ]);
+        // }
+
+        $client_attachment = ClientAssetAttachment::find($request->client_asset_attachment);
+
+        if(!$client_attachment){
             return response()->json([
                 "status" => false,
-                "message" => $validator->errors()->first()
+                "message" => 'Not found'
             ]);
         }
-        $client_attachment = ClientAssetAttachment::where('id', $request->client_asset_attachment)->first();
-        
+
         $client_attachment->update($request->except('company_id', '_method', 'document'));
 
         if($request->document != NULL){
