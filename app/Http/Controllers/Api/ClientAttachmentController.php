@@ -130,20 +130,6 @@ class ClientAttachmentController extends Controller
         $table = 'company_'.$request->company_id.'_client_attachments';
         ClientAttachment::setGlobalTable($table);
 
-        // $validator = Validator::make($request->all(),[
-        //     'client_id' => 'required',          
-        //     // 'document' => 'required'          
-        // ], [
-        //     'client_id.required' => 'Please select client. ',
-        //     // 'document.required' => 'Please select document. ',
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         "status" => false,
-        //         "message" => $validator->errors()->first()
-        //     ]);
-        // }
         $client_attachment = ClientAttachment::find($request->client_attachment);
         
         if(!$client_attachment){
@@ -162,7 +148,6 @@ class ClientAttachmentController extends Controller
             $client_attachment->image = $originName;
             $client_attachment->save();
         }
-
         return response()->json([
             "status" => true,
             "client_attachment" => $client_attachment
