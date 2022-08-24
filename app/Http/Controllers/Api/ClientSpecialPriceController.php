@@ -24,6 +24,7 @@ class ClientSpecialPriceController extends Controller
         }
         $table = 'company_'.$request->company_id.'_client_special_prices';
         ClientSpecialPrice::setGlobalTable($table);
+
         $query = ClientSpecialPrice::query();
         if($request->client_id ){
             $query->where('client_id' , $request->client_id);
@@ -39,7 +40,7 @@ class ClientSpecialPriceController extends Controller
 
             return response()->json([
                 "status" => true,
-                "client_special_prices" =>  ClientSpecialPrice::where('client_id', $request->client_id)->get()
+                "client_special_prices" =>   $data
             ]);
         }
         return response()->json([
