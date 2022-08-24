@@ -149,18 +149,13 @@ class TechnicalTableAttachmentController extends Controller
     {
         $table = 'company_'.$request->company_id.'_technical_table_attachments';
         TechnicalTableAttachment::setGlobalTable($table);
-
-        $validator = Validator::make($request->all(),[        
-            'document' => 'required'          
-        ]);
-
-        if ($validator->fails()) {
+        $technical_attachment = TechnicalTableAttachment::find( $request->technical_table_attachment);
+        if(!$technical_attachment){
             return response()->json([
                 "status" => false,
-                "message" => $validator->errors()->first()
+                "message" => 'Attachment  not found!'
             ]);
         }
-        $technical_attachment = TechnicalTableAttachment::where('id', $request->technical_table_attachment)->first();
         
         $technical_attachment->update($request->except('company_id', '_method', 'document'));
 
