@@ -17,7 +17,8 @@ class ClientSpecialPrice extends Model
 		"purchase_margin",
 		"sales_margin",
 		"discount",
-		"special_price"
+		"special_price",
+        'type'
     ];
 
     protected static $globalTable = 'client_special_prices' ;

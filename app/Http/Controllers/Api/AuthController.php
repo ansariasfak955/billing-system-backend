@@ -88,7 +88,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'email'   => 'sometimes|required|email',
             'name'    => 'required|regex:/^[\pL\s\-]+$/u',
-            'country' => 'required',
+            // 'country' => 'required',
             'company_name' => 'required',
         ]);
 

@@ -24,30 +24,27 @@ class ClientSpecialPriceController extends Controller
         }
         $table = 'company_'.$request->company_id.'_client_special_prices';
         ClientSpecialPrice::setGlobalTable($table);
-
-        if($request->client_id == NULL){
-            if(ClientSpecialPrice::count() == 0){
-                return response()->json([
-                    "status" => false,
-                    "message" =>  "No data found"
-                ]);
-            }
-            return response()->json([
-                "status" => true,
-                "client_special_prices" =>  ClientSpecialPrice::get()
-            ]);
+        $query = ClientSpecialPrice::query();
+        if($request->client_id ){
+            $query->where('client_id' , $request->client_id);
         }
 
-        if(ClientSpecialPrice::where('client_id', $request->client_id)->count() == 0){
-            return response()->json([
-                "status" => false,
-                "message" =>  "No data found"
-            ]);
+        if($request->type ){
+            $query->where('type' , $request->type);
         }
         
+        $data =  $query->get();
+
+        if( count($data) ){
+
+            return response()->json([
+                "status" => true,
+                "client_special_prices" =>  ClientSpecialPrice::where('client_id', $request->client_id)->get()
+            ]);
+        }
         return response()->json([
-            "status" => true,
-            "client_special_prices" =>  ClientSpecialPrice::where('client_id', $request->client_id)->get()
+            "status" => false,
+            "message" =>  'No data found!'
         ]);
     }
 
@@ -61,7 +58,8 @@ class ClientSpecialPriceController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'client_id' => 'required',
-            'product_id' => 'required'
+            'product_id' => 'required',
+            'type' => 'required',
         ], [
             'client_id.required' => 'Please select client ',
             'product_id.required' => 'Please select product ',
