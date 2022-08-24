@@ -126,20 +126,7 @@ class TechnicalIncidentAttachmentController extends Controller
         $table = 'company_'.$request->company_id.'_technical_incident_attachments';
         TechnicalIncidentAttachment::setGlobalTable($table);
 
-        $validator = Validator::make($request->all(),[        
-            'document' => 'required'          
-        ], [
-            'document.required' => 'Please select document.',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                "status" => false,
-                "message" => $validator->errors()->first()
-            ]);
-        }
-
-        $incident_attachment = TechnicalIncidentAttachment::where('id', $request->technical_incident_attachment)->first();
+        $incident_attachment = TechnicalIncidentAttachment::find( $request->technical_incident_attachment);
 
         if ($incident_attachment == NULL) {
             return response()->json([

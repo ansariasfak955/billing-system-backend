@@ -189,7 +189,13 @@ class PurchaseAttachmentController extends Controller
     {
         $table = 'company_'.$request->company_id.'_purchase_attachments';
         PurchaseAttachment::setGlobalTable($table);
-        $purchase_attachment = PurchaseAttachment::where('id', $request->purchase_attachment)->first();
+        $purchase_attachment = PurchaseAttachment::find($request->purchase_attachment);
+        if(!$purchase_attachment){
+            return response()->json([
+                'status' => false,
+                'message' => "Not found!"
+            ]);
+        }
         if( file_exists($purchase_attachment->document) ){
             unlink($purchase_attachment->document);
         }
