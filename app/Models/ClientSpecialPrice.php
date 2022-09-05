@@ -39,4 +39,12 @@ class ClientSpecialPrice extends Model
         $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
         return get_product_name($company_id, $this->attributes['product_id']);
     }
+     public function getClientNameAttribute(){
+        
+        if(isset( $this->attributes['client_id'] )){
+            $table = $this->getTable();
+            $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($client_id, $this->attributes['client_id']);
+        }
+    }
 }
