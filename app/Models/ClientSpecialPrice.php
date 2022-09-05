@@ -31,7 +31,7 @@ class ClientSpecialPrice extends Model
         self::$globalTable = $table;
     }
 
-    protected $appends = ['product_name'];
+    protected $appends = ['product_name' , 'client_name'];
 
     public function getProductNameAttribute()
     {
