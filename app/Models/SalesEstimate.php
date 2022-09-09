@@ -37,6 +37,7 @@ class SalesEstimate extends Model
 		'signature'
     ];
 
+
     protected static $globalTable = 'sales_estimates' ;
 
     public function getTable() {
@@ -45,6 +46,8 @@ class SalesEstimate extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+
+	protected $appends = ['client_name', 'created_by_name', 'amount'];
 
     public function getSignatureAttribute()
     {
@@ -60,5 +63,29 @@ class SalesEstimate extends Model
     public function itemMeta(){
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
+    }
+
+	public function getClientNameAttribute(){
+        
+        if(isset( $this->attributes['client_id'] )){
+            $table = $this->getTable();
+            $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($client_id, $this->attributes['client_id']);
+        }
+    }
+
+	public function getCreatedByNameAttribute(){
+        
+        if(isset( $this->attributes['created_by'] )){
+            $table = $this->getTable();
+            $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($createdby, $this->attributes['created_by']);
+        }
+    }
+
+	public function getAmountAttribute(){
+      if(isset($this->items)){
+		return $this->items->sum('amount');
+	  }
     }
 }

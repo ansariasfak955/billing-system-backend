@@ -92,7 +92,7 @@ class SalesEstimateController extends Controller
 
             $request['valid_until'] = get_formatted_datetime($request->valid_until);
         }
-
+        $request['created_by'] =\Auth::id();
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
 
