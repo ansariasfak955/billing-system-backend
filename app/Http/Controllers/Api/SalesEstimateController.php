@@ -144,10 +144,10 @@ class SalesEstimateController extends Controller
                         $reference_id     = NULL;
                     }
                     
-                    $name             = $item['name'];
+                    $name             = isset($item['name']) ? $item['name'] : "";
                     $parent_id        = $sales_estimate->id;
                     $type             = $sales_estimate->reference;
-                    $description      = isset($item['description']) ? $item['description'] : 0;
+                    $description      = isset($item['description']) ? $item['description'] : "";
                     $base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
                     $quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
                     $discount         = isset($item['discount']) ? $item['discount'] : 0;
