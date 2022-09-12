@@ -326,15 +326,6 @@
                     </tr>
                 @endif
             </table>
-        
-        @if(@$document_section_title_show == 1)
-            <div style="text-align: center; margin-top: 20px;">
-                <h2>{{ $template->name }}</h2>
-                @if($document_section_title_show && $document_section_title_text)
-                    {{ $document_section_title_text }}
-                @endif
-            </div>
-        @endif
             <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
                 <th style="color: orange; border-bottom: 1px solid gray;text-align: left">{{ strtoupper($template->section) }} INFO</th>
                 <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_legal_name}}({{$template->client_name}})</b></td></tr>
