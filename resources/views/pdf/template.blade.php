@@ -128,6 +128,66 @@
             @endphp
         @endif
 
+        @if($meta->category == 'Document Information' && $meta->type == 'section' && $meta->option_name == 'text')
+            @php
+            $document_section_title_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'section' && $meta->option_name == 'show')
+            @php
+            $document_section_title_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'client_legal_name' && $meta->option_name == 'show')
+            @php
+            $document_section_title_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'client_legal_name' && $meta->option_name == 'text')
+            @php
+            $document_section_title_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'client_name' && $meta->option_name == 'show')
+            @php
+            $client_name_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'client_name' && $meta->option_name == 'text')
+            @php
+            $client_name_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'client_tin' && $meta->option_name == 'show')
+            @php
+            $client_tin_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'client_tin' && $meta->option_name == 'text')
+            @php
+            $client_tin_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'client_phone' && $meta->option_name == 'show')
+            @php
+            $client_phone_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'client_phone' && $meta->option_name == 'text')
+            @php
+            $client_phone_text = $meta->option_value;
+            @endphp
+        @endif
+
         @if($meta->category == 'Document Information' && $meta->type == 'document_title' && $meta->option_name == 'show')
             @php
             $document_title_show = $meta->option_value;
@@ -184,8 +244,8 @@
                             <span style="margin-left: 30px;">{{ $company_name_show == 1 ? $company->name : '' }}</span> <br>
                             <span style="margin-left: 30px;">{{ $company_country_show == 1 ? $company->country : '' }}</span>
                         </td>
-                        <td @if($company_email_show['show'] || $company_website_show['show']) style="border-left: 2px solid orange; width: 300px; " @endif>
-                            @if($company_email_show['show'] ==1)
+                        <td @if(@$company_email_show['show'] || @$company_website_show['show']) style="border-left: 2px solid orange; width: 300px; " @endif>
+                            @if(@$company_email_show['show'] ==1)
                                 <span style="margin-left: 30px;">Email:</span> 
                                 @if(@$company_email_show['show'] ==1 && @$company_email_show['value'])
                                     {{$company_email_show['value']}}
@@ -194,7 +254,7 @@
                                 @endif
                                 <br>
                             @endif
-                            @if($company_website_show['show'])    
+                            @if(@$company_website_show['show'])    
                                 <span style="margin-left: 30px;">website</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
@@ -207,7 +267,7 @@
             </div>
         @endif
 
-        @if($document_type_show == 1)
+        @if(@$document_type_show == 1)
             <div style="text-align: center; margin-top: 20px;">
                 <h2>{{ $template->name }}</h2>
                 @if($document_title_show && $document_title_text)
@@ -216,7 +276,7 @@
             </div>
         @endif
         <div style="margin-top: 20px;font-size: 13px">
-            <table style="border-collapse: collapse; width:50%; padding: 10px">
+            <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                 <th style="color: orange; border-bottom: 1px solid gray;text-align: left">{{ strtoupper($template->document_type) }} INFO</th>
                 <tr><td style="padding: 0; margin: 0;">Number: <b>INV00001</b></td></tr>
                 <tr><td style="padding: 0; margin: 0;">Date: <b>{{ date('d F Y') }}</b></td></tr>
@@ -250,7 +310,7 @@
                     </td>
                 </tr>
 
-                @if($document_delivery_by_show == 1)
+                @if(@$document_delivery_by_show == 1)
                     <tr>
                         <td style="padding: 0; margin: 0;">
                             {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>test delivery A domicilio</b>
@@ -258,7 +318,7 @@
                     </tr>
                 @endif
 
-                @if($document_agent_show == 1)
+                @if(@$document_agent_show == 1)
                     <tr>
                         <td style="padding: 0; margin: 0;">
                             {{ $document_agent_text ? $document_agent_text : 'Agent:'}} <b>Test View Account</b>
@@ -266,8 +326,23 @@
                     </tr>
                 @endif
             </table>
+        
+        @if(@$document_section_title_show == 1)
+            <div style="text-align: center; margin-top: 20px;">
+                <h2>{{ $template->name }}</h2>
+                @if($document_section_title_show && $document_section_title_text)
+                    {{ $document_section_title_text }}
+                @endif
+            </div>
+        @endif
+            <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
+                <th style="color: orange; border-bottom: 1px solid gray;text-align: left">{{ strtoupper($template->section) }} INFO</th>
+                <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_legal_name}}({{$template->client_name}})</b></td></tr>
+                <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_tin}}</b></td></tr>
+                <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_phone}}</b></td></tr>
+            </table>
         </div>
-
+        <div style="clear: both;"></div>
         <div style="margin-top: 20px;">
             <table style="border-collapse: collapse; width:100%; ">
                 <tr style="color: orange; border-bottom: 1px solid gray;">
@@ -374,7 +449,7 @@
         <br>
         <br>
         <br>
-        @if($comments_show == 1)
+        @if(@$comments_show == 1)
             <div style="margin-top: 20px;">
                 <h5 style="border-bottom: 1px solid black ;">{{ $comments_text }}</h5>
                 <ul>
