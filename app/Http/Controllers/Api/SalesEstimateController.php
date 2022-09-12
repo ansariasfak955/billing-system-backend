@@ -147,11 +147,11 @@ class SalesEstimateController extends Controller
                     $name             = $item['name'];
                     $parent_id        = $sales_estimate->id;
                     $type             = $sales_estimate->reference;
-                    $description      = isset($item['description']) ? ($item['description']) : 0;
-                    $base_price       = isset($item['base_price']) ? ($item['base_price']) : 0;
-                    $quantity         = isset($item['quantity']) ? ($item['quantity']) : 1;
-                    $discount         = isset($item['discount']) ? ($item['discount']) : 0;
-                    $tax              = isset($item['tax']) ? ($item['tax']) : 0;
+                    $description      = isset($item['description']) ? $item['description'] : 0;
+                    $base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
+                    $quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
+                    $discount         = isset($item['discount']) ? $item['discount'] : 0;
+                    $tax              = isset($item['tax']) ? $item['tax'] : 0;
                     $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
                     $createdItem = Item::create([
                         'reference'     => $reference,
