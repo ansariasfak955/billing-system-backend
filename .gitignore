@@ -16,3 +16,4 @@ yarn-error.log
 /.phpintel
 composer.lock
 .phpintel
+.env.example
