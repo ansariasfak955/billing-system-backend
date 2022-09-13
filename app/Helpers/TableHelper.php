@@ -1740,7 +1740,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_reference_text",
-                    "option_value" => "",
+                    "option_value" => "Reference:",
                     "category" => "Client/Supplier Information",
                     "type" => "client_reference",
                 ]);
@@ -1764,7 +1764,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_legal_name_text",
-                    "option_value" => "",
+                    "option_value" => "Name/Legal Name:",
                     "category" => "Client/Supplier Information",
                     "type" => "client_legal_name",
                 ]);
@@ -1810,7 +1810,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_tin_text",
-                    "option_value" => "",
+                    "option_value" => "Tin:",
                     "category" => "Client/Supplier Information",
                     "type" => "client_tin",
                 ]);
@@ -1833,7 +1833,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_phone_text",
-                    "option_value" => "",
+                    "option_value" => "Phone:",
                     "category" => "Client/Supplier Information",
                     "type" => "client_phone",
                 ]);
@@ -1856,7 +1856,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_fax_text",
-                    "option_value" => "",
+                    "option_value" => "Fax:",
                     "category" => "Client/Supplier Information",
                     "type" => "client_fax",
                 ]);
@@ -1879,7 +1879,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_email_text",
-                    "option_value" => "",
+                    "option_value" => "Email:",
                     "category" => "Client/Supplier Information",
                     "type" => "client_supplier",
                 ]);
@@ -1902,7 +1902,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_website_text",
-                    "option_value" => "",
+                    "option_value" => "Website:",
                     "category" => "Client/Supplier Information",
                     "type" => "client_website",
                 ]);
@@ -1925,7 +1925,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_billing_address_text",
-                    "option_value" => "",
+                    "option_value" => "Billing Address",
                     "category" => "Client/Supplier Information",
                     "type" => "client_billing",
                 ]);
