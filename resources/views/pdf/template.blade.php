@@ -62,6 +62,8 @@
             @endphp
         @endif
 
+        {{-- Document Information --}}
+
         @if($meta->category == 'Document Information' && $meta->type == 'document_payment' && $meta->option_name == 'show')
             @php
             $document_payment_info_show = $meta->option_value;
@@ -151,8 +153,8 @@
             $comments_text = $meta->option_value;
             @endphp
         @endif
-        {{-- client supplier info --}}
-
+        
+        {{-- Client Information --}}
         @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_section' && $meta->option_name == 'show')
             @php
             $client_supplier_section_show = $meta->option_value;
@@ -290,7 +292,6 @@
             $client_supplier_country_show = $meta->option_value;
             @endphp
         @endif
-
     @endforeach
 
     @if(strpos($template->watermark,"via.placeholder") !== false)
@@ -334,7 +335,7 @@
                                 @endif
                                 <br>
                             @endif
-                            @if(@$company_website_show['show'])
+                            @if(@$company_website_show['show'])    
                                 <span style="margin-left: 30px;">website</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
@@ -355,7 +356,6 @@
                 @endif
             </div>
         @endif
-        
         <div style="margin-top: 20px;font-size: 13px">
             <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                 <th style="color: orange; border-bottom: 1px solid gray;text-align: left">{{ strtoupper($template->document_type) }} INFO</th>
