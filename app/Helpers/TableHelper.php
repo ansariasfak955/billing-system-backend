@@ -1696,30 +1696,31 @@ class TableHelper
                     "category" => "Document Information",
                     "type" => "document_delivery",
                 ]);
-
                 /* document information ends here*/
+
                 /* Section Title: */
-                // MyTemplateMeta::create([
-                //     "template_id" => $template_created->id,
-                //     "option_name" => "client_section_title_heading",
-                //     "option_value" => "Section Title",
-                //     "category" => "Client/Supplier Information",
-                //     "type" => "client_section",
-                // ]);
-                // MyTemplateMeta::create([
-                //     "template_id" => $template_created->id,
-                //     "option_name" => "client_section_title_show",
-                //     "option_value" => "1",
-                //     "category" => "Client/Supplier Information",
-                //     "type" => "client_section",
-                // ]);
-                // MyTemplateMeta::create([
-                //     "template_id" => $template_created->id,
-                //     "option_name" => "client_section_title_text",
-                //     "option_value" => "CLIENT INFO",
-                //     "category" => "Client/Supplier Information",
-                //     "type" => "client_section",
-                // ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_section_title_heading",
+                    "option_value" => "Section Title",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_section",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_section_title_show",
+                    "option_value" => "1",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_section",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "client_section_title_text",
+                    "option_value" => "CLIENT INFO",
+                    "category" => "Client/Supplier Information",
+                    "type" => "client_section",
+                ]);
+                
                 /* Client/Supplier Information starts here */
                 /* Reference */
                 MyTemplateMeta::create([
