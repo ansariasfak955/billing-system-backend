@@ -408,8 +408,7 @@
                 @endif
             </table>
             <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
-
-                <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->client_section) }}</th>
+                <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(@$client_supplier_section_show) }}</th>
                 @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
                     <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
                 @endif
