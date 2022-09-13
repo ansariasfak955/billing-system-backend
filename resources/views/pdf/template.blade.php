@@ -408,7 +408,7 @@
                 @endif
             </table>
             <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
-                <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(@$client_supplier_section_show) }}</th>
+                <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">Client Info</th>
                 @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
                     <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
                 @endif
@@ -441,21 +441,22 @@
                     <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_billing}}</b></td></tr>
                 @endif
 
-                @if(@$client_supplier_zip_code_show)
-                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_zip_code_show}}</b></td></tr>
-                @endif
+                <tr><td @if(@$client_supplier_zip_code_show) style="padding: 0; margin: 0;" @endif>
+                    <b>133001</b>
+                </td></tr>
+            
+                <tr><td @if(@$client_supplier_city_show) style="padding: 0; margin: 0;" @endif>
+                    <b>Ambala Catt</b>
+                </td></tr>
 
-                @if(@$client_supplier_city_show)
-                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_city_show}}</b></td></tr>
-                @endif
+                <tr><td @if(@$client_supplier_state_show) style="padding: 0; margin: 0;" @endif>
+                    <b>Washington DC</b>
+                </td></tr>
 
-                @if(@$client_supplier_state_show)
-                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_state_show}}</b></td></tr>
-                @endif
-
-                @if(@$client_supplier_country_show)
-                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_country_show}}</b></td></tr>
-                @endif
+                <tr><td @if(@$client_supplier_country_show) style="padding: 0; margin: 0;" @endif>
+                   <b>United State</b>
+                </td></tr>
+                
                 
             </table>
         </div>
