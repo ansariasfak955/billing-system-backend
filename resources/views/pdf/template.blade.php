@@ -327,18 +327,10 @@
                 @endif
             </table>
             <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
-                <th style="color: orange; border-bottom: 1px solid gray;text-align: left">{{ strtoupper($template->section) }} INFO</th>
+                <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->section) }} INFO</th>
                 <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_legal_name}}({{$template->client_name}})</b></td></tr>
                 <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_tin}}</b></td></tr>
-                <tr><td style="padding: 0; margin: 0;"><b>
-                @if(@$client_phone_show['show'] ==1)
-                    @if(@$client_phone_show['show'] ==1 && @$client_phone_show['value'])
-                        {{$client_phone_show['value']}}
-                    @elseif(@$client_phone_show['show'] ==1 && @!$client_phone_show['value'])
-                        {{ $company->client_phone}}
-                    @endif
-                @endif
-               </b></td></tr>
+                <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_phone}}</b></td></tr>
             </table>
         </div>
         <div style="clear: both;"></div>
