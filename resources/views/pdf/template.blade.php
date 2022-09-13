@@ -128,66 +128,6 @@
             @endphp
         @endif
 
-        @if($meta->category == 'Document Information' && $meta->type == 'section' && $meta->option_name == 'text')
-            @php
-            $document_section_title_text = $meta->option_value;
-            @endphp
-        @endif
-
-        @if($meta->category == 'Document Information' && $meta->type == 'section' && $meta->option_name == 'show')
-            @php
-            $document_section_title_show = $meta->option_value;
-            @endphp
-        @endif
-
-        @if($meta->category == 'Document Information' && $meta->type == 'client_legal_name' && $meta->option_name == 'show')
-            @php
-            $document_section_title_show = $meta->option_value;
-            @endphp
-        @endif
-
-        @if($meta->category == 'Document Information' && $meta->type == 'client_legal_name' && $meta->option_name == 'text')
-            @php
-            $document_section_title_text = $meta->option_value;
-            @endphp
-        @endif
-
-        @if($meta->category == 'Document Information' && $meta->type == 'client_name' && $meta->option_name == 'show')
-            @php
-            $client_name_show = $meta->option_value;
-            @endphp
-        @endif
-
-        @if($meta->category == 'Document Information' && $meta->type == 'client_name' && $meta->option_name == 'text')
-            @php
-            $client_name_text = $meta->option_value;
-            @endphp
-        @endif
-
-        @if($meta->category == 'Document Information' && $meta->type == 'client_tin' && $meta->option_name == 'show')
-            @php
-            $client_tin_show = $meta->option_value;
-            @endphp
-        @endif
-
-        @if($meta->category == 'Document Information' && $meta->type == 'client_tin' && $meta->option_name == 'text')
-            @php
-            $client_tin_text = $meta->option_value;
-            @endphp
-        @endif
-
-        @if($meta->category == 'Document Information' && $meta->type == 'client_phone' && $meta->option_name == 'show')
-            @php
-            $client_phone_show = $meta->option_value;
-            @endphp
-        @endif
-
-        @if($meta->category == 'Document Information' && $meta->type == 'client_phone' && $meta->option_name == 'text')
-            @php
-            $client_phone_text = $meta->option_value;
-            @endphp
-        @endif
-
         @if($meta->category == 'Document Information' && $meta->type == 'document_title' && $meta->option_name == 'show')
             @php
             $document_title_show = $meta->option_value;
@@ -211,6 +151,146 @@
             $comments_text = $meta->option_value;
             @endphp
         @endif
+        {{-- client supplier info --}}
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_section' && $meta->option_name == 'show')
+            @php
+            $client_supplier_section_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_legal_name' && $meta->option_name == 'show')
+            @php
+            $client_supplier_legal_name_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_legal_name' && $meta->option_name == 'text')
+            @php
+            $client_supplier_legal_name = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_tin' && $meta->option_name == 'show')
+            @php
+            $client_supplier_tin_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_tin' && $meta->option_name == 'text')
+            @php
+            $client_supplier_tin = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_phone' && $meta->option_name == 'show')
+            @php
+            $client_supplier_phone_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_phone' && $meta->option_name == 'text')
+            @php
+            $client_supplier_phone = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_name' && $meta->option_name == 'show')
+            @php
+            $client_supplier_name_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_name' && $meta->option_name == 'text')
+            @php
+            $client_supplier_name = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_reference' && $meta->option_name == 'show')
+            @php
+            $client_supplier_reference_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_reference' && $meta->option_name == 'text')
+            @php
+            $client_supplier_reference = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_fax' && $meta->option_name == 'show')
+            @php
+            $client_supplier_fax_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_fax' && $meta->option_name == 'text')
+            @php
+            $client_supplier_fax = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_supplier' && $meta->option_name == 'show')
+            @php
+            $client_supplier_email_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_supplier' && $meta->option_name == 'text')
+            @php
+            $client_supplier_email = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_website' && $meta->option_name == 'show')
+            @php
+            $client_supplier_website_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_website' && $meta->option_name == 'text')
+            @php
+            $client_supplier_website = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_billing' && $meta->option_name == 'show')
+            @php
+            $client_supplier_billing_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_billing' && $meta->option_name == 'text')
+            @php
+            $client_supplier_billing = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_zip_code' && $meta->option_name == 'show')
+            @php
+            $client_supplier_zip_code_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_city' && $meta->option_name == 'show')
+            @php
+            $client_supplier_city_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_state' && $meta->option_name == 'show')
+            @php
+            $client_supplier_state_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_country' && $meta->option_name == 'show')
+            @php
+            $client_supplier_country_show = $meta->option_value;
+            @endphp
+        @endif
+
     @endforeach
 
     @if(strpos($template->watermark,"via.placeholder") !== false)
@@ -254,7 +334,7 @@
                                 @endif
                                 <br>
                             @endif
-                            @if(@$company_website_show['show'])    
+                            @if(@$company_website_show['show'])
                                 <span style="margin-left: 30px;">website</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
@@ -275,6 +355,7 @@
                 @endif
             </div>
         @endif
+        
         <div style="margin-top: 20px;font-size: 13px">
             <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                 <th style="color: orange; border-bottom: 1px solid gray;text-align: left">{{ strtoupper($template->document_type) }} INFO</th>
@@ -327,10 +408,56 @@
                 @endif
             </table>
             <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
-                <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->section) }} INFO</th>
-                <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_legal_name}}({{$template->client_name}})</b></td></tr>
-                <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_tin}}</b></td></tr>
-                <tr><td style="padding: 0; margin: 0;"><b>{{$template->client_phone}}</b></td></tr>
+
+                <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($client_supplier_section_show) }}</th>
+                @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_tin_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_tin}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_phone_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_phone}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_reference_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_reference}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_fax_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_fax}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_email_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_email}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_website_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_website}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_billing_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_billing}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_zip_code_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_zip_code_show}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_city_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_city_show}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_state_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_state_show}}</b></td></tr>
+                @endif
+
+                @if(@$client_supplier_country_show)
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_country_show}}</b></td></tr>
+                @endif
+                
             </table>
         </div>
         <div style="clear: both;"></div>
