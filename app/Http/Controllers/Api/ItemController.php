@@ -158,7 +158,7 @@ class ItemController extends Controller
 				'discount' 	  => $item['discount'],
 				'tax' 	  	  => $item['tax'],
 				'income_tax'  => $item['income_tax'],
-                'amount'      => $item['amounty']
+                'amount'      => $item['amount']
     		]);
     	}
 
