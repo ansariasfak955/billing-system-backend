@@ -41,7 +41,8 @@ class Item extends Model
 		'tax',
 		'income_tax',
         'type',
-        'amount'
+        'subtotal',
+        'vat'
     ];
 
     protected static $globalTable = 'items' ;

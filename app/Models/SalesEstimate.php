@@ -47,7 +47,7 @@ class SalesEstimate extends Model
         self::$globalTable = $table;
     }
 
-	protected $appends = ['client_name', 'created_by_name', 'amount'];
+	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount'];
 
     public function getSignatureAttribute()
     {
@@ -63,6 +63,12 @@ class SalesEstimate extends Model
     public function itemMeta(){
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
+    }
+
+	public function getMetaDiscountAttribute(){
+		if(isset($this->itemMeta)){
+			return $this->itemMeta->pluck('discount')->first();
+		}
     }
 
 	public function getClientNameAttribute(){
