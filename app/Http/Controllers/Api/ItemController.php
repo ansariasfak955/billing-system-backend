@@ -98,8 +98,8 @@ class ItemController extends Controller
                 if (isset($item['reference_id'])) {
                     ItemMeta::create([
                         'reference_id'  => $item['reference_id'],
-                        'discount'      => $item['meta_discount'],
-                        'income_tax'    => $item['meta_income_tax']
+                        'discount'      => $meta_discount,
+                        'income_tax'    => $meta_income_tax
                     ]);
                 }
             }
@@ -157,7 +157,8 @@ class ItemController extends Controller
 				'quantity' 	  => $item['quantity'],
 				'discount' 	  => $item['discount'],
 				'tax' 	  	  => $item['tax'],
-				'income_tax'  => $item['income_tax']
+				'income_tax'  => $item['income_tax'],
+                'amount'      => $item['amounty']
     		]);
     	}
 
