@@ -40,7 +40,8 @@ class Item extends Model
 		'discount',
 		'tax',
 		'income_tax',
-        'type'
+        'type',
+        'amount'
     ];
 
     protected static $globalTable = 'items' ;

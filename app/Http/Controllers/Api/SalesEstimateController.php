@@ -153,6 +153,7 @@ class SalesEstimateController extends Controller
                     $discount         = isset($item['discount']) ? $item['discount'] : 0;
                     $tax              = isset($item['tax']) ? $item['tax'] : 0;
                     $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+                    $amount           = isset($item['amount']) ? $item['amount'] : 0;
                     $createdItem = Item::create([
                         'reference'     => $reference,
                         'reference_id'  => $reference_id,
@@ -164,7 +165,8 @@ class SalesEstimateController extends Controller
                         'quantity'      => $quantity,
                         'discount'      => $discount,
                         'tax'           => $tax,
-                        'income_tax'    => $income_tax
+                        'income_tax'    => $income_tax,
+                        'amount'        => $amount
                     ]);
                 }
             }
