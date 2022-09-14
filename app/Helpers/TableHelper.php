@@ -577,6 +577,7 @@ class TableHelper
                 $table->timestamps();
             });
         }
+        
         /* Creating dynamic items table */
         if (!Schema::hasTable('company_'.$company_id.'_items')) {
             Schema::create('company_'.$company_id.'_items', function (Blueprint $table) {
