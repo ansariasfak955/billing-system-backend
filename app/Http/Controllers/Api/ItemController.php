@@ -76,7 +76,8 @@ class ItemController extends Controller
 			$income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
             $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
             $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
-            $amount           = isset($item['amount']) ? $item['amount'] : 0;
+            $subtotal        = isset($item['subtotal']) ? $item['subtotal'] : 0;
+            $vat              = isset($item['vat']) ? $item['vat'] : 0;
 
 			$createdItem = Item::create([
 				'reference'     => $reference,
@@ -88,7 +89,8 @@ class ItemController extends Controller
 				'discount'      => $discount,
 				'tax'           => $tax,
 				'income_tax'    => $income_tax,
-                'amount'        => $amount
+                'subtotal'     => $subtotal,
+                'vat'           => $vat
 			]);
 
             if ($meta_discount) {
@@ -158,7 +160,8 @@ class ItemController extends Controller
 				'discount' 	  => $item['discount'],
 				'tax' 	  	  => $item['tax'],
 				'income_tax'  => $item['income_tax'],
-                'amount'      => $item['amount']
+                'subtotal'   => $item['subtotal'],
+                'vat'         => $item['vat']
     		]);
     	}
 

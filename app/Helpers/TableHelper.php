@@ -592,7 +592,8 @@ class TableHelper
                 $table->string('tax')->nullable();
                 $table->string('income_tax')->nullable();
                 $table->string('type')->nullable();
-                $table->string('amount')->nullable();
+                $table->string('subtotal')->nullable();
+                $table->string('vat')->nullable();
                 $table->timestamps();
             });
         }
