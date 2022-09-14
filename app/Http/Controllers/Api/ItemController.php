@@ -67,15 +67,16 @@ class ItemController extends Controller
                 $reference_id     = NULL;
             }
             
-            $name             = $item['name'];
-			$description      = $item['description'];
-			$base_price       = $item['base_price'];
-			$quantity         = $item['quantity'];
-			$discount         = $item['discount'];
-			$tax              = $item['tax'];
-			$income_tax       = $item['income_tax'];
-            $meta_discount    = $item['meta_discount'];
-            $meta_income_tax  = $item['meta_income_tax'];
+            $name             = isset($item['name']) ? $item['name'] : "";
+			$description      = isset($item['description']) ? $item['description'] : "";
+			$base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
+			$quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
+			$discount         = isset($item['discount']) ? $item['discount'] : 0;
+			$tax              = isset($item['tax']) ? $item['tax'] : 0;
+			$income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+            $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
+            $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
+            $amount           = isset($item['amount']) ? $item['amount'] : 0;
 
 			$createdItem = Item::create([
 				'reference'     => $reference,
@@ -86,7 +87,8 @@ class ItemController extends Controller
 				'quantity'      => $quantity,
 				'discount'      => $discount,
 				'tax'           => $tax,
-				'income_tax'    => $income_tax
+				'income_tax'    => $income_tax,
+                'amount'        => $amount
 			]);
 
             if ($meta_discount) {
@@ -96,8 +98,8 @@ class ItemController extends Controller
                 if (isset($item['reference_id'])) {
                     ItemMeta::create([
                         'reference_id'  => $item['reference_id'],
-                        'discount'      => $item['meta_discount'],
-                        'income_tax'    => $item['meta_income_tax']
+                        'discount'      => $meta_discount,
+                        'income_tax'    => $meta_income_tax
                     ]);
                 }
             }
@@ -155,7 +157,8 @@ class ItemController extends Controller
 				'quantity' 	  => $item['quantity'],
 				'discount' 	  => $item['discount'],
 				'tax' 	  	  => $item['tax'],
-				'income_tax'  => $item['income_tax']
+				'income_tax'  => $item['income_tax'],
+                'amount'      => $item['amount']
     		]);
     	}
 

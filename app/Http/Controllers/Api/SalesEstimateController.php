@@ -137,11 +137,11 @@ class SalesEstimateController extends Controller
                 }
                 // items
                 foreach ($items as $item) {
-                    $reference        = $item['reference'];
+                    $reference = $item['reference'];
                     if (isset($item['reference_id'])) {
-                        $reference_id     = $item['reference_id'];
+                        $reference_id = $item['reference_id'];
                     } else {
-                        $reference_id     = NULL;
+                        $reference_id = NULL;
                     }
                     
                     $name             = isset($item['name']) ? $item['name'] : "";
@@ -153,6 +153,9 @@ class SalesEstimateController extends Controller
                     $discount         = isset($item['discount']) ? $item['discount'] : 0;
                     $tax              = isset($item['tax']) ? $item['tax'] : 0;
                     $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+                    $amount           = isset($item['amount']) ? $item['amount'] : 0;
+                    $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
+                    $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
                     $createdItem = Item::create([
                         'reference'     => $reference,
                         'reference_id'  => $reference_id,
@@ -164,7 +167,8 @@ class SalesEstimateController extends Controller
                         'quantity'      => $quantity,
                         'discount'      => $discount,
                         'tax'           => $tax,
-                        'income_tax'    => $income_tax
+                        'income_tax'    => $income_tax,
+                        'amount'        => $amount
                     ]);
                 }
             }
