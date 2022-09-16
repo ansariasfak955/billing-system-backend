@@ -65,7 +65,7 @@ class Handler extends ExceptionHandler
 
 
             $error['status']  = false;
-            $error['message'] = $exception;
+            $error['message'] = $exception['message'] .' At Class '.$exception['file']. ' At Line '.$exception['line'];
             
             echo json_encode($error);
             die;

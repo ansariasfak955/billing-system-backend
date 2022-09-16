@@ -25,8 +25,12 @@ class Item extends Model
 
             $basePrice = $this->attributes['base_price'];
             $discount = $this->attributes['discount'];
-            $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity + $tax;
-            return $amount;
+            if($basePrice){
+
+                $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity + $tax;
+                return $amount;
+            }
+            return 0;
         }
     }
 
