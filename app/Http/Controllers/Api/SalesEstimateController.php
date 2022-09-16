@@ -192,6 +192,11 @@ class SalesEstimateController extends Controller
                 }
             }
             $sales_estimate->save();
+        }else{
+            return response()->json([
+                "status" => false,
+                "message" => "Please choose a different reference number"
+            ]);
         }
 
         return response()->json([
