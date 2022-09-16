@@ -60,7 +60,7 @@ class DeliveryOptionController extends Controller
         $table = 'company_'.$request->company_id.'_delivery_options';
         $validator = Validator::make($request->all(), [
             'name'     => "required",
-            'client_id'     => "required|numeric",
+            // 'client_id'     => "required|numeric",
         ]);
 
         if ($validator->fails()) {
