@@ -593,6 +593,7 @@ class TableHelper
                 $table->string('tax')->nullable();
                 $table->string('income_tax')->nullable();
                 $table->string('type')->nullable();
+                //add new columns
                 $table->string('subtotal')->nullable();
                 $table->string('vat')->nullable();
                 $table->timestamps();
