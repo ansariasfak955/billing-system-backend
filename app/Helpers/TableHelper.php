@@ -193,6 +193,8 @@ class TableHelper
                 /* More Information Fields*/
                 $table->string('inv_address')->nullable();
                 $table->string('delivery_address')->nullable();
+                $table->string('sent_date')->nullable();
+                $table->string('scheduled_delivery_date')->nullable();
                 $table->string('email_sent_date')->nullable();
                 $table->string('valid_until')->nullable();
                 $table->string('currency')->nullable();

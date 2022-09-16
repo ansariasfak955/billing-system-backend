@@ -34,7 +34,9 @@ class SalesEstimate extends Model
 		'addendum',
 		'name',
 		'tin',
-		'signature'
+		'signature',
+		'sent_date',
+		'scheduled_delivery_date'
     ];
 
 
@@ -60,14 +62,14 @@ class SalesEstimate extends Model
 
         return $this->hasMany(Item::class, 'parent_id');
     }
-    public function itemMeta(){
+    public function item_meta(){
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }
 
 	public function getMetaDiscountAttribute(){
-		if(isset($this->itemMeta)){
-			return $this->itemMeta->pluck('discount')->first();
+		if(isset($this->item_meta)){
+			return $this->item_meta->pluck('discount')->first();
 		}
     }
 

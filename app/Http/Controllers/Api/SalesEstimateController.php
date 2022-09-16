@@ -98,6 +98,16 @@ class SalesEstimateController extends Controller
 
             $request['valid_until'] = get_formatted_datetime($request->valid_until);
         }
+
+        if($request->scheduled_delivery_date){
+
+            $request['scheduled_delivery_date'] = get_formatted_datetime($request->scheduled_delivery_date);
+        }
+        if($request->sent_date){
+
+            $request['sent_date'] = get_formatted_datetime($request->sent_date);
+        }
+
         $request['created_by'] =\Auth::id();
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
@@ -185,7 +195,7 @@ class SalesEstimateController extends Controller
 
         return response()->json([
             "status" => true,
-            "sales_estimate" => SalesEstimate::with(['items', 'itemMeta'])->find($sales_estimate->id),
+            "sales_estimate" => SalesEstimate::with(['items', 'item_meta'])->find($sales_estimate->id),
             "message" => "Sales estimate created successfully"
         ]);
     }
@@ -207,7 +217,7 @@ class SalesEstimateController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        $sales_estimate = SalesEstimate::with(['items', 'itemMeta'])->where('id', $request->sales_estimate)->first();
+        $sales_estimate = SalesEstimate::with(['items', 'item_meta'])->where('id', $request->sales_estimate)->first();
 
         if($sales_estimate ==  NULL){
             return response()->json([
@@ -233,7 +243,7 @@ class SalesEstimateController extends Controller
     {
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
-        $sales_estimate = SalesEstimate::where('id', $request->sales_estimate)->first();
+        $sales_estimate = SalesEstimate::with(['items' , 'item_meta'])->where('id', $request->sales_estimate)->first();
         
         //change format of date
         if($request->date){
@@ -264,17 +274,90 @@ class SalesEstimateController extends Controller
             $request['valid_until'] = get_formatted_datetime($request->valid_until);
         }
 
+        if($request->scheduled_delivery_date){
+
+            $request['scheduled_delivery_date'] = get_formatted_datetime($request->scheduled_delivery_date);
+        }
+        if($request->sent_date){
+
+            $request['sent_date'] = get_formatted_datetime($request->sent_date);
+        }
+
         $sales_estimate->update($request->except('company_id'));
         if ($request->signature) {
             $signature_name = time().'.'.$request->signature->extension();  
             $request->signature->move(storage_path('app/public/sales/signature'), $signature_name);
             $sales_estimate->signature = $signature_name;    
         }
+
+        if($request->item){
+
+            if($sales_estimate->items){
+                $sales_estimate->items()->delete();
+            }
+            if($sales_estimate->item_meta){
+                $sales_estimate->item_meta()->delete();
+            }
+
+            $items = json_decode($request->item, true);
+
+           $meta_discount    = $request->meta_discount;
+           $meta_income_tax  = $request->meta_income_tax;
+           //save item meta
+           if ($meta_discount) {
+
+               ItemMeta::create([
+                   'reference_id'  => $sales_estimate->id,
+                   'parent_id'     => $sales_estimate->id,
+                   'discount'      => $meta_discount,
+                   'income_tax'    => $meta_income_tax
+               ]);
+           }
+           // items
+           foreach ($items as $item) {
+               $reference = $item['reference'];
+               if (isset($item['reference_id'])) {
+                   $reference_id = $item['reference_id'];
+               } else {
+                   $reference_id = NULL;
+               }
+               
+               $name             = isset($item['name']) ? $item['name'] : "";
+               $parent_id        = $sales_estimate->id;
+               $type             = $sales_estimate->reference;
+               $description      = isset($item['description']) ? $item['description'] : "";
+               $base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
+               $quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
+               $discount         = isset($item['discount']) ? $item['discount'] : 0;
+               $tax              = isset($item['tax']) ? $item['tax'] : 0;
+               $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+               $subtotal        = isset($item['subtotal']) ? $item['subtotal'] : 0;
+               $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
+               $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
+               $vat              = isset($item['vat']) ? $item['vat'] : 0;
+               $createdItem = Item::create([
+                   'reference'     => $reference,
+                   'reference_id'  => $reference_id,
+                   'parent_id'     => $parent_id,
+                   'type'          => $type,
+                   'name'          => $name,
+                   'description'   => $description,
+                   'base_price'    => $base_price,
+                   'quantity'      => $quantity,
+                   'discount'      => $discount,
+                   'tax'           => $tax,
+                   'income_tax'    => $income_tax,
+                   'subtotal'     => $subtotal,
+                   'vat'           => $vat
+               ]);
+           }
+        }
+
         $sales_estimate->save();
 
         return response()->json([
             "status" => true,
-            "sales_estimate" => $sales_estimate,
+            "sales_estimate" =>  SalesEstimate::with(['items' , 'item_meta'])->where('id', $request->sales_estimate)->first(),
             "message" => "Sales estimate updated successfully"
         ]);
     }
