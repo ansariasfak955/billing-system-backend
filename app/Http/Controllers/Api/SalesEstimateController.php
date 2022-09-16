@@ -58,7 +58,8 @@ class SalesEstimateController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'client_id' => 'required'
+            'client_id' => 'required',
+            'item' => 'required',
         ], [
             'client_id.required' => 'Please select client.'
         ]);
@@ -122,9 +123,9 @@ class SalesEstimateController extends Controller
             $request['reference_number'] = get_sales_estimate_latest_ref_number($request->company_id, $request->reference, 1 );
         }else{
 
-            $technical_incident = SalesEstimate::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
+            $sales_estimate = SalesEstimate::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
 
-            if ($technical_incident) {
+            if ($sales_estimate) {
                 $request->reference_number = '';
             }
         }
@@ -241,6 +242,21 @@ class SalesEstimateController extends Controller
      */
     public function update(Request $request)
     {
+        
+        $validator = Validator::make($request->all(),[
+            'client_id' => 'required',
+            'item' => 'required',
+        ], [
+            'client_id.required' => 'Please select client.'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
         $sales_estimate = SalesEstimate::with(['items' , 'item_meta'])->where('id', $request->sales_estimate)->first();
