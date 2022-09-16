@@ -25,10 +25,16 @@ class SalesEstimateController extends Controller
                 "message" =>  "Please select company"
             ]);
         }
-
+        if(!$request->type){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select type"
+            ]);
+        }
         $table = 'company_'.$request->company_id.'_sales_estimates';
+
         SalesEstimate::setGlobalTable($table);
-        $sales_estimate = SalesEstimate::get();
+        $sales_estimate = SalesEstimate::where('reference', $request->type)->get();
 
         if ($sales_estimate->count() == 0) {
             return response()->json([

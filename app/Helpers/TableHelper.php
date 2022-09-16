@@ -681,7 +681,17 @@ class TableHelper
                 $table->timestamps();
             });
         }
+        if (!Schema::hasTable('company_'.$company_id.'_delivery_options')) {
+            
+            Schema::create('company_'.$company_id.'_delivery_options', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->longText('description')->nullable();
+                $table->integer('client_id')->nullable();
+                $table->timestamps();
 
+            });
+        }
         /* Creating dynamic payment options table */
         if (!Schema::hasTable('company_'.$company_id.'_payment_options')) {
             Schema::create('company_'.$company_id.'_payment_options', function (Blueprint $table) {
