@@ -251,6 +251,9 @@ Route::group(['namespace' => 'Api'], function() {
             
             //payment option
             Route::apiResource('payment-options', PaymentOptionController::class);
+            
+            //delivery options
+            Route::apiResource('delivery-options', DeliveryOptionController::class);
 
             // Related
             Route::get('related', 'RelatedController@related');
