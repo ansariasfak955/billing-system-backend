@@ -364,7 +364,7 @@
         @endif
         <div style="margin-top: 20px;font-size: 13px">
             <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
-                <th style="color: orange; border-bottom: 1px solid gray;text-align: left">{{ strtoupper($template->document_type) }} INFO</th>
+                <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} INFO</th>
                 <tr><td style="padding: 0; margin: 0;">Number: <b>INV00001</b></td></tr>
                 <tr><td style="padding: 0; margin: 0;">Date: <b>{{ date('d F Y') }}</b></td></tr>
                 @if($document_payment_info_show == 1)
@@ -414,7 +414,7 @@
                 @endif
             </table>
             <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
-                    <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">
+                    <th style="color: orange; border-bottom: 1px solid gray;text-align: left; height:16px">
                     @if(@$client_supplier_section_show == 1)
                         {{($client_supplier_section) ? $client_supplier_section : ""}}
                     @endif
