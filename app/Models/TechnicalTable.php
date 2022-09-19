@@ -11,7 +11,7 @@ class TechnicalTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'technical_tables' ;
 
-    public $appends = ['client_name','asset_name','payment_option_name'];
+    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount', 'meta_discount'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -25,7 +25,7 @@ class TechnicalTable extends Model
         return $this->hasMany(Item::class, 'parent_id');
     }
     
-    public function itemMeta(){
+    public function item_meta(){
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }
 
@@ -61,6 +61,27 @@ class TechnicalTable extends Model
         if(isset( $this->attributes['valid_until'] )){
            return date( "d-m-Y", strtotime( $this->attributes['valid_until'] ) ); 
         }
+    }
+    public function getMetaDiscountAttribute(){
+		if(isset($this->item_meta)){
+			return $this->item_meta->pluck('discount')->first();
+		}
+    }
+
+    public function getCreatedByNameAttribute(){
+        
+        if(isset( $this->attributes['created_by'] )){
+            $table = $this->getTable();
+            $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($createdby, $this->attributes['created_by']);
+        }
+    }
+
+	public function getAmountAttribute(){
+        
+      if(isset($this->items)){
+		return $this->items->sum('amount');
+	  }
     }
 
 }

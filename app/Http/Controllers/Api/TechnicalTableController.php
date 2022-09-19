@@ -137,55 +137,61 @@ class TechnicalTableController extends Controller
             if($request->item){
                 $items = json_decode($request->item, true);
 
-                $meta_discount    = $request->meta_discount;
-                $meta_income_tax  = $request->meta_income_tax;
-                //save item meta
-                if ($meta_discount) {
+               $meta_discount    = $request->meta_discount;
+               $meta_income_tax  = $request->meta_income_tax;
+               //save item meta
+               if ($meta_discount) {
 
-                    ItemMeta::create([
-                        'reference_id'  => $technical_incidents->id,
-                        'parent_id'     => $technical_incidents->id,
-                        'discount'      => $meta_discount,
-                        'income_tax'    => $meta_income_tax
-                    ]);
-                }
-                // items
-                foreach ($items as $item) {
-                    $reference        = $item['reference'];
-                    if (isset($item['reference_id'])) {
-                        $reference_id     = $item['reference_id'];
-                    } else {
-                        $reference_id     = NULL;
-                    }
-                    
-                    $name             = $item['name'];
-                    $parent_id        = $technical_incidents->id;
-                    $type             = $technical_incidents->reference;
-                    $description      = $item['description'];
-                    $base_price       = $item['base_price'];
-                    $quantity         = $item['quantity'];
-                    $discount         = $item['discount'];
-                    $tax              = $item['tax'];
-                    $income_tax       = $item['income_tax'];
-                    $createdItem = Item::create([
-                        'reference'     => $reference,
-                        'reference_id'  => $reference_id,
-                        'parent_id'     => $parent_id,
-                        'type'          => $type,
-                        'name'          => $name,
-                        'description'   => $description,
-                        'base_price'    => $base_price,
-                        'quantity'      => $quantity,
-                        'discount'      => $discount,
-                        'tax'           => $tax,
-                        'income_tax'    => $income_tax
-                    ]);
-                }
+                   ItemMeta::create([
+                       'reference_id'  => $technical_incidents->id,
+                       'parent_id'     => $technical_incidents->id,
+                       'discount'      => $meta_discount,
+                       'income_tax'    => $meta_income_tax
+                   ]);
+               }
+               // items
+               foreach ($items as $item) {
+                   $reference = $item['reference'];
+                   if (isset($item['reference_id'])) {
+                       $reference_id = $item['reference_id'];
+                   } else {
+                       $reference_id = NULL;
+                   }
+                   
+                   $name             = isset($item['name']) ? $item['name'] : "";
+                   $parent_id        = $technical_incidents->id;
+                   $type             = $technical_incidents->reference;
+                   $description      = isset($item['description']) ? $item['description'] : "";
+                   $base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
+                   $quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
+                   $discount         = isset($item['discount']) ? $item['discount'] : 0;
+                   $tax              = isset($item['tax']) ? $item['tax'] : 0;
+                   $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+                   $subtotal        = isset($item['subtotal']) ? $item['subtotal'] : 0;
+                   $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
+                   $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
+                   $vat              = isset($item['vat']) ? $item['vat'] : 0;
+                   $createdItem = Item::create([
+                       'reference'     => $reference,
+                       'reference_id'  => $reference_id,
+                       'parent_id'     => $parent_id,
+                       'type'          => $type,
+                       'name'          => $name,
+                       'description'   => $description,
+                       'base_price'    => $base_price,
+                       'quantity'      => $quantity,
+                       'discount'      => $discount,
+                       'tax'           => $tax,
+                       'income_tax'    => $income_tax,
+                       'subtotal'     => $subtotal,
+                       'vat'           => $vat
+                   ]);
+               }
             }
 
             return response()->json([
                 "status" => true,
-                "data" => TechnicalTable::with(['items', 'itemMeta'])->find($technical_incidents->id),
+                "data" => TechnicalTable::with(['items', 'item_meta'])->find($technical_incidents->id),
                 "message" => "Saved successfully"
             ]);
         }else{
@@ -213,7 +219,7 @@ class TechnicalTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        $technical_incident = TechnicalTable::with(['items', 'itemMeta'])->where('id', $request->technical_table)->first();
+        $technical_incident = TechnicalTable::with(['items', 'item_meta'])->where('id', $request->technical_table)->first();
 
         if($technical_incident ==  NULL){
             return response()->json([
@@ -246,7 +252,7 @@ class TechnicalTableController extends Controller
     {
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
-        $technical_incident = TechnicalTable::where('id', $request->technical_table)->first();
+        $technical_incident = TechnicalTable::with(['items', 'item_meta'])->where('id', $request->technical_table)->first();
         
          //change format of date
         if($request->date){
@@ -285,9 +291,72 @@ class TechnicalTableController extends Controller
         $technical_incident->created_by = \Auth::id();
         $technical_incident->save();
 
+        if($request->item){
+
+            if($technical_incident->items){
+                $technical_incident->items()->delete();
+            }
+            if($technical_incident->item_meta){
+                $technical_incident->item_meta()->delete();
+            }
+
+            $items = json_decode($request->item, true);
+
+           $meta_discount    = $request->meta_discount;
+           $meta_income_tax  = $request->meta_income_tax;
+           //save item meta
+           if ($meta_discount) {
+
+               ItemMeta::create([
+                   'reference_id'  => $technical_incident->id,
+                   'parent_id'     => $technical_incident->id,
+                   'discount'      => $meta_discount,
+                   'income_tax'    => $meta_income_tax
+               ]);
+           }
+           // items
+           foreach ($items as $item) {
+               $reference = $item['reference'];
+               if (isset($item['reference_id'])) {
+                   $reference_id = $item['reference_id'];
+               } else {
+                   $reference_id = NULL;
+               }
+               
+               $name             = isset($item['name']) ? $item['name'] : "";
+               $parent_id        = $technical_incident->id;
+               $type             = $technical_incident->reference;
+               $description      = isset($item['description']) ? $item['description'] : "";
+               $base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
+               $quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
+               $discount         = isset($item['discount']) ? $item['discount'] : 0;
+               $tax              = isset($item['tax']) ? $item['tax'] : 0;
+               $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+               $subtotal        = isset($item['subtotal']) ? $item['subtotal'] : 0;
+               $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
+               $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
+               $vat              = isset($item['vat']) ? $item['vat'] : 0;
+               $createdItem = Item::create([
+                   'reference'     => $reference,
+                   'reference_id'  => $reference_id,
+                   'parent_id'     => $parent_id,
+                   'type'          => $type,
+                   'name'          => $name,
+                   'description'   => $description,
+                   'base_price'    => $base_price,
+                   'quantity'      => $quantity,
+                   'discount'      => $discount,
+                   'tax'           => $tax,
+                   'income_tax'    => $income_tax,
+                   'subtotal'     => $subtotal,
+                   'vat'           => $vat
+               ]);
+           }
+        }
+
         return response()->json([
             "status" => true,
-            "data" => $technical_incident,
+            "data" => TechnicalTable::with(['items', 'item_meta'])->where('id', $request->technical_table)->first(),
             "message" => "Updated successfully"
         ]);
     }
