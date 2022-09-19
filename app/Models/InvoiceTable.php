@@ -21,7 +21,7 @@ class InvoiceTable extends Model
 
         return $this->hasMany(Item::class, 'parent_id');
     }
-    public function itemMeta(){
+    public function item_meta(){
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }
