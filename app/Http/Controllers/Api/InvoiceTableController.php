@@ -199,7 +199,7 @@ class InvoiceTableController extends Controller
 
             return response()->json([
                 "status" => true,
-                "data" => InvoiceTable::with(['items', 'itemMeta'])->find($invoice->id),
+                "data" => InvoiceTable::with(['items', 'item_meta'])->find($invoice->id),
                 "message" => "Saved successfully"
             ]);
         }else{
@@ -227,7 +227,7 @@ class InvoiceTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        $invoice = InvoiceTable::with(['items', 'itemMeta'])->where('id', $request->invoice)->first();
+        $invoice = InvoiceTable::with(['items', 'item_meta'])->where('id', $request->invoice)->first();
 
         if($invoice ==  NULL){
             return response()->json([

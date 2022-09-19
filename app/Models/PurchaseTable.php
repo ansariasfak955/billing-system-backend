@@ -9,7 +9,7 @@ class PurchaseTable extends Model
 {
     use HasFactory;
     protected $guarded = ['id' , 'created_at', 'updated_at'];
-    protected static $globalTable = 'supplier_tables' ;
+    protected static $globalTable = 'purchase_tables' ;
 
     public function getTable() {
         return self::$globalTable ;
@@ -21,7 +21,7 @@ class PurchaseTable extends Model
 
         return $this->hasMany(Item::class, 'parent_id');
     }
-    public function itemMeta(){
+    public function item_meta(){
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }

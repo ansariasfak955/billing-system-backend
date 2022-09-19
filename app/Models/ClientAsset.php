@@ -35,6 +35,7 @@ class ClientAsset extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    protected $appends = ['client_name'];
 
     public function getMainImageAttribute()
     {
@@ -44,11 +45,22 @@ class ClientAsset extends Model
             return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
         }
     }
+    
     public function images(){
 
         return $this->hasMany(ClientAssetAttachment::class, 'asset_id')->where('type', 'images');
     } 
+
     public function attachments(){
         return $this->hasMany(ClientAssetAttachment::class, 'asset_id')->where('type', 'attachments');
+    }
+
+    public function getClientNameAttribute(){
+        
+        if(isset( $this->attributes['client_id'] )){
+            $table = $this->getTable();
+            $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($client_id, $this->attributes['client_id']);
+        }
     }
 }

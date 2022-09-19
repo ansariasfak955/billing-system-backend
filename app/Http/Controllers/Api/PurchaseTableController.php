@@ -183,7 +183,7 @@ class PurchaseTableController extends Controller
 
             return response()->json([
                 "status" => true,
-                "data" => PurchaseTable::with(['items', 'itemMeta'])->find($purchase_table->id),
+                "data" => PurchaseTable::with(['items', 'item_meta'])->find($purchase_table->id),
                 "message" => "Saved successfully"
             ]);
         }else{
@@ -211,7 +211,7 @@ class PurchaseTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        $purchase_table = PurchaseTable::with(['items', 'itemMeta'])->where('id', $request->purchase_table)->first();
+        $purchase_table = PurchaseTable::with(['items', 'item_meta'])->where('id', $request->purchase_table)->first();
 
         if($purchase_table ==  NULL){
             return response()->json([
