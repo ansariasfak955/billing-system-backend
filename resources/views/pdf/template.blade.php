@@ -421,41 +421,41 @@
                     </th>
     
                 @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
-                    <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
                 @endif
 
                 @if(@$client_supplier_tin_show)
-                    <tr><td style="padding: 0; margin: 0;">Tin: <b>{{$client_supplier_tin}}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_tin}}</b></td></tr>
                 @endif
 
                 @if(@$client_supplier_phone_show)
-                    <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone}}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_phone}}</b></td></tr>
                 @endif
 
                 @if(@$client_supplier_reference_show)
-                    <tr><td style="padding: 0; margin: 0;">Reference: <b>{{$client_supplier_reference}}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_reference}}</b></td></tr>
                 @endif
 
                 @if(@$client_supplier_fax_show)
-                    <tr><td style="padding: 0; margin: 0;">Fax: <b>{{$client_supplier_fax}}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_fax}}</b></td></tr>
                 @endif
 
                 @if(@$client_supplier_email_show)
-                    <tr><td style="padding: 0; margin: 0;">Email: <b>{{$client_supplier_email}}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_email}}</b></td></tr>
                 @endif
 
                 @if(@$client_supplier_website_show)
-                    <tr><td style="padding: 0; margin: 0;">Website: <b>{{$client_supplier_website}}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_website}}</b></td></tr>
                 @endif
 
                 @if(@$client_supplier_billing_show)
-                    <tr><td style="padding: 0; margin: 0;">Billing: <b>{{$client_supplier_billing}}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;"><b>{{$client_supplier_billing}}</b></td></tr>
                 @endif
 
                 <tr><td style="padding: 0; margin: 0;">
                 @if(@$client_supplier_zip_code_show == 1) 
                     {{-- <b>{{$client_supplier_zip_code_show}}</b> --}}
-                    Zip Code: <b>90001</b>
+                    <b>90001</b>
                 @endif
                     </td>
                 </tr>
@@ -466,7 +466,7 @@
                 @if(@$client_supplier_city_show == 1)
                     {{-- <b>{{$client_supplier_city_show}}</b>
                 @else --}}
-                    City: <b>Los Angeles, California</b>
+                    <b>Los Angeles, California</b>
                 @endif
                     </td>
                 </tr>
@@ -475,7 +475,7 @@
                 @if(@$client_supplier_state_show == 1) 
                     {{-- <b>{{$client_supplier_state_show}}</b>
                 @else --}}
-                    State: <b>Alaska</b>
+                    <b>Alaska</b>
                 @endif
                     </td>
                 </tr>
@@ -484,7 +484,7 @@
                 @if(@$client_supplier_country_show == 1)
                     {{-- <b>{{$client_supplier_country_show}}</b>
                 @else --}}
-                    Country: <b>USA</b>
+                    <b>USA</b>
                 @endif
                     </td>
                 </tr>
