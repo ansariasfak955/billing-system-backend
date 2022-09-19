@@ -257,6 +257,8 @@ Route::group(['namespace' => 'Api'], function() {
 
             // Related
             Route::get('related', 'RelatedController@related');
+            //history
+            Route::get('history', 'HistoryController@getHistory');
 
             // Reports
             Route::prefix('reports')->group(function () {
