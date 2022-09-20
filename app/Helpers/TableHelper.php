@@ -911,6 +911,21 @@ class TableHelper
             });
         }
 
+         /* Creating dynamic references table */
+        if (!Schema::hasTable('company_'.$company_id.'_references')) {
+            Schema::create('company_'.$company_id.'_references', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('title')->nullable();
+                $table->string('type');
+                $table->string('prefix');
+                $table->integer('last_reference')->nullable();
+                $table->integer('number_of_digit')->nullable();
+                $table->enum('by_default', ['0', '1'])->default(0);
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic company based services table */
         if (!Schema::hasTable('company_'.$company_id.'_services')) {
             Schema::create('company_'.$company_id.'_services', function (Blueprint $table) {
