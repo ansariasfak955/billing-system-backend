@@ -60,8 +60,8 @@ class SupplierController extends Controller
             'phone_1' => "sometimes|nullable|unique:$table",
             'phone_2' => "sometimes|nullable|unique:$table"
         ],[
-            'tin.required' => 'Ced/Ruc is must be required',
-            'tin.unique' => 'Ced/Ruc is must be unique',
+            'tin.required' => 'Ced/Ruc number is required',
+            'tin.unique' => 'Ced/Ruc number must be unique',
             'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 

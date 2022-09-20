@@ -53,7 +53,7 @@ class CompanyController extends Controller
             'phone' => 'required',
             'tin' => 'required|alpha_num',  
         ],[
-            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.required' => 'Ced/Ruc number is required',
             'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
@@ -135,7 +135,7 @@ class CompanyController extends Controller
             'phone' => 'required',
             'tin' => 'required|alpha_num',
         ],[
-            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.required' => 'Ced/Ruc number is required',
             'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
