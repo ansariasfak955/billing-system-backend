@@ -52,6 +52,9 @@ class CompanyController extends Controller
             'commercial_name' => 'required|unique:companies',
             'phone' => 'required',
             'tin' => 'required|alpha_num',  
+        ],[
+            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
         if ($validator->fails()) {
@@ -131,6 +134,9 @@ class CompanyController extends Controller
             'name' => 'required|unique:companies,name,'.$company->id,
             'phone' => 'required',
             'tin' => 'required|alpha_num',
+        ],[
+            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
         if ($validator->fails()) {

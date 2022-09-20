@@ -73,6 +73,9 @@ class UserController extends Controller
             'role' => 'required',
             'password' => 'required|min:8|alpha_dash',
             'tin' => 'required|alpha_num',   
+        ],[
+            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
         if ($validator->fails()) {
@@ -146,6 +149,9 @@ class UserController extends Controller
             'username' => 'required|alpha_dash',         
             'role' => 'required',
             'tin' => 'required|alpha_num',
+        ],[
+            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
         if ($validator->fails()) {

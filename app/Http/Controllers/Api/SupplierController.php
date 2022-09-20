@@ -59,6 +59,10 @@ class SupplierController extends Controller
             'bank_account_account' => "sometimes|nullable|unique:$table",
             'phone_1' => "sometimes|nullable|unique:$table",
             'phone_2' => "sometimes|nullable|unique:$table"
+        ],[
+            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.unique' => 'Ced/Ruc is must be unique',
+            'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
         if ($validator->fails()) {
