@@ -61,6 +61,10 @@ class ClientController extends Controller
             'phone_1' => "sometimes|nullable|unique:$table",
             'phone_2' => "sometimes|nullable|unique:$table",
             'client_category' => "integer"
+        ],[
+            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.unique' => 'Ced/Ruc is must be unique',
+            'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
         if ($validator->fails()) {
@@ -147,6 +151,9 @@ class ClientController extends Controller
         $validator = Validator::make($request->all(), [
             'tin' => 'required|alpha_num',
             'legal_name' => "required"
+        ],[
+            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
         if ($validator->fails()) {
