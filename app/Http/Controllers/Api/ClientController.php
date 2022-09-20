@@ -62,8 +62,8 @@ class ClientController extends Controller
             'phone_2' => "sometimes|nullable|unique:$table",
             'client_category' => "integer"
         ],[
-            'tin.required' => 'Ced/Ruc is must be required',
-            'tin.unique' => 'Ced/Ruc is must be unique',
+            'tin.required' => 'Ced/Ruc number is required',
+            'tin.unique' => 'Ced/Ruc number must be unique',
             'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
@@ -152,7 +152,7 @@ class ClientController extends Controller
             'tin' => 'required|alpha_num',
             'legal_name' => "required"
         ],[
-            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.required' => 'Ced/Ruc number is required',
             'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 

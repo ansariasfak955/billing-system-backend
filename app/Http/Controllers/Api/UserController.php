@@ -74,7 +74,7 @@ class UserController extends Controller
             'password' => 'required|min:8|alpha_dash',
             'tin' => 'required|alpha_num',   
         ],[
-            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.required' => 'Ced/Ruc number is required',
             'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
@@ -150,7 +150,7 @@ class UserController extends Controller
             'role' => 'required',
             'tin' => 'required|alpha_num',
         ],[
-            'tin.required' => 'Ced/Ruc is must be required',
+            'tin.required' => 'Ced/Ruc number is required',
             'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',
         ]);
 
