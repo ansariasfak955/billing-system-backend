@@ -197,6 +197,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('update-template-field', 'MyTemplateController@updateTemplateField');
             Route::apiResource('users', UserController::class);
             Route::apiResource('references', ReferenceController::class);
+            Route::apiResource('service-attachments', ServiceAttachmentController::class);
             
             Route::apiResource('rates', RateController::class);
             Route::apiResource('services', ServiceController::class);

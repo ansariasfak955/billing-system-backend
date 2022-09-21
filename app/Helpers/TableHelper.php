@@ -674,6 +674,19 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic Service attachments table */
+        if (!Schema::hasTable('company_'.$company_id.'_service_attachments')) {
+            Schema::create('company_'.$company_id.'_service_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('service_id')->nullable();
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->string('type')->nullable();
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic subscriptions table */
         if (!Schema::hasTable('company_'.$company_id.'_subscriptions')) {
             Schema::create('company_'.$company_id.'_subscriptions', function (Blueprint $table) {
@@ -1182,7 +1195,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "tin_heading",
-                    "option_value" => "TIN",
+                    "option_value" => "Ced/Ruc",
                     "category" => 'Company Information',
                     "type" => "tin",
                 ]);
@@ -1827,7 +1840,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_tin_heading",
-                    "option_value" => "TIN",
+                    "option_value" => "Ced/Ruc",
                     "category" => "Client/Supplier Information",
                     "type" => "client_tin",
                 ]);
@@ -2336,7 +2349,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_tin_signature_text",
-                        "option_value" => "TIN:",
+                        "option_value" => "Ced/Ruc:",
                         "category" => "Signature and Summary",
                         "type" => "sign_tin_signature",
                     ]);
