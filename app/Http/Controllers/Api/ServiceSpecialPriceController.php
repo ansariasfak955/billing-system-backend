@@ -99,7 +99,7 @@ class ServiceSpecialPriceController extends Controller
 
         if($service_special_price ==  NULL){
             return response()->json([
-                "status" => true,
+                "status" => false,
                 "message" => "This entry does not exists"
             ]);
         }
