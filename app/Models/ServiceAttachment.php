@@ -29,7 +29,7 @@ class ServiceAttachment extends Model
     public function getDocumentAttribute()
     {
         if ($this->attributes['document']) {
-            return url('/storage').'/services/documents/'.$this->attributes['document'];
+            return url('/storage').'/service/documents/'.$this->attributes['document'];
         } else {
             return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
         }
