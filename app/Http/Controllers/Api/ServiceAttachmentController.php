@@ -87,7 +87,7 @@ class ServiceAttachmentController extends Controller
         if($request->document != NULL){
             $originName = $request->file('document')->getClientOriginalName();
             $imageName = time().'.'.$request->document->extension();  
-            $request->document->move(storage_path('app/public/service/documents'), $imageName);
+            $request->document->move(storage_path('app/public/service/documents/'), $imageName);
             $service_attachment->document = $imageName;
             $service_attachment->type = $type;
 
@@ -158,7 +158,7 @@ class ServiceAttachmentController extends Controller
         if($request->document != NULL){
             $originName = $request->file('document')->getClientOriginalName();
             $imageName = time().'.'.$request->document->extension();  
-            $request->document->move(storage_path('app/public/service/attachment'), $imageName);
+            $request->document->move(storage_path('app/public/service/documents/'), $imageName);
             $service_attachment->document = $imageName;
             $service_attachment->image = $originName;
             $service_attachment->save();
