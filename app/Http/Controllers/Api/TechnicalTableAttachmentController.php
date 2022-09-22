@@ -98,7 +98,7 @@ class TechnicalTableAttachmentController extends Controller
         return response()->json([
             "status" => true,
             "technical_attachment" => $technical_attachment,
-            "message" => "Attachment created successfully"
+            "message" => "Technical table attachment created successfully"
         ]);
     }
 
@@ -188,7 +188,7 @@ class TechnicalTableAttachmentController extends Controller
         if($technical_attachment->delete()){
             return response()->json([
                     'status' => true,
-                    'message' => "Client attachment deleted successfully!"
+                    'message' => "Technical table attachment deleted successfully!"
             ]);
         } else {
             return response()->json([
