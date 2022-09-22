@@ -183,8 +183,8 @@ class TechnicalTableAttachmentController extends Controller
     public function destroy(Request $request)
     {
         $table = 'company_'.$request->company_id.'_technical_table_attachments';
-        ClientAssetAttachment::setGlobalTable($table);
-        $technical_attachment = ClientAssetAttachment::where('id', $request->technical_table_attachment)->first();
+        TechnicalTableAttachment::setGlobalTable($table);
+        $technical_attachment = TechnicalTableAttachment::where('id', $request->technical_table_attachment)->first();
         if($technical_attachment->delete()){
             return response()->json([
                     'status' => true,
