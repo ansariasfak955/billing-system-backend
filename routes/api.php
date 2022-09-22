@@ -198,6 +198,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('users', UserController::class);
             Route::apiResource('references', ReferenceController::class);
             Route::apiResource('service-attachments', ServiceAttachmentController::class);
+            Route::apiResource('service-special-prices', ServiceSpecialPriceController::class);
             
             Route::apiResource('rates', RateController::class);
             Route::apiResource('services', ServiceController::class);

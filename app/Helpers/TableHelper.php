@@ -120,6 +120,23 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic service special prices table */
+        if (!Schema::hasTable('company_'.$company_id.'_service_special_prices')) {
+            Schema::create('company_'.$company_id.'_service_special_prices', function (Blueprint $table) {
+                $table->id();
+                $table->string('client_id');
+                $table->string('service_id')->nullable();
+                $table->float('purchase_price')->nullable();
+                $table->float('sales_price')->nullable();
+                $table->string('purchase_margin')->nullable();
+                $table->string('sales_margin')->nullable();
+                $table->float('discount')->nullable();
+                $table->float('special_price')->nullable();
+                $table->string('type',20)->nullable();
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic client contacts table */
         if (!Schema::hasTable('company_'.$company_id.'_client_contacts')) {
             Schema::create('company_'.$company_id.'_client_contacts', function (Blueprint $table) {
