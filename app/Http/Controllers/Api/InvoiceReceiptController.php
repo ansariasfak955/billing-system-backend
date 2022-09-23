@@ -91,8 +91,11 @@ class InvoiceReceiptController extends Controller
                 'concept' => $request->concept,
                 'payment_option' => $request->payment_option,
                 'bank_account' => $request->bank_account,
-                'payment_option' => $request->payment_option,
-                'payment_date' => $request->payment_date
+                'payment_date' => $request->payment_date,
+                'amount' => $request->amount,
+                'expiration_date' => $request->expiration_date,
+                'paid' => isset($invoiceId['paid']) ? $invoiceId['paid'] : 0,
+                'paid_by' => $request->paid_by
             ]);
             InvoiceTable::where('id', $invoiceId)->update([
                 'status' => 'paid'
