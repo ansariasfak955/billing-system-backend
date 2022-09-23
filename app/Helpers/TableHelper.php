@@ -593,6 +593,10 @@ class TableHelper
                 $table->string('payment_option')->nullable();
                 $table->string('bank_account')->nullable();
                 $table->dateTime('payment_date')->nullable();
+                $table->string('amount')->nullable();
+                $table->dateTime('expiration_date')->nullable();
+                $table->enum('paid', ['0', '1'])->default(0);
+                $table->string('paid_by')->nullable();
                 $table->timestamps();
             });
         }
