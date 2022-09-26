@@ -36,23 +36,24 @@ class ReportController extends Controller
         $paid_sum = 0;
         $unpaid_sum = 0;
         $data = [];
-        $client_id  = Client::pluck('id')->toArray();
+        $client_id = Client::pluck('id')->toArray();
+        $arr = [];
         foreach($paids as $paid){
-            $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->where('supplier_id', $client_id)->get();
-            foreach($purchaseDatas as $purchaseData){
-               $paid_sum = $paid_sum + $purchaseData->items()->sum('base_price');
-            }
+            $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get();
+            // foreach($purchaseDatas as $purchaseData){
+            //    $paid_sum = $paid_sum + $purchaseData->items()->sum('base_price');
+            // }
             $arr['status'] = 'paid';
-            $arr['sum'] = $paid_sum;
+            $arr['sum'] = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get()->sum('amount');
         }
         $data[] = $arr;
         foreach($unpaids as $unpaid){
-            $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->where('supplier_id', $client_id)->get();
-            foreach($purchaseDatas as $purchaseData){
-               $unpaid_sum = $unpaid_sum + $purchaseData->items()->sum('base_price');
-            }
+            $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get();
+            // foreach($purchaseDatas as $purchaseData){
+            //    $unpaid_sum = $unpaid_sum + $purchaseData->items()->sum('base_price');
+            // }
             $arr['status'] = 'unpaid';
-            $arr['sum'] = $unpaid_sum;
+            $arr['sum'] = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get()->sum('amount');
         }
         $data[] = $arr;
 
@@ -84,13 +85,13 @@ class ReportController extends Controller
 
         $data = [];
         foreach($client_ids as $client_id){
-            $invoiceDatas = InvoiceTable::with(['items', 'itemMeta'])->where('client_id', $client_id)->get();
+            $invoiceDatas = InvoiceTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
             $sum = 0;
             $arr['client_id'] = $client_id;
-            foreach($invoiceDatas as $invoiceData){
-               $sum = $sum + $invoiceData->items()->sum('base_price');
-            }
-            $arr['sum'] = $sum;
+            // foreach($invoiceDatas as $invoiceData){
+            //    $sum = $sum + $invoiceData->items()->sum('base_price');
+            // }
+            $arr['sum'] = InvoiceTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
             $data[] = $arr;
         }
 
@@ -101,8 +102,8 @@ class ReportController extends Controller
     }
 
     public function sales( Request $request ){
-        $salesTables = 'company_'.$request->company_id.'_purchase_tables';
-        PurchaseTable::setGlobalTable($salesTables); 
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
 
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables); 
@@ -114,14 +115,18 @@ class ReportController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
 
         if( $request->type == "overview" ){
-            $data['pending'] = PurchaseTable::where('status', 'pending')->count();
-            $data['closed'] = PurchaseTable::where('status', 'closed')->count();
-            $data['resolved'] = PurchaseTable::where('status', 'resolved')->count();
-            $data['refused'] = PurchaseTable::where('status', 'refused')->count();
+            $data['pending'] = SalesEstimate::where('status', 'pending')->count();
+            $data['closed'] = SalesEstimate::where('status', 'closed')->count();
+            $data['resolved'] = SalesEstimate::where('status', 'resolved')->count();
+            $data['refused'] = SalesEstimate::where('status', 'refused')->count();
+            $data['pending_amount'] = SalesEstimate::where('status', 'pending')->get()->sum('amount');
+            $data['closed_amount'] = SalesEstimate::where('status', 'closed')->get()->sum('amount');
+            $data['resolved_amount'] = SalesEstimate::where('status', 'resolved')->get()->sum('amount');
+            $data['refused_amount'] = SalesEstimate::where('status', 'refused')->get()->sum('amount');
             return $data;
 
         }elseif( $request->type == "agent" ){
-            $agent_ids  = PurchaseTable::pluck('agent_id')->toArray();
+            $agent_ids  = SalesEstimate::pluck('agent_id')->toArray();
             $client_ids  = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
 
         }else{
@@ -129,13 +134,13 @@ class ReportController extends Controller
         }
         $data = [];
         foreach($client_ids as $client_id){
-            $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->where('id', $client_id)->get();
+            $purchaseDatas = SalesEstimate::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
             $sum = 0;
             $arr['client_id'] = $client_id;
-            foreach($purchaseDatas as $purchaseData){
-               $sum = $sum + $purchaseData->items()->sum('base_price');
-            }
-            $arr['sum'] = $sum;
+            // foreach($purchaseDatas as $purchaseData){
+            //    $sum = $sum + $purchaseData->items()->sum('base_price');
+            // }
+            $arr['sum'] = SalesEstimate::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
             $data[] = $arr;
         }
 
@@ -163,6 +168,10 @@ class ReportController extends Controller
             $data['closed'] = TechnicalTable::where('status', 'closed')->count();
             $data['resolved'] = TechnicalTable::where('status', 'resolved')->count();
             $data['refused'] = TechnicalTable::where('status', 'refused')->count();
+            $data['pending_amount'] = TechnicalTable::where('status', 'pending')->get()->sum('amount');
+            $data['closed_amount'] = TechnicalTable::where('status', 'closed')->get()->sum('amount');
+            $data['resolved_amount'] = TechnicalTable::where('status', 'resolved')->get()->sum('amount');
+            $data['refused_amount'] = TechnicalTable::where('status', 'refused')->get()->sum('amount');
             return $data;
 
         }elseif( $request->type == "agent" ){
@@ -175,13 +184,13 @@ class ReportController extends Controller
 
         $data = [];
         foreach($client_ids as $client_id){
-            $technicalDatas = TechnicalTable::with(['items', 'itemMeta'])->where('client_id', $client_id)->get();
+            $technicalDatas = TechnicalTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
             $sum = 0;
             $arr['client_id'] = $client_id;
-            foreach($technicalDatas as $technicalData){
-               $sum = $sum + $technicalData->items()->sum('base_price');
-            }
-            $arr['sum'] = $sum;
+            // foreach($technicalDatas as $technicalData){
+            //    $sum = $sum + $technicalData->items()->sum('base_price');
+            // }
+            $arr['sum'] = TechnicalTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
             $data[] = $arr;
         }
 
@@ -209,27 +218,28 @@ class ReportController extends Controller
             $supplier_ids = Supplier::whereIn('id', $supplierArr)->pluck('id')->toArray();
             $data = [];
             foreach($supplier_ids as $supplier_id){
-                $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->where('supplier_id', $supplier_id)->get();
+                $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $supplier_id)->get();
                 $sum = 0;
                 $arr['supplier_id'] = $supplier_id;
-                foreach($purchaseDatas as $purchaseData){
-                    $sum = $sum + $purchaseData->items()->sum('base_price');
-                }
-                $arr['sum'] = $sum;
+                // foreach($purchaseDatas as $purchaseData){
+                //     $sum = $sum + $purchaseData->items()->sum('base_price');
+                // }
+                $arr['sum'] = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $supplier_id)->get()->sum('amount');
                 $data[] = $arr;
             }
 
         }else{
             $data = [];
-            $purchaseDatas = PurchaseTable::with(['items', 'itemMeta'])->get();
+            $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->get();
             
             $sum = 0;
             foreach($purchaseDatas as $purchaseData){
                 $arr['name'] = $purchaseData->title;
                 $sum = $sum + $purchaseData->items()->sum('base_price');
                 $arr['sum'] = $sum;
+                $data[] = $arr;
             }
-            $data[] = $arr;
+            
         }
         
         return response()->json([

@@ -11,12 +11,15 @@ class InvoiceTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_tables' ;
 
+    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount'];
+
     public function getTable() {
         return self::$globalTable ;
     }
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+
     public function items(){
 
         return $this->hasMany(Item::class, 'parent_id');
@@ -24,5 +27,35 @@ class InvoiceTable extends Model
     public function item_meta(){
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
+    }
+
+    public function getMetaDiscountAttribute(){
+		if(isset($this->item_meta)){
+			return $this->item_meta->pluck('discount')->first();
+		}
+    }
+
+	public function getClientNameAttribute(){
+        
+        if(isset( $this->attributes['client_id'] )){
+            $table = $this->getTable();
+            $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($client_id, $this->attributes['client_id']);
+        }
+    }
+
+	public function getCreatedByNameAttribute(){
+        
+        if(isset( $this->attributes['created_by'] )){
+            $table = $this->getTable();
+            $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($createdby, $this->attributes['created_by']);
+        }
+    }
+
+	public function getAmountAttribute(){
+      if(isset($this->items)){
+		return $this->items->sum('amount');
+	  }
     }
 }
