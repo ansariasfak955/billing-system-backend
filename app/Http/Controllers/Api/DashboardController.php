@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SalesEstimate;
 use App\Models\TechnicalTable;
+use App\Models\TechnicalIncident;
 use App\Models\InvoiceTable;
 use App\Models\PurchaseTable;
 use App\Models\Client;
@@ -27,6 +28,8 @@ class DashboardController extends Controller
 
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables); 
+        $technicalIncident = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($technicalIncident); 
 
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
@@ -34,131 +37,99 @@ class DashboardController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
         $data  = [];
+        if($request->type == 'recent'){
+            $salesEstimatesData = SalesEstimate::orderBy('created_at', 'DESC')->get()->toArray();
+            $InvoiceTableData = InvoiceTable::orderBy('created_at', 'DESC')->get()->toArray();
+            $purchaseTablesData = PurchaseTable::orderBy('created_at', 'DESC')->get()->toArray();
+            $TechnicalIncidentData = TechnicalTable::orderBy('created_at', 'DESC')->get()->toArray();
+            $data = array_merge($salesEstimatesData, $InvoiceTableData, $purchaseTablesData, $TechnicalIncidentData);
+            if(count($data)){
 
-        $salesArr = [
-            "name" => "SALES", 
-            "data" => [
-                [
-                    "lable" => "Estimates", 
-                    "value" => "4($ 291.01)"
-                ], 
-                [
-                    "lable" => "Orders", 
-                    "value" => "7($ 424.73)" 
-                ], 
-                [
-                    "lable" => "Delivery Notes", 
-                    "value" => "1($ 363.60)"
+                $data =  new \Illuminate\Support\Collection($data);
+                $data = $data->sortBy('created_at')->take(20)->values();
+            }
+
+        }else{
+
+            $salesArr = [
+                "name" => "SALES", 
+                "data" => [
+                    [
+                        "lable" => "Estimates", 
+                        "value" => SalesEstimate::where('reference', 'SE')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SE')->where('status', 'pending')->get()->sum('amount').")"
+                    ], 
+                    [
+                        "lable" => "Orders", 
+                        "value" => SalesEstimate::where('reference', 'SO')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SO')->where('status', 'pending')->get()->sum('amount').")"
+                    ], 
+                    [
+                        "lable" => "Delivery Notes", 
+                        "value" => SalesEstimate::where('reference', 'SDN')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SDN')->where('status', 'pending')->get()->sum('amount').")"
+                    ] 
                 ] 
-            ] 
-        ];
-        $technicalServiceArr = [
-            "name" => "TECHNICAL SERVICE", 
-            "data" => [
-                [
-                    "lable" => "My Incidents", 
-                    "value" => "7"
-                ], 
-                [
-                    "lable" => "Unassigned Incidents", 
-                    "value" => "0" 
-                ], 
-                [
-                    "lable" => "Estimates", 
-                    "value" => "2($ 1.424.40)" 
-                ],
-                [
-                    "lable" => "Orders", 
-                    "value" => "0($ 0.00)" 
-                ],
-                [
-                    "lable" => "Delivery Notes", 
-                    "value" => "2($ 149.90)" 
-                ]
-            ] 
-        ];
-        $invoiceArr = [
-            "name" => "INVOICING", 
-            "data" => [
-                [
-                    "lable" => "Invoices", 
-                    "value" => "6($ 470.22)" 
-                ], 
-                [
-                    "lable" => "Refund Invoices", 
-                    "value" => "0($ 0.00)" 
-                ]
-            ] 
-        ];
-        $purchaseArr = [
-            "name" => "PURCHASES", 
-            "data" => [
-                [
-                    "lable" => "Orders", 
-                    "value" => "1($ 846.00)" 
-                ], 
-                [
-                    "lable" => "Delivery Notes", 
-                    "value" => "0($ 0.00)" 
-                ], 
-                [
-                    "lable" => "Invoices", 
-                    "value" => "1($ 1,650.00)"
+            ];
+            $technicalServiceArr = [
+                "name" => "TECHNICAL SERVICE", 
+                "data" => [
+                    [
+                        "lable" => "My Incidents", 
+                        "value" => TechnicalIncident::where('status', 'pending')->count()
+                    ], 
+                    [
+                        "lable" => "Unassigned Incidents", 
+                        "value" => TechnicalIncident::where('status', 'pending')->whereNull('assigned_to')->count()
+                    ], 
+                    [
+                        "lable" => "Estimates", 
+                        "value" => TechnicalTable::where('reference', 'WE')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WE')->where('status', 'pending')->get()->sum('amount').")" 
+                    ],
+                    [
+                        "lable" => "Orders", 
+                        "value" => TechnicalTable::where('reference', 'WO')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WO')->where('status', 'pending')->get()->sum('amount').")" 
+                    ],
+                    [
+                        "lable" => "Delivery Notes", 
+                        "value" => TechnicalTable::where('reference', 'WDN')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WDN')->where('status', 'pending')->get()->sum('amount').")"  
+                    ]
                 ] 
-            ] 
-        ];
+            ];
+            $invoiceArr = [
+                "name" => "INVOICING", 
+                "data" => [
+                    [
+                        "lable" => "Invoices", 
+                        "value" => InvoiceTable::where('reference', 'INV')->where('status', 'unpaid')->count()." ($ ". InvoiceTable::where('reference', 'INV')->where('status', 'unpaid')->get()->sum('amount').")"
+                    ], 
+                    [
+                        "lable" => "Refund Invoices", 
+                        "value" =>  InvoiceTable::where('reference', 'RET')->where('status', 'unpaid')->count()." ($ ". InvoiceTable::where('reference', 'RET')->where('status', 'unpaid')->get()->sum('amount').")" 
+                    ]
+                ] 
+            ];
+            $purchaseArr = [
+                "name" => "PURCHASES", 
+                "data" => [
+                    [
+                        "lable" => "Orders", 
+                        "value" =>  PurchaseTable::where('reference', 'PO')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PO')->where('status', 'pending')->get()->sum('amount').")" 
+                    ], 
+                    [
+                        "lable" => "Delivery Notes", 
+                        "value" =>  PurchaseTable::where('reference', 'PDN')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PDN')->where('status', 'pending')->get()->sum('amount').")" 
+                    ], 
+                    [
+                        "lable" => "Invoices", 
+                        "value" =>  PurchaseTable::where('reference', 'PINV')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PINV')->where('status', 'pending')->get()->sum('amount').")"
+                    ] 
+                ] 
+            ];
+    
+            $data[] = $salesArr;
+            $data[] = $technicalServiceArr;
+            $data[] = $invoiceArr;
+            $data[] = $purchaseArr;
+        }
 
-        $data[] = $salesArr;
-        $data[] = $technicalServiceArr;
-        $data[] = $invoiceArr;
-        $data[] = $purchaseArr;
-        
-           
-        // $data = [];  
-        // $arr = [];
-        //                             // Sales Dashboard
-        // $arr['name'] = "SALES";
-        // $arr['label'] = "Estimates";
-        // $arr['value'] = SalesEstimate::where('status', 'pending')->where('reference', 'SE')->count()."(".SalesEstimate::where('status', 'pending')->get()->sum('amount').")";
-        // $arr['label'] = "Orders";
-        // $arr['value'] = SalesEstimate::where('status', 'pending')->where('reference', 'SO')->count()."(".SalesEstimate::where('status', 'pending')->get()->sum('amount').")";
-        // $arr['label'] = "Delivery Notes";
-        // $arr['value'] = SalesEstimate::where('status', 'pending')->where('reference', 'SDN')->count()."(".SalesEstimate::where('status', 'pending')->get()->sum('amount').")";
-
-        //                             // Technical Service
-        // $arr1['name'] = "TECHNICAL SERVICE";
-        // $arr1['lebal'] = "My Incidents";
-        // $arr1['value'] = TechnicalTable::where('status', 'pending')->where('reference', 'INC')->count()."(".TechnicalTable::where('status', 'pending')->get()->sum('amount').")";
-        // $arr1['lebal'] = "Unassigned Incidents";
-        // $arr1['value'] = TechnicalTable::where('status', 'pending')->whereNull('assigned_to')->count()."(".TechnicalTable::where('status', 'pending')->get()->sum('amount').")";
-        // $arr['lebal'] = "Estimates";
-        // $arr1['value'] = TechnicalTable::where('status', 'pending')->where('reference', 'WE')->count()."(".TechnicalTable::where('status', 'pending')->get()->sum('amount').")";
-        // $arr1['lebal'] = "Orders";
-        // $arr1['value'] = TechnicalTable::where('status', 'pending')->where('reference', 'WO')->count()."(".TechnicalTable::where('status', 'pending')->get()->sum('amount').")";
-        // $arr1['lebal'] = "Delivery Notes";
-        // $arr1['value'] = TechnicalTable::where('status', 'pending')->where('reference', 'WDN')->count()."(".TechnicalTable::where('status', 'pending')->get()->sum('amount').")";
-
-        //                             // Invoice Dsahboard
-        // $arr2['name'] = "INVOICING";
-        // $arr2['lebal'] = "Invoices";
-        // $arr2['value'] = InvoiceTable::where('status', 'pending')->where('reference', 'INV')->count()."(".InvoiceTable::where('status', 'pending')->get()->sum('amount').")";
-        // $arr2['lebal'] = "Refund Invoices";
-        // $arr2['value'] = InvoiceTable::where('status', 'pending')->where('reference', 'RET')->count()."(".InvoiceTable::where('status', 'pending')->get()->sum('amount').")";
-
-        //                             // Purchase Dashboard
-        // $arr3['name'] = "PURCHASES";
-        // $arr3['lebal'] = "Orders";
-        // $arr3['value'] = PurchaseTable::where('status', 'pending')->where('reference', 'PO')->count()."(".PurchaseTable::where('status', 'pending')->get()->sum('amount').")";
-        // $arr3['lebal'] = "Delivery Notes";
-        // $arr3['value'] = PurchaseTable::where('status', 'pending')->where('reference', 'PDN')->count()."(".PurchaseTable::where('status', 'pending')->get()->sum('amount').")";
-        // $arr3['lebal'] = "Invoices";
-        // $arr3['value'] = PurchaseTable::where('status', 'pending')->where('reference', 'PINV')->count()."(".PurchaseTable::where('status', 'pending')->get()->sum('amount').")";
-        
-
-        // $data[] = $arr;
-        // $data[] = $arr1;
-        // $data[] = $arr2;
-        // $data[] = $arr3;
         return response()->json([
             "status" => true,
             "data" =>  $data

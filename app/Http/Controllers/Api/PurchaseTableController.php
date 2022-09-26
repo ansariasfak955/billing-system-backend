@@ -133,53 +133,59 @@ class PurchaseTableController extends Controller
             $purchase_table->save();
             // dd($request->all());
             if($request->item){
-                 $items = json_decode($request->item, true);
+                $items = json_decode($request->item, true);
 
-                $meta_discount    = $request->meta_discount;
-                $meta_income_tax  = $request->meta_income_tax;
-                //save item meta
-                if ($meta_discount) {
+               $meta_discount    = $request->meta_discount;
+               $meta_income_tax  = $request->meta_income_tax;
+               //save item meta
+               if ($meta_discount) {
 
-                    ItemMeta::create([
-                        'reference_id'  => $purchase_table->id,
-                        'parent_id'     => $purchase_table->id,
-                        'discount'      => $meta_discount,
-                        'income_tax'    => $meta_income_tax
-                    ]);
-                }
-                // items
-                foreach ($items as $item) {
-                    $reference        = $item['reference'];
-                    if (isset($item['reference_id'])) {
-                        $reference_id     = $item['reference_id'];
-                    } else {
-                        $reference_id     = NULL;
-                    }
-                    
-                    $name             = $item['name'];
-                    $parent_id        = $purchase_table->id;
-                    $type             = $purchase_table->reference;
-                    $description      = $item['description'];
-                    $base_price       = $item['base_price'];
-                    $quantity         = $item['quantity'];
-                    $discount         = $item['discount'];
-                    $tax              = $item['tax'];
-                    $income_tax       = $item['income_tax'];
-                    $createdItem = Item::create([
-                        'reference'     => $reference,
-                        'reference_id'  => $reference_id,
-                        'parent_id'     => $parent_id,
-                        'type'          => $type,
-                        'name'          => $name,
-                        'description'   => $description,
-                        'base_price'    => $base_price,
-                        'quantity'      => $quantity,
-                        'discount'      => $discount,
-                        'tax'           => $tax,
-                        'income_tax'    => $income_tax
-                    ]);
-                }
-            }
+                   ItemMeta::create([
+                       'reference_id'  => $purchase_table->id,
+                       'parent_id'     => $purchase_table->id,
+                       'discount'      => $meta_discount,
+                       'income_tax'    => $meta_income_tax
+                   ]);
+               }
+               // items
+               foreach ($items as $item) {
+                   $reference = $item['reference'];
+                   if (isset($item['reference_id'])) {
+                       $reference_id = $item['reference_id'];
+                   } else {
+                       $reference_id = NULL;
+                   }
+                   
+                   $name             = isset($item['name']) ? $item['name'] : "";
+                   $parent_id        = $purchase_table->id;
+                   $type             = $purchase_table->reference;
+                   $description      = isset($item['description']) ? $item['description'] : "";
+                   $base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
+                   $quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
+                   $discount         = isset($item['discount']) ? $item['discount'] : 0;
+                   $tax              = isset($item['tax']) ? $item['tax'] : 0;
+                   $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+                   $subtotal        = isset($item['subtotal']) ? $item['subtotal'] : 0;
+                   $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
+                   $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
+                   $vat              = isset($item['vat']) ? $item['vat'] : 0;
+                   $createdItem = Item::create([
+                       'reference'     => $reference,
+                       'reference_id'  => $reference_id,
+                       'parent_id'     => $parent_id,
+                       'type'          => $type,
+                       'name'          => $name,
+                       'description'   => $description,
+                       'base_price'    => $base_price,
+                       'quantity'      => $quantity,
+                       'discount'      => $discount,
+                       'tax'           => $tax,
+                       'income_tax'    => $income_tax,
+                       'subtotal'     => $subtotal,
+                       'vat'           => $vat
+                   ]);
+               }
+           }
 
             return response()->json([
                 "status" => true,
@@ -277,6 +283,68 @@ class PurchaseTableController extends Controller
 
         $purchase_table->update($request->except('company_id', 'technical_table', '_method'));
         $purchase_table->created_by = \Auth::id();
+        if($request->item){
+
+            if($purchase_table->items){
+                $purchase_table->items()->delete();
+            }
+            if($purchase_table->item_meta){
+                $purchase_table->item_meta()->delete();
+            }
+
+            $items = json_decode($request->item, true);
+
+           $meta_discount    = $request->meta_discount;
+           $meta_income_tax  = $request->meta_income_tax;
+           //save item meta
+           if ($meta_discount) {
+
+               ItemMeta::create([
+                   'reference_id'  => $purchase_table->id,
+                   'parent_id'     => $purchase_table->id,
+                   'discount'      => $meta_discount,
+                   'income_tax'    => $meta_income_tax
+               ]);
+           }
+           // items
+           foreach ($items as $item) {
+               $reference = $item['reference'];
+               if (isset($item['reference_id'])) {
+                   $reference_id = $item['reference_id'];
+               } else {
+                   $reference_id = NULL;
+               }
+               
+               $name             = isset($item['name']) ? $item['name'] : "";
+               $parent_id        = $purchase_table->id;
+               $type             = $purchase_table->reference;
+               $description      = isset($item['description']) ? $item['description'] : "";
+               $base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
+               $quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
+               $discount         = isset($item['discount']) ? $item['discount'] : 0;
+               $tax              = isset($item['tax']) ? $item['tax'] : 0;
+               $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+               $subtotal        = isset($item['subtotal']) ? $item['subtotal'] : 0;
+               $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
+               $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
+               $vat              = isset($item['vat']) ? $item['vat'] : 0;
+               $createdItem = Item::create([
+                   'reference'     => $reference,
+                   'reference_id'  => $reference_id,
+                   'parent_id'     => $parent_id,
+                   'type'          => $type,
+                   'name'          => $name,
+                   'description'   => $description,
+                   'base_price'    => $base_price,
+                   'quantity'      => $quantity,
+                   'discount'      => $discount,
+                   'tax'           => $tax,
+                   'income_tax'    => $income_tax,
+                   'subtotal'     => $subtotal,
+                   'vat'           => $vat
+               ]);
+           }
+        }
         $purchase_table->save();
 
         return response()->json([
