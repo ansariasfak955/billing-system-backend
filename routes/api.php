@@ -181,10 +181,12 @@ Route::group(['namespace' => 'Api'], function() {
     Route::get('subscriptions', 'SubscriptionController@index');
     Route::get('{company_id}/template-preview/{template_id}', 'MyTemplateController@getTemplatePreview');
    
+    
     Route::group(['middleware' => ['auth:api']], function(){
         Route::apiResource('companies', CompanyController::class);
         Route::post('update-profile', 'UserController@updateProfile');
         Route::group(["prefix" => "{company_id}/"], function(){
+            Route::get('dashboard-counts', 'DashboardController@index');
             Route::apiResource('bank_accounts', BankAccountController::class);
             Route::apiResource('product_categories', ProductCategoryController::class);
             Route::apiResource('products', ProductController::class);
@@ -197,6 +199,8 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('update-template-field', 'MyTemplateController@updateTemplateField');
             Route::apiResource('users', UserController::class);
             Route::apiResource('references', ReferenceController::class);
+            Route::apiResource('service-attachments', ServiceAttachmentController::class);
+            Route::apiResource('service-special-prices', ServiceSpecialPriceController::class);
             
             Route::apiResource('rates', RateController::class);
             Route::apiResource('services', ServiceController::class);

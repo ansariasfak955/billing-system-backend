@@ -120,6 +120,23 @@ class TableHelper
             });
         }
 
+        /* Creating dynamic service special prices table */
+        if (!Schema::hasTable('company_'.$company_id.'_service_special_prices')) {
+            Schema::create('company_'.$company_id.'_service_special_prices', function (Blueprint $table) {
+                $table->id();
+                $table->string('client_id');
+                $table->string('service_id')->nullable();
+                $table->float('purchase_price')->nullable();
+                $table->float('sales_price')->nullable();
+                $table->string('purchase_margin')->nullable();
+                $table->string('sales_margin')->nullable();
+                $table->float('discount')->nullable();
+                $table->float('special_price')->nullable();
+                $table->string('type',20)->nullable();
+                $table->timestamps();
+            });
+        }
+
         /* Creating dynamic client contacts table */
         if (!Schema::hasTable('company_'.$company_id.'_client_contacts')) {
             Schema::create('company_'.$company_id.'_client_contacts', function (Blueprint $table) {
@@ -576,6 +593,10 @@ class TableHelper
                 $table->string('payment_option')->nullable();
                 $table->string('bank_account')->nullable();
                 $table->dateTime('payment_date')->nullable();
+                $table->string('amount')->nullable();
+                $table->dateTime('expiration_date')->nullable();
+                $table->enum('paid', ['0', '1'])->default(0);
+                $table->string('paid_by')->nullable();
                 $table->timestamps();
             });
         }
@@ -667,6 +688,19 @@ class TableHelper
                 $table->id();
                 $table->string('name')->nullable();
                 $table->string('product_id')->nullable();
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->string('type')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* Creating dynamic Service attachments table */
+        if (!Schema::hasTable('company_'.$company_id.'_service_attachments')) {
+            Schema::create('company_'.$company_id.'_service_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('service_id')->nullable();
                 $table->string('document')->nullable();
                 $table->longText('description')->nullable();
                 $table->string('type')->nullable();
@@ -1182,7 +1216,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "tin_heading",
-                    "option_value" => "TIN",
+                    "option_value" => "Ced/Ruc",
                     "category" => 'Company Information',
                     "type" => "tin",
                 ]);
@@ -1827,7 +1861,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_tin_heading",
-                    "option_value" => "TIN",
+                    "option_value" => "Ced/Ruc",
                     "category" => "Client/Supplier Information",
                     "type" => "client_tin",
                 ]);
@@ -2336,7 +2370,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_tin_signature_text",
-                        "option_value" => "TIN:",
+                        "option_value" => "Ced/Ruc:",
                         "category" => "Signature and Summary",
                         "type" => "sign_tin_signature",
                     ]);

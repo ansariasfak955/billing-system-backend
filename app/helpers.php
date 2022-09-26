@@ -19,6 +19,13 @@ function get_product_name($company_id,$product_id)
 	return \App\Models\Product::where('id', $product_id)->pluck('name')->first();
 }
 
+function get_service_name($company_id,$service_id)
+{
+	$table = 'company_'.$company_id.'_services';
+    \App\Models\Service::setGlobalTable($table);
+	return \App\Models\Service::where('id', $service_id)->pluck('name')->first();
+}
+
 function get_category_name($company_id,$category_id)
 {
     $table = 'company_'.$company_id.'_client_categories';

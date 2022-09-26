@@ -98,7 +98,7 @@ class TechnicalTableAttachmentController extends Controller
         return response()->json([
             "status" => true,
             "technical_attachment" => $technical_attachment,
-            "message" => "Attachment created successfully"
+            "message" => "Technical table attachment created successfully"
         ]);
     }
 
@@ -183,12 +183,12 @@ class TechnicalTableAttachmentController extends Controller
     public function destroy(Request $request)
     {
         $table = 'company_'.$request->company_id.'_technical_table_attachments';
-        ClientAssetAttachment::setGlobalTable($table);
-        $technical_attachment = ClientAssetAttachment::where('id', $request->technical_table_attachment)->first();
+        TechnicalTableAttachment::setGlobalTable($table);
+        $technical_attachment = TechnicalTableAttachment::where('id', $request->technical_table_attachment)->first();
         if($technical_attachment->delete()){
             return response()->json([
                     'status' => true,
-                    'message' => "Client attachment deleted successfully!"
+                    'message' => "Technical table attachment deleted successfully!"
             ]);
         } else {
             return response()->json([
