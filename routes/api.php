@@ -247,6 +247,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('supplier-addresses', SupplierAddressController::class);
             Route::apiResource('supplier-special-prices', SupplierSpecialPriceController::class);
             Route::apiResource('supplier-contacts', SupplierContactController::class);
+            Route::apiResource('supplier-attachments', SupplierAttachmentController::class);
             Route::apiResource('purchase-tables', PurchaseTableController::class);
             Route::apiResource('purchase-receipts', PurchaseReceiptController::class);
             Route::apiResource('purchase-tickets', PurchaseTicketController::class);

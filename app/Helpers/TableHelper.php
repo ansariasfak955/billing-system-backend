@@ -497,6 +497,18 @@ class TableHelper
                 $table->timestamps();
             });
         }
+        /* Creating dynamic supplier attachments  table */
+        if (!Schema::hasTable('company_'.$company_id.'_supplier_attachments')) {
+            Schema::create('company_'.$company_id.'_supplier_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->integer('supplier_id')->nullable();
+                $table->string('name')->nullable();
+                $table->string('document')->nullable();
+                $table->longText('description')->nullable();
+                $table->string('type')->nullable();
+                $table->timestamps();
+            });
+        }
         /* Creating dynamic purchase receipts  table */
         if (!Schema::hasTable('company_'.$company_id.'_purchase_receipts')) {
             Schema::create('company_'.$company_id.'_purchase_receipts', function (Blueprint $table) {
