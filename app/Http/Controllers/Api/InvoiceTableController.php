@@ -9,6 +9,7 @@ use App\Models\InvoiceReceipt;
 use App\Models\Item;
 use App\Models\ItemMeta;
 use Validator;
+use App\Jobs\SendInvoiceMail;
 use Storage;
 
 class InvoiceTableController extends Controller
@@ -214,6 +215,7 @@ class InvoiceTableController extends Controller
                         'amount' =>  ($insertedInvoice->amount) ? $insertedInvoice->amount  :0,
                         'payment_option' => $request->payment_option,
                         'paid' => $status,
+                        'type' => $insertedInvoice->reference
                     ]);
                     
                 }else{
@@ -233,6 +235,7 @@ class InvoiceTableController extends Controller
                             'amount' =>  $partialAmount,
                             'payment_option' => $request->payment_option,
                             'paid' => $status,
+                            'type' => $insertedInvoice->reference
                         ]);
                     }
                 }
@@ -448,5 +451,66 @@ class InvoiceTableController extends Controller
                 'message' => "There is an error!"
             ]);
         }
+    }
+
+    public function sentInvoices(Request $request){
+        
+        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($table);
+        $data = InvoiceTable::where(['payment_term' => 'immediate', 'reference' => 'inv'])->get();
+
+        if(!count($data)){
+
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found!"
+            ]);
+        }
+
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+    }
+    public function sendInvoiceMail(Request $request){
+
+        $validator = Validator::make($request->all(),[
+            'invoice_id' => 'required',
+            'to' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+
+        $table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($table);
+
+        $invoice = InvoiceTable::find($request->invoice_id);
+
+        if(!$invoice){
+
+            return response()->json([
+                "status" => false,
+                "message" =>  "Not found!"
+            ]);
+        }
+        
+        SendInvoiceMail::dispatch($request->to , $invoice);
+        
+        return response()->json([
+            "status" => true,
+            "data" => [],
+            "message" => 'Sent!',
+        ]);
     }
 }
