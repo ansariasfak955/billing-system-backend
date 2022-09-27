@@ -118,7 +118,9 @@ class InvoiceReceiptController extends Controller
     {
         $table = 'company_'.$request->company_id.'_invoice_receipts';
         InvoiceReceipt::setGlobalTable($table);
-        $invoice = InvoiceReceipt::where('id', $request->invoice_receipt)->first();
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+        $invoice = InvoiceReceipt::with('invoice')->where('id', $request->invoice_receipt)->first();
 
         if($invoice ==  NULL){
             return response()->json([

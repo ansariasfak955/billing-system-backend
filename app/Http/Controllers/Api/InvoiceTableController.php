@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\InvoiceTable;
+use App\Models\InvoiceReceipt;
 use App\Models\Item;
 use App\Models\ItemMeta;
 use Validator;
@@ -102,7 +103,9 @@ class InvoiceTableController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-        
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
         //change format of date
         if($request->date){
 
@@ -149,57 +152,95 @@ class InvoiceTableController extends Controller
             $invoice->save();
             // dd($request->all());
             if($request->item){
-                 $items = json_decode($request->item, true);
+                $items = json_decode($request->item, true);
 
-                $meta_discount    = $request->meta_discount;
-                $meta_income_tax  = $request->meta_income_tax;
-                //save item meta
-                if ($meta_discount) {
+               $meta_discount    = $request->meta_discount;
+               $meta_income_tax  = $request->meta_income_tax;
+               //save item meta
+               if ($meta_discount) {
 
-                    ItemMeta::create([
-                        'reference_id'  => $invoice->id,
-                        'parent_id'     => $invoice->id,
-                        'discount'      => $meta_discount,
-                        'income_tax'    => $meta_income_tax
-                    ]);
+                   ItemMeta::create([
+                       'reference_id'  => $invoice->id,
+                       'parent_id'     => $invoice->id,
+                       'discount'      => $meta_discount,
+                       'income_tax'    => $meta_income_tax
+                   ]);
+               }
+               // items
+               foreach ($items as $item) {
+                   $reference = $item['reference'];
+                   if (isset($item['reference_id'])) {
+                       $reference_id = $item['reference_id'];
+                   } else {
+                       $reference_id = NULL;
+                   }
+                   
+                   $name             = isset($item['name']) ? $item['name'] : "";
+                   $parent_id        = $invoice->id;
+                   $type             = $invoice->reference;
+                   $description      = isset($item['description']) ? $item['description'] : "";
+                   $base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
+                   $quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
+                   $discount         = isset($item['discount']) ? $item['discount'] : 0;
+                   $tax              = isset($item['tax']) ? $item['tax'] : 0;
+                   $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+                   $subtotal        = isset($item['subtotal']) ? $item['subtotal'] : 0;
+                   $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
+                   $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
+                   $vat              = isset($item['vat']) ? $item['vat'] : 0;
+                   $createdItem = Item::create([
+                       'reference'     => $reference,
+                       'reference_id'  => $reference_id,
+                       'parent_id'     => $parent_id,
+                       'type'          => $type,
+                       'name'          => $name,
+                       'description'   => $description,
+                       'base_price'    => $base_price,
+                       'quantity'      => $quantity,
+                       'discount'      => $discount,
+                       'tax'           => $tax,
+                       'income_tax'    => $income_tax,
+                       'subtotal'     => $subtotal,
+                       'vat'           => $vat
+                   ]);
                 }
-                // items
-                foreach ($items as $item) {
-                    $reference        = $item['reference'];
-                    if (isset($item['reference_id'])) {
-                        $reference_id     = $item['reference_id'];
-                    } else {
-                        $reference_id     = NULL;
-                    }
-                    
-                    $name             = $item['name'];
-                    $parent_id        = $invoice->id;
-                    $type             = $invoice->reference;
-                    $description      = $item['description'];
-                    $base_price       = $item['base_price'];
-                    $quantity         = $item['quantity'];
-                    $discount         = $item['discount'];
-                    $tax              = $item['tax'];
-                    $income_tax       = $item['income_tax'];
-                    $createdItem = Item::create([
-                        'reference'     => $reference,
-                        'reference_id'  => $reference_id,
-                        'parent_id'     => $parent_id,
-                        'type'          => $type,
-                        'name'          => $name,
-                        'description'   => $description,
-                        'base_price'    => $base_price,
-                        'quantity'      => $quantity,
-                        'discount'      => $discount,
-                        'tax'           => $tax,
-                        'income_tax'    => $income_tax
+                $insertedInvoice = InvoiceTable::with(['items', 'item_meta'])->find($invoice->id);
+                $status = ($request->status == 'paid') ? '1' : '0';
+                if($request->payment_term == 'immediate'){
+
+                    InvoiceReceipt::create([
+                        'expiration_date' => date('Y-m-d'),
+                        'invoice_id' => $insertedInvoice->id,
+                        'amount' =>  ($insertedInvoice->amount) ? $insertedInvoice->amount  :0,
+                        'payment_option' => $request->payment_option,
+                        'paid' => $status,
                     ]);
+                    
+                }else{
+                    $partialAmount = 0 ;
+
+                    if($insertedInvoice->amount){
+                        $partialAmount  = $insertedInvoice->amount/3;
+                    }
+
+                    for($i=1 ;$i<=3; $i++){
+                        $daysToBeAdded = $i*30;
+                        $expirationDate = Date('Y-m-d', strtotime("+$daysToBeAdded days"));
+
+                        InvoiceReceipt::create([
+                            'expiration_date' => $expirationDate,
+                            'invoice_id' => $insertedInvoice->id,
+                            'amount' =>  $partialAmount,
+                            'payment_option' => $request->payment_option,
+                            'paid' => $status,
+                        ]);
+                    }
                 }
             }
 
             return response()->json([
                 "status" => true,
-                "data" => InvoiceTable::with(['items', 'item_meta'])->find($invoice->id),
+                "data" => InvoiceTable::with(['items', 'item_meta', 'receipts'])->find($invoice->id),
                 "message" => "Saved successfully"
             ]);
         }else{
@@ -226,8 +267,9 @@ class InvoiceTableController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-
-        $invoice = InvoiceTable::with(['items', 'item_meta'])->where('id', $request->invoice)->first();
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+        $invoice = InvoiceTable::with(['items', 'item_meta', 'receipts'])->where('id', $request->invoice)->first();
 
         if($invoice ==  NULL){
             return response()->json([
@@ -264,7 +306,7 @@ class InvoiceTableController extends Controller
     {
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
-        $invoice = InvoiceTable::where('id', $request->invoice)->first();
+        $invoice = InvoiceTable::with('items', 'item_meta')->where('id', $request->invoice)->first();
 
         //change format of date
         if($request->date){
@@ -296,6 +338,68 @@ class InvoiceTableController extends Controller
         }
         $invoice->update($request->except('company_id', 'invoice', '_method'));
         $invoice->created_by = \Auth::id();
+        if($request->item){
+
+            if( $invoice->items){
+                 $invoice->items()->delete();
+            }
+            if( $invoice->item_meta){
+                 $invoice->item_meta()->delete();
+            }
+
+            $items = json_decode($request->item, true);
+
+           $meta_discount    = $request->meta_discount;
+           $meta_income_tax  = $request->meta_income_tax;
+           //save item meta
+           if ($meta_discount) {
+
+               ItemMeta::create([
+                   'reference_id'  =>  $invoice->id,
+                   'parent_id'     =>  $invoice->id,
+                   'discount'      => $meta_discount,
+                   'income_tax'    => $meta_income_tax
+               ]);
+           }
+           // items
+           foreach ($items as $item) {
+               $reference = $item['reference'];
+               if (isset($item['reference_id'])) {
+                   $reference_id = $item['reference_id'];
+               } else {
+                   $reference_id = NULL;
+               }
+               
+               $name             = isset($item['name']) ? $item['name'] : "";
+               $parent_id        =  $invoice->id;
+               $type             =  $invoice->reference;
+               $description      = isset($item['description']) ? $item['description'] : "";
+               $base_price       = isset($item['base_price']) ? $item['base_price'] : 0;
+               $quantity         = isset($item['quantity']) ? $item['quantity'] : 1;
+               $discount         = isset($item['discount']) ? $item['discount'] : 0;
+               $tax              = isset($item['tax']) ? $item['tax'] : 0;
+               $income_tax       = isset($item['income_tax']) ? $item['income_tax'] : 0;
+               $subtotal        = isset($item['subtotal']) ? $item['subtotal'] : 0;
+               $meta_discount    = isset($item['meta_discount']) ? $item['meta_discount'] : 0;
+               $meta_income_tax  = isset($item['meta_income_tax']) ? $item['meta_income_tax'] : 0;
+               $vat              = isset($item['vat']) ? $item['vat'] : 0;
+               $createdItem = Item::create([
+                   'reference'     => $reference,
+                   'reference_id'  => $reference_id,
+                   'parent_id'     => $parent_id,
+                   'type'          => $type,
+                   'name'          => $name,
+                   'description'   => $description,
+                   'base_price'    => $base_price,
+                   'quantity'      => $quantity,
+                   'discount'      => $discount,
+                   'tax'           => $tax,
+                   'income_tax'    => $income_tax,
+                   'subtotal'     => $subtotal,
+                   'vat'           => $vat
+               ]);
+           }
+        }
         $invoice->save();
 
         return response()->json([
