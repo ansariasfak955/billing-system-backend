@@ -11,7 +11,7 @@ class InvoiceTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount'];
+    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount','amount_paid', 'amount_due'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -27,6 +27,10 @@ class InvoiceTable extends Model
     public function item_meta(){
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
+    }
+    public function receipts(){
+
+        return $this->hasMany(InvoiceReceipt::class, 'invoice_id');
     }
 
     public function getMetaDiscountAttribute(){
@@ -56,6 +60,26 @@ class InvoiceTable extends Model
 	public function getAmountAttribute(){
       if(isset($this->items)){
 		return $this->items->sum('amount');
+	  }
+    }
+	public function getAmountDueAttribute(){
+
+      if(isset($this->receipts)){
+		$amount =  $this->receipts->where('paid', '0')->sum('amount');
+        if($amount){
+            return round($amount, 2);
+        }
+        return 0 ; 
+	  }
+
+    }
+	public function getAmountPaidAttribute(){
+      if(isset($this->receipts)){
+		$amount =  $this->receipts->where('paid', '1')->sum('amount');
+        if($amount){
+            return round($amount, 2);
+        }
+        return 0 ; 
 	  }
     }
 }
