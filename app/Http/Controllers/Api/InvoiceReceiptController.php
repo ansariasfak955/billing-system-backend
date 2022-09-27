@@ -22,21 +22,16 @@ class InvoiceReceiptController extends Controller
         }
         $table = 'company_'.$request->company_id.'_invoice_receipts';
         InvoiceReceipt::setGlobalTable($table);
+        $query = InvoiceReceipt::query();
 
-        if($request->invoice_id == NULL){
-            if(InvoiceReceipt::count() == 0){
-                return response()->json([
-                    "status" => false,
-                    "message" =>  "No data found"
-                ]);
-            }
-            return response()->json([
-                "status" => true,
-                "invoice_receipts" =>  InvoiceReceipt::get()
-            ]);
+        if($request->invoice_id){
+            $query =  $query->where('invoice_id', $request->invoice_id);
         }
-
-        if(InvoiceReceipt::where('invoice_id', $request->invoice_id)->count() == 0){
+        if($request->type){
+            $query =  $query->where('type', $request->type);
+        }
+        $query = $query->get();
+        if(!count($query)){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -44,7 +39,7 @@ class InvoiceReceiptController extends Controller
         }
         return response()->json([
             "status" => true,
-            "invoice_receipts" =>  InvoiceReceipt::where('invoice_id', $request->invoice_id)->get()
+            "invoice_receipts" =>  $query
         ]);
     }
 

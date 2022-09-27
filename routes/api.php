@@ -238,6 +238,8 @@ Route::group(['namespace' => 'Api'], function() {
 
             // Invoicing 
             Route::apiResource('invoices', InvoiceTableController::class);
+            Route::get('sent-invoice-summary', 'InvoiceTableController@sentInvoices');
+            Route::get('send-invoice-mail', 'InvoiceTableController@sendInvoiceMail');
             Route::apiResource('invoice-attachments', InvoiceAttachmentController::class);
             Route::apiResource('invoice-receipts', InvoiceReceiptController::class);
 
