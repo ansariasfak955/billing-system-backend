@@ -242,6 +242,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::get('send-invoice-mail', 'InvoiceTableController@sendInvoiceMail');
             Route::apiResource('invoice-attachments', InvoiceAttachmentController::class);
             Route::apiResource('invoice-receipts', InvoiceReceiptController::class);
+            Route::post('invoice-receipts-bulk-pay', 'InvoiceReceiptController@bulkPay');
 
             // Purchases 
             Route::apiResource('suppliers', SupplierController::class);

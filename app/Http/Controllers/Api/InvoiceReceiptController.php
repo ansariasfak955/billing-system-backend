@@ -187,4 +187,27 @@ class InvoiceReceiptController extends Controller
             ]);
         }
     }
+    public function bulkPay(Request $request){
+
+        $validator = Validator::make($request->all(),[
+            'ids' => 'required',                  
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+        $idsArr = explode(',', $request->ids);
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+        $request['paid'] = '1';
+        InvoiceReceipt::whereIn('id', $idsArr)->update($request->except(['ids', 'company_id']));
+
+        return response()->json([
+            'status' => false,
+            'message' => "Operation Successful!"
+        ]);
+    }
 }
