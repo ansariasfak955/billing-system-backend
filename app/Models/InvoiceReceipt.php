@@ -37,4 +37,9 @@ class InvoiceReceipt extends Model
             return get_payment_option_name($company_id, $this->attributes['payment_option']);
         }
     }
+    public function getExpirationDateAttribute(){
+        if(isset($this->attributes['expiration_date'])){
+            return date('m d, Y', strtotime($this->attributes['expiration_date']));
+        }
+    }
 }
