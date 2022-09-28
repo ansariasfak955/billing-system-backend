@@ -22,6 +22,8 @@ class InvoiceReceiptController extends Controller
         }
         $table = 'company_'.$request->company_id.'_invoice_receipts';
         InvoiceReceipt::setGlobalTable($table);
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
         $query = InvoiceReceipt::query();
 
         if($request->invoice_id){
@@ -30,7 +32,7 @@ class InvoiceReceiptController extends Controller
         if($request->type){
             $query =  $query->where('type', $request->type);
         }
-        $query = $query->get();
+        $query = $query->with('invoice')->get();
         if(!count($query)){
             return response()->json([
                 "status" => false,

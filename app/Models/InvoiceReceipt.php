@@ -10,7 +10,7 @@ class InvoiceReceipt extends Model
     use HasFactory;
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_receipts' ;
-
+    protected $appends = ['payment_option_name'];
     public function getTable() {
         return self::$globalTable ;
     }
@@ -29,5 +29,12 @@ class InvoiceReceipt extends Model
     public function invoice(){
 
         return $this->hasOne(InvoiceTable::class, 'id', 'invoice_id');
+    }
+    public function getPaymentOptionNameAttribute(){
+        if(isset($this->attributes['payment_option'])){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_payment_option_name($company_id, $this->attributes['payment_option']);
+        }
     }
 }
