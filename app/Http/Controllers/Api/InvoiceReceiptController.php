@@ -154,6 +154,8 @@ class InvoiceReceiptController extends Controller
     {
         $table = 'company_'.$request->company_id.'_invoice_receipts';
         InvoiceReceipt::setGlobalTable($table);
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
         $invoice = InvoiceReceipt::where('id', $request->invoice_receipt)->first();
         
         $invoice->update($request->except('company_id', '_method'));
@@ -161,7 +163,7 @@ class InvoiceReceiptController extends Controller
 
         return response()->json([
             "status" => true,
-            "invoice" => $invoice
+            "invoice" => InvoiceReceipt::with('invoice')->where('id', $request->invoice_receipt)->first()
         ]);
     }
 
