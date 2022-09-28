@@ -49,9 +49,12 @@ function get_asset_name($company_id,$asset_id)
 
 function get_payment_option_name($company_id,$payment_option_id)
 {
-    $table = 'company_'.$company_id.'_payment_options';
-    \App\Models\PaymentOption::setGlobalTable($table);
-    return \App\Models\PaymentOption::where('id', $payment_option_id)->pluck('name')->first();
+    if($company_id){
+
+        $table = 'company_'.$company_id.'_payment_options';
+        \App\Models\PaymentOption::setGlobalTable($table);
+        return \App\Models\PaymentOption::where('id', $payment_option_id)->pluck('name')->first();
+    }
 }
 
 function get_company_country_name($company_id)

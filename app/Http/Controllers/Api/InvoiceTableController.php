@@ -463,6 +463,7 @@ class InvoiceTableController extends Controller
         }
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
+        
         $data = InvoiceTable::where(['payment_term' => 'immediate', 'reference' => 'inv'])->get();
 
         if(!count($data)){
