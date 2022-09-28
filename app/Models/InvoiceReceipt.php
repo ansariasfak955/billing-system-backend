@@ -39,7 +39,7 @@ class InvoiceReceipt extends Model
     }
     public function getExpirationDateAttribute(){
         if(isset($this->attributes['expiration_date'])){
-            return date('m d, Y', strtotime($this->attributes['expiration_date']));
+            return date('Y-m-d', strtotime($this->attributes['expiration_date']));
         }
     }
 }
