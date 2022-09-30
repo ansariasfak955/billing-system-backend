@@ -71,7 +71,9 @@ class SupplierController extends Controller
                 'message' => $validator->errors()->first(),
             ]);
         }
-
+        if(!$request->payment_adjustment || $request->payment_adjustment ==''){
+            $request['payment_adjustment'] = 'unspecified';
+        }
         Supplier::setGlobalTable($table);
         if ($request->reference_number == '') {
             $supplier = Supplier::create($request->except(['company_id', 'contacts', 'addresses']));
