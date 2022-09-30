@@ -39,6 +39,12 @@ function get_client_name($company_id,$client_id)
     \App\Models\Client::setGlobalTable($table);
     return \App\Models\Client::where('id', $client_id)->pluck('name')->first();
 }
+function get_supplier_name($company_id,$sup_id)
+{
+    $table = 'company_'.$company_id.'_suppliers';
+    \App\Models\Supplier::setGlobalTable($table);
+    return \App\Models\Supplier::where('id', $sup_id)->pluck('name')->first();
+}
 
 function get_asset_name($company_id,$asset_id)
 {
