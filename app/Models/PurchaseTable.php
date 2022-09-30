@@ -11,7 +11,7 @@ class PurchaseTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount'];
+    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -40,6 +40,14 @@ class PurchaseTable extends Model
             $table = $this->getTable();
             $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_client_name($client_id, $this->attributes['client_id']);
+        }
+    }
+	public function getSupplierNameAttribute(){
+        
+        if(isset( $this->attributes['supplier_id'] )){
+            $table = $this->getTable();
+            $company = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_supplier_name($company, $this->attributes['supplier_id']);
         }
     }
 
