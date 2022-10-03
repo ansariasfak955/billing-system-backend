@@ -65,4 +65,11 @@ class PurchaseTable extends Model
 		return $this->items->sum('amount');
 	  }
     }
+    
+    public function getCreatedAtAttribute(){
+
+        if( isset( $this->attributes['created_at'] ) ){
+            return date( 'Y-m-d', strtotime($this->attributes['created_at']) );
+        }
+    }
 }
