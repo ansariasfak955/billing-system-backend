@@ -79,7 +79,7 @@ class PurchaseTable extends Model
             return date( 'Y-m-d', strtotime($this->attributes['created_at']) );
         }
     }
-    public function getDateAtAttribute(){
+    public function getDateAttribute(){
 
         if( isset( $this->attributes['date'] ) ){
             return date( 'Y-m-d', strtotime($this->attributes['date']) );
