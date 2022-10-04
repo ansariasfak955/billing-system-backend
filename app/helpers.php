@@ -39,6 +39,14 @@ function get_client_name($company_id,$client_id)
     \App\Models\Client::setGlobalTable($table);
     return \App\Models\Client::where('id', $client_id)->pluck('name')->first();
 }
+
+function get_user_name($company_id,$client_id)
+{
+    $table = 'company_'.$company_id.'users';
+    \App\Models\User::setGlobalTable($table);
+    return \App\Models\User::where('id', $client_id)->pluck('name')->first();
+}
+
 function get_supplier_name($company_id,$sup_id)
 {
     $table = 'company_'.$company_id.'_suppliers';
