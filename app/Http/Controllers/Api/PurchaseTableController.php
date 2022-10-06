@@ -129,7 +129,7 @@ class PurchaseTableController extends Controller
 
         if( $request->reference_number  ){
             $purchase_table = PurchaseTable::create($request->except('company_id'));
-            $purchase_table->created_by = \Auth::id();
+            // $purchase_table->created_by = \Auth::id();
             $purchase_table->save();
             // dd($request->all());
             if($request->item){
@@ -282,7 +282,7 @@ class PurchaseTableController extends Controller
         }
 
         $purchase_table->update($request->except('company_id', 'technical_table', '_method'));
-        $purchase_table->created_by = \Auth::id();
+        // $purchase_table->created_by = \Auth::id();
         if($request->item){
 
             if($purchase_table->items){
