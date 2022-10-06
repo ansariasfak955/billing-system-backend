@@ -56,6 +56,9 @@ class BankAccountController extends Controller
                 'message' => $validator->errors()->first()
             ]);
         }
+        if(!$request->format || $request->format == ''){
+            $request['format'] = 'other';
+        }
         $bank_account =  new BankAccount;
         $bank_account = $bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->create($request->except('company_id'));
 
@@ -95,6 +98,9 @@ class BankAccountController extends Controller
      */
     public function update(Request $request)
     {
+        if(!$request->format || $request->format == ''){
+            $request['format'] = 'other';
+        }
         $bank_account =  new BankAccount;
         $bank_account = $bank_account->setTable('company_'.$request->company_id.'_bank_accounts')->where('id', $request->bank_account)->first();
         $bank_account->update($request->except('company_id', '_method'));
