@@ -19,4 +19,22 @@ class PurchaseReceipt extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    protected $appends = ['payment_option_name'];
+
+    public function invoice(){
+        return $this->hasOne(PurchaseTable::class, 'id', 'purchase_id');
+    }
+    
+    public function getPaymentOptionNameAttribute(){
+        if(isset($this->attributes['payment_option'])){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_payment_option_name($company_id, $this->attributes['payment_option']);
+        }
+    }
+    public function getExpirationDateAttribute(){
+        if(isset($this->attributes['expiration_date'])){
+            return date('Y-m-d', strtotime($this->attributes['expiration_date']));
+        }
+    }
 }

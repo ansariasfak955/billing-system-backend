@@ -21,23 +21,21 @@ class PurchaseReceiptController extends Controller
                 "message" =>  "Please select company"
             ]);
         }
+
         $table = 'company_'.$request->company_id.'_purchase_receipts';
         PurchaseReceipt::setGlobalTable($table);
+        $purchase_table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchase_table);
+        $query = PurchaseReceipt::query();
 
-        if($request->purchase_id == NULL){
-            if(PurchaseReceipt::count() == 0){
-                return response()->json([
-                    "status" => false,
-                    "message" =>  "No data found"
-                ]);
-            }
-            return response()->json([
-                "status" => true,
-                "purchase_receipts" =>  PurchaseReceipt::get()
-            ]);
+        if($request->purchase_id){
+            $query =  $query->where('purchase_id', $request->purchase_id);
         }
-
-        if(PurchaseReceipt::where('purchase_id', $request->purchase_id)->count() == 0){
+        if($request->type){
+            $query =  $query->where('type', $request->type);
+        }
+        $query = $query->with('invoice')->get();
+        if(!count($query)){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -45,7 +43,7 @@ class PurchaseReceiptController extends Controller
         }
         return response()->json([
             "status" => true,
-            "purchase_receipts" =>  PurchaseReceipt::where('purchase_id', $request->purchase_id)->get()
+            "purchase_receipts" =>  $query
         ]);
     }
 
@@ -187,5 +185,29 @@ class PurchaseReceiptController extends Controller
                     'message' => "Retry deleting again! "
             ]);
         }
+    }
+
+    public function bulkPay(Request $request){
+
+        $validator = Validator::make($request->all(),[
+            'ids' => 'required',                  
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+        $idsArr = explode(',', $request->ids);
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+        $request['paid'] = '1';
+        PurchaseReceipt::whereIn('id', $idsArr)->update($request->except(['ids', 'company_id']));
+
+        return response()->json([
+            'status' => true,
+            'message' => "Operation Successful!"
+        ]);
     }
 }

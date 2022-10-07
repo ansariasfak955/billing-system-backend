@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\PurchaseTable;
 use App\Models\Item;
 use App\Models\ItemMeta;
+use App\Models\PurchaseReceipt;
 use Validator;
 use Storage;
 
@@ -116,6 +117,9 @@ class PurchaseTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($invoiceReceiptTable);
+
         if ($request->reference_number == '') {
             $request['reference_number'] = get_purchase_table_latest_ref_number($request->company_id, $request->reference, 1 );
         }else{
@@ -185,6 +189,40 @@ class PurchaseTableController extends Controller
                        'vat'           => $vat
                    ]);
                }
+                $insertedInvoice = PurchaseTable::with(['items', 'item_meta'])->find($purchase_table->id);
+                $status = ($request->status == 'paid') ? '1' : '0';
+                if($request->payment_term == 'immediate'){
+
+                    PurchaseReceipt::create([
+                        'expiration_date' => date('Y-m-d'),
+                        'purchase_id' => $insertedInvoice->id,
+                        'amount' =>  ($insertedInvoice->amount) ? $insertedInvoice->amount  :0,
+                        'payment_option' => $request->payment_option,
+                        'paid' => $status,
+                        'type' => $insertedInvoice->reference
+                    ]);
+                    
+                }else{
+                    $partialAmount = 0 ;
+
+                    if($insertedInvoice->amount){
+                        $partialAmount  = $insertedInvoice->amount/3;
+                    }
+
+                    for($i=1 ;$i<=3; $i++){
+                        $daysToBeAdded = $i*30;
+                        $expirationDate = Date('Y-m-d', strtotime("+$daysToBeAdded days"));
+
+                        PurchaseReceipt::create([
+                            'expiration_date' => $expirationDate,
+                            'purchase_id' => $insertedInvoice->id,
+                            'amount' =>  $partialAmount,
+                            'payment_option' => $request->payment_option,
+                            'paid' => $status,
+                            'type' => $insertedInvoice->reference
+                        ]);
+                    }
+                }
            }
 
             return response()->json([
@@ -216,8 +254,9 @@ class PurchaseTableController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-
-        $purchase_table = PurchaseTable::with(['items', 'item_meta'])->where('id', $request->purchase_table)->first();
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($invoiceReceiptTable);
+        $purchase_table = PurchaseTable::with(['items', 'item_meta', 'receipts'])->where('id', $request->purchase_table)->first();
 
         if($purchase_table ==  NULL){
             return response()->json([
