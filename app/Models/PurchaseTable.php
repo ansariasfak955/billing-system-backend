@@ -27,6 +27,10 @@ class PurchaseTable extends Model
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }
+    public function receipts(){
+
+        return $this->hasMany(PurchaseReceipt::class, 'purchase_id');
+    }
 
     public function getMetaDiscountAttribute(){
 		if(isset($this->item_meta)){
