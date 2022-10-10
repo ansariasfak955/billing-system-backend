@@ -46,6 +46,7 @@ class PurchaseTable extends Model
             return get_client_name($client_id, $this->attributes['client_id']);
         }
     }
+    
 	public function getSupplierNameAttribute(){
         
         if(isset( $this->attributes['supplier_id'] )){
