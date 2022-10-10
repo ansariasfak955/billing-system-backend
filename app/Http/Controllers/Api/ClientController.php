@@ -27,9 +27,14 @@ class ClientController extends Controller
 
         $table = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($table);
-        $clients = Client::get();
 
-        if ($clients->count() == 0) {
+        $query = Client::query();
+        
+        if($request->search){
+            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('legal_name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+        }
+        $query = $query->get();
+        if (!count($query)) {
             return response()->json([
                 "status" => false,
                 "message" => "No clients found!"
@@ -37,7 +42,7 @@ class ClientController extends Controller
         } else {
             return response()->json([
                 "status" => true,
-                "clients" =>  $clients
+                "clients" =>  $query
             ]);  
         }
     }
