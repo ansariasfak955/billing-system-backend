@@ -46,17 +46,95 @@ class ReportController extends Controller
             $arr['status'] = 'paid';
             $arr['sum'] = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get()->sum('amount');
         }
-        $data[] = $arr;
-        foreach($unpaids as $unpaid){
-            $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get();
-            // foreach($purchaseDatas as $purchaseData){
-            //    $unpaid_sum = $unpaid_sum + $purchaseData->items()->sum('base_price');
-            // }
-            $arr['status'] = 'unpaid';
-            $arr['sum'] = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get()->sum('amount');
-        }
-        $data[] = $arr;
-
+        // $data[] = $arr;
+        // foreach($unpaids as $unpaid){
+        //     $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get();
+        //     // foreach($purchaseDatas as $purchaseData){
+        //     //    $unpaid_sum = $unpaid_sum + $purchaseData->items()->sum('base_price');
+        //     // }
+        //     $arr['status'] = 'unpaid';
+        //     $arr['sum'] = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get()->sum('amount');
+        // }
+        // $data[] = $arr;
+        $data = [
+            "Profit" => [
+                [
+                    "type" => "bar", 
+                    "label" => "Sales", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                    "2900" 
+                    ] 
+                ], 
+                [
+                        "type" => "bar", 
+                        "label" => "Expenses", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => ["3548"] 
+                    ], 
+                [
+                    "type" => "bar", 
+                    "label" => "Profit", 
+                    "backgroundColor" => "#FE9140", 
+                    "data" => [
+                    "-4895" 
+                    ] 
+                ] 
+            ], 
+            "Sales Invoicing" => [
+                [
+                    "type" => "bar", 
+                    "label" => "Invoiced", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "2900" 
+                    ] 
+                ], 
+                [
+                    "type" => "bar", 
+                    "label" => "Paid", 
+                    "backgroundColor" => "#FB6363", 
+                    "data" => ["3548"] 
+                    ], 
+                [
+                    "type" => "bar", 
+                    "label" => "Unpaid", 
+                    "backgroundColor" => "#FE9140", 
+                    "data" => ["-4895"] 
+                ] 
+            ], 
+            "Purchase Invoicing" => [
+                [
+                    "type" => "bar", 
+                    "label" => "Invoiced", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "2900" 
+                    ] 
+                ], 
+                [
+                    "type" => "bar", 
+                    "label" => "Paid", 
+                    "backgroundColor" => "#FB6363", 
+                    "data" => ["3548"] 
+                    ], 
+                [
+                    "type" => "bar", 
+                    "label" => "Unpaid", 
+                    "backgroundColor" => "#FE9140", 
+                    "data" => ["-4895"] 
+                ] 
+            ],
+            "Expense Distribution" => 
+            [
+                "type" => "bar", 
+                "label" => "Personnel Expenses", 
+                "backgroundColor" => "#26C184", 
+                "data" => [
+                    "2900" 
+                ] 
+            ]  
+        ];  
         return response()->json([
             "status" => true,
             "data" =>  $data
@@ -94,7 +172,7 @@ class ReportController extends Controller
             $arr['sum'] = InvoiceTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
             $data[] = $arr;
         }
-
+        
         return response()->json([
             "status" => true,
             "data" =>  $data
