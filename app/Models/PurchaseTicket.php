@@ -52,4 +52,10 @@ class PurchaseTicket extends Model
             return date( 'Y-m-d', strtotime($this->attributes['date']) );
         }
     }
+    public function getPaymentDateAttribute(){
+
+        if( isset( $this->attributes['payment_date'] ) ){
+            return date( 'Y-m-d', strtotime($this->attributes['payment_date']) );
+        }
+    }
 }
