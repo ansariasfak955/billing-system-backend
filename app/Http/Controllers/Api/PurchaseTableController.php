@@ -433,4 +433,36 @@ class PurchaseTableController extends Controller
             ]);
         }
     }
+
+    public function sentInvoices( Request $request){
+        if(($request->company_id ==  NULL)||($request->company_id ==  0)){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select company"
+            ]);
+        }
+        
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($table);
+        $data = PurchaseTable::where(['payment_term' => 'immediate', 'reference' => 'pinv'])->get();
+
+        if(!count($data)){
+
+            return response()->json([
+                "status" => false,
+                "message" =>  "No data found!"
+            ]);
+        }
+
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+    }
 }

@@ -11,7 +11,7 @@ class PurchaseTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name', 'agent_name'];
+    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -101,6 +101,41 @@ class PurchaseTable extends Model
         if( isset( $this->attributes['sent_date'] ) ){
             return date('F m, Y', strtotime($this->attributes['sent_date']));
         }
+    }
+    public function getSubTotalAttribute(){
+
+        if(isset($this->items)){
+            return $this->items->sum('base_price');
+        }
+    }
+    public function getVatAttribute(){
+
+        if(isset($this->items)){
+            $vat =  $this->items->sum('vat');
+            return $vat;          
+        }
+    }
+    public function getAmountVatAttribute(){
+
+        if(isset($this->items)){
+            $total =  $this->items->sum('base_price');
+            $vat =  $this->items->sum('vat');
+            if($total && $vat){
+                return $total-($vat/100*$total);
+            }
+        }
+    }
+    public function getPercentageAttribute(){
+
+        return 0;
+    }
+    public function getIncomeTaxAttribute(){
+
+        return 0;
+    }
+    public function getAmountIncomeTaxAttribute(){
+
+        return 0;
     }
 
 }
