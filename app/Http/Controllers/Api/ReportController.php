@@ -127,12 +127,14 @@ class ReportController extends Controller
             ],
             "expense_distribution" => 
             [
-                "type" => "bar", 
-                "label" => "Personnel Expenses", 
-                "backgroundColor" => "#26C184", 
-                "data" => [
-                    "2900" 
-                ] 
+                [
+                    "type" => "bar", 
+                    "label" => "Personnel Expenses", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "2900" 
+                    ] 
+                ]
             ]  
         ];  
         return response()->json([
