@@ -255,6 +255,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('purchase-receipts', PurchaseReceiptController::class);
             Route::apiResource('purchase-tickets', PurchaseTicketController::class);
             Route::post('purchase-receipts-bulk-pay', 'PurchaseReceiptController@bulkPay');
+            Route::get('purchase-sent-invoice-summary', 'PurchaseTableController@sentInvoices');
             
             /* Items */
             Route::apiResource('items', ItemController::class);

@@ -57,7 +57,7 @@ class ReportController extends Controller
         // }
         // $data[] = $arr;
         $data = [
-            "Profit" => [
+            "profit" => [
                 [
                     "type" => "bar", 
                     "label" => "Sales", 
@@ -81,7 +81,7 @@ class ReportController extends Controller
                     ] 
                 ] 
             ], 
-            "Sales Invoicing" => [
+            "sales_invoicing" => [
                 [
                     "type" => "bar", 
                     "label" => "Invoiced", 
@@ -103,7 +103,7 @@ class ReportController extends Controller
                     "data" => ["-4895"] 
                 ] 
             ], 
-            "Purchase Invoicing" => [
+            "purchase_invoicing" => [
                 [
                     "type" => "bar", 
                     "label" => "Invoiced", 
@@ -125,14 +125,16 @@ class ReportController extends Controller
                     "data" => ["-4895"] 
                 ] 
             ],
-            "Expense Distribution" => 
+            "expense_distribution" => 
             [
-                "type" => "bar", 
-                "label" => "Personnel Expenses", 
-                "backgroundColor" => "#26C184", 
-                "data" => [
-                    "2900" 
-                ] 
+                [
+                    "type" => "bar", 
+                    "label" => "Personnel Expenses", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "2900" 
+                    ] 
+                ]
             ]  
         ];  
         return response()->json([
