@@ -12,6 +12,8 @@ use App\Models\SalesAttachment;
 use App\Models\SalesEstimate;
 use App\Models\PurchaseTable;
 use App\Models\TechnicalTable;
+use App\Models\InvoiceReceipt;
+use App\Models\PurchaseReceipt;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 
@@ -29,33 +31,14 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+        $invoice_table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoice_table);
 
-        $paids = PurchaseTable::where('status', 'paid')->get();
-        $unpaids = PurchaseTable::where('status', 'unpaid')->get();
-
-        $paid_sum = 0;
-        $unpaid_sum = 0;
-        $data = [];
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+        $pruchaseReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($pruchaseReceiptTable);
         $client_id = Client::pluck('id')->toArray();
-        $arr = [];
-        foreach($paids as $paid){
-            $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get();
-            // foreach($purchaseDatas as $purchaseData){
-            //    $paid_sum = $paid_sum + $purchaseData->items()->sum('base_price');
-            // }
-            $arr['status'] = 'paid';
-            $arr['sum'] = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get()->sum('amount');
-        }
-        // $data[] = $arr;
-        // foreach($unpaids as $unpaid){
-        //     $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get();
-        //     // foreach($purchaseDatas as $purchaseData){
-        //     //    $unpaid_sum = $unpaid_sum + $purchaseData->items()->sum('base_price');
-        //     // }
-        //     $arr['status'] = 'unpaid';
-        //     $arr['sum'] = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $client_id)->get()->sum('amount');
-        // }
-        // $data[] = $arr;
         $data = [
             "profit" => [
                 [
@@ -87,20 +70,24 @@ class ReportController extends Controller
                     "label" => "Invoiced", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "2900" 
+                        "$ ". InvoiceReceipt::where('type', 'inv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
                     ] 
                 ], 
                 [
                     "type" => "bar", 
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
-                    "data" => ["3548"] 
-                    ], 
+                    "data" => [
+                        "$ ". InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                    ]  
+                ], 
                 [
                     "type" => "bar", 
                     "label" => "Unpaid", 
                     "backgroundColor" => "#FE9140", 
-                    "data" => ["-4895"] 
+                    "data" => [
+                        "$ ". InvoiceReceipt::where('type', 'inv')->where('paid', '0')->sum('amount')
+                    ] 
                 ] 
             ], 
             "purchase_invoicing" => [
@@ -109,20 +96,24 @@ class ReportController extends Controller
                     "label" => "Invoiced", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "2900" 
+                        "$ ". PurchaseReceipt::where('type', 'pinv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
                     ] 
                 ], 
                 [
                     "type" => "bar", 
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
-                    "data" => ["3548"] 
-                    ], 
+                    "data" => [
+                        "$ ". PurchaseReceipt::where('type', 'pinv')->where('paid', '1')->sum('amount')
+                    ] 
+                ], 
                 [
                     "type" => "bar", 
                     "label" => "Unpaid", 
                     "backgroundColor" => "#FE9140", 
-                    "data" => ["-4895"] 
+                    "data" => [
+                        "$ ". PurchaseReceipt::where('type', 'pinv')->where('paid', '0')->sum('amount')
+                    ] 
                 ] 
             ],
             "expense_distribution" => 
@@ -193,17 +184,111 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-
+        $data = [];
         if( $request->type == "overview" ){
-            $data['pending'] = SalesEstimate::where('status', 'pending')->count();
-            $data['closed'] = SalesEstimate::where('status', 'closed')->count();
-            $data['resolved'] = SalesEstimate::where('status', 'resolved')->count();
-            $data['refused'] = SalesEstimate::where('status', 'refused')->count();
-            $data['pending_amount'] = SalesEstimate::where('status', 'pending')->get()->sum('amount');
-            $data['closed_amount'] = SalesEstimate::where('status', 'closed')->get()->sum('amount');
-            $data['resolved_amount'] = SalesEstimate::where('status', 'resolved')->get()->sum('amount');
-            $data['refused_amount'] = SalesEstimate::where('status', 'refused')->get()->sum('amount');
-            return $data;
+            $data = [
+                "estimates_by_state" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending(10)", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                        "2900" 
+                        ] 
+                    ], 
+                    [
+                            "type" => "bar", 
+                            "label" => "Refused(2)", 
+                            "backgroundColor" => "#FB6363", 
+                            "data" => ["3548"] 
+                        ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Accepted(4)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                        "-4895" 
+                        ] 
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed(0)", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 35
+                        ] 
+                    ],
+            ], 
+                "orders_by_state" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending (1)", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 35
+                        ] 
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Refused (0)", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => [
+                            "$ ". 3273
+                        ]  
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "In Progress (0)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 500
+                        ] 
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed (1)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 500
+                        ] 
+                    ],
+                         
+                ], 
+                "delivery_notes_by_state" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending Invoice (0)", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 3474
+                        ] 
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "In Progress (0)", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => [
+                            "$ ". 300
+                        ] 
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed (0)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 200
+                        ] 
+                        ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Invoiced (0)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 200
+                        ] 
+                    ]  
+                ]
+            ];
 
         }elseif( $request->type == "agent" ){
             $agent_ids  = SalesEstimate::pluck('agent_id')->toArray();
@@ -212,17 +297,16 @@ class ReportController extends Controller
         }else{
             $client_ids  = Client::pluck('id')->toArray();
         }
-        $data = [];
-        foreach($client_ids as $client_id){
-            $purchaseDatas = SalesEstimate::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
-            $sum = 0;
-            $arr['client_id'] = $client_id;
-            // foreach($purchaseDatas as $purchaseData){
-            //    $sum = $sum + $purchaseData->items()->sum('base_price');
-            // }
-            $arr['sum'] = SalesEstimate::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
-            $data[] = $arr;
-        }
+        // foreach($client_ids as $client_id){
+        //     $purchaseDatas = SalesEstimate::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
+        //     $sum = 0;
+        //     $arr['client_id'] = $client_id;
+        //     // foreach($purchaseDatas as $purchaseData){
+        //     //    $sum = $sum + $purchaseData->items()->sum('base_price');
+        //     // }
+        //     $arr['sum'] = SalesEstimate::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
+        //     $data[] = $arr;
+        // }
 
         return response()->json([
             "status" => true,
@@ -242,17 +326,143 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-
+        $data = [];
         if( $request->type == "overview" ){
-            $data['pending'] = TechnicalTable::where('status', 'pending')->count();
-            $data['closed'] = TechnicalTable::where('status', 'closed')->count();
-            $data['resolved'] = TechnicalTable::where('status', 'resolved')->count();
-            $data['refused'] = TechnicalTable::where('status', 'refused')->count();
-            $data['pending_amount'] = TechnicalTable::where('status', 'pending')->get()->sum('amount');
-            $data['closed_amount'] = TechnicalTable::where('status', 'closed')->get()->sum('amount');
-            $data['resolved_amount'] = TechnicalTable::where('status', 'resolved')->get()->sum('amount');
-            $data['refused_amount'] = TechnicalTable::where('status', 'refused')->get()->sum('amount');
-            return $data;
+            $data = [
+                "incidents_by_state" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            '2'
+                        ] 
+                    ], 
+                    [
+                            "type" => "bar", 
+                            "label" => "Refused", 
+                            "backgroundColor" => "#FB6363", 
+                            "data" => ["2"] 
+                        ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Resolved", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                        "4" 
+                        ] 
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "5"
+                        ] 
+                    ],
+                ],
+                "estimates_by_state" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending(10)", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                        "2900" 
+                        ] 
+                    ], 
+                    [
+                            "type" => "bar", 
+                            "label" => "Refused(2)", 
+                            "backgroundColor" => "#FB6363", 
+                            "data" => ["3548"] 
+                        ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Accepted(4)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                        "-4895" 
+                        ] 
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed(0)", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 35
+                        ] 
+                    ],
+                ], 
+                "orders_by_state" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending (1)", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 35
+                        ] 
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Refused (0)", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => [
+                            "$ ". 3273
+                        ]  
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "In Progress (0)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 500
+                        ] 
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed (1)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 500
+                        ] 
+                    ],
+                         
+                ], 
+                "delivery_notes_by_state" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending Invoice (0)", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 3474
+                        ] 
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "In Progress (0)", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => [
+                            "$ ". 300
+                        ] 
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed (0)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 200
+                        ] 
+                        ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Invoiced (0)", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 200
+                        ] 
+                    ]  
+                ]
+            ];
 
         }elseif( $request->type == "agent" ){
             $agent_ids  = TechnicalTable::pluck('agent_id')->toArray();
@@ -261,18 +471,16 @@ class ReportController extends Controller
         }else{
             $client_ids  = Client::pluck('id')->toArray();
         }
-
-        $data = [];
-        foreach($client_ids as $client_id){
-            $technicalDatas = TechnicalTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
-            $sum = 0;
-            $arr['client_id'] = $client_id;
-            // foreach($technicalDatas as $technicalData){
-            //    $sum = $sum + $technicalData->items()->sum('base_price');
-            // }
-            $arr['sum'] = TechnicalTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
-            $data[] = $arr;
-        }
+        // foreach($client_ids as $client_id){
+        //     $technicalDatas = TechnicalTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
+        //     $sum = 0;
+        //     $arr['client_id'] = $client_id;
+        //     // foreach($technicalDatas as $technicalData){
+        //     //    $sum = $sum + $technicalData->items()->sum('base_price');
+        //     // }
+        //     $arr['sum'] = TechnicalTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
+        //     $data[] = $arr;
+        // }
 
         return response()->json([
             "status" => true,
@@ -321,6 +529,194 @@ class ReportController extends Controller
             }
             
         }
+        
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+    }
+    public function cashFlow(Request $request){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+        $data = [];
+        if($request->type == "overview"){
+            $data = [
+                "cash_flow" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Deposits", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                        "2900" 
+                        ] 
+                    ], 
+                    [
+                            "type" => "bar", 
+                            "label" => "Withdrawals", 
+                            "backgroundColor" => "#FB6363", 
+                            "data" => ["3548"] 
+                        ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Balance", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                        "-4895" 
+                        ] 
+                    ] 
+                ], 
+                "deposits" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Invoices", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 35
+                        ] 
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Account Deposits", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => [
+                            "$ ". 3273
+                        ]  
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Unpaid", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 500
+                        ] 
+                    ] 
+                ], 
+                "withdrawals" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Refunds", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 3474
+                        ] 
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Purchases", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => [
+                            "$ ". 300
+                        ] 
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Tickets and other expenses", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 200
+                        ] 
+                        ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Account Withdrawals", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 200
+                        ] 
+                    ]  
+                ]
+            ];
+        }
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+    }
+    public function stockValuation(Request $request){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+        $data = [];
+        $data = [
+            "stock_valuation" => [
+                [
+                    "type" => "bar", 
+                    "label" => "Sales stock value", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "$2900" 
+                    ] 
+                ], 
+                [
+                        "type" => "bar", 
+                        "label" => "Purchase stock value", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => ["$3548"] 
+                ], 
+            ]
+        ];
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+    }
+    public function taxSummary(Request $request){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+        $data = [];
+        
+        $data = [
+            "tax_Summary" => [
+                [
+                    "type" => "bar", 
+                    "label" => "Collected", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                    "$3847" 
+                    ] 
+                ], 
+                [
+                        "type" => "bar", 
+                        "label" => "Paid", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => ["$88"] 
+                    ], 
+                [
+                    "type" => "bar", 
+                    "label" => "Total", 
+                    "backgroundColor" => "#FE9140", 
+                    "data" => [
+                    "$756" 
+                    ] 
+                ] 
+            ]
+        ];
         
         return response()->json([
             "status" => true,
