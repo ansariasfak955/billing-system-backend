@@ -29,12 +29,30 @@ class TechnicalIncident extends Model
     ];
 
     protected static $globalTable = 'technical_incidents';
-
+	public $appends = ['client_name','created_by_name'];
     public function getTable() {
         return self::$globalTable;
     }
 
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
+    }
+
+	public function getClientNameAttribute(){
+        
+        if(isset( $this->attributes['client_id'] )){
+            $table = $this->getTable();
+            $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($client_id, $this->attributes['client_id']);
+        }
+    }
+	
+	public function getCreatedByNameAttribute(){
+        
+        if(isset( $this->attributes['created_by'] )){
+            $table = $this->getTable();
+            $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($createdby, $this->attributes['created_by']);
+        }
     }
 }
