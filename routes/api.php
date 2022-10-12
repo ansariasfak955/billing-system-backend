@@ -278,6 +278,9 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('sales', 'ReportController@sales');
                 Route::get('overview', 'ReportController@overview');
                 Route::get('purchases', 'ReportController@purchases');
+                Route::get('cash-flow', 'ReportController@cashFlow');
+                Route::get('stock-valuation', 'ReportController@stockValuation');
+                Route::get('tax-summary', 'ReportController@taxSummary');
             });
 
         });
