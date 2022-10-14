@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Awobaz\Compoships\Compoships;
 use URL;
 
 class SalesEstimate extends Model
 {
-    use HasFactory;
+    use HasFactory, Compoships;
 
     protected $fillable = [
     	'reference',
@@ -59,8 +60,7 @@ class SalesEstimate extends Model
     	return '';
     }
     public function items(){
-
-        return $this->hasMany(Item::class, 'parent_id');
+        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference']);
     }
     public function item_meta(){
 

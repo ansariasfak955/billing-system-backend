@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Awobaz\Compoships\Compoships;
 
 class Item extends Model
 {
-    use HasFactory;
+    use HasFactory, Compoships;
     protected $fillable = [
     	'reference',
         'parent_id',

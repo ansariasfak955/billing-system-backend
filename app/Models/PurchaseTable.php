@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Awobaz\Compoships\Compoships;
 class PurchaseTable extends Model
 {
-    use HasFactory;
+    use HasFactory, Compoships;
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
@@ -20,8 +20,7 @@ class PurchaseTable extends Model
         self::$globalTable = $table;
     }
     public function items(){
-
-        return $this->hasMany(Item::class, 'parent_id');
+        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference']);
     }
     public function item_meta(){
 

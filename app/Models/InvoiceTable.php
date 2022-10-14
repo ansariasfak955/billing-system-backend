@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Awobaz\Compoships\Compoships;
 
 class InvoiceTable extends Model
 {
-    use HasFactory;
+    use HasFactory, Compoships;
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_tables' ;
 
@@ -21,8 +22,7 @@ class InvoiceTable extends Model
     }
 
     public function items(){
-
-        return $this->hasMany(Item::class, 'parent_id');
+        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference']);
     }
     public function item_meta(){
 

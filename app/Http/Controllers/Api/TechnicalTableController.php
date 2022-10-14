@@ -19,6 +19,12 @@ class TechnicalTableController extends Controller
      */
     public function index(Request $request)
     {
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
         if(($request->company_id ==  NULL)||($request->company_id ==  0)){
             return response()->json([
                 "status" => false,
