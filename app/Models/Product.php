@@ -8,19 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
-    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount'];
-
-    public function getAmountAttribute(){
-        if(isset($this->attributes['price'])){
-
-            $basePrice = $this->attributes['price'];
-            $discount = isset($this->attributes['discount'])
-            ? $this->attributes['discount'] : 0;
-            $amount = ($basePrice - ($basePrice * $discount / 100)) ;
-            return $amount;
-        }
-    }
-
+    
     protected $fillable = ['name', 'price', 'reference', 'reference_number', 'purchase_price', 'barcode', 'image', 'description', 'private_comments', 'created_from', 'purchase_margin', 'sales_margin', 'discount', 'minimum_price', 'tax', 'images'];
 
     protected static $globalTable = 'products';
@@ -31,6 +19,18 @@ class Product extends Model
 
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
+    }
+    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount', 'sales_stock_value', 'purchase_stock_value'];
+
+    public function getAmountAttribute(){
+        if(isset($this->attributes['price'])){
+
+            $basePrice = $this->attributes['price'];
+            $discount = isset($this->attributes['discount'])
+            ? $this->attributes['discount'] : 0;
+            $amount = ($basePrice - ($basePrice * $discount / 100)) ;
+            return $amount;
+        }
     }
 
     public function product_attachments(){
@@ -81,5 +81,18 @@ class Product extends Model
             return $product_stock->minimum_stock;
         }
         return '';
+    }
+
+    public function getSalesStockValueAttribute(){
+        if(isset($this->stock) && isset($this->amount) ) {
+            return (float)$this->stock*(float)$this->amount;
+        }
+    }
+
+    public function getPurchaseStockValueAttribute(){
+
+        if($this->stock && isset($this->attributes['purchase_price'])){
+            return (float)$this->stock*(float)$this->attributes['purchase_price'];
+        }
     }
 }
