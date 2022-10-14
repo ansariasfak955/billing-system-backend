@@ -8,32 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
     use HasFactory;
-
-    public $appends = ['amount'];
-
-    public function getAmountAttribute(){
-        if(isset($this->attributes['base_price'])){
-
-            if(isset($this->attributes['tax'])){
-                $tax = 0;
-            }
-            if(isset($this->attributes['quantity'])){
-                $quantity = $this->attributes['quantity'];
-            }else{
-                $quantity = 1;
-            }
-
-            $basePrice = $this->attributes['base_price'];
-            $discount = $this->attributes['discount'];
-            if($basePrice){
-
-                $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity + $tax;
-                return $amount;
-            }
-            return 0;
-        }
-    }
-
     protected $fillable = [
     	'reference',
         'parent_id',
@@ -58,5 +32,29 @@ class Item extends Model
     
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
+    }
+    public $appends = ['amount'];
+
+    public function getAmountAttribute(){
+        if(isset($this->attributes['base_price'])){
+
+            if(isset($this->attributes['tax'])){
+                $tax = 0;
+            }
+            if(isset($this->attributes['quantity'])){
+                $quantity = $this->attributes['quantity'];
+            }else{
+                $quantity = 1;
+            }
+
+            $basePrice = $this->attributes['base_price'];
+            $discount = $this->attributes['discount'];
+            if($basePrice){
+
+                $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity + $tax;
+                return $amount;
+            }
+            return 0;
+        }
     }
 }
