@@ -15,6 +15,8 @@ use App\Models\TechnicalTable;
 use App\Models\InvoiceReceipt;
 use App\Models\PurchaseReceipt;
 use App\Models\Supplier;
+use App\Models\Product;
+use App\Models\TechnicalIncident;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -162,7 +164,7 @@ class ReportController extends Controller
             // foreach($invoiceDatas as $invoiceData){
             //    $sum = $sum + $invoiceData->items()->sum('base_price');
             // }
-            $arr['sum'] = InvoiceTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
+            $arr['sum'] = InvoiceTable::with(['ireferencetems', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
             $data[] = $arr;
         }
         
@@ -317,6 +319,8 @@ class ReportController extends Controller
     public function technicalService( Request $request ){
         $technicalTables = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($technicalTables); 
+        $technicalIncident = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($technicalIncident);
 
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables); 
@@ -335,95 +339,99 @@ class ReportController extends Controller
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            '2'
+                            TechnicalIncident::where('reference', 'inc')->where('status', 'pending')->count()
                         ] 
                     ], 
                     [
                             "type" => "bar", 
                             "label" => "Refused", 
                             "backgroundColor" => "#FB6363", 
-                            "data" => ["2"] 
-                        ], 
+                            "data" => [
+                                TechnicalIncident::where('reference', 'inc')->where('status', 'refused')->count()
+                            ]
+                    ], 
                     [
                         "type" => "bar", 
                         "label" => "Resolved", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                        "4" 
-                        ] 
+                            TechnicalIncident::where('reference', 'inc')->where('status', 'resolved')->count()
+                        ]
                     ],
                     [
                         "type" => "bar", 
                         "label" => "Closed", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "5"
-                        ] 
+                            TechnicalIncident::where('reference', 'inc')->where('status', 'closed')->count()
+                        ]
                     ],
                 ],
                 "estimates_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending(10)", 
+                        "label" => "Pending (". TechnicalTable::where('reference', 'we')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                        "2900" 
-                        ] 
+                            "$".TechnicalTable::where('reference', 'we')->where('status', 'pending')->get()->sum('amount')
+                        ]
                     ], 
                     [
                             "type" => "bar", 
-                            "label" => "Refused(2)", 
+                            "label" => "Refused (". TechnicalTable::where('reference', 'we')->where('status', 'refused')->count().")",
                             "backgroundColor" => "#FB6363", 
-                            "data" => ["3548"] 
+                            "data" => [
+                                "$".TechnicalTable::where('reference', 'we')->where('status', 'refused')->get()->sum('amount')
+                            ] 
                         ], 
                     [
                         "type" => "bar", 
-                        "label" => "Accepted(4)", 
+                        "label" => "Accepted (". TechnicalTable::where('reference', 'we')->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                        "-4895" 
-                        ] 
+                            "$".TechnicalTable::where('reference', 'we')->where('status', 'accepted')->get()->sum('amount')
+                        ]
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed(0)", 
+                        "label" => "Closed (". TechnicalTable::where('reference', 'we')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 35
-                        ] 
+                            "$".TechnicalTable::where('reference', 'we')->where('status', 'closed')->get()->sum('amount')
+                        ]
                     ],
                 ], 
                 "orders_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending (1)", 
+                        "label" => "Pending (". TechnicalTable::where('reference', 'wo')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 35
+                            "$".TechnicalTable::where('reference', 'wo')->where('status', 'pending')->get()->sum('amount')
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Refused (0)", 
+                        "label" => "Refused (". TechnicalTable::where('reference', 'wo')->where('status', 'refused')->count().")",  
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". 3273
+                            "$".TechnicalTable::where('reference', 'wo')->where('status', 'refused')->get()->sum('amount')
                         ]  
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (0)", 
+                        "label" => "In Progress (". TechnicalTable::where('reference', 'wo')->where('status', 'in_progress')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 500
+                            "$".TechnicalTable::where('reference', 'wo')->where('status', 'in_progress')->get()->sum('amount')
                         ] 
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed (1)", 
+                        "label" => "Closed (". TechnicalTable::where('reference', 'wo')->where('status', 'closed')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 500
+                            "$".TechnicalTable::where('reference', 'wo')->where('status', 'closed')->get()->sum('amount')
                         ] 
                     ],
                          
@@ -431,34 +439,34 @@ class ReportController extends Controller
                 "delivery_notes_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending Invoice (0)", 
+                        "label" => "Pending Invoice (". TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 3474
+                            "$".TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (0)", 
+                        "label" => "In Progress (". TechnicalTable::where('reference', 'wdn')->where('status', 'in_progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". 300
+                            "$".TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Closed (0)", 
+                        "label" => "Closed (". TechnicalTable::where('reference', 'wdn')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 200
+                            "$".TechnicalTable::where('reference', 'wdn')->where('status', 'closed')->get()->sum('amount')
                         ] 
-                        ],
+                    ],
                     [
                         "type" => "bar", 
-                        "label" => "Invoiced (0)", 
+                        "label" => "Invoiced  (". TechnicalTable::where('reference', 'invoiced')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 200
+                            "$".TechnicalTable::where('reference', 'wdn')->where('status', 'invoiced')->get()->sum('amount')
                         ] 
                     ]  
                 ]
@@ -645,6 +653,9 @@ class ReportController extends Controller
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
 
+        $productTable = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTable); 
+
         $supplierTables = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($supplierTables); 
 
@@ -661,14 +672,16 @@ class ReportController extends Controller
                     "label" => "Sales stock value", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "$2900" 
+                        "$ ". Product::get()->sum('sales_stock_value') 
                     ] 
                 ], 
                 [
                         "type" => "bar", 
                         "label" => "Purchase stock value", 
                         "backgroundColor" => "#FB6363", 
-                        "data" => ["$3548"] 
+                        "data" => [
+                            "$ ". Product::get()->sum('purchase_stock_value') 
+                        ] 
                 ], 
             ]
         ];
