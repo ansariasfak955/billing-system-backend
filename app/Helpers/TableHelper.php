@@ -1034,7 +1034,18 @@ class TableHelper
                 $table->timestamps();
             });
         }
-
+        /* Creating dynamic company based expense Attachment table */
+        if (!Schema::hasTable('company_'.$company_id.'_expense_attachments')) {
+            Schema::create('company_'.$company_id.'_expense_attachments', function (Blueprint $table) {
+                $table->id();
+                $table->string('expense_id')->nullable();
+                $table->string('name')->nullable();
+                $table->string('document')->nullable();
+                $table->string('type')->nullable();
+                $table->longText('description')->nullable();
+                $table->timestamps();
+            });
+        }
         /* Creating dynamic company based products table */
         if (!Schema::hasTable('company_'.$company_id.'_product_categories')) {
             Schema::create('company_'.$company_id.'_product_categories', function (Blueprint $table) {
