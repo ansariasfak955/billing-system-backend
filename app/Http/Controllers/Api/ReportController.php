@@ -48,21 +48,23 @@ class ReportController extends Controller
                     "label" => "Sales", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                    "2900" 
+                        "$". Item::where('type', 'inv')->sum('subtotal')
                     ] 
                 ], 
                 [
                         "type" => "bar", 
                         "label" => "Expenses", 
                         "backgroundColor" => "#FB6363", 
-                        "data" => ["3548"] 
-                    ], 
+                        "data" => [
+                            "$". InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                        ]  
+                ], 
                 [
                     "type" => "bar", 
                     "label" => "Profit", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                    "-4895" 
+                        "$". Item::where('type', 'inv')->sum('subtotal') - InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
                     ] 
                 ] 
             ], 
@@ -72,7 +74,7 @@ class ReportController extends Controller
                     "label" => "Invoiced", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "$ ". InvoiceReceipt::where('type', 'inv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
+                        "$". InvoiceReceipt::where('type', 'inv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
                     ] 
                 ], 
                 [
