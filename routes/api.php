@@ -205,6 +205,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('rates', RateController::class);
             Route::apiResource('services', ServiceController::class);
             Route::apiResource('expense_investments', ExpenseAndInvestmentController::class);
+            Route::apiResource('expense-attachments', ExpenseAttachmentController::class);
             Route::apiResource('expense_categories', ExpenseCategoryController::class);
             
             Route::get('custom_state_types', 'CustomStateController@getCustomStateTypes');
