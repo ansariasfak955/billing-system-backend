@@ -167,11 +167,18 @@ class ExpenseAttachmentController extends Controller
                     unlink($documentPath);
                 }
             }
+            $type = "attachment";
+            $extension = ['jpg', 'JPG', 'png' ,'PNG' ,'jpeg' ,'JPEG'];
+
+            if(in_array($request->document->extension(), $extension)){
+                $type = "image";
+            }
             $originName = $request->file('document')->getClientOriginalName();
             $imageName = time().'.'.$request->document->extension();  
             $request->document->move(storage_path('app/public/expense/documents'), $imageName);
             $expense_attachment->document = $imageName;
             $expense_attachment->name = $originName;
+            $expense_attachment->type = $type;
             $expense_attachment->save();
         }
 
