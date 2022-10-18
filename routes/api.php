@@ -195,6 +195,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('roles', RoleController::class);
             Route::apiResource('custom_states', CustomStateController::class);
             Route::apiResource('my_templates', MyTemplateController::class);
+            Route::post('my_templates-bulk-delete', 'MyTemplateController@bulkDelete');
             Route::get('template-fields', 'MyTemplateController@getTemplateFields');
             Route::post('update-template-field', 'MyTemplateController@updateTemplateField');
             Route::apiResource('users', UserController::class);
