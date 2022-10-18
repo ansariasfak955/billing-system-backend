@@ -296,12 +296,12 @@ class MyTemplateController extends Controller
                     $missingValue = array_values($finalArr);
                     $counter_new = 3 - $counter;
                     
-                    $otherObject[$counter_new]['id'] = NULL;
-                    $otherObject[$counter_new]['template_id'] = NULL;
-                    $otherObject[$counter_new]['option_name'] = NULL;
-                    $otherObject[$counter_new]['option_value'] = $missingValue ? $missingValue[0] : '';
-                    $otherObject[$counter_new]['category'] = NULL;
-                    $otherObject[$counter_new]['type'] = NULL;
+                    $otherObject[$counter]['id'] = NULL;
+                    $otherObject[$counter]['template_id'] = NULL;
+                    $otherObject[$counter]['option_name'] = NULL;
+                    $otherObject[$counter]['option_value'] = $missingValue ? $missingValue[0] : '';
+                    $otherObject[$counter]['category'] = NULL;
+                    $otherObject[$counter]['type'] = NULL;
                 }
 
                 $arr[$counter]['more'] = array_merge($showObject, $otherObject);
