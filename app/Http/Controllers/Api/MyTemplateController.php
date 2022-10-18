@@ -106,6 +106,12 @@ class MyTemplateController extends Controller
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
         MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
         $template = MyTemplate::where('id', $request->my_template)->first();
+        if(!$template){
+            return response()->json([
+                "status" => false,
+                "message" => "Template not found! "
+            ]);
+        }
         
         $data = [];
         foreach($template->metas as $meta){
@@ -183,10 +189,11 @@ class MyTemplateController extends Controller
     {
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
         MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+
         $template = MyTemplate::where('id', $request->my_template)->first();
 
+        $template->metas()->delete();
         if($template->delete()){
-            $template->metas()->delete();
             return response()->json([
                 'status' => true,
                 'message' => "Template deleted successfully!"
@@ -197,6 +204,28 @@ class MyTemplateController extends Controller
                 'message' => "Template deleted successfully!"
             ]);
         }
+    }
+    public function bulkDelete(Request $request){
+        $validator = Validator::make($request->all(),[
+            'ids' => 'required'     
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+        MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+        $ids = explode(',', $request->ids);
+        $template = MyTemplate::whereIn('id', $ids)->delete();
+        MyTemplateMeta::whereIn('template_id',$ids)->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => "Template deleted successfully!"
+        ]);
     }
 
     public function getTemplateFields(Request $request)
