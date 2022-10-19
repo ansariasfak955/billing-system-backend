@@ -3,7 +3,7 @@
     <div class="container">
       <div class="navbar-content">
         <a href="" class="navbar-brand" onclick="return false">
-         <img src="{{ asset('light.png')}}" width="100">
+         <img src="{{ asset('assets/images/logo-sm.png')}}" width="60px">
         </a>
         {{-- <form class="search-form">
           <div class="input-group">
