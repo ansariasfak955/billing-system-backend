@@ -25,3 +25,7 @@ form#form-3 {
 .fixed-width td, .fixed-width th {
     min-width: 46px;
 }
+.site-logo{
+    margin:5px;
+    background-color: #fff;
+}

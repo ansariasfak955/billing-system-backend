@@ -47,7 +47,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('activity-type', ActivityTypeController::class);
 
     Route::resource('roles', RoleController::class);
-
+    Route::group(['prefix' => 'settings'], function(){
+        Route::get('/smtp', 'SettingController@getSmtpDetails');
+        Route::post('/smtp', 'SettingController@storeSmtpDetails')->name('smtp.store');
+    });
     Route::group(['prefix' => 'company'], function(){
         Route::get('{id}/user/edit/{user_id}', 'CompanyController@editUser');
         Route::put('{id}/user/update/{user_id}', 'CompanyController@updateUser');

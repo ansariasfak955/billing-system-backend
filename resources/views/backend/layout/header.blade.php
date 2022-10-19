@@ -3,7 +3,7 @@
     <div class="container">
       <div class="navbar-content">
         <a href="" class="navbar-brand" onclick="return false">
-         <img src="{{ asset('light.png')}}" width="100">
+         <img src="{{ asset('assets/images/logo-sm.png')}}" width="50px">
         </a>
         {{-- <form class="search-form">
           <div class="input-group">
@@ -122,6 +122,18 @@
             <ul class="submenu-item">
               <li class="nav-item"><a href="{{ url('/roles') }}" class="nav-link {{ active_class(['roles']) }}">Roles</a></li>
               <li class="nav-item"><a href="{{ url('/roles/create') }}" class="nav-link {{ active_class(['roles/create']) }}">Add Role</a></li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item {{ active_class(['settings/*']) }}">
+          <a href="#" class="nav-link" onclick="return false">
+            <i class="link-icon" data-feather="subscriptions"></i>
+            <span class="menu-title">Settings</span>
+            <i class="link-arrow"></i>
+          </a>
+          <div class="submenu">
+            <ul class="submenu-item">
+              <li class="nav-item"><a href="{{ url('/settings/smtp') }}" class="nav-link {{ active_class(['settings/smtp']) }}">SMTP</a></li>
             </ul>
           </div>
         </li>

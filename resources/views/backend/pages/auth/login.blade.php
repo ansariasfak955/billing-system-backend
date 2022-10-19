@@ -14,7 +14,12 @@
           </div>
           <div class="col-md-8 ps-md-0">
             <div class="auth-form-wrapper px-4 py-5">
-              <a href="#" class="noble-ui-logo d-block mb-2" style="color:#fff">Billing<span>System</span></a>
+              <center>
+              <a href="#" class="noble-ui-logo d-block mb-2 site-logo" style="color:#fff;background:#fff;padding:10px;">
+              {{-- <img src="{{public_path().'/assets/images/logo-billing.png'}}"> --}}
+                <img class="img-fluid" style="width: 150px;" src="/assets/images/logo-billing.png" alt="">
+              </a>
+            </center>
               <h5 class="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
               <form method="POST" action="{!! url('login'); !!}" class="forms-sample">
               @csrf

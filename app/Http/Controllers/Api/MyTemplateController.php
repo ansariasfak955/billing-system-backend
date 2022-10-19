@@ -352,7 +352,11 @@ class MyTemplateController extends Controller
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
         MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
         $template = MyTemplate::where('id', $request->template_id)->first();
+        // return storage_path('fonts');
+        if($request->view == 1){
 
+            return view('pdf.template', compact('company', 'products', 'template'));
+        }
         $pdf->loadView('pdf.template', compact('company', 'products', 'template'));
         return $pdf->stream();
     }
