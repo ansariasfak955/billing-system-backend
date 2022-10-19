@@ -32,7 +32,10 @@ class SendTestMail extends Mailable
      */
     public function build()
     {
-        $this->from($this->configuration['from_email'], $this->configuration['from_name'])->replyTo($this->configuration['from_email'])->markdown('emails.send-test-mail');
+        $this->from($this->configuration['from_email'], $this->configuration['from_name'])
+            ->cc($this->configuration['send_copy_to'])
+            ->replyTo($this->configuration['reply_to'])
+            ->markdown('emails.send-test-mail');
         $this->withSwiftMessage(function ($message) {
             $message->getHeaders()->addTextHeader(
                 'IsTransactional', 'true'

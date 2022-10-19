@@ -1,6 +1,23 @@
-<head>
-    <style type="text/css"></style>
-</head>
+
+{{-- <style type="text/css">
+    @font-face {
+        font-family: Bookman;
+        src: url('/assets/fonts/Bookman.ttf');
+    }
+    @font-face {
+        font-family: test;
+        src: url(/assets/fonts/test.ttf);
+    }
+    @font-face {
+        font-family: Bookman;
+        src: url('/assets/fonts/Bookman.ttf');
+    }
+    @font-face {
+        font-family: Roboto;
+        src: url(/assets/fonts/Roboto.ttf);
+    }
+
+</style> --}}
 <body>
     @php
     $company_email_show = [];

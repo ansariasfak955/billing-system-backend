@@ -125,6 +125,18 @@
             </ul>
           </div>
         </li>
+        <li class="nav-item {{ active_class(['settings/*']) }}">
+          <a href="#" class="nav-link" onclick="return false">
+            <i class="link-icon" data-feather="subscriptions"></i>
+            <span class="menu-title">Settings</span>
+            <i class="link-arrow"></i>
+          </a>
+          <div class="submenu">
+            <ul class="submenu-item">
+              <li class="nav-item"><a href="{{ url('/settings/smtp') }}" class="nav-link {{ active_class(['settings/smtp']) }}">SMTP</a></li>
+            </ul>
+          </div>
+        </li>
       </ul>
     </div>
   </nav>

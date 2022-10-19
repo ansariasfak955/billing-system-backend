@@ -70,6 +70,13 @@ class SettingController extends Controller
 
     public function sendTestEmail(Request $request)
     {
+        $configuration = [
+            'smtp_host'       => getSettingValue('smtp_server'),
+            'smtp_port'       => getSettingValue('smtp_port'),
+            'smtp_username'   => getSettingValue('smtp_email_address'),
+            'smtp_password'   => getSettingValue('smtp_password'),
+            'smtp_encryption' => getSettingValue('smtp_security_protocol')
+        ];
         $company = Company::where('id',$request->company_id)->first();
         $settings_table = 'company_'.$request->company_id.'_settings';
         Setting::setGlobalTable($settings_table);
@@ -87,45 +94,30 @@ class SettingController extends Controller
             ]);
         }
 
-        if($user->smtp_server == NULL || $user->smtp_port == NULL || $user->smtp_email_address == NULL || $user->smtp_password == NULL || $user->smtp_security_protocol == NULL || $user->smtp_sender_name == NULL) {
-            return response()->json([
-                "status" => false,
-                "user" => $user,
-                "message" => "Please enter SMTP details first!"
-            ]);
-        }
+        // if($user->smtp_server == NULL || $user->smtp_port == NULL || $user->smtp_email_address == NULL || $user->smtp_password == NULL || $user->smtp_security_protocol == NULL || $user->smtp_sender_name == NULL) {
+        //     return response()->json([
+        //         "status" => false,
+        //         "user" => $user,
+        //         "message" => "Please enter SMTP details first!"
+        //     ]);
+        // }
 
-        /*$configuration = [
-            'smtp_host'       => 'smtp.gmail.com',
-            'smtp_port'       => '465',
-            'smtp_username'   => 'cctest452@gmail.com',
-            'smtp_password'   => 'imubhzovupqoavnt',
-            'smtp_encryption' => 'SSL',
-            'from_email'      => 'tushar.khanna@codingcafe.website',
-            'from_name'       => 'Tushar Khanna',
-        ];*/
+        $configuration['from_email']      = getCompanySetting($request->company_id , 'email_configuration_send_as') ? getCompanySetting($request->company_id , 'email_configuration_send_as') : 'admin@billing.site';
 
-        $configuration = [
-            'smtp_host'       => $user->smtp_server,
-            'smtp_port'       => $user->smtp_port,
-            'smtp_username'   => $user->smtp_email_address,
-            'smtp_password'   => $user->smtp_password,
-            'smtp_encryption' => $user->smtp_security_protocol,
-            'from_email'      => $user->smtp_email_address,
-            'from_name'       => $user->smtp_sender_name ? $user->smtp_sender_name : 'test',
-        ];
+        $configuration[ 'from_name']       = getCompanySetting($request->company_id,'email_configuration_sender_name') ? getCompanySetting($request->company_id,'email_configuration_sender_name') : 'Billing';
 
-        if( $request->reply_to ){
-            $configuration['from_email'] = $request->reply_to;
-        }
+        $configuration['reply_to']       =  getCompanySetting($request->company_id, 'email_configuration_reply_to') ? getCompanySetting($request->company_id, 'email_configuration_reply_to') : '';
+        $configuration['send_copy_to']       = getCompanySetting($request->company_id, 'email_configuration_send_copy_to') ?getCompanySetting($request->company_id, 'email_configuration_send_copy_to') : '';
 
-        if( $request->send_to ){
-            SendTestMailJob::dispatch($configuration, $request->send_to, new SendTestMail($configuration, $user->email, $company, $settings));
-        }
-
-        if( $request->send_receipt_to ){
-            SendTestMailJob::dispatch($configuration, $request->send_receipt_to, new SendTestMail($configuration, $user->email, $company, $settings));
-        }       
+        // $configuration = [
+        //     'smtp_host'       => $user->smtp_server,
+        //     'smtp_port'       => $user->smtp_port,
+        //     'smtp_username'   => $user->smtp_email_address,
+        //     'smtp_password'   => $user->smtp_password,
+        //     'smtp_encryption' => $user->smtp_security_protocol,
+        //     'from_email'      => $user->smtp_email_address,
+        //     'from_name'       => $user->smtp_sender_name ? $user->smtp_sender_name : 'test',
+        // ];
 
         SendTestMailJob::dispatch($configuration, $company->email, new SendTestMail($configuration, $user->email, $company, $settings));
 

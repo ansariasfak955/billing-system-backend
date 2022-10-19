@@ -309,3 +309,13 @@ function get_formatted_datetime($date_time){
     $date = strtotime($date_time);
     return date('Y-m-d H:i:s',$date);
 }
+
+function getSettingValue($key)
+{
+    return App\Models\Setting::where('option_name', $key)->pluck('option_value')->first();
+}
+
+function getCompanySetting($company , $key){
+    App\Models\Setting::setGlobalTable('company_'.$company.'_settings');
+    return App\Models\Setting::where('option_name', $key)->pluck('option_value')->first();
+}
