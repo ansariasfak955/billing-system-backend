@@ -569,6 +569,7 @@ class TableHelper
 
                 /* More Information Fields*/
                 $table->string('asset_id')->nullable();
+                $table->string('sent_date')->nullable();
                 $table->string('delivery_option')->nullable();
                 $table->string('inv_address')->nullable();
                 $table->string('del_address')->nullable();

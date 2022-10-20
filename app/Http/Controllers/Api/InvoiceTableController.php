@@ -135,7 +135,10 @@ class InvoiceTableController extends Controller
 
             $request['valid_until'] = get_formatted_datetime($request->valid_until);
         }
+        if($request->sent_date){
 
+            $request['sent_date'] = get_formatted_datetime($request->sent_date);
+        }
         if ($request->reference_number == '') {
             $request['reference_number'] = get_invoice_table_latest_ref_number($request->company_id, $request->reference, 1 );
         }else{

@@ -83,5 +83,11 @@ class TechnicalTable extends Model
 		return $this->items->sum('amount');
 	  }
     }
+    public function getDateAttribute(){
+
+        if( isset( $this->attributes['date'] ) ){
+            return date( 'Y-m-d', strtotime($this->attributes['date']) );
+        }
+    }
 
 }
