@@ -82,4 +82,10 @@ class InvoiceTable extends Model
         return 0 ; 
 	  }
     }
+    public function getDateAttribute(){
+
+        if( isset( $this->attributes['date'] ) ){
+            return date( 'Y-m-d', strtotime($this->attributes['date']) );
+        }
+    }
 }
