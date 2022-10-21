@@ -86,7 +86,7 @@ function get_product_stock($company_id,$product_stock_id)
 	}
 	$table = 'company_'.$company_id.'_product_stocks';
     \App\Models\ProductStock::setGlobalTable($table);
-	return \App\Models\ProductStock::where('product_id', $product_stock_id)->first();
+	return \App\Models\ProductStock::where('product_id', $product_stock_id)->get();
 }
 
 function get_client_latest_ref_number($company_id, $reference, $add)
