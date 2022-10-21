@@ -56,7 +56,7 @@ class Product extends Model
         $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
         $product_stock = get_product_stock($company_id, $this->attributes['id']);
         if ($product_stock != NULL) {
-            return $product_stock->stock;
+            return $product_stock->sum('stock');
         }
         return '';
     }
@@ -67,7 +67,7 @@ class Product extends Model
         $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
         $product_stock = get_product_stock($company_id, $this->attributes['id']);
         if ($product_stock != NULL) {
-            return $product_stock->virtual_stock;
+            return $product_stock->sum('virtual_stock');
         }
         return '';
     }
@@ -78,7 +78,7 @@ class Product extends Model
         $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
         $product_stock = get_product_stock($company_id, $this->attributes['id']);
         if ($product_stock != NULL) {
-            return $product_stock->minimum_stock;
+            return $product_stock->sum('minimum_stock');
         }
         return '';
     }
