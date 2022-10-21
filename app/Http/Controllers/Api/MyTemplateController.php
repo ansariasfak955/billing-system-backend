@@ -360,4 +360,34 @@ class MyTemplateController extends Controller
         $pdf->loadView('pdf.template', compact('company', 'products', 'template'));
         return $pdf->stream();
     }
+
+    public function duplicateTemplate(Request $request, $id){
+
+        MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+
+        $template = MyTemplate::with('metas')->where('id',  $request->id)->first();
+        
+        if(!$template){
+            return response()->json([
+                "status" => false,
+                "message" => "Template not found! "
+            ]);
+        }
+        $duplicated_template = $template->replicate();
+        $duplicated_template->save();
+
+        if(count( $template->metas)){
+            foreach($template->metas as $meta){
+               $duplicate_meta =  $meta->replicate();
+               $duplicate_meta->template_id =   $duplicated_template->id;
+               $duplicate_meta->save();
+            }
+        }
+        return response()->json([
+            "status" => true,
+            "message" => "Template duplicated! ",
+            'data' => MyTemplate::with('metas')->where('id',  $duplicated_template->id)->first()
+        ]);
+    }
 }
