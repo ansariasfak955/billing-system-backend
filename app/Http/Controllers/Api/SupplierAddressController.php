@@ -118,7 +118,7 @@ class SupplierAddressController extends Controller
 
         return response()->json([
             "status" => true,
-            "supplier" => $supplier_address,
+            "supplier_addresses" => $supplier_address,
             "message" => "supplier address updated successfully"
         ]);
     }
