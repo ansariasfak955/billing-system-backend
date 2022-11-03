@@ -441,32 +441,23 @@ class TableHelper
                 $table->timestamps();
             });
         }
-        /* Creating dynamic supplier contact  table */
-        if (!Schema::hasTable('company_'.$company_id.'_supplier_contacts')) {
-            Schema::create('company_'.$company_id.'_supplier_contacts', function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->string('phone')->nullable();
-                $table->string('fax')->nullable();
-                $table->string('email')->nullable();
-                $table->string('position')->nullable();
-                $table->longText('comments')->nullable();
-                $table->integer('supplier_id');
-                $table->timestamps();
-            });
-        }
         /* Creating dynamic supplier addresses  table */
         if (!Schema::hasTable('company_'.$company_id.'_supplier_addresses')) {
             Schema::create('company_'.$company_id.'_supplier_addresses', function (Blueprint $table) {
                 $table->id();
-                $table->string('name');
-                $table->string('phone')->nullable();
-                $table->string('fax')->nullable();
-                $table->string('email')->nullable();
-                $table->string('position')->nullable();
-                $table->longText('comments')->nullable();
-                $table->integer('supplier_id');
+                $table->integer('supplier_id')->default(0);
+                $table->string('address')->nullable();
+                $table->string('city')->nullable();
+                $table->string('state')->nullable();
+                $table->string('zip_code')->nullable();
+                $table->string('country')->nullable();
+                $table->string('address_latitude')->nullable();
+                $table->string('address_longitude')->nullable();
+                $table->string('type')->default("other");
+                $table->longText('extra_information')->nullable();
+                $table->longText('description')->nullable();
                 $table->timestamps();
+
             });
         }
         /* Creating dynamic supplier addresses  table */
