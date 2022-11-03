@@ -9,6 +9,7 @@ use Validator;
 
 class SupplierAddressController extends Controller
 {
+    
     public function index(Request $request)
     {
         if(($request->company_id ==  NULL)||($request->company_id ==  0)){
