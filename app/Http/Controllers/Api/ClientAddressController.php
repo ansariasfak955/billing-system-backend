@@ -118,7 +118,7 @@ class ClientAddressController extends Controller
 
         return response()->json([
             "status" => true,
-            "client" => $client_address,
+            "client_addresses" => $client_address,
             "message" => "Client address updated successfully"
         ]);
     }
