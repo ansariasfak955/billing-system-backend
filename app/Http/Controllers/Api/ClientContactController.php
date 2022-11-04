@@ -23,10 +23,17 @@ class ClientContactController extends Controller
             ]);
         }
 
-        $client_contact =  new ClientContact;
-        ClientContact::setGlobalTable('company_'.$request->company_id.'_client_contacts');
         
-        if(ClientContact::count() == 0){
+        $table = 'company_'.$request->company_id.'_client_contacts';
+        ClientContact::setGlobalTable($table);
+        $query = ClientContact::query();
+
+        if($request->client_id){
+            $query = ClientContact::where('client_id', $request->client_id);
+        }
+        $clients = $query->get();
+
+        if(!count($clients)){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -35,7 +42,7 @@ class ClientContactController extends Controller
 
         return response()->json([
             "status" => true,
-            "client_contacts" => ClientContact::get()
+            "client_contacts" => $clients
         ]);
     }
 
@@ -60,9 +67,8 @@ class ClientContactController extends Controller
             ]);
         }
 
-        $client =  new ClientContact;
-        ClientContact::setGlobalTable($table) ;
-        $client = $client->setTable($table)->create($request->all());
+        ClientContact::setGlobalTable($table);
+        $client = ClientContact::create($request->all());
 
         return response()->json([
             "status" => true,
@@ -79,8 +85,10 @@ class ClientContactController extends Controller
      */
     public function show(Request $request)
     {
-        $client_contact =  new ClientContact;
-        $client_contact = $client_contact->setTable('company_'.$request->company_id.'_client_contacts')->where('id', $request->client_contact)->first();
+        $table = 'company_'.$request->company_id.'_client_contacts';
+        ClientContact::setGlobalTable($table);
+
+       $client_contact = ClientContact::find($request->client_contact);
  
         return response()->json([
             "status" => true,
@@ -97,8 +105,8 @@ class ClientContactController extends Controller
      */
     public function update(Request $request)
     {
-        $client_contact =  new ClientContact;
-        ClientContact::setGlobalTable('company_'.$request->company_id.'_client_contacts');
+        $table = 'company_'.$request->company_id.'_client_contacts';
+        ClientContact::setGlobalTable($table);
         $client = ClientContact::where('id', $request->client_contact)->first();
         $client->update($request->except('company_id', '_method'));
         $client->save();
@@ -118,8 +126,8 @@ class ClientContactController extends Controller
      */
     public function destroy(Request $request)
     {
-        $client_contact =  new ClientContact;
-        ClientContact::setGlobalTable('company_'.$request->company_id.'_client_contacts');
+        $table = 'company_'.$request->company_id.'_client_contacts';
+        ClientContact::setGlobalTable($table);
         $contact = ClientContact::where('id', $request->client_contact)->first();
 
         if($contact->delete()) {
