@@ -29,7 +29,7 @@ class ClientContactController extends Controller
         $query = ClientContact::query();
 
         if($request->client_id){
-            $query = ClientContact::where('client_id', $request->client_id);
+            $query = $query->where('client_id', $request->client_id);
         }
         $clients = $query->get();
 
