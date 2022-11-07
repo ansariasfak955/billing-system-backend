@@ -191,6 +191,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('product_categories', ProductCategoryController::class);
             Route::apiResource('products', ProductController::class);
             Route::apiResource('product-stock', ProductStockController::class);
+            Route::apiResource('product-rates', ProductRateController::class);
             Route::apiResource('product-attachments', ProductAttachmentController::class);
             Route::apiResource('roles', RoleController::class);
             Route::apiResource('custom_states', CustomStateController::class);
@@ -206,6 +207,7 @@ Route::group(['namespace' => 'Api'], function() {
             
             Route::apiResource('rates', RateController::class);
             Route::apiResource('services', ServiceController::class);
+            Route::apiResource('service-rates', ServiceRateController::class);
             Route::apiResource('expense_investments', ExpenseAndInvestmentController::class);
             Route::apiResource('expense-attachments', ExpenseAttachmentController::class);
             Route::apiResource('expense_categories', ExpenseCategoryController::class);

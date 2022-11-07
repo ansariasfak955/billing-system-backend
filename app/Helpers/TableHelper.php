@@ -954,6 +954,22 @@ class TableHelper
                 $table->timestamps();
             });
         }
+        /* Creating dynamic product rates table */
+        if (!Schema::hasTable('company_'.$company_id.'_product_rates')) {
+            Schema::create('company_'.$company_id.'_product_rates', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('product_id');
+                $table->string('name');
+                $table->longText('description')->nullable();
+                $table->float('purchase_price')->nullable();
+                $table->float('sales_price')->nullable();
+                $table->string('purchase_margin')->nullable();
+                $table->string('sales_margin')->nullable();
+                $table->float('discount')->nullable();
+                $table->float('special_price')->nullable();
+                $table->timestamps();
+            });
+        }
 
          /* Creating dynamic references table */
         if (!Schema::hasTable('company_'.$company_id.'_references')) {
@@ -994,6 +1010,22 @@ class TableHelper
                 $table->enum('is_promotional', ['0', '1'])->default('0');
                 $table->enum('manage_stock', ['0', '1'])->default('0');
                 $table->text('images')->nullable();
+                $table->timestamps();
+            });
+        }
+        /* Creating dynamic company based services table */
+        if (!Schema::hasTable('company_'.$company_id.'_service_rates')) {
+            Schema::create('company_'.$company_id.'_service_rates', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('service_id');
+                $table->string('name');
+                $table->longText('description')->nullable();
+                $table->float('purchase_price')->nullable();
+                $table->float('sales_price')->nullable();
+                $table->string('purchase_margin')->nullable();
+                $table->string('sales_margin')->nullable();
+                $table->float('discount')->nullable();
+                $table->float('special_price')->nullable();
                 $table->timestamps();
             });
         }
