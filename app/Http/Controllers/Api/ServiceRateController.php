@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ServiceRate;
+use App\Models\Service;
 use Validator;
 class ServiceRateController extends Controller
 {
@@ -50,7 +51,9 @@ class ServiceRateController extends Controller
     public function store(Request $request)
     {
         $table = 'company_'.$request->company_id.'_service_rates';
-       ServiceRate::setGlobalTable($table);
+        ServiceRate::setGlobalTable($table);
+        $serviceTable = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($serviceTable);
         $validator = Validator::make($request->all(),[
             'name' => 'required|unique:'.$table.'',
             'service_id' => 'required',
@@ -62,8 +65,22 @@ class ServiceRateController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        
+        $service = Service::find($request->service_id);
+
+        if(!$service){
+            return response()->json([
+                "status" => false,
+                "message" => 'Service Not found!'
+            ]);
+        }
         $rate =ServiceRate::create($request->except('company_id'));
+
+        $rate->purchase_price = $service->purchase_price;
+        $rate->sales_price = $service->price;
+        $rate->discount = $service->discount;
+        $rate->purchase_margin = $service->purchase_margin;
+        $rate->sales_margin = $service->sales_margin;
+        $rate->save();
 
         return response()->json([
             "status" => true,
