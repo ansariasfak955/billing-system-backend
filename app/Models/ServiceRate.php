@@ -22,4 +22,13 @@ class ServiceRate extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    protected $appends = ['service_name'];
+    
+    public function getServiceNameAttribute()
+    {
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        return get_service_name($company_id, $this->attributes['service_id']);
+    }
+
 }
