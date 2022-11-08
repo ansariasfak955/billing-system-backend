@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductRate;
+use App\Models\Product;
 use Validator;
 
 class ProductRateController extends Controller
@@ -51,21 +52,35 @@ class ProductRateController extends Controller
     public function store(Request $request)
     {
         $table = 'company_'.$request->company_id.'_product_rates';
-       ProductRate::setGlobalTable($table);
+        ProductRate::setGlobalTable($table);
+        $productTable = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTable);
         $validator = Validator::make($request->all(),[
             'name' => 'required|unique:'.$table.'',
             'product_id' => 'required',
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 "status" => false,
                 "message" => $validator->errors()->first()
             ]);
         }
-        
-        $rate =ProductRate::create($request->except('company_id'));
+        $product = Product::find($request->product_id);
 
+        if(!$product){
+            return response()->json([
+                "status" => false,
+                "message" => 'Product Not found!'
+            ]);
+        }
+        
+        $rate = ProductRate::create($request->except('company_id'));
+        $rate->purchase_price = $product->purchase_price;
+        $rate->sales_price = $product->price;
+        $rate->discount = $product->discount;
+        $rate->purchase_margin = $product->purchase_margin;
+        $rate->sales_margin = $product->sales_margin;
+        $rate->save();
         return response()->json([
             "status" => true,
             "rate" => $rate,
