@@ -140,7 +140,7 @@ class ReportController extends Controller
 
     public function invoicing(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTables); 
+        Client::setGlobalTable($clientsTables);
 
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($invoiceTable);
@@ -150,30 +150,73 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+
+        $productTables = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTables);
+
         
         if($request->type == "agent"){
-            $agent_ids  = InvoiceTable::pluck('agent_id')->groupBy('agent_id')->toArray();        
-            $client_ids = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
-        }else{
-            $client_ids  = Client::pluck('id')->toArray();
-        }
+            // $agent_ids  = InvoiceTable::pluck('agent_id')->groupBy('agent_id')->toArray();        
+            // $clients = Client::whereIn('id', $agent_ids)->get();
+            $clients  = Client::get();
+            $data = [];
+            $data['sales_invoicing'] = [];
+            foreach($clients as $client){
+                $data['sales_invoicing'][] = [
+                    "type" => "bar", 
+                    "label" => "" .$client->name,
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "" . InvoiceTable::where('client_id', $client->id)->get()->sum('amount'),
+                    ] 
+                ];
+            }
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
+        }else if($request->type == "items"){
+            $items = Item::get();
+            $data = [];
+            $data['Items'] = [];
+            foreach($items as $item){
+                $data ['Items'] [] = [
+                    "type" => "bar", 
+                    "label" => "" . $item->name,
+                    "data" => [
+                        " " . Item::where('id', $item->id)->get()->sum('amount'),
+                    ]
+                ];
+            }
+            return response()->json([
+                "status" => true,
+                "data" => $data
+            ]);
 
-        $data = [];
-        foreach($client_ids as $client_id){
-            $invoiceDatas = InvoiceTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
-            $sum = 0;
-            $arr['client_id'] = $client_id;
-            // foreach($invoiceDatas as $invoiceData){
-            //    $sum = $sum + $invoiceData->items()->sum('base_price');
-            // }
-            $arr['sum'] = InvoiceTable::with(['ireferencetems', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
-            $data[] = $arr;
+        }else{
+            $productTables = Product::get();
+            $data = [];
+            $data['products'] = [];
+            foreach($productTables as $productTable){
+                $data['products'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $productTable->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            Product::where('id', $productTable->id)->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
         }
         
-        return response()->json([
-            "status" => true,
-            "data" =>  $data
-        ]);
+       
+        
+        
     }
 
     public function sales( Request $request ){
@@ -181,6 +224,7 @@ class ReportController extends Controller
         SalesEstimate::setGlobalTable($salesTables);
 
         $clientsTables = 'company_'.$request->company_id.'_clients';
+        // return $clientsTables; die;
         Client::setGlobalTable($clientsTables); 
 
         $itemTable = 'company_'.$request->company_id.'_items';
@@ -197,21 +241,23 @@ class ReportController extends Controller
                         "label" => "Pending(10)", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                        "2900" 
+                        "$ " . SalesEstimate::where('reference', 'sdn')->where('status', 'pending')->get()->sum('amount'),
                         ] 
                     ], 
                     [
                             "type" => "bar", 
                             "label" => "Refused(2)", 
                             "backgroundColor" => "#FB6363", 
-                            "data" => ["3548"] 
+                            "data" => [
+                                "$ " . SalesEstimate::where('reference', 'sdn')->where('status', 'refused')->get()->sum('amount'),
+                                ] 
                         ], 
                     [
                         "type" => "bar", 
                         "label" => "Accepted(4)", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                        "-4895" 
+                            "$ " . SalesEstimate::where('reference', 'sdn')->where('status', 'accepted')->get()->sum('amount'), 
                         ] 
                     ],
                     [
@@ -219,7 +265,7 @@ class ReportController extends Controller
                         "label" => "Closed(0)", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 35
+                            "" . SalesEstimate::where('reference', 'sdn')->where('status', 'closed')->get()->sum('amount'),
                         ] 
                     ],
             ], 
@@ -229,7 +275,7 @@ class ReportController extends Controller
                         "label" => "Pending (1)", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 35
+                            "$ ".SalesEstimate::where('reference', 'sdn')->where('status', 'pending')->get()->sum('amount'),
                         ] 
                     ], 
                     [
@@ -237,7 +283,7 @@ class ReportController extends Controller
                         "label" => "Refused (0)", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". 3273
+                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'refused')->get()->sum('amount'),
                         ]  
                     ], 
                     [
@@ -245,7 +291,7 @@ class ReportController extends Controller
                         "label" => "In Progress (0)", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 500
+                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'in progress')->get()->sum('amount'),
                         ] 
                     ],
                     [
@@ -253,7 +299,7 @@ class ReportController extends Controller
                         "label" => "Closed (1)", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 500
+                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'closed')->get()->sum('amount'),
                         ] 
                     ],
                          
@@ -264,7 +310,7 @@ class ReportController extends Controller
                         "label" => "Pending Invoice (0)", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 3474
+                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'pending invoice')->get()->sum('amount'),
                         ] 
                     ], 
                     [
@@ -272,7 +318,7 @@ class ReportController extends Controller
                         "label" => "In Progress (0)", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". 300
+                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'in progress')->get()->sum('amount'),
                         ] 
                     ], 
                     [
@@ -280,7 +326,7 @@ class ReportController extends Controller
                         "label" => "Closed (0)", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 200
+                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'closed')->get()->sum('amount'),
                         ] 
                         ],
                     [
@@ -288,7 +334,7 @@ class ReportController extends Controller
                         "label" => "Invoiced (0)", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 200
+                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'invoiced')->get()->sum('amount'),
                         ] 
                     ]  
                 ]
@@ -505,45 +551,55 @@ class ReportController extends Controller
         $supplierTables = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($supplierTables); 
 
+        $productTables = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTables);
+
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        if($request->type == "supplier"){
-            $supplierArr  = PurchaseTable::pluck('supplier_id')->toArray();        
-            $supplier_ids = Supplier::whereIn('id', $supplierArr)->pluck('id')->toArray();
+        if($request->type == "product"){
+            $productTables = Product::get();
             $data = [];
-            foreach($supplier_ids as $supplier_id){
-                $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $supplier_id)->get();
-                $sum = 0;
-                $arr['supplier_id'] = $supplier_id;
-                // foreach($purchaseDatas as $purchaseData){
-                //     $sum = $sum + $purchaseData->items()->sum('base_price');
-                // }
-                $arr['sum'] = PurchaseTable::with(['items', 'item_meta'])->where('supplier_id', $supplier_id)->get()->sum('amount');
-                $data[] = $arr;
+            $data['products'] = [];
+            foreach($productTables as $productTable){
+                $data['products'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $productTable->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            Product::where('id', $productTable->id)->get()->sum('amount'),
+                            ]
+                        ];
             }
+            
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
 
         }else{
+            $suppliers = Supplier::get();
             $data = [];
-            $purchaseDatas = PurchaseTable::with(['items', 'item_meta'])->get();
-            
-            $sum = 0;
-            foreach($purchaseDatas as $purchaseData){
-                $arr['name'] = $purchaseData->title;
-                $sum = $sum + $purchaseData->items()->sum('base_price');
-                $arr['sum'] = $sum;
-                $data[] = $arr;
+            $data['purchases'] = [];
+            foreach($suppliers as $supplier){
+                $data['purchases'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $supplier->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            PurchaseTable::where('id', $supplier->id)->get()->sum('amount'),
+                            ]
+                        ];
             }
             
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
         }
-        
-        return response()->json([
-            "status" => true,
-            "data" =>  $data
-        ]);
     }
     public function cashFlow(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
