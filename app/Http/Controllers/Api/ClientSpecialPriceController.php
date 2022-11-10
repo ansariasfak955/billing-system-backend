@@ -61,6 +61,7 @@ class ClientSpecialPriceController extends Controller
             'client_id' => 'required',
             'product_id' => 'required',
             'type' => 'required',
+            'product_type' => 'required',
         ], [
             'client_id.required' => 'Please select client ',
             'product_id.required' => 'Please select product ',
@@ -124,7 +125,8 @@ class ClientSpecialPriceController extends Controller
 
         $validator = Validator::make($request->all(),[
             'client_id' => 'required',          
-            'product_id' => 'required'          
+            'product_id' => 'required',
+            'product_type' => 'required',         
         ], [
             'client_id.required' => 'Please select client ',
             'product_id.required' => 'Please select product ',
