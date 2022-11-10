@@ -407,4 +407,24 @@ class TechnicalTableController extends Controller
             ]);
         }
     }
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_technical_tables';
+        $validator = Validator::make($request->all(),[
+            'ids'=>'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+
+        TechnicalTable::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        TechnicalTable::whereIn('id', $ids)->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'order deleted successfull'
+            ]);
+    }
 }

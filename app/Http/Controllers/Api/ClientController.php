@@ -209,4 +209,47 @@ class ClientController extends Controller
             ]);
         }
     }
+
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_clients';
+        $validator = Validator::make($request->all(),[
+            'ids'=>'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        Client::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        Client::whereIn('id', $ids)->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Clients deleted successfully'
+        ]);
+    }
+    // public function duplicateClient(Request $request){
+    //     $table = 'company_'.$request->company_id.'_clients';
+    //     $validator = Validator::make($request->all(),[
+    //         'ids'=>'required',
+    //     ]);
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status'  => false,
+    //             'message' => $validator->errors()->first(),
+    //         ]);
+    //     }
+    //         Client::setGlobalTable($table);
+    //         $ids = implode(",", $request->ids);
+    //         $id = Client::whereIn('id', $ids);
+    //         $post = Client::find($id);
+    //         $newPost = $post->replicate();
+    //         $newPost->created_at = Carbon::now();
+    //         $newPost->save();
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'Duplicate Clients successfully'
+    //         ]);
+    // }
 }

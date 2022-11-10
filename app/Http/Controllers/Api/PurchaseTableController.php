@@ -433,6 +433,25 @@ class PurchaseTableController extends Controller
             ]);
         }
     }
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_purchase_tables';
+        $validator = Validator::make($request->all(),[
+            'ids'=>'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        PurchaseTable::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        PurchaseTable::whereIn('id', $ids)->delete(); 
+        return response()->json([
+            'ststus' => true,
+            'message' => 'Purchase order delete successfully'
+        ]);
+    }
 
     public function sentInvoices( Request $request){
         if(($request->company_id ==  NULL)||($request->company_id ==  0)){

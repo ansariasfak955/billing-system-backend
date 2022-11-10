@@ -197,4 +197,25 @@ class SupplierController extends Controller
             ]);
         }
     }
+
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_suppliers';
+        $validator = Validator::make($request->all(),[
+            'ids'=>'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+
+        Supplier::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        Supplier::whereIn('id', $ids)->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Supplier deleted successfull'
+            ]);
+    }
 }
