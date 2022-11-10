@@ -38,7 +38,7 @@ class ClientSpecialPrice extends Model
     {
         $table = $this->getTable();
         $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-        if($this->attributes['product_type'] == 'service'){
+        if($this->attributes['product_type'] == 'SER'){
             return get_service_name($company_id, $this->attributes['product_id']);
         }else{
 
