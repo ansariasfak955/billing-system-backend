@@ -176,6 +176,8 @@ Route::get('clear-cache', function() {
     return "Cache is cleared";
 });
 
+Route::resource('termsconditions', TermsConditionsController::class);
+
 // 404 for undefined routes
 Route::any('/{page?}',function(){
     return View::make('pages.error.404');
