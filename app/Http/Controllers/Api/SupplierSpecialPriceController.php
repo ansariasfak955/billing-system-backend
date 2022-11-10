@@ -66,7 +66,8 @@ class SupplierSpecialPriceController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'supplier_id' => 'required',
-            'product_id' => 'required'
+            'product_id' => 'required',
+            'product_type' => 'required',
         ], [
             'supplier_id.required' => 'Please select client ',
             'product_id.required' => 'Please select product ',
@@ -130,7 +131,8 @@ class SupplierSpecialPriceController extends Controller
 
         $validator = Validator::make($request->all(),[
             'supplier_id' => 'required',          
-            'product_id' => 'required'          
+            'product_id' => 'required' ,
+            'product_type' => 'required'         
         ], [
             'supplier_id.required' => 'Please select client ',
             'product_id.required' => 'Please select product ',

@@ -116,6 +116,7 @@ class TableHelper
                 $table->float('discount')->nullable();
                 $table->float('special_price')->nullable();
                 $table->string('type',20)->nullable();
+                $table->string('product_type')->nullable();
                 $table->timestamps();
             });
         }
@@ -485,6 +486,7 @@ class TableHelper
                 $table->string('sales_margin')->nullable();
                 $table->float('discount')->nullable();
                 $table->float('special_price')->nullable();
+                $table->string('product_type')->nullable();
                 $table->timestamps();
             });
         }
