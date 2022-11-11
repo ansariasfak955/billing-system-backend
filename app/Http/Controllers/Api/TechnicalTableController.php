@@ -424,7 +424,7 @@ class TechnicalTableController extends Controller
         TechnicalTable::whereIn('id', $ids)->delete();
             return response()->json([
                 'status' => true,
-                'message' => 'order deleted successfull'
+                'message' => 'Deleted successfully'
             ]);
     }
 }

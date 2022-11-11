@@ -435,5 +435,50 @@ class SalesEstimateController extends Controller
                 'message' => 'sales estimate deleted successfull'
             ]);
     }
+    public function salesDuplicate(Request $request){
+        $table = 'company_'.$request->company_id.'_sales_estimates';
+        $itemTable = 'company_'.$request->company_id.'_items';
+
+        $validator = Validator::make($request->all(),[
+            'id'=>'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        
+        SalesEstimate::setGlobalTable($table);
+        Item::setGlobalTable($itemTable);
+
+
+        $salesEstimate = SalesEstimate::with('items')->find($request->id);
+        if(!$salesEstimate){
+            return response()->json([
+                'status' => false,
+                'message' => 'Client Not found!'
+            ]);
+        }
+        // dd($salesEstimate->_items);
+        $duplicatedEstimate = $salesEstimate->replicate();
+        $duplicatedEstimate->created_at = now();
+        $duplicatedEstimate->save();
+        
+        foreach($salesEstimate->items as $salesItems){
+            $duplicatedItem = $salesItems->replicate();
+            $duplicatedItem->created_at = now();
+            $duplicatedItem->parent_id =  $duplicatedEstimate->id;
+            $duplicatedItem->save();
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Clients successfully',
+            'data' =>  SalesEstimate::with('items')->find($duplicatedEstimate->id)
+        ]);
+        
+    }
 
 }

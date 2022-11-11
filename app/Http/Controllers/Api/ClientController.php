@@ -229,27 +229,47 @@ class ClientController extends Controller
             'message' => 'Clients deleted successfully'
         ]);
     }
-    // public function duplicateClient(Request $request){
-    //     $table = 'company_'.$request->company_id.'_clients';
-    //     $validator = Validator::make($request->all(),[
-    //         'ids'=>'required',
-    //     ]);
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status'  => false,
-    //             'message' => $validator->errors()->first(),
-    //         ]);
-    //     }
-    //         Client::setGlobalTable($table);
-    //         $ids = implode(",", $request->ids);
-    //         $id = Client::whereIn('id', $ids);
-    //         $post = Client::find($id);
-    //         $newPost = $post->replicate();
-    //         $newPost->created_at = Carbon::now();
-    //         $newPost->save();
-    //         return response()->json([
-    //             'status' => true,
-    //             'message' => 'Duplicate Clients successfully'
-    //         ]);
-    // }
+    public function duplicateClient(Request $request){
+        $table = 'company_'.$request->company_id.'_clients';
+        $attachmentTable = 'company_'.$request->company_id.'_client_attachments';
+
+        $validator = Validator::make($request->all(),[
+            'id'=>'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        
+        Client::setGlobalTable($table);
+        ClientAttachment::setGlobalTable($attachmentTable);
+
+        $client = Client::with('client_attachments')->find($request->id);
+        if(!$client){
+            return response()->json([
+                'status' => false,
+                'message' => 'Client Not found!'
+            ]);
+        }
+        // dd($client->client_attachments);
+        $duplicatedClient = $client->replicate();
+        $duplicatedClient->created_at = now();
+        $duplicatedClient->save();
+        
+        foreach($client->client_attachments as $attachment){
+            $duplicatedAttachment = $attachment->replicate();
+            $duplicatedAttachment->created_at = now();
+            $duplicatedAttachment->client_id =  $duplicatedClient->id;
+            $duplicatedAttachment->save();
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Clients successfully',
+            'data' =>  Client::with('client_attachments')->find( $duplicatedClient->id)
+        ]);
+    }
 }
