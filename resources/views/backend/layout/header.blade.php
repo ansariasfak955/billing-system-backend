@@ -95,7 +95,7 @@
           <div class="submenu">
             <ul class="submenu-item">
               <li class="nav-item"><a href="{{ url('/termsconditions') }}" class="nav-link {{ active_class(['termsconditions']) }}">Terms & Conditions</a></li>
-              <li class="nav-item"><a href="{{ url('/termsconditions/create') }}" class="nav-link {{ active_class(['termsconditions/create']) }}">Add Terms</a></li>
+              <li class="nav-item"><a href="{{ url('/termsconditions/create') }}" class="nav-link {{ active_class(['termsconditions/create']) }}">Add New Page</a></li>
             </ul>
           </div>
         </li>
