@@ -43,7 +43,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     /* Subscriptions */
     Route::resource('subscriptions', SubscriptionController::class);
-
+    Route::resource('termsconditions', TermsConditionsController::class);
     Route::resource('activity-type', ActivityTypeController::class);
 
     Route::resource('roles', RoleController::class);
@@ -176,7 +176,6 @@ Route::get('clear-cache', function() {
     return "Cache is cleared";
 });
 
-Route::resource('termsconditions', TermsConditionsController::class);
 
 // 404 for undefined routes
 Route::any('/{page?}',function(){

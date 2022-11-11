@@ -16,7 +16,7 @@ class TermsConditionsController extends Controller
     {
         $termscondition = TermsConditions::latest()->paginate(5);
       
-        return view('termsconditions.index',compact('termscondition'))
+        return view('backend.pages.termsconditions.index',compact('termscondition'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
   
@@ -27,7 +27,7 @@ class TermsConditionsController extends Controller
      */
     public function create()
     {
-        return view('termsconditions.create');
+        return view('backend.pages.termsconditions.create');
     }
   
     /**
@@ -57,7 +57,7 @@ class TermsConditionsController extends Controller
      */
     public function show(TermsConditions $termscondition)
     {
-        return view('termsconditions.show',compact('termscondition'));
+        return view('backend.pages.termsconditions.show',compact('termscondition'));
     }
   
     /**
@@ -68,7 +68,7 @@ class TermsConditionsController extends Controller
      */
     public function edit(TermsConditions $termscondition)
     {
-        return view('termsconditions.edit',compact('termscondition'));
+        return view('backend.pages.termsconditions.edit',compact('termscondition'));
     }
   
     /**
@@ -84,8 +84,11 @@ class TermsConditionsController extends Controller
             'title' => 'required',
             'description' => 'required',
         ]);
-      
-        $termscondition->update($request->all());
+        
+        $termscondition->title = $request->title;
+        $termscondition->description = $request->description;
+        $termscondition->save();
+        
       
         return redirect()->route('termsconditions.index')
                         ->with('success','termsconditions updated successfully');

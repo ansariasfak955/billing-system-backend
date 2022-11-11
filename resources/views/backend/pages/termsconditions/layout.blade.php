@@ -3,28 +3,13 @@
 @push('plugin-styles')
   <link href="{{ asset('assets/plugins/datatables-net/dataTables.bootstrap4.css') }}" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
   
 @endpush
 
-@section('content')
-<nav class="page-breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item active" aria-current="page">Terms and Conditions</li>
-  </ol>
-</nav>
- 
-<div class="row">
-  <div class="col-md-12 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <div class="table-responsive">
-          {!! $dataTable->table(['class' => 'table table-hover table-bordered table-sm dataTable no-footer w-auto']) !!}
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="container">
+    @yield('content')
 </div>
-@endsection
 
 @push('plugin-scripts')
   {!! $dataTable->scripts() !!}
