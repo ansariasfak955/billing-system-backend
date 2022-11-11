@@ -11,7 +11,7 @@
                 <h2>Terms and conditions</h2>
             </div>
             <div class="pull-right">
-                <a class="btn btn-success" href="{{ route('termsconditions.create') }}"> Create Terms and Conditions page</a>
+                <a class="btn btn-success" href="{{ route('termsconditions.create') }}"> Create Page</a>
             </div>
         </div>
     </div>
