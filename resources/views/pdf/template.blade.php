@@ -1,4 +1,25 @@
-
+@php
+    $company_email_show = [];
+    $company_logo_show = 0;
+    $company_website_show = [];
+    $company_name_show = 0;
+    $company_country_show = 0;
+    $document_payment_info_show = 0;
+    $document_status_show = 0;
+    $document_status_text = 'Status:';
+    $document_created_by_show = 0;
+    $document_created_by_text = 'Created by:';
+    $company_company_info_show = 0;
+    $document_title_show = 0;
+    $document_title_text = '';
+    $font = $template->font;
+    $color = $template->color;
+    @endphp
+    <style>
+        .table_heading{
+            color: {{ $color }} !important;
+        }
+    </style>
 {{-- <style type="text/css">
     @font-face {
         font-family: Bookman;
@@ -19,22 +40,8 @@
 
 </style> --}}
 <body>
-    @php
-    $company_email_show = [];
-    $company_logo_show = 0;
-    $company_website_show = [];
-    $company_name_show = 0;
-    $company_country_show = 0;
-    $document_payment_info_show = 0;
-    $document_status_show = 0;
-    $document_status_text = 'Status:';
-    $document_created_by_show = 0;
-    $document_created_by_text = 'Created by:';
-    $company_company_info_show = 0;
-    $document_title_show = 0;
-    $document_title_text = '';
-    $font = $template->font;
-    @endphp
+    
+    
 
     @foreach($template->metas as $meta)
         @if($meta->category == 'Company Information' && $meta->type == 'logo' && $meta->option_name == 'show')
@@ -388,7 +395,7 @@
         <div style="height:400px">
             <div style="margin-top: 20px;font-size: 13px">
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
-                    <th style="color: orange; border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} INFO</th>
+                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} INFO</th>
                     <tr><td style="padding: 0; margin: 0;">Number: <b>INV00001</b></td></tr>
                     <tr><td style="padding: 0; margin: 0;">Date: <b>{{ date('d F Y') }}</b></td></tr>
                     @if($document_payment_info_show == 1)
@@ -519,14 +526,14 @@
             <div style="clear: both;"></div>
             <div style="margin-top: 20px;">
                 <table style="border-collapse: collapse; width:100%; ">
-                    <tr style="color: orange; border-bottom: 1px solid gray;">
-                        <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>
-                        <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">NAME</th>
-                        <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">PRICE</th>
-                        <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
-                        <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">QTY.</th>
-                        <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">SUBTOTAL</th>
-                        <th style="color: orange; padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">TAXES</th>
+                    <tr class="table_heading" style=" border-bottom: 1px solid gray;">
+                        <th style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">NAME</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">PRICE</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">QTY.</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">SUBTOTAL</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">TAXES</th>
                     </tr>
                     @php
                     $subtotal = 0;
@@ -598,9 +605,9 @@
                             <div>
                                 <table style="border-collapse: collapse; width: 100%; ">
                                     <tr style="border-bottom: 1px solid gray;">
-                                        <th style="color: orange; padding: 5px 0; text-align: left;">BASE</th>
+                                        <th class="table_heading" style="padding: 5px 0; text-align: left;">BASE</th>
                                         <th></th>
-                                        <th style="color: orange; padding: 5px 0; text-align: right;">$ {{ $subtotal }}</th>
+                                        <th class="table_heading" style="padding: 5px 0; text-align: right;">$ {{ $subtotal }}</th>
                                     </tr>
                                     <tr style="border-bottom: 1px solid gray;">
                                         <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $subtotal }}</td>
@@ -608,7 +615,7 @@
                                         <td style="padding: 5px 0; text-align: right">{{ $vat }}</td>
                                     </tr>
                                     <tr>
-                                        <th style="color: orange; padding: 5px 0; text-align: left">TOTAL</th>
+                                        <th class="table_heading" style="padding: 5px 0; text-align: left">TOTAL</th>
                                         <td style="padding: 0; margin: 0;"></td>
                                         <th style="text-align: right">$ {{ $total }}</th>
                                     </tr>
@@ -623,7 +630,8 @@
             <br>
             <br>
             <br>
-        @if(@$comments_show == 1)
+        
+        @if(@$comments_show)
             <div style="margin-top: 20px;">
                 <h5 style="border-bottom: 1px solid black ;">{{ $comments_text }}</h5>
                 <ul>
