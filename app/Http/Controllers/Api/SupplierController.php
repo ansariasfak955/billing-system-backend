@@ -218,4 +218,34 @@ class SupplierController extends Controller
                 'message' => 'Supplier deleted successfull'
             ]);
     }
+    
+    public function duplicateSupplier(Request $request){
+        $table = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($table);
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $supplier = Supplier::find($request->id);
+        if(!$supplier){
+            return response()->json([
+                'status' => false,
+                'message' => 'Suppliers not found'
+            ]);
+        }
+        $technicalSupplier = $supplier->replicate();
+        $technicalSupplier->created_at = now();
+        $technicalSupplier->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Suppliers Successfully',
+            'data' => $supplier
+        ]);
+    }
 }

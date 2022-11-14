@@ -538,4 +538,56 @@ class InvoiceTableController extends Controller
             "message" => 'Sent!',
         ]);
     }
+    public function duplicateInvoice(Request $request){
+        $table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $validator = Validator::make($request->all(),[
+            'id'=>'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+
+        $invoiceTable = InvoiceTable::with('items','receipts')->find($request->id);
+        // dd($invoiceTable);
+        if(!$invoiceTable){
+            return response()->json([
+                'status' => false,
+                'message' => 'Invoices Not found!'
+            ]);
+        }
+        $duplicateInvoice = $invoiceTable->replicate();
+        $duplicateInvoice->created_at = now();
+        $duplicateInvoice->save(); 
+
+        foreach($invoiceTable->items as $invoiceTables){
+            $duplicateInvoiceItems = $invoiceTables->replicate();
+            $duplicateInvoiceItems->created_at = now();
+            $duplicateInvoiceItems->parent_id = $duplicateInvoice->id;
+            $duplicateInvoiceItems->save();
+            foreach($invoiceTable->receipts as $invoiceTables){
+                $duplicateInvoiceReceipts = $invoiceTables->replicate();
+                $duplicateInvoiceReceipts->created_at = now();
+                $duplicateInvoiceReceipts->invoice_id = $duplicateInvoiceItems->id;
+                $duplicateInvoiceReceipts->save();
+            }
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Invoive Successfully',
+            'data' => InvoiceTable::with('items','receipts')->find($duplicateInvoice->id)
+        ]);
+    }
 }

@@ -233,4 +233,24 @@ class ProductController extends Controller
             ]);
         }
     }
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_products';
+        $validator = Validator::make($request->all(),[
+            'ids'=>'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+
+        Product::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        Product::whereIn('id', $ids)->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Deleted successfully'
+            ]);
+    }
 }

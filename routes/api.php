@@ -190,6 +190,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('bank_accounts', BankAccountController::class);
             Route::apiResource('product_categories', ProductCategoryController::class);
             Route::apiResource('products', ProductController::class);
+            Route::post('products/batch-delete', 'ProductController@batchDelete');
             Route::apiResource('product-stock', ProductStockController::class);
             Route::apiResource('product-rates', ProductRateController::class);
             Route::apiResource('product-attachments', ProductAttachmentController::class);
@@ -207,8 +208,10 @@ Route::group(['namespace' => 'Api'], function() {
             
             Route::apiResource('rates', RateController::class);
             Route::apiResource('services', ServiceController::class);
+            Route::post('services/batch-delete', 'ServiceController@batchDelete');
             Route::apiResource('service-rates', ServiceRateController::class);
             Route::apiResource('expense_investments', ExpenseAndInvestmentController::class);
+            Route::post('expense_investments/batch-delete', 'ExpenseAndInvestmentController@batchDelete');
             Route::apiResource('expense-attachments', ExpenseAttachmentController::class);
             Route::apiResource('expense_categories', ExpenseCategoryController::class);
             
@@ -241,9 +244,11 @@ Route::group(['namespace' => 'Api'], function() {
 
             /* Technical Service */
             Route::apiResource('technical-incidents', TechnicalIncidentController::class);
+            Route::post('technical-incidents/duplicate_incident', 'TechnicalIncidentController@duplicateIncident');
             Route::apiResource('technical-incident-attachments', TechnicalIncidentAttachmentController::class);
             Route::apiResource('technical-tables', TechnicalTableController::class);
             Route::post('technical-tables/batch-delete', 'TechnicalTableController@batchDelete');
+            Route::post('technical-tables/duplicate_service', 'TechnicalTableController@duplicateService');
             Route::apiResource('technical-table-attachments', TechnicalTableAttachmentController::class);
 
             // Invoicing 
@@ -251,6 +256,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('invoices/batch-delete', 'InvoiceTableController@batchDelete');
             Route::get('sent-invoice-summary', 'InvoiceTableController@sentInvoices');
             Route::get('send-invoice-mail', 'InvoiceTableController@sendInvoiceMail');
+            Route::post('invoices/duplicate_invoice', 'InvoiceTableController@duplicateInvoice');
             Route::apiResource('invoice-attachments', InvoiceAttachmentController::class);
             Route::apiResource('invoice-receipts', InvoiceReceiptController::class);
             Route::post('invoice-receipts-bulk-pay', 'InvoiceReceiptController@bulkPay');
@@ -258,6 +264,7 @@ Route::group(['namespace' => 'Api'], function() {
             // Purchases 
             Route::apiResource('suppliers', SupplierController::class);
             Route::post('suppliers/batch-delete', 'SupplierController@batchDelete');
+            Route::post('suppliers/duplicate-supplier', 'SupplierController@duplicateSupplier');
             Route::apiResource('purchase-attachments', PurchaseAttachmentController::class);
             Route::apiResource('supplier-addresses', SupplierAddressController::class);
             Route::apiResource('supplier-special-prices', SupplierSpecialPriceController::class);
@@ -265,6 +272,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('supplier-attachments', SupplierAttachmentController::class);
             Route::apiResource('purchase-tables', PurchaseTableController::class);
             Route::post('purchase-tables/batch-delete', 'PurchaseTableController@batchDelete');
+            Route::post('purchase-tables/duplicate_supplier', 'PurchaseTableController@supplierDuplicate');
             Route::apiResource('purchase-receipts', PurchaseReceiptController::class);
             Route::apiResource('purchase-tickets', PurchaseTicketController::class);
             Route::post('purchase-receipts-bulk-pay', 'PurchaseReceiptController@bulkPay');

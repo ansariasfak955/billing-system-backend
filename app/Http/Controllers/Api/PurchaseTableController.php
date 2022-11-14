@@ -484,4 +484,57 @@ class PurchaseTableController extends Controller
             "data" =>  $data
         ]);
     }
+    
+    public function supplierDuplicate(Request $request){
+        $table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($invoiceReceiptTable);
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+
+        $purchaseTable = PurchaseTable::with('receipts','items')->find($request->id);
+        if(!$purchaseTable){
+            return response()->json([
+                'status' => false,
+                'message' => 'Purchase not found'
+            ]);
+        }
+
+        $duplicatePurchase = $purchaseTable->replicate();
+        $duplicatePurchase->created_at = now();
+        $duplicatePurchase->save();
+
+        foreach($purchaseTable->receipts as $purchaseTables){
+            $duplicatePurchaseTable = $purchaseTables->replicate();
+            $duplicatePurchaseTable->created_at = now();
+            $duplicatePurchaseTable->purchase_id = $duplicatePurchase->id;
+            $duplicatePurchaseTable->save();
+            foreach($purchaseTable->items as $purchase){
+                $purchaseDuplicate = $purchase->replicate();
+                $purchaseDuplicate->created_at = now();
+                $purchaseDuplicate->parent_id = $duplicatePurchaseTable->id;
+                $purchaseDuplicate->save();
+            }
+        }
+            return response()->json([
+                'status' => true,
+                'message' => 'Duplicate Purchase Successfully',
+                'data' => PurchaseTable::with('receipts','items')->find($duplicatePurchase->id)
+            ]);
+    }
 }
