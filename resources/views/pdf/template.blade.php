@@ -15,6 +15,7 @@
     $font = $template->font;
     $color = $template->color;
     @endphp
+
     <style>
         .table_heading{
             color: {{ $color }} !important;
@@ -527,7 +528,7 @@
             <div style="margin-top: 20px;">
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
-                        <th style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">NAME</th>
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">PRICE</th>
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
@@ -587,10 +588,36 @@
             $total = $vat+$subtotal;
             @endphp
 
+            
+        
+        @if(@$comments_show == 1)
+            <div style="margin-top: 20px;">
+                <h5 style="border-bottom: 1px solid black ;">{{ $comments_text }}</h5>
+                <ul>
+                    <li>
+                        You can also type in more detailed comments which will be included as an Addendum at the bottom of
+                        your
+                        documents.
+                    </li>
+                    <li>
+                        You can use this to include contracts, conditions, promotions and legal writings.
+                    </li>
+                    <li>
+                        From Settings > Management Listings > References, you can define Addendums that you want to add into
+                        your estimates,
+                        orders, invoices and any other commercial document reference.
+                    </li>
+                </ul>
+            </div>
             <div>
                 <p style="font-weight: bold;">Signed:</p>
             </div>
-            <div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
                 <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                     <tr>
                         <td style="margin: 0;">
@@ -625,31 +652,45 @@
                     </tr>
                 </table>
             </div>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
+            
+        @else
         
-        @if(@$comments_show)
-            <div style="margin-top: 20px;">
-                <h5 style="border-bottom: 1px solid black ;">{{ $comments_text }}</h5>
-                <ul>
-                    <li>
-                        You can also type in more detailed comments which will be included as an Addendum at the bottom of
-                        your
-                        documents.
-                    </li>
-                    <li>
-                        You can use this to include contracts, conditions, promotions and legal writings.
-                    </li>
-                    <li>
-                        From Settings > Management Listings > References, you can define Addendums that you want to add into
-                        your estimates,
-                        orders, invoices and any other commercial document reference.
-                    </li>
-                </ul>
-            </div>
+        <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
+        <p style="font-weight: bold;">Signed:</p><br
+            <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
+                <tr>
+                    <td style="margin: 0;">
+                        <div style="border: 1px solid gray; padding: 10px;">
+                            <img width="100" height="80" object-fit="cover"
+                                src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" />
+                            <p style="font-weight: bold; position: relative; bottom: 0;">Name:</p>
+                            <p style="font-weight: bold; position: relative; bottom: 0;">Ced/Ruc:</p>
+                        </div>
+                    </td>
+                    <td style="padding: 0; margin: 0; padding-left: 120px;">
+                        <div>
+                            <table style="border-collapse: collapse; width: 100%; ">
+                                <tr style="border-bottom: 1px solid gray;">
+                                    <th class="table_heading" style="padding: 5px 0; text-align: left;">BASE</th>
+                                    <th></th>
+                                    <th class="table_heading" style="padding: 5px 0; text-align: right;">$ {{ $subtotal }}</th>
+                                </tr>
+                                <tr style="border-bottom: 1px solid gray;">
+                                    <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $subtotal }}</td>
+                                    <td style="padding: 5px 0; text-align: center"><span> VAT 21%</span></td>
+                                    <td style="padding: 5px 0; text-align: right">{{ $vat }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="table_heading" style="padding: 5px 0; text-align: left">TOTAL</th>
+                                    <td style="padding: 0; margin: 0;"></td>
+                                    <th style="text-align: right">$ {{ $total }}</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
         @endif
     </div>
 </body>
