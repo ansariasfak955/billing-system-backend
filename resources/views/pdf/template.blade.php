@@ -631,7 +631,7 @@
             <br>
             <br>
         
-        @if(@$comments_show == '1')
+        @if(@$comments_show)
             <div style="margin-top: 20px;">
                 <h5 style="border-bottom: 1px solid black ;">{{ $comments_text }}</h5>
                 <ul>
