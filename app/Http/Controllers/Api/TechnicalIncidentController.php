@@ -236,4 +236,33 @@ class TechnicalIncidentController extends Controller
             ]);
         }
     }
+    public function duplicateIncident(Request $request){
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        TechnicalIncident::setGlobalTable($table);
+        $duplicateIncident = TechnicalIncident::find($request->id);
+        if(!$duplicateIncident){
+            return response()->json([
+                'status' =>false,
+                'message' => 'Technical Incident not found',
+            ]);
+        }
+        $duplicateIncidents = $duplicateIncident->replicate();
+        $duplicateIncidents->created_at = now();
+        $duplicateIncidents->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Technical Incident Successfullu',
+            'data' => $duplicateIncidents
+        ]);
+    }
 }

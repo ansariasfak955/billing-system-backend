@@ -427,4 +427,48 @@ class TechnicalTableController extends Controller
                 'message' => 'Deleted successfully'
             ]);
     }
+    public function duplicateService(Request $request){
+        $table = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($table);
+        
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+
+       $technicalTable = TechnicalTable::with('items')->find($request->id);
+
+       if(!$technicalTable){
+        return response()->json([
+            'status' => false,
+            'message' => 'Estimate not found!'
+        ]);
+       }
+
+       $technicalTables = $technicalTable->replicate();
+       $technicalTables->created_at = now();
+       $technicalTables->save();
+
+       foreach($technicalTable->items as $technicalEstimate){
+            $technicalService = $technicalEstimate->replicate();
+            $technicalService->created_at = now();
+            $technicalService->parent_id = $technicalTables->id;
+            $technicalService->save();
+        }
+
+       return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Technical Estimate Successfully',
+            'data' => TechnicalTable::with('items')->find($technicalTables->id)
+       ]);
+        
+    }
 }

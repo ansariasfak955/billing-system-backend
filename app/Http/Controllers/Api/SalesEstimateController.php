@@ -458,7 +458,7 @@ class SalesEstimateController extends Controller
         if(!$salesEstimate){
             return response()->json([
                 'status' => false,
-                'message' => 'Client Not found!'
+                'message' => 'Sales Not found!'
             ]);
         }
         // dd($salesEstimate->_items);
@@ -475,7 +475,7 @@ class SalesEstimateController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Duplicate Clients successfully',
+            'message' => 'Duplicate Sales successfully',
             'data' =>  SalesEstimate::with('items')->find($duplicatedEstimate->id)
         ]);
         
