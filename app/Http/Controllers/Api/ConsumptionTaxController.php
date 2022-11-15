@@ -24,8 +24,8 @@ class ConsumptionTaxController extends Controller
         ConsumptionTax::setGlobalTable('company_'.$request->company_id.'_consumption_taxes');
         $query = ConsumptionTax::query();
 
-        $taxes = $query->get();
-        if( !count($taxes)){
+        $taxes = $query->first();
+        if( !$taxes){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
