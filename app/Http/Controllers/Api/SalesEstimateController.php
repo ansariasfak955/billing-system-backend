@@ -434,10 +434,10 @@ class SalesEstimateController extends Controller
         SalesEstimate::whereIn('id', $ids)->delete();
             return response()->json([
                 'status' => true,
-                'message' => 'sales estimate deleted successfull'
+                'message' => 'Sales estimate deleted successfully'
             ]);
     }
-    public function Duplicate(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_sales_estimates';
         $itemTable = 'company_'.$request->company_id.'_items';
 
