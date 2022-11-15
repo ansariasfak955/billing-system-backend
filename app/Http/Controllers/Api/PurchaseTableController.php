@@ -450,8 +450,8 @@ class PurchaseTableController extends Controller
         $ids = explode(",", $request->ids);
         PurchaseTable::whereIn('id', $ids)->delete(); 
         return response()->json([
-            'ststus' => true,
-            'message' => 'Purchase order delete successfully'
+            'status' => true,
+            'message' => 'Purchase orders deleted successfully'
         ]);
     }
 
