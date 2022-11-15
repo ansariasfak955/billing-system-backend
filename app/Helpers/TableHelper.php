@@ -1107,6 +1107,32 @@ class TableHelper
                 $table->timestamps();
             });
         }
+        /* Creating dynamic consumption table */
+        if (!Schema::hasTable('company_'.$company_id.'_consumption_taxes')) {
+            Schema::create('company_'.$company_id.'_consumption_taxes', function (Blueprint $table) {
+                $table->id();
+                $table->string('primary_name');
+                $table->enum('by_default_in_sales', ['0', '1'])->default('1');
+                $table->enum('by_default_in_purchases', ['0', '1'])->default('1');
+                $table->string('secondary_name')->nullable();
+                $table->enum('activate_secondary_tax', ['0', '1'])->default('0');
+                $table->enum('secondary_by_default_in_sales', ['0', '1'])->default('0');
+                $table->enum('secondary_by_default_in_purchases', ['0', '1'])->default('0');
+                $table->enum('subtractive', ['0', '1'])->default('0');
+                $table->longText('taxes')->nullable();
+                $table->timestamps();
+            });
+        }
+        /* Creating dynamic income tax table */
+        if (!Schema::hasTable('company_'.$company_id.'_income_taxes')) {
+            Schema::create('company_'.$company_id.'_income_taxes', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->enum('subtractive', ['0', '1'])->default('0');
+                $table->longText('taxes')->nullable();
+                $table->timestamps();
+            });
+        }
 
         /* Creating dynamic company based custom states table */
         if (!Schema::hasTable('company_'.$company_id.'_custom_states')) {
