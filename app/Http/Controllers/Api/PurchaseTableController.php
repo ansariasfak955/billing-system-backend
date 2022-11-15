@@ -437,6 +437,8 @@ class PurchaseTableController extends Controller
         $table = 'company_'.$request->company_id.'_purchase_tables';
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if ($validator->fails()) {
             return response()->json([

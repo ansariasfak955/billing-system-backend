@@ -181,6 +181,8 @@ class ExpenseAndInvestmentController extends Controller
         $table = 'company_'.$request->company_id.'_expense_and_investments';
         $validator = Validator::make($request->all(), [
             'ids' => 'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if($validator->fails()){
             return response()->json([

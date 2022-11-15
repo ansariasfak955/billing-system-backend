@@ -419,6 +419,8 @@ class SalesEstimateController extends Controller
         $table = 'company_'.$request->company_id.'_sales_estimates';
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if ($validator->fails()) {
             return response()->json([

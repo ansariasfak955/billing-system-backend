@@ -262,6 +262,8 @@ class ClientAssetController extends Controller
         $table = 'company_'.$request->company_id.'_client_assets';
         $validator = Validator::make($request->all(), [
             'ids' => 'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if($validator->fails()){
             return response()->json([
@@ -291,8 +293,8 @@ class ClientAssetController extends Controller
         }
         ClientAsset::setGlobalTable($table);
         ClientAssetAttachment::setGlobalTable($assetTable);
-        $asset = ClientAsset::with('client_asset_attachments')->find($request->id);
-        dd($asset->client_asset_attachments);die;
+        $asset = ClientAsset::with('images')->find($request->id);
+        // dd($asset->attachments);die;
         if(!$asset){
             return response()->json([
                 'status' => false,
@@ -302,7 +304,7 @@ class ClientAssetController extends Controller
         $duplicateAsset = $asset->replicate();
         $duplicateAsset->created_at = now();
         $duplicateAsset->save();
-        foreach($asset->client_asset_attachments as $duplicateAttachment){
+        foreach($asset->images as $duplicateAttachment){
             $duplicateAttachments = $duplicateAttachment->replicate();
             $duplicateAttachments->created_at = now();
             $duplicateAttachments->asset_id = $duplicateAsset->id;
@@ -311,7 +313,7 @@ class ClientAssetController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Duplicate Asset Successfully',
-            'data' => ClientAsset::with('client_asset_attachments')->find($duplicateAsset->id)
+            'data' => ClientAsset::with('images')->find($duplicateAsset->id)
         ]);
     }
 }
