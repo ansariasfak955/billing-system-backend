@@ -236,7 +236,7 @@ class TechnicalIncidentController extends Controller
             ]);
         }
     }
-    public function duplicateIncident(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_technical_incidents';
         $validator = Validator::make($request->all(), [
             'id' => 'required',

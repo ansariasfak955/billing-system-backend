@@ -485,7 +485,7 @@ class PurchaseTableController extends Controller
         ]);
     }
     
-    public function supplierDuplicate(Request $request){
+    public function Duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
 

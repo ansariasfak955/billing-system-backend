@@ -196,4 +196,32 @@ class ExpenseAndInvestmentController extends Controller
             'message' => 'Deleted Successfully',
         ]);
     }
+    public function duplicate(Request $request){
+        $table = 'company_'.$request->company_id.'_expense_and_investments';
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        ExpenseAndInvestment::setGlobalTable($table);
+        $investment = ExpenseAndInvestment::find($request->id);
+        if(!$investment){
+            return response()->json([
+                'status' => false,
+                'message' => 'Investment not found',
+            ]);
+        }
+        $duplicateInvestment = $investment->replicate();
+        $duplicateInvestment->created_at = now();
+        $duplicateInvestment->save();
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Investment Successfully',
+            'data' => $investment
+        ]);
+    }
 }

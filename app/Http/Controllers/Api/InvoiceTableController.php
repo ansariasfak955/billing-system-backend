@@ -538,7 +538,7 @@ class InvoiceTableController extends Controller
             "message" => 'Sent!',
         ]);
     }
-    public function duplicateInvoice(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
 

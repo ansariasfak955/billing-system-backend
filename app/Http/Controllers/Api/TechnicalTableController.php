@@ -427,7 +427,7 @@ class TechnicalTableController extends Controller
                 'message' => 'Deleted successfully'
             ]);
     }
-    public function duplicateService(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
         

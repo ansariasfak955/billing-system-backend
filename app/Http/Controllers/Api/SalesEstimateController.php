@@ -435,7 +435,7 @@ class SalesEstimateController extends Controller
                 'message' => 'sales estimate deleted successfull'
             ]);
     }
-    public function salesDuplicate(Request $request){
+    public function Duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_sales_estimates';
         $itemTable = 'company_'.$request->company_id.'_items';
 

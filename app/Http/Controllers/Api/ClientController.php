@@ -229,7 +229,7 @@ class ClientController extends Controller
             'message' => 'Clients deleted successfully'
         ]);
     }
-    public function duplicateClient(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_clients';
         $attachmentTable = 'company_'.$request->company_id.'_client_attachments';
 
