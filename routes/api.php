@@ -228,7 +228,6 @@ Route::group(['namespace' => 'Api'], function() {
 
             /* client routes */
             Route::apiResource('clients', ClientController::class);
-            Route::post('clients/batch-delete', 'ClientController@batchDelete');
             Route::post('client/duplicate-client', 'ClientController@duplicate');
             Route::apiResource('client-contacts', ClientContactController::class);
             Route::apiResource('client-special-prices', ClientSpecialPriceController::class);
@@ -249,6 +248,7 @@ Route::group(['namespace' => 'Api'], function() {
 
             /* Technical Service */
             Route::apiResource('technical-incidents', TechnicalIncidentController::class);
+            Route::post('technical-incidents/batch-delete', 'TechnicalIncidentController@batchDelete');
             Route::post('technical-incidents/duplicate_incident', 'TechnicalIncidentController@duplicate');
             Route::apiResource('technical-incident-attachments', TechnicalIncidentAttachmentController::class);
             Route::apiResource('technical-tables', TechnicalTableController::class);
