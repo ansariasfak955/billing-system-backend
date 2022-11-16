@@ -126,8 +126,10 @@ class User extends Authenticatable
         return \DB::table($model_has_role)->where('model_id', $user_id)->pluck('role_id')->first();
     }
     public function getEnableTechnicalModuleAttribute(){
-        if(isset($this->attributes['company_id'])){
-            return Company::where('id', $this->attributes['company_id'])->pluck('enable_technical_module')->first();
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        if(isset($company_id)){
+            return Company::where('id', $company_id)->pluck('enable_technical_module')->first();
         }
     }
 }
