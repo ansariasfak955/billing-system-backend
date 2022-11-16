@@ -276,6 +276,7 @@ class ProductController extends Controller
         }
         $duplicateProduct = $product->replicate();
         $duplicateProduct->created_at = now();
+        $duplicateProduct->reference_number = get_product_latest_ref_number($request->company_id, $product->reference, 1);
         $duplicateProduct->save();
         return response()->json([
             'status' => true,

@@ -25,10 +25,10 @@
             {!! Form::password('password', ['class' => 'form-control', 'placeholder' => 'Enter Password']) !!}
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="form-group py-2">
-            {!! Form::label('name', 'Unable Technic Modules', ['class' => 'form-label']) !!}
-            {!! Form::text('name', isset($company_user->name) ? $company_user->name : Request::old('name'), ['class' => 'form-control', 'placeholder' => 'Enter Unable Technic']) !!}
+    <div class="mb-3">
+        <div class="form-check form-switch mb-2">
+            <input type="checkbox" class="form-check-input" id="formSwitch1" {{@$company->enable_technical_module == '1' ? 'checked' : ''}}>
+            <label class="form-check-label" for="formSwitch1">Enable Technical Module</label>
         </div>
     </div>
 </div>

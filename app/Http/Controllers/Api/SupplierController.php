@@ -242,12 +242,13 @@ class SupplierController extends Controller
         }
         $technicalSupplier = $supplier->replicate();
         $technicalSupplier->created_at = now();
+        $technicalSupplier->reference_number  = get_supplier_latest_ref_number($request->company_id, $supplier->reference, 1);
         $technicalSupplier->save();
 
         return response()->json([
             'status' => true,
             'message' => 'Duplicate Suppliers Successfully',
-            'data' => $supplier
+            'data' => $technicalSupplier
         ]);
     }
 }

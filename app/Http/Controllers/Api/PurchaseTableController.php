@@ -519,6 +519,7 @@ class PurchaseTableController extends Controller
 
         $duplicatePurchase = $purchaseTable->replicate();
         $duplicatePurchase->created_at = now();
+        $duplicatePurchase->reference_number = get_purchase_table_latest_ref_number($request->company_id, $purchaseTable->reference, 1 );
         $duplicatePurchase->save();
 
         foreach($purchaseTable->receipts as $purchaseTables){

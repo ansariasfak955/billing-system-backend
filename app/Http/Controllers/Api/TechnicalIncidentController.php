@@ -278,6 +278,7 @@ class TechnicalIncidentController extends Controller
         }
         $duplicateIncidents = $duplicateIncident->replicate();
         $duplicateIncidents->created_at = now();
+        $duplicateIncidents->reference_number = get_technical_incident_latest_ref_number($request->company_id, $duplicateIncident->reference, 1);
         $duplicateIncidents->save();
 
         return response()->json([

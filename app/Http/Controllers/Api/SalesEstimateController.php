@@ -466,6 +466,7 @@ class SalesEstimateController extends Controller
         // dd($salesEstimate->_items);
         $duplicatedEstimate = $salesEstimate->replicate();
         $duplicatedEstimate->created_at = now();
+        $duplicatedEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $salesEstimate->reference, 1 );
         $duplicatedEstimate->save();
         
         foreach($salesEstimate->items as $salesItems){

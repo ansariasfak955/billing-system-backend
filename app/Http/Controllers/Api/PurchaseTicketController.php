@@ -257,12 +257,13 @@ class PurchaseTicketController extends Controller
         // dd($client->client_attachments);
         $duplicatedTicket = $purchaseTicket->replicate();
         $duplicatedTicket->created_at = now();
+        $duplicatedTicket->reference_number = get_purchase_ticket_table_latest_ref_number($request->company_id, $purchaseTicket->reference, 1 );
         $duplicatedTicket->save();
 
         return response()->json([
             'status' => true,
-            'message' => 'Duplicate Clients successfully',
-            'data' => $purchaseTicket
+            'message' => 'Duplicate Ticket successfully',
+            'data' =>$duplicatedTicket
         ]);
     }
 }

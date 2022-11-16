@@ -63,7 +63,7 @@ class User extends Authenticatable
         self::$globalTable = $table;
     }
 
-    protected $appends = ['company_country','default_country','company_id'];
+    protected $appends = ['company_country','default_country','company_id','enable_technical_module'];
 
     public function companies()
     {
@@ -124,5 +124,10 @@ class User extends Authenticatable
         }
 
         return \DB::table($model_has_role)->where('model_id', $user_id)->pluck('role_id')->first();
+    }
+    public function getEnableTechnicalModuleAttribute(){
+        if(isset($this->attributes['company_id'])){
+            return Company::where('id', $this->attributes['company_id'])->pluck('enable_technical_module')->first();
+        }
     }
 }

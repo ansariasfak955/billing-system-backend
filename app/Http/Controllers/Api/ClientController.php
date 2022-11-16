@@ -259,6 +259,7 @@ class ClientController extends Controller
         // dd($client->client_attachments);
         $duplicatedClient = $client->replicate();
         $duplicatedClient->created_at = now();
+        $duplicatedClient->reference_number = get_client_latest_ref_number($request->company_id, $client->reference, 1);
         $duplicatedClient->save();
         
         foreach($client->client_attachments as $attachment){

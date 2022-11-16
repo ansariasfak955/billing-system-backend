@@ -571,6 +571,7 @@ class InvoiceTableController extends Controller
         }
         $duplicateInvoice = $invoiceTable->replicate();
         $duplicateInvoice->created_at = now();
+        $duplicateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $invoiceTable->reference, 1 );
         $duplicateInvoice->save(); 
 
         foreach($invoiceTable->items as $invoiceTables){

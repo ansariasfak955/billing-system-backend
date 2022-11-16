@@ -457,6 +457,7 @@ class TechnicalTableController extends Controller
 
        $technicalTables = $technicalTable->replicate();
        $technicalTables->created_at = now();
+       $technicalTables->reference_number = get_technical_table_latest_ref_number($request->company_id, $technicalTable->reference, 1 );
        $technicalTables->save();
 
        foreach($technicalTable->items as $technicalEstimate){

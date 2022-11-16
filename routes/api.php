@@ -228,7 +228,8 @@ Route::group(['namespace' => 'Api'], function() {
 
             /* client routes */
             Route::apiResource('clients', ClientController::class);
-            Route::post('client/duplicate-client', 'ClientController@duplicate');
+            Route::post('clients/batch-delete', 'ClientController@batchDelete');
+            Route::post('clients/duplicate-client', 'ClientController@duplicate');
             Route::apiResource('client-contacts', ClientContactController::class);
             Route::apiResource('client-special-prices', ClientSpecialPriceController::class);
             Route::apiResource('client-assets', ClientAssetController::class);

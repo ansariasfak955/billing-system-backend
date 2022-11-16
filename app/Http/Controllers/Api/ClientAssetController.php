@@ -303,6 +303,7 @@ class ClientAssetController extends Controller
         }
         $duplicateAsset = $asset->replicate();
         $duplicateAsset->created_at = now();
+        $duplicateAsset->reference_number = get_client_asset_latest_ref_number($request->company_id, $asset->reference, 1);
         $duplicateAsset->save();
         foreach($asset->images as $duplicateAttachment){
             $duplicateAttachments = $duplicateAttachment->replicate();
