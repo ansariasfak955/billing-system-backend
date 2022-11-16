@@ -14,32 +14,38 @@
     $document_title_text = '';
     $font = $template->font;
     $color = $template->color;
-    @endphp
-
+@endphp
+  
     <style>
+        
         .table_heading{
             color: {{ $color }} !important;
         }
+        .header_border {
+            border-left: 2px solid {{ $color }} !important;
+        }
+        
     </style>
-{{-- <style type="text/css">
-    @font-face {
-        font-family: Bookman;
-        src: url('/assets/fonts/Bookman.ttf');
-    }
-    @font-face {
-        font-family: test;
-        src: url(/assets/fonts/test.ttf);
-    }
-    @font-face {
-        font-family: Bookman;
-        src: url('/assets/fonts/Bookman.ttf');
-    }
-    @font-face {
-        font-family: Roboto;
-        src: url(/assets/fonts/Roboto.ttf);
-    }
 
-</style> --}}
+    {{-- <style type="text/css">
+        @font-face {
+            font-family: Bookman;
+            src: url('/assets/fonts/Bookman.ttf');
+        }
+        @font-face {
+            font-family: test;
+            src: url(/assets/fonts/test.ttf);
+        }
+        @font-face {
+            font-family: Bookman;
+            src: url('/assets/fonts/Bookman.ttf');
+        }
+        @font-face {
+            font-family: Roboto;
+            src: url("/assets/fonts/Roboto.ttf");
+        }
+
+    </style> --}}
 <body>
     
     
@@ -357,11 +363,11 @@
                             <img src="{{ asset('light.png') }}" alt="" srcset="" style="width: 120px; height: auto; object-fit: cover;">
                         @endif
                         </td>
-                        <td @if($company_name_show || $company_country_show) style="border-left: 2px solid orange;" @endif>
+                        <td class="header_border" @if($company_name_show || $company_country_show) @endif>
                             <span style="margin-left: 30px;">{{ $company_name_show == 1 ? $company->name : '' }}</span> <br>
                             <span style="margin-left: 30px;">{{ $company_country_show == 1 ? $company->country : '' }}</span>
                         </td>
-                        <td @if(@$company_email_show['show'] || @$company_website_show['show']) style="border-left: 2px solid orange; width: 300px; " @endif>
+                        <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
                             @if(@$company_email_show['show'] ==1)
                                 <span style="margin-left: 30px;">Email:</span> 
                                 @if(@$company_email_show['show'] ==1 && @$company_email_show['value'])
@@ -612,11 +618,6 @@
             <div>
                 <p style="font-weight: bold;">Signed:</p>
             </div>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
             <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
                 <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                     <tr>
