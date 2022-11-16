@@ -280,6 +280,8 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('purchase-tables/duplicate_supplier', 'PurchaseTableController@Duplicate');
             Route::apiResource('purchase-receipts', PurchaseReceiptController::class);
             Route::apiResource('purchase-tickets', PurchaseTicketController::class);
+            Route::post('purchase-tickets/batch-delete', 'PurchaseTicketController@batchDelete');
+            Route::post('purchase-tickets/duplicate-tickets', 'PurchaseTicketController@duplicate');
             Route::post('purchase-receipts-bulk-pay', 'PurchaseReceiptController@bulkPay');
             Route::get('purchase-sent-invoice-summary', 'PurchaseTableController@sentInvoices');
             
