@@ -460,6 +460,8 @@ class InvoiceTableController extends Controller
         $table = 'company_'.$request->company_id.'_invoice_tables';
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -538,7 +540,7 @@ class InvoiceTableController extends Controller
             "message" => 'Sent!',
         ]);
     }
-    public function duplicateInvoice(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
 

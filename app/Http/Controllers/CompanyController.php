@@ -44,7 +44,7 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-    //dd($request->all());
+    // dd($request->all());
         $validator = Validator::make($request->all(),[
             'name'  => 'required',
             'email' => 'email|unique:companies',

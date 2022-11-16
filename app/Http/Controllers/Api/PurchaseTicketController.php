@@ -80,6 +80,7 @@ class PurchaseTicketController extends Controller
         }
 
         $table = 'company_'.$request->company_id.'_purchase_tickets';
+        // return $table;
         PurchaseTicket::setGlobalTable($table);
 
         if ($request->reference_number == '') {
@@ -207,5 +208,61 @@ class PurchaseTicketController extends Controller
                 'message' => "There is an error!"
             ]);
         }
+    }
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_purchase_tickets';
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required'
+        ],[
+            'ids.required' => 'Please select entry to delete'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        PurchaseTicket::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        PurchaseTicket::whereIn('id', $ids)->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Clients deleted successfully'
+        ]);
+    }
+    public function duplicate(Request $request){
+        $table = 'company_'.$request->company_id.'_purchase_tickets';
+
+        $validator = Validator::make($request->all(),[
+            'id'=>'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        
+        PurchaseTicket::setGlobalTable($table);
+
+        $purchaseTicket = PurchaseTicket::find($request->id);
+        if(!$purchaseTicket){
+            return response()->json([
+                'status' => false,
+                'message' => 'Client Not found!'
+            ]);
+        }
+        // dd($client->client_attachments);
+        $duplicatedTicket = $purchaseTicket->replicate();
+        $duplicatedTicket->created_at = now();
+        $duplicatedTicket->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Clients successfully',
+            'data' => $purchaseTicket
+        ]);
     }
 }

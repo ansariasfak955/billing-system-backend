@@ -411,6 +411,8 @@ class TechnicalTableController extends Controller
         $table = 'company_'.$request->company_id.'_technical_tables';
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -427,7 +429,7 @@ class TechnicalTableController extends Controller
                 'message' => 'Deleted successfully'
             ]);
     }
-    public function duplicateService(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
         

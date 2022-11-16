@@ -419,6 +419,8 @@ class SalesEstimateController extends Controller
         $table = 'company_'.$request->company_id.'_sales_estimates';
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -432,10 +434,10 @@ class SalesEstimateController extends Controller
         SalesEstimate::whereIn('id', $ids)->delete();
             return response()->json([
                 'status' => true,
-                'message' => 'sales estimate deleted successfull'
+                'message' => 'Sales estimate deleted successfully'
             ]);
     }
-    public function salesDuplicate(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_sales_estimates';
         $itemTable = 'company_'.$request->company_id.'_items';
 

@@ -236,7 +236,28 @@ class TechnicalIncidentController extends Controller
             ]);
         }
     }
-    public function duplicateIncident(Request $request){
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        $validator = Validator::make($request->all(),[
+            'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        TechnicalIncident::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        TechnicalIncident::whereIn('id', $ids)->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Clients deleted successfully'
+        ]);
+    }
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_technical_incidents';
         $validator = Validator::make($request->all(), [
             'id' => 'required',

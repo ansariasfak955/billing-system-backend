@@ -437,6 +437,8 @@ class PurchaseTableController extends Controller
         $table = 'company_'.$request->company_id.'_purchase_tables';
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -448,8 +450,8 @@ class PurchaseTableController extends Controller
         $ids = explode(",", $request->ids);
         PurchaseTable::whereIn('id', $ids)->delete(); 
         return response()->json([
-            'ststus' => true,
-            'message' => 'Purchase order delete successfully'
+            'status' => true,
+            'message' => 'Purchase orders deleted successfully'
         ]);
     }
 
@@ -485,7 +487,7 @@ class PurchaseTableController extends Controller
         ]);
     }
     
-    public function supplierDuplicate(Request $request){
+    public function Duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
 

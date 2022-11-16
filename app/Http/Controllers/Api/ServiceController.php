@@ -192,4 +192,32 @@ class ServiceController extends Controller
             'message' => 'Deleted Successfully',
         ]);
     }
+    public function duplicate(Request $request){
+        $table = 'company_'.$request->company_id.'_services';
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        Service::setGlobalTable($table);
+        $service = Service::find($request->id);
+        if(!$service){
+            return response()->json([
+                'status' => false,
+                'message' => 'Service not found'
+            ]);
+        }
+        $duplicateService = $service->replicate();
+        $duplicateService->created_at = now();
+        $duplicateService->save();
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Service Successfully',
+            'data' => $service
+        ]);
+    }
 }

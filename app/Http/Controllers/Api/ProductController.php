@@ -237,6 +237,8 @@ class ProductController extends Controller
         $table = 'company_'.$request->company_id.'_products';
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -252,5 +254,33 @@ class ProductController extends Controller
                 'status' => true,
                 'message' => 'Deleted successfully'
             ]);
+    }
+    public function duplicate(Request $request){
+        $table = 'company_'.$request->company_id.'_products';
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        Product::setGlobalTable($table);
+        $product = Product::find($request->id);
+        if(!$product){
+            return response()->json([
+                'status' => false,
+                'message' => 'Product not fiund',
+            ]);
+        }
+        $duplicateProduct = $product->replicate();
+        $duplicateProduct->created_at = now();
+        $duplicateProduct->save();
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Product Successfully',
+            'data' => $product
+        ]);
     }
 }

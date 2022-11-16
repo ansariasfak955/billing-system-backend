@@ -258,4 +258,62 @@ class ClientAssetController extends Controller
             ]);
         }
     }
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_client_assets';
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        ClientAsset::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        ClientAsset::whereIn('id', $ids)->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Deleted Successfully',
+        ]);
+    }
+    public function duplicate(Request $request){
+        $table = 'company_'.$request->company_id.'_client_assets';
+        $assetTable = 'company_'.$request->company_id.'_client_asset_attachments';
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        ClientAsset::setGlobalTable($table);
+        ClientAssetAttachment::setGlobalTable($assetTable);
+        $asset = ClientAsset::with('images')->find($request->id);
+        // dd($asset->attachments);die;
+        if(!$asset){
+            return response()->json([
+                'status' => false,
+                'message' => 'Asset not found'
+            ]);
+        }
+        $duplicateAsset = $asset->replicate();
+        $duplicateAsset->created_at = now();
+        $duplicateAsset->save();
+        foreach($asset->images as $duplicateAttachment){
+            $duplicateAttachments = $duplicateAttachment->replicate();
+            $duplicateAttachments->created_at = now();
+            $duplicateAttachments->asset_id = $duplicateAsset->id;
+            $duplicateAttachments->save();
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Duplicate Asset Successfully',
+            'data' => ClientAsset::with('images')->find($duplicateAsset->id)
+        ]);
+    }
 }

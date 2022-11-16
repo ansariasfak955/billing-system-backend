@@ -214,6 +214,8 @@ class ClientController extends Controller
         $table = 'company_'.$request->company_id.'_clients';
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -229,7 +231,7 @@ class ClientController extends Controller
             'message' => 'Clients deleted successfully'
         ]);
     }
-    public function duplicateClient(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_clients';
         $attachmentTable = 'company_'.$request->company_id.'_client_attachments';
 

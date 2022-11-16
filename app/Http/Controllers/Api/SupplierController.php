@@ -202,6 +202,8 @@ class SupplierController extends Controller
         $table = 'company_'.$request->company_id.'_suppliers';
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -219,7 +221,7 @@ class SupplierController extends Controller
             ]);
     }
     
-    public function duplicateSupplier(Request $request){
+    public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($table);
         $validator = Validator::make($request->all(), [
