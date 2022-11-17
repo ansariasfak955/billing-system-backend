@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Rate;
+use App\Models\ProductRate;
+use App\Models\ServiceRate;
+use App\Models\Product;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -45,6 +49,19 @@ class RateController extends Controller
     {
         $table = 'company_'.$request->company_id.'_rates';
         Rate::setGlobalTable($table);
+
+        $productRate = 'company_'.$request->company_id.'_product_rates';
+        ProductRate::setGlobalTable($productRate);
+
+        $serviceRate = 'company_'.$request->company_id.'_service_rates';
+        ServiceRate::setGlobalTable($serviceRate);
+
+        $productTable = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTable);
+
+        $serviceTable = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($serviceTable);
+
         $validator = Validator::make($request->all(),[
             'name' => 'required|unique:'.$table.'',
         ]);
@@ -57,7 +74,27 @@ class RateController extends Controller
         }
         
         $rate = Rate::create($request->except('company_id'));
+        $products = Product::get();
+        $services = Service::get();
 
+        foreach($products as $product_rate){
+            $rate = ProductRate::create(['name' => $request->name, 'product_id' => $product_rate->id]);
+            $rate->purchase_price = $product_rate->purchase_price;
+            $rate->sales_price = $product_rate->price;
+            $rate->discount = $product_rate->discount;
+            $rate->purchase_margin = $product_rate->purchase_margin;
+            $rate->sales_margin = $product_rate->sales_margin;
+            $rate->save();
+        }
+        foreach($services as $service_rate){
+            $serviceRate = ServiceRate::create(['name' => $request->name, 'service_id' => $service_rate->id]);
+            $serviceRate->purchase_price = $service_rate->purchase_price;
+            $serviceRate->sales_price = $service_rate->price;
+            $serviceRate->discount = $service_rate->discount;
+            $serviceRate->purchase_margin = $service_rate->purchase_margin;
+            $serviceRate->sales_margin = $service_rate->sales_margin;
+            $serviceRate->save();
+        }
         return response()->json([
             "status" => true,
             "rate" => $rate,
