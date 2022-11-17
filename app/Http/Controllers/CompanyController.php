@@ -55,6 +55,12 @@ class CompanyController extends Controller
             return redirect()->back()->withError($validator->errors()->first())->withInput();
         }
 
+        if($request->enable_technical_module == 'on') {    
+            $request['enable_technical_module'] = '1';
+        } else {
+            $request['enable_technical_module'] = '0';
+        }
+
         $company = Company::create($request->all());
         TableHelper::createTables($company->id);
 
@@ -139,6 +145,14 @@ class CompanyController extends Controller
 
         User::setGlobalTable($users_table);
         $user = User::where('id', $company->user_id)->first();
+
+
+        if($request->enable_technical_module == 'on') {    
+            $request['enable_technical_module'] = '1';
+        } else {
+            $request['enable_technical_module'] = '0';
+        }
+
         
         if ($request->password != '') {
             $user->update([

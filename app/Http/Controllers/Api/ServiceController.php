@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
+use App\Models\Rate;
+use App\Models\ServiceRate;
 use Validator;
 
 class ServiceController extends Controller
@@ -43,7 +45,7 @@ class ServiceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
         Service::setGlobalTable('company_'.$request->company_id.'_services');
         $validator = Validator::make($request->all(),[
             'name' => 'required',          
@@ -73,6 +75,23 @@ class ServiceController extends Controller
         $service->is_promotional = $request->is_promotional??'0';
         $service->manage_stock = $request->manage_stock??'0';
         $service->save();
+
+        $rateTable = 'company_'.$request->company_id.'_rates';
+        Rate::setGlobalTable($rateTable);
+        $table = 'company_'.$request->company_id.'_service_rates';
+        ServiceRate::setGlobalTable($table);
+
+        $allRates = Rate::get();
+
+        foreach($allRates as $rate){
+            $product_rate = ServiceRate::create(['name' =>  $rate->name, 'description' => $rate->description, 'service_id' => $service->id]);
+            $product_rate->purchase_price = $service->purchase_price;
+            $product_rate->sales_price = $service->price;
+            $product_rate->discount = $service->discount;
+            $product_rate->purchase_margin = $service->purchase_margin;
+            $product_rate->sales_margin = $service->sales_margin;
+            $product_rate->save();
+        }
 
         return response()->json([
             "status" => true,

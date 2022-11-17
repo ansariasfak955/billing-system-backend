@@ -96,7 +96,7 @@ class ProductRateController extends Controller
      */
     public function show(Request $request)
     {
-       ProductRate::setGlobalTable('company_'.$request->company_id.'_product_rates');
+        ProductRate::setGlobalTable('company_'.$request->company_id.'_product_rates');
         $rate =ProductRate::where('id', $request->product_rate)->first();
 
         if($rate ==  NULL){
@@ -105,7 +105,7 @@ class ProductRateController extends Controller
                 "message" => "This entry does not exists"
             ]);
         }
- 
+        
         return response()->json([
             "status" => true,
             "rate" => $rate

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductStock;
+use App\Models\Rate;
+use App\Models\ProductRate;
 use Validator;
 
 class ProductController extends Controller
@@ -70,6 +72,9 @@ class ProductController extends Controller
         $table = 'company_'.$request->company_id.'_products';
         Product::setGlobalTable($table);
 
+        $productRate = 'company_'.$request->company_id.'_product_rates';
+        ProductRate::setGlobalTable($productRate);
+
         $product = Product::create($request->except('image', 'company_id', 'images'));
         // dd($request->all());
         if ($request->reference_number == '') {
@@ -114,6 +119,20 @@ class ProductController extends Controller
             }
         }
         $product->save();
+        $rateTable = 'company_'.$request->company_id.'_rates';
+        Rate::setGlobalTable($rateTable);
+
+        $allRates = Rate::get();
+        
+        foreach($allRates as $rate){
+            $product_rate = ProductRate::create(['name' =>  $rate->name, 'description' => $rate->description, 'product_id' => $product->id]);
+            $product_rate->purchase_price = $product->purchase_price;
+            $product_rate->sales_price = $product->price;
+            $product_rate->discount = $product->discount;
+            $product_rate->purchase_margin = $product->purchase_margin;
+            $product_rate->sales_margin = $product->sales_margin;
+            $product_rate->save();
+        }
 
         return response()->json([
             "status" => true,
