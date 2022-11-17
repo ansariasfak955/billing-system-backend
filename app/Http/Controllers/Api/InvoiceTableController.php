@@ -274,6 +274,7 @@ class InvoiceTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
         $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+
         InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
         $invoice = InvoiceTable::with(['items', 'item_meta', 'receipts'])->where('id', $request->invoice)->first();
 
@@ -437,12 +438,17 @@ class InvoiceTableController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+        
 
         Item::where('parent_id', $invoice->id)->where('type', $invoice->type)->delete();
         ItemMeta::where('parent_id', $invoice->id)->delete();
-
+        InvoiceReceipt::where('invoice_id', $invoice->id)->delete();
         if($invoice->delete()){
             return response()->json([
                 'status' => true,
@@ -458,6 +464,10 @@ class InvoiceTableController extends Controller
 
     public function batchDelete(Request $request){
         $table = 'company_'.$request->company_id.'_invoice_tables';
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
         $validator = Validator::make($request->all(),[
             'ids'=>'required',
         ],[
@@ -473,6 +483,7 @@ class InvoiceTableController extends Controller
         InvoiceTable::setGlobalTable($table);
         $ids = explode(",", $request->ids);
         $invoiceTable = InvoiceTable::whereIn('id', $ids)->delete();
+        InvoiceReceipt::whereIn('invoice_id', $ids)->delete();
             return response()->json([
                 'status' => true,
                 'message' => 'Clients deleted successfull'
@@ -579,12 +590,12 @@ class InvoiceTableController extends Controller
             $duplicateInvoiceItems->created_at = now();
             $duplicateInvoiceItems->parent_id = $duplicateInvoice->id;
             $duplicateInvoiceItems->save();
-            foreach($invoiceTable->receipts as $invoiceTables){
-                $duplicateInvoiceReceipts = $invoiceTables->replicate();
-                $duplicateInvoiceReceipts->created_at = now();
-                $duplicateInvoiceReceipts->invoice_id = $duplicateInvoiceItems->id;
-                $duplicateInvoiceReceipts->save();
-            }
+        }
+        foreach($invoiceTable->receipts as $invoiceTables){
+            $duplicateInvoiceReceipts = $invoiceTables->replicate();
+            $duplicateInvoiceReceipts->created_at = now();
+            $duplicateInvoiceReceipts->invoice_id = $duplicateInvoiceItems->id;
+            $duplicateInvoiceReceipts->save();
         }
 
         return response()->json([
