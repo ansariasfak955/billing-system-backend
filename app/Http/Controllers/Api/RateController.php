@@ -78,7 +78,7 @@ class RateController extends Controller
         $services = Service::get();
 
         foreach($products as $product_rate){
-            $rate = ProductRate::create(['name' => $request->name, 'product_id' => $product_rate->id]);
+            $rate = ProductRate::create(['name' => $request->name, 'description' =>$request->description, 'product_id' => $product_rate->id]);
             $rate->purchase_price = $product_rate->purchase_price;
             $rate->sales_price = $product_rate->price;
             $rate->discount = $product_rate->discount;
@@ -87,7 +87,7 @@ class RateController extends Controller
             $rate->save();
         }
         foreach($services as $service_rate){
-            $serviceRate = ServiceRate::create(['name' => $request->name, 'service_id' => $service_rate->id]);
+            $serviceRate = ServiceRate::create(['name' => $request->name, 'description' =>$request->description, 'service_id' => $service_rate->id]);
             $serviceRate->purchase_price = $service_rate->purchase_price;
             $serviceRate->sales_price = $service_rate->price;
             $serviceRate->discount = $service_rate->discount;
