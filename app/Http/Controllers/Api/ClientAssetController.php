@@ -24,21 +24,15 @@ class ClientAssetController extends Controller
         }
         $table = 'company_'.$request->company_id.'_client_assets';
         ClientAsset::setGlobalTable($table);
-
-        if($request->client_id == NULL){
-            if(ClientAsset::count() == 0){
-                return response()->json([
-                    "status" => false,
-                    "message" =>  "No data found"
-                ]);
-            }
-            return response()->json([
-                "status" => true,
-                "client_assets" =>  ClientAsset::get()
-            ]);
+        $query = ClientAsset::query();
+        if($request->client_id){
+            $query =  $query->where('client_id', $request->client_id);
         }
-
-        if(ClientAsset::where('client_id', $request->client_id)->count() == 0){
+        if($request->s){
+            $query =  $query->where('name', 'like', '%'.$request->s.'%');
+        }
+        $query = $query->get();
+        if(!count($query)){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -46,7 +40,7 @@ class ClientAssetController extends Controller
         }
         return response()->json([
             "status" => true,
-            "client_assets" =>  ClientAsset::where('client_id', $request->client_id)->get()
+            "client_assets" =>   $query
         ]);
         
     }
