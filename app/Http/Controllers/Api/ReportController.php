@@ -185,7 +185,7 @@ class ReportController extends Controller
                         "label" => "" .  $productTable->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            Product::where('id', $productTable->id)->get()->sum('amount'),
+                            Product::where('id', $productTable->id)->get()->count(),
                             ]
                         ];
             }
@@ -214,19 +214,6 @@ class ReportController extends Controller
                 "data" =>  $data
             ]);
         }
-        // $items = Item::get();
-        // $data = [];
-        // $data['Items'] = [];
-        // foreach($items as $item){
-        //     $data ['Items'] [] = [
-        //         "type" => "bar", 
-        //         "label" => "" . $item->name,
-        //         "backgroundColor" => "#26C184", 
-        //         "data" => [
-        //             " " . Item::where('id', $item->id)->get()->sum('amount'),
-        //         ]
-        //     ];
-        // }
         
        
         
