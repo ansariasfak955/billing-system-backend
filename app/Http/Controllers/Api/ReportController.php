@@ -175,26 +175,7 @@ class ReportController extends Controller
                 "status" => true,
                 "data" =>  $data
             ]);
-        }else if($request->type == "items"){
-            $items = Item::get();
-            $data = [];
-            $data['Items'] = [];
-            foreach($items as $item){
-                $data ['Items'] [] = [
-                    "type" => "bar", 
-                    "label" => "" . $item->name,
-                    "backgroundColor" => "#26C184",
-                    "data" => [
-                        " " . Item::where('id', $item->id)->get()->sum('amount'),
-                    ]
-                ];
-            }
-            return response()->json([
-                "status" => true,
-                "data" => $data
-            ]);
-
-        }else{
+        }else if($request->type == "product"){
             $productTables = Product::get();
             $data = [];
             $data['products'] = [];
@@ -208,12 +189,44 @@ class ReportController extends Controller
                             ]
                         ];
             }
+            return response()->json([
+                "status" => true,
+                "data" => $data
+            ]);
+
+        }else{
+            $items = Item::get();
+            $data = [];
+            $data['Items'] = [];
+            foreach($items as $item){
+                $data ['Items'] [] = [
+                    "type" => "bar", 
+                    "label" => "" . $item->name,
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        " " . Item::where('id', $item->id)->get()->sum('amount'),
+                    ]
+                ];
+            }
             
             return response()->json([
                 "status" => true,
                 "data" =>  $data
             ]);
         }
+        // $items = Item::get();
+        // $data = [];
+        // $data['Items'] = [];
+        // foreach($items as $item){
+        //     $data ['Items'] [] = [
+        //         "type" => "bar", 
+        //         "label" => "" . $item->name,
+        //         "backgroundColor" => "#26C184", 
+        //         "data" => [
+        //             " " . Item::where('id', $item->id)->get()->sum('amount'),
+        //         ]
+        //     ];
+        // }
         
        
         
