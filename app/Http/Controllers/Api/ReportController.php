@@ -183,6 +183,7 @@ class ReportController extends Controller
                 $data ['Items'] [] = [
                     "type" => "bar", 
                     "label" => "" . $item->name,
+                    "backgroundColor" => "#26C184",
                     "data" => [
                         " " . Item::where('id', $item->id)->get()->sum('amount'),
                     ]

@@ -27,7 +27,7 @@
     </div>
     <div class="mb-3">
         <div class="form-check form-switch mb-2">
-            <input type="checkbox" class="form-check-input" id="formSwitch1" name="enable_technical_module" @if($company->enable_technical_module == '1') checked @endif>
+            <input type="checkbox" class="form-check-input" id="formSwitch1" name="enable_technical_module" @if(@$company->enable_technical_module == '1') checked @endif>
             <label class="form-check-label" for="formSwitch1">Enable Technical Module</label>
         </div>
     </div>
