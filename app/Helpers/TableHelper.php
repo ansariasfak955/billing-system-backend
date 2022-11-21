@@ -2595,7 +2595,14 @@ class TableHelper
                         "category" => "Comments and Addendums",
                         "type" => "addendum",
                     ]);
-
+                    /* create empty value to fix error*/
+                    MyTemplateMeta::create([
+                        "template_id" => $template_created->id,
+                        "option_name" => "",
+                        "option_value" => "",
+                        "category" => "Comments and Addendums",
+                        "type" => "addendum",
+                    ]);
                     /* Addendum Title*/
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
