@@ -25,12 +25,6 @@
             {!! Form::password('password', ['class' => 'form-control', 'placeholder' => 'Enter Password']) !!}
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="form-group py-2">
-            {!! Form::label('type', 'Type', ['class' => 'form-label']) !!}
-            {!! Form::select('type', [ null=> 'Please Select' ], isset($company->type) ? $company->type : '', ['class' => 'form-control']) !!}
-        </div>
-    </div>
     <div class="mb-3">
         <div class="form-check form-switch mb-2">
             <input type="checkbox" class="form-check-input" id="formSwitch1" name="enable_technical_module" @if(@$company->enable_technical_module == '1') checked @endif>
