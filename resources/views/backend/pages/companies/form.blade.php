@@ -25,6 +25,24 @@
             {!! Form::password('password', ['class' => 'form-control', 'placeholder' => 'Enter Password']) !!}
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="form-group py-2">
+            {!! Form::label('type', 'Regimen Rimpe', ['class' => 'form-label']) !!}
+            {!! Form::select('type', [ null=> 'Please Select' ], isset($company->rimpe_regime) ? $company->rimpe_regime : '', ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group py-2">
+            {!! Form::label('number_of_establishment', 'Establishment', ['class' => 'form-label']) !!}
+            {!! Form::number('number_of_establishment', isset($company->number_of_establishment) ? $company->number_of_establishment : '', ['class' => 'form-control', 'placeholder' => 'Enter Number']) !!}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group py-2">
+            {!! Form::label('emission_point', 'Emission point', ['class' => 'form-label']) !!}
+            {!! Form::text('emission_point', isset($company->emission_point) ? $company->emission_point : '', ['class' => 'form-control', 'placeholder' => 'Enter Emission Point']) !!}
+        </div>
+    </div>
     <div class="mb-3">
         <div class="form-check form-switch mb-2">
             <input type="checkbox" class="form-check-input" id="formSwitch1" name="enable_technical_module" @if(@$company->enable_technical_module == '1') checked @endif>

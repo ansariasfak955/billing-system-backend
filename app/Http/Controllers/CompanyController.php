@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Validator;
 use DB;
+use Str;
 
 class CompanyController extends Controller
 {
@@ -49,19 +50,24 @@ class CompanyController extends Controller
             'name'  => 'required',
             'email' => 'email|unique:companies',
             'password' => 'required',
+            'number_of_establishment' => 'required|min:3|max:10'
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withError($validator->errors()->first())->withInput();
         }
-
         if($request->enable_technical_module == 'on') {    
             $request['enable_technical_module'] = '1';
         } else {
             $request['enable_technical_module'] = '0';
         }
 
+        $num_added = sprintf("%010d", $request->number_of_establishment);
+
         $company = Company::create($request->all());
+        $company->number_of_establishment = $num_added;
+        $company->save();
+
         TableHelper::createTables($company->id);
 
         // Create Super Admin
@@ -153,7 +159,9 @@ class CompanyController extends Controller
             $request['enable_technical_module'] = '0';
         }
 
-        
+        $blogLength = strlen($request->number_of_establishment);
+        $num_added = sprintf("%010d", $request->number_of_establishment);
+
         if ($request->password != '') {
             $user->update([
                 'password' => Hash::make($request->password)
