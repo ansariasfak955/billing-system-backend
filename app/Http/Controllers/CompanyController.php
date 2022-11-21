@@ -62,6 +62,12 @@ class CompanyController extends Controller
             $request['enable_technical_module'] = '0';
         }
 
+        if($request->rimpe_regime) {    
+            $request['rimpe_regime'] = 'yes';
+        } else {
+            $request['rimpe_regime'] = 'no';
+        }
+
         $num_added = sprintf("%010d", $request->number_of_establishment);
 
         $company = Company::create($request->all());
@@ -158,8 +164,12 @@ class CompanyController extends Controller
         } else {
             $request['enable_technical_module'] = '0';
         }
+        if($request->rimpe_regime) {    
+            $request['rimpe_regime'] = 'yes';
+        } else {
+            $request['rimpe_regime'] = 'no';
+        }
 
-        $blogLength = strlen($request->number_of_establishment);
         $num_added = sprintf("%010d", $request->number_of_establishment);
 
         if ($request->password != '') {
