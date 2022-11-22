@@ -162,4 +162,26 @@ class PaymentOptionController extends Controller
             ]);
         }
     }
+
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_payment_options';
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required'
+        ],[
+            'ids.required' => 'Please select entry to delete'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' =>false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        PaymentOption::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        PaymentOption::whereIn('id', $ids)->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Payment deleted'
+        ]);
+    }
 }

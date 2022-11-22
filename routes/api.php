@@ -217,6 +217,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('expense_investments/duplicate-investment', 'ExpenseAndInvestmentController@duplicate');
             Route::apiResource('expense-attachments', ExpenseAttachmentController::class);
             Route::apiResource('expense_categories', ExpenseCategoryController::class);
+            Route::post('expense_categories/batch-delete', 'ExpenseCategoryController@batchDelete');
             
             Route::get('custom_state_types', 'CustomStateController@getCustomStateTypes');
             Route::get('get-settings', 'SettingController@getSettings');
@@ -292,10 +293,10 @@ Route::group(['namespace' => 'Api'], function() {
             
             //payment option
             Route::apiResource('payment-options', PaymentOptionController::class);
-            
+            Route::post('payment-options/batch-delete', 'PaymentOptionController@batchDelete');
             //delivery options
             Route::apiResource('delivery-options', DeliveryOptionController::class);
-
+            Route::post('delivery-options/batch-delete', 'DeliveryOptionController@batchDelete');
             // Related
             Route::get('related', 'RelatedController@related');
             //history
