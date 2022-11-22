@@ -26,19 +26,24 @@ class SupplierController extends Controller
 
         $table = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($table);
-        $suppliers = Supplier::get();
+        $query = Supplier::query();
+        
+        if($request->search){
+            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('legal_name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+        }
+        $query = $query->get();
 
-        if ($suppliers->count() == 0) {
+        if (!count($query)) {
             return response()->json([
                 "status" => false,
                 "message" => "No suppliers found!"
             ]);
-        } else {
-            return response()->json([
-                "status" => true,
-                "suppliers" =>  $suppliers
-            ]);  
-        }
+        } 
+        return response()->json([
+            "status" => true,
+            "suppliers" =>  $query
+        ]);  
+        
     }
 
 
