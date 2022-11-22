@@ -239,6 +239,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('client-attachments', ClientAttachmentController::class);
             Route::apiResource('client-addresses', ClientAddressController::class);
             Route::apiResource('client-categories', ClientCategoryController::class);
+            Route::post('client-categories/batch-delete', 'ClientCategoryController@batchDelete');
             Route::apiResource('client-rates', ClientRateController::class);
 
             /* Sales Routes */

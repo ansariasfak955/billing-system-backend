@@ -147,4 +147,26 @@ class ClientCategoryController extends Controller
             ]);
         }
     }
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_client_categories';
+        $validator = Validator::make($request->all(),[
+            'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        ClientCategory::setGlobalTable($table);
+        $ids = explode(",", $request->ids);
+        ClientCategory::whereIn('id', $ids)->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'ClientCategory deleted successfully'
+        ]);
+
+    }
 }
