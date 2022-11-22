@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductStock;
+use App\Models\Item;
 use Validator;
 
 class ProductStockController extends Controller
@@ -22,7 +23,8 @@ class ProductStockController extends Controller
                 "message" =>  "Please select company"
             ]);
         }
-
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
         $table = 'company_'.$request->company_id.'_product_stocks';
         ProductStock::setGlobalTable($table);
         $product_stock = ProductStock::where('product_id', $request->product_id)->get();
@@ -86,6 +88,8 @@ class ProductStockController extends Controller
     {
         $table = 'company_'.$request->company_id.'_product_stocks';
         ProductStock::setGlobalTable($table);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
         $product_stock = ProductStock::where('id', $request->product_stock)->first();
 
         if($product_stock ==  NULL){

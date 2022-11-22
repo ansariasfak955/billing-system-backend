@@ -27,4 +27,16 @@ class ProductStock extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    public function productStock(){
+        return $this->hasOne(ProductStock::class, 'product_id');
+    }
+    public function items(){
+        return $this->hasOne(Item::class, 'reference_id')->where('reference' , 'pro');
+    }
+
+    public function getVirtualStockAttribute(){
+        $productStock = $this->productStock()->sum('stock');
+        $items = $this->items()->sum('quantity');
+        return $productStock - $items;
+    }
 }
