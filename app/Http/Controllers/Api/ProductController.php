@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\Rate;
+use App\Models\Item;
 use App\Models\ProductRate;
 use Validator;
 
@@ -28,6 +29,8 @@ class ProductController extends Controller
 
         $table = 'company_'.$request->company_id.'_products';
         Product::setGlobalTable($table);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
 
         if ( $request->type ){
             $products = Product::whereDate('created_at' ,'<=', date('Y-m-d'))->get();
@@ -151,6 +154,8 @@ class ProductController extends Controller
     {
         $table = 'company_'.$request->company_id.'_products';
         Product::setGlobalTable($table);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
         $product = Product::where('id', $request->product)->first();
         if($product ==  NULL){
             return response()->json([

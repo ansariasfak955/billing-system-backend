@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Product extends Model
 {
@@ -20,7 +21,7 @@ class Product extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
-    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount', 'sales_stock_value', 'purchase_stock_value'];
+    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount', 'sales_stock_value', 'purchase_stock_value','remaining_stock'];
 
     public function getAmountAttribute(){
         if(isset($this->attributes['price'])){
@@ -35,6 +36,9 @@ class Product extends Model
 
     public function product_attachments(){
         return $this->hasMany(ProductAttachment::class, 'product_id')->where('type' , attachment);
+    }
+    public function items(){
+        return $this->hasMany(Item::class, 'reference_id')->where('reference' , 'pro');
     }
 
     public function product_images(){
@@ -94,5 +98,11 @@ class Product extends Model
         if($this->stock && isset($this->attributes['purchase_price'])){
             return (float)$this->stock*(float)$this->attributes['purchase_price'];
         }
+    }
+
+    public function getRemainingStockAttribute(){
+      $product_stock =  ProductStock::where('product_id', $this->attributes['id'])->sum('stock');
+      $items = $this->items()->sum('quantity');
+      return $product_stock - $items;
     }
 }
