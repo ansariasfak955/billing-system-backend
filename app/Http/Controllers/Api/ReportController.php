@@ -561,17 +561,17 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        if($request->type == "product"){
-            $productTables = Product::get();
+        if($request->type == "supplier"){
+            $SupplierTable = Supplier::get();
             $data = [];
-            $data['products'] = [];
-            foreach($productTables as $productTable){
-                $data['products'][] = [
+            $data['supplier'] = [];
+            foreach($SupplierTable as $SupplierTables){
+                $data['supplier'][] = [
                         "type" => "bar",
-                        "label" => "" .  $productTable->name,
+                        "label" => "" .  $SupplierTables->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            Product::where('id', $productTable->id)->get()->sum('amount'),
+                            Supplier::where('id', $SupplierTables->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -582,16 +582,16 @@ class ReportController extends Controller
             ]);
 
         }else{
-            $suppliers = Supplier::get();
+            $itemTable = Item::get();
             $data = [];
-            $data['purchases'] = [];
-            foreach($suppliers as $supplier){
-                $data['purchases'][] = [
+            $data['items'] = [];
+            foreach($itemTable as $itemTables){
+                $data['items'][] = [
                         "type" => "bar",
-                        "label" => "" .  $supplier->name,
+                        "label" => "" .  $itemTables->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            PurchaseTable::where('id', $supplier->id)->get()->sum('amount'),
+                            Item::where('id', $itemTables->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -601,6 +601,25 @@ class ReportController extends Controller
                 "data" =>  $data
             ]);
         }
+        // else{
+        //     $suppliers = Supplier::get();
+        //     $data['purchases'] = [];
+        //     foreach($suppliers as $supplier){
+        //         $data['purchases'] = [
+        //                 "type" => "bar",
+        //                 "label" => "" .  $supplier->name,
+        //                 "backgroundColor" => "#26C184",
+        //                 "data" => [
+        //                     PurchaseTable::where('id', $supplier->id)->get()->sum('amount'),
+        //                     ]
+        //                 ];
+        //     }
+            
+        //     return response()->json([
+        //         "status" => true,
+        //         "data" =>  $data
+        //     ]);
+        // }
     }
     public function cashFlow(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
