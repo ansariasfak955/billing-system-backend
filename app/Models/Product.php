@@ -21,7 +21,7 @@ class Product extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
-    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount', 'sales_stock_value', 'purchase_stock_value','remaining_stock'];
+    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount', 'sales_stock_value', 'purchase_stock_value'];
 
     public function getAmountAttribute(){
         if(isset($this->attributes['price'])){
@@ -67,13 +67,9 @@ class Product extends Model
 
     public function getVirtualStockAttribute()
     {
-        $table = $this->getTable();
-        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-        $product_stock = get_product_stock($company_id, $this->attributes['id']);
-        if ($product_stock != NULL) {
-            return $product_stock->sum('virtual_stock');
-        }
-        return '';
+        $product_stock =  ProductStock::where('product_id', $this->attributes['id'])->sum('stock');
+        $items = $this->items()->sum('quantity');
+        return $product_stock - $items;
     }
 
     public function getMinimumStockAttribute()
@@ -98,11 +94,5 @@ class Product extends Model
         if($this->stock && isset($this->attributes['purchase_price'])){
             return (float)$this->stock*(float)$this->attributes['purchase_price'];
         }
-    }
-
-    public function getRemainingStockAttribute(){
-      $product_stock =  ProductStock::where('product_id', $this->attributes['id'])->sum('stock');
-      $items = $this->items()->sum('quantity');
-      return $product_stock - $items;
     }
 }
