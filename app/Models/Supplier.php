@@ -17,4 +17,7 @@ class Supplier extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    public function purchases(){
+        return $this->hasMany(PurchaseTable::class, 'supplier_id');
+    }
 }

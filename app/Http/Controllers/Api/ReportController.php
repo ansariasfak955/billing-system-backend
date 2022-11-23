@@ -158,22 +158,22 @@ class ReportController extends Controller
         if($request->type == "agent"){
             // $agent_ids  = InvoiceTable::pluck('agent_id')->groupBy('agent_id')->toArray();        
             // $clients = Client::whereIn('id', $agent_ids)->get();
-            $clients  = Client::get();
+            $clients = Client::get();
             $data = [];
             $data['sales_invoicing'] = [];
             foreach($clients as $client){
                 $data['sales_invoicing'][] = [
-                    "type" => "bar", 
-                    "label" => "" .$client->name,
-                    "backgroundColor" => "#26C184", 
-                    "data" => [
-                        "" . InvoiceTable::where('client_id', $client->id)->get()->sum('amount'),
-                    ] 
-                ];
+                        "type" => "bar",
+                        "label" => "" .  $client->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            Client::where('id', $client->id)->get()->count(),
+                            ]
+                        ];
             }
             return response()->json([
                 "status" => true,
-                "data" =>  $data
+                "data" => $data
             ]);
         }else if($request->type == "product"){
             $productTables = Product::get();
@@ -562,16 +562,16 @@ class ReportController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
 
         if($request->type == "supplier"){
-            $SupplierTable = Supplier::get();
+            $suppliers =  Supplier::has('purchases', '>', 3)->get();
             $data = [];
             $data['supplier'] = [];
-            foreach($SupplierTable as $SupplierTables){
+            foreach($suppliers as $supplier){
                 $data['supplier'][] = [
                         "type" => "bar",
-                        "label" => "" .  $SupplierTables->name,
+                        "label" => "" .  $supplier->email,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            Supplier::where('id', $SupplierTables->id)->get()->sum('amount'),
+                            PurchaseTable::where('id', $supplier->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -601,25 +601,6 @@ class ReportController extends Controller
                 "data" =>  $data
             ]);
         }
-        // else{
-        //     $suppliers = Supplier::get();
-        //     $data['purchases'] = [];
-        //     foreach($suppliers as $supplier){
-        //         $data['purchases'] = [
-        //                 "type" => "bar",
-        //                 "label" => "" .  $supplier->name,
-        //                 "backgroundColor" => "#26C184",
-        //                 "data" => [
-        //                     PurchaseTable::where('id', $supplier->id)->get()->sum('amount'),
-        //                     ]
-        //                 ];
-        //     }
-            
-        //     return response()->json([
-        //         "status" => true,
-        //         "data" =>  $data
-        //     ]);
-        // }
     }
     public function cashFlow(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
