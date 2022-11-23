@@ -591,7 +591,7 @@ class ReportController extends Controller
                         "label" => "" .  $item->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            Item::where('id', $item->id)->get()->sum('amount'),
+                            Item::where('reference_id', $item->id)->where('reference', 'pro')->get()->sum('amount'),
                             ]
                         ];
             }
