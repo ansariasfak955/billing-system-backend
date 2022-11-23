@@ -164,10 +164,10 @@ class ReportController extends Controller
             foreach($clients as $client){
                 $data['sales_invoicing'][] = [
                         "type" => "bar",
-                        "label" => "" .  $client->name,
+                        "label" => "" .  $client->email,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            Client::where('id', $client->id)->get()->count(),
+                            Client::where('id', $client->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -185,7 +185,7 @@ class ReportController extends Controller
                         "label" => "" .  $productTable->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            Product::where('id', $productTable->id)->get()->count(),
+                            Product::where('id', $productTable->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -582,16 +582,16 @@ class ReportController extends Controller
             ]);
 
         }else{
-            $itemTable = Item::get();
+            $items = Product::has('items', '>', 3)->get();
             $data = [];
-            $data['items'] = [];
-            foreach($itemTable as $itemTables){
-                $data['items'][] = [
+            $data['item'] = [];
+            foreach($items as $item){
+                $data['item'][] = [
                         "type" => "bar",
-                        "label" => "" .  $itemTables->name,
+                        "label" => "" .  $item->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            Item::where('id', $itemTables->id)->get()->sum('amount'),
+                            Item::where('id', $item->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -612,6 +612,9 @@ class ReportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
         $data = [];
@@ -623,7 +626,7 @@ class ReportController extends Controller
                         "label" => "Deposits", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                        "2900" 
+                        " " . InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
                         ] 
                     ], 
                     [
