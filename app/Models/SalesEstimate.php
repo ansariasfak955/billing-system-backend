@@ -37,7 +37,8 @@ class SalesEstimate extends Model
 		'tin',
 		'signature',
 		'sent_date',
-		'scheduled_delivery_date'
+		'scheduled_delivery_date',
+		'delivery_option'
     ];
 
 

@@ -205,6 +205,7 @@ class TableHelper
                 $table->string('title')->nullable();
                 $table->string('agent_id')->nullable();
                 $table->string('rate')->nullable();
+                $table->string('delivery_option')->nullable();
                 $table->integer('subject_to_vat')->default(0);
                 $table->integer('subject_to_income_tax')->default(0);
 
@@ -803,6 +804,7 @@ class TableHelper
                 $table->id();
                 $table->string('name')->nullable();
                 $table->longText('description')->nullable();
+                $table->longText('terms')->nullable();
                 $table->timestamps();
             });
         }

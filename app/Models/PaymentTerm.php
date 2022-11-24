@@ -11,7 +11,8 @@ class PaymentTerm extends Model
 
     protected $fillable = [
         "name",
-        "description"
+        "description",
+        "terms"
     ];
 
     protected static $globalTable = 'payment_terms' ;

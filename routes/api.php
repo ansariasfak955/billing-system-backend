@@ -304,6 +304,9 @@ Route::group(['namespace' => 'Api'], function() {
             //taxes 
             Route::apiResource('cosumption-taxes', ConsumptionTaxController::class);
             Route::apiResource('income-taxes', IncomeTaxController::class);
+            //payment terms
+            Route::apiResource('payment-terms', PaymentTermController::class);
+            Route::post('payment-terms/batch-delete', 'PaymentTermController@batchDelete');
             // Reports
             Route::prefix('reports')->group(function () {
                 Route::get('invoices', 'ReportController@invoicing');
@@ -321,4 +324,5 @@ Route::group(['namespace' => 'Api'], function() {
         /* Activity Type */
         Route::get('activity-types', 'ActivityTypeController@index');
     });
+
 });
