@@ -24,17 +24,16 @@ class PaymentTermController extends Controller
         }
             $table = 'company_'.$request->company_id.'_payment_terms';
             PaymentTerm::setGlobalTable($table);
-            $paymentTerms = PaymentTerm::where('id', $request->payment_term)->get();
-
-            if ($paymentTerms->count() == 0) {
+            $paymentTerms = PaymentTerm::all();
+            if (!count($paymentTerms)) {
                 return response()->json([
                     "status" => false,
-                    "message" => "No sales estimate found!"
+                    "message" => "No payment terms found!"
                 ]);
             } else {
                 return response()->json([
                     "status" => true,
-                    "sales_estimate" => $paymentTerms
+                    "payment_terms" => $paymentTerms
                 ]);
             }
     }

@@ -23,4 +23,9 @@ class PaymentTerm extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    public function getTermsAttribute(){
+        if(isset($this->attributes['terms'])){
+            return json_decode($this->attributes['terms']);
+        }
+    }
 }
