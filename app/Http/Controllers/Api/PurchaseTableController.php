@@ -289,9 +289,16 @@ class PurchaseTableController extends Controller
     {
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
-        
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
         // $purchase_table = PurchaseTable::where('id', $request->purchase_table)->first();
         $purchase_table = PurchaseTable::with(['items' , 'item_meta'])->where('id', $request->purchase_table)->first();
+
          //change format of date
         if($request->date){
 
@@ -321,7 +328,7 @@ class PurchaseTableController extends Controller
             $request['valid_until'] = get_formatted_datetime($request->valid_until);
         }
 
-        $purchase_table->update($request->except('company_id', 'technical_table', '_method'));
+        $purchase_table->update($request->except('company_id'));
         // $purchase_table->created_by = \Auth::id();
         if($request->item){
 
@@ -389,7 +396,7 @@ class PurchaseTableController extends Controller
 
         return response()->json([
             "status" => true,
-            "data" => PurchaseTable::with(['items' , 'item_meta'])->where('id', $request->purchase_table)->first(),
+            "purchase_table" => PurchaseTable::with(['items' , 'item_meta'])->where('id', $request->purchase_table)->first(),
             "message" => "Updated successfully"
         ]);
     }
