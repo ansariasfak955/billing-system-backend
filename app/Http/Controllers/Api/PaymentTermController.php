@@ -59,7 +59,12 @@ class PaymentTermController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        $payment = PaymentTerm::create($request->all());
+        $payment =PaymentTerm::create($request->except(['company_id', 'terms']));
+
+        if($request->terms){
+            $payment->terms = json_encode($request->terms);
+            $payment->save();
+        }
 
         return response()->json([
             'status' => true,
@@ -113,9 +118,17 @@ class PaymentTermController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        $paymentTerm = PaymentTerm::where('id', $request->payment_term)->first();
+        // $paymentTerm = PaymentTerm::where('id', $request->payment_term)->first();
 
-        $updatePayment = $paymentTerm->update($request->except('company_id', '_method'));
+        // $paymentTerm->update($request->except('company_id', '_method'));
+        $paymentTerm = PaymentTerm::find($request->payment_term);
+        $paymentTerm->update($request->except(['company_id', 'terms']));
+        
+        if($request->terms){
+            $paymentTerm->terms = json_encode($request->terms);
+            $paymentTerm->save();
+        }
+        
         return response()->json([
             'status' => true,
             'data' => $paymentTerm,
