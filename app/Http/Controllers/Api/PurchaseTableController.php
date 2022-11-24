@@ -289,8 +289,9 @@ class PurchaseTableController extends Controller
     {
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
-        $purchase_table = PurchaseTable::where('id', $request->purchase_table)->first();
         
+        // $purchase_table = PurchaseTable::where('id', $request->purchase_table)->first();
+        $purchase_table = PurchaseTable::with(['items' , 'item_meta'])->where('id', $request->purchase_table)->first();
          //change format of date
         if($request->date){
 
