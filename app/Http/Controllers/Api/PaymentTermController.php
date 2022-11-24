@@ -14,7 +14,7 @@ class PaymentTermController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if(($request->company_id ==  NULL)||($request->company_id ==  0)){
             return response()->json([
@@ -22,6 +22,21 @@ class PaymentTermController extends Controller
                 "message" =>  "Please select company"
             ]);
         }
+            $table = 'company_'.$request->company_id.'_payment_terms';
+            PaymentTerm::setGlobalTable($table);
+            $paymentTerms = PaymentTerm::where('id', $request->payment_term)->get();
+
+            if ($paymentTerms->count() == 0) {
+                return response()->json([
+                    "status" => false,
+                    "message" => "No sales estimate found!"
+                ]);
+            } else {
+                return response()->json([
+                    "status" => true,
+                    "sales_estimate" => $paymentTerms
+                ]);
+            }
     }
 
     /**
