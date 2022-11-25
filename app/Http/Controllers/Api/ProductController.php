@@ -32,12 +32,19 @@ class ProductController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
-        if ( $request->type ){
-            $products = Product::whereDate('created_at' ,'<=', date('Y-m-d'))->get();
-        }else {
-            $products = Product::get();
+        // if ( $request->type ){
+        //     $products = Product::whereDate('created_at' ,'<=', date('Y-m-d'))->get();
+        // }else{
+        //     $products = Product::get();
+        // }
+        $products = Product::query();
+        
+        if($request->search){
+            $products = $products->where('name', 'like', '%'.$request->search.'%')->orWhere('created_at' ,'<=', date('Y-m-d'))->orWhere('reference_number', 'like', '%'.$request->search.'%');
         }
-    
+        $products = $products->get();
+            
+            
         if ( $products->count() == 0 ) {
             return response()->json([
                 "status" => false,

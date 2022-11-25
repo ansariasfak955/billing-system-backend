@@ -249,11 +249,6 @@ class PurchaseTableController extends Controller
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
 
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
         $invoiceReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
         PurchaseReceipt::setGlobalTable($invoiceReceiptTable);
         $purchase_table = PurchaseTable::with(['items', 'item_meta', 'receipts'])->where('id', $request->purchase_table)->first();
