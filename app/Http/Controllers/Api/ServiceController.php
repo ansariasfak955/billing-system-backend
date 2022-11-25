@@ -25,17 +25,39 @@ class ServiceController extends Controller
                 "message" =>  "Please select company"
             ]);
         }
-        Service::setGlobalTable('company_'.$request->company_id.'_services');
-        if(Service::count() == 0){
+        // Service::setGlobalTable('company_'.$request->company_id.'_services');
+        // if(Service::count() == 0){
+        //     return response()->json([
+        //         "status" => false,
+        //         "message" =>  "No data found"
+        //     ]);
+        // }
+        // return response()->json([
+        //     "status" => true,
+        //     "products" =>  Service::get()
+        // ]);
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $service = Service::query();
+        
+        if($request->search){
+            $service = $service->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+        }
+        $service = $service->get();
+            
+            
+        if ( $service->count() == 0 ) {
             return response()->json([
                 "status" => false,
-                "message" =>  "No data found"
+                "message" => "No product found!"
             ]);
+        } else {
+            return response()->json([
+                "status" => true,
+                "products" =>  $service
+            ]);  
         }
-        return response()->json([
-            "status" => true,
-            "products" =>  Service::get()
-        ]);
     }
 
     /**
@@ -61,7 +83,20 @@ class ServiceController extends Controller
 
        
         $service = Service::create($request->except('image', 'company_id', 'images'));
-
+        if ($request->reference_number == '') {
+            $service->reference_number = get_service_latest_ref_number($request->company_id, $request->reference, 1);
+        } else {
+            $service = Service::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
+            if ($service == NULL) {
+                $service->reference_number = get_service_latest_ref_number($request->company_id, $request->reference, 0);
+            } else {
+                return response()->json([
+                    "status"  => false,
+                    "client"  => $service,
+                    "message" => "Please choose different reference number"
+                ]);
+            }
+        }
         if($request->image != NULL){
             $imageName = time().'.'.$request->image->extension();  
             $request->image->move(storage_path('app/public/services/images'), $imageName);

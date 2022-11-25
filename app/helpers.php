@@ -215,6 +215,21 @@ function get_product_latest_ref_number($company_id, $reference, $add)
         }
     }
 }
+function get_service_latest_ref_number($company_id, $reference, $add){
+    $table = 'company_'.$company_id.'_services';
+    \App\Models\Service::setGlobalTable($table);
+    $service = \App\Models\Service::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
+    $reference_number = str_replace('0', '', $service->reference_number);
+    if ($reference_number == NULL) {
+        return '00001';
+    } else {
+        if ($service != NULL) {
+            return generate_reference_num($reference_number+$add,5);
+        } else {
+            return '00001';
+        }
+    }
+}
 
 function generate_reference_num ($input, $pad_len = 7) {
     return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
