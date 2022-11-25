@@ -1040,6 +1040,7 @@ class TableHelper
             Schema::create('company_'.$company_id.'_expense_and_investments', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('reference')->nullable();
+                $table->string('reference_number')->nullable();
                 $table->string('name');
                 $table->float('price');
                 $table->float('purchase_price')->nullable();

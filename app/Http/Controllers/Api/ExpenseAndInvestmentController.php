@@ -23,17 +23,39 @@ class ExpenseAndInvestmentController extends Controller
                 "message" =>  "Please select company"
             ]);
         }
-        ExpenseAndInvestment::setGlobalTable('company_'.$request->company_id.'_expense_and_investments');
-        if(ExpenseAndInvestment::count() == 0){
+        // ExpenseAndInvestment::setGlobalTable('company_'.$request->company_id.'_expense_and_investments');
+        // if(ExpenseAndInvestment::count() == 0){
+        //     return response()->json([
+        //         "status" => false,
+        //         "message" =>  "No data found"
+        //     ]);
+        // }
+        // return response()->json([
+        //     "status" => true,
+        //     "products" =>  ExpenseAndInvestment::get()
+        // ]);
+        $table = 'company_'.$request->company_id.'_expense_and_investments';
+        ExpenseAndInvestment::setGlobalTable($table);
+
+        $expense_and_investment = ExpenseAndInvestment::query();
+        
+        if($request->search){
+            $expense_and_investment = $expense_and_investment->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+        }
+        $expense_and_investment = $expense_and_investment->get();
+            
+            
+        if ( $expense_and_investment->count() == 0 ) {
             return response()->json([
                 "status" => false,
-                "message" =>  "No data found"
+                "message" => "No product found!"
             ]);
+        } else {
+            return response()->json([
+                "status" => true,
+                "products" =>  $expense_and_investment
+            ]);  
         }
-        return response()->json([
-            "status" => true,
-            "products" =>  ExpenseAndInvestment::get()
-        ]);
     }
 
     /**
@@ -58,7 +80,23 @@ class ExpenseAndInvestmentController extends Controller
         }
 
        
-        $expense_and_investment = ExpenseAndInvestment::create($request->except('image', 'company_id', 'images'));
+       
+
+        if ($request->reference_number == '') {
+            $expense_and_investment = ExpenseAndInvestment::create($request->except('image', 'company_id', 'images'));
+            $expense_and_investment->reference_number = get_expense_and_investment_latest_ref_number($request->company_id, $request->reference, 1);
+        } else {
+            $expense_and_investment = ExpenseAndInvestment::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
+            if ($expense_and_investment == NULL) {
+                $expense_and_investment = ExpenseAndInvestment::create($request->except('image', 'company_id', 'images'));
+                $expense_and_investment->reference_number = get_expense_and_investment_latest_ref_number($request->company_id, $request->reference, 0);
+            } else {
+                return response()->json([
+                    "status"  => false,
+                    "message" => "Please choose different reference number"
+                ]);
+            }
+        }
 
         if($request->image != NULL){
             $imageName = time().'.'.$request->image->extension();  
