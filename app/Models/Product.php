@@ -95,4 +95,7 @@ class Product extends Model
             return (float)$this->stock*(float)$this->attributes['purchase_price'];
         }
     }
+    public function getTableColumns() {
+        return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    }
 }

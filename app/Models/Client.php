@@ -39,4 +39,7 @@ class Client extends Model
             return get_category_name($company_id, $this->attributes['client_category']);
         }
     }
+    public function getTableColumns() {
+        return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    }
 }

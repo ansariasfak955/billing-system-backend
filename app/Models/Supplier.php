@@ -20,4 +20,8 @@ class Supplier extends Model
     public function purchases(){
         return $this->hasMany(PurchaseTable::class, 'supplier_id');
     }
+
+    public function getTableColumns() {
+        return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    }
 }

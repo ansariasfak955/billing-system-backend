@@ -63,4 +63,7 @@ class ClientAsset extends Model
             return get_client_name($client_id, $this->attributes['client_id']);
         }
     }
+    public function getTableColumns() {
+        return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    }
 }
