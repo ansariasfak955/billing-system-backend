@@ -217,11 +217,11 @@ class SalesEstimateController extends Controller
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
         
-        // $itemTable = 'company_'.$request->company_id.'_items';
-        // Item::setGlobalTable($itemTable);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
 
-        // $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        // ItemMeta::setGlobalTable($item_meta_table);
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
 
         $sales_estimate = SalesEstimate::with(['items', 'item_meta'])->find($request->sales_estimate);
 
@@ -261,7 +261,11 @@ class SalesEstimateController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
 
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
         $sales_estimate = SalesEstimate::with(['items' , 'item_meta'])->where('id', $request->sales_estimate)->first();
