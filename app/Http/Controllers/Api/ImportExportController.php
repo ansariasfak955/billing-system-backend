@@ -44,7 +44,7 @@ class ImportExportController extends Controller
         ]);
     }
     public function export(Request $request, $company_id, $type){
-      $headings = $request->headings;
+    //   $headings = $request->headings;
     //   $headings = [
     //         'Id',
     //        'Reference',
@@ -204,16 +204,29 @@ class ImportExportController extends Controller
     //     "created_at",
     //     "updated_at"
     //   ];
+
+   
         if($type == 'client' || $type == "potential_client"){
-            return Excel::download(new ClientExport($headings,$company_id), 'client-export.xlsx');
+            // return Excel::download(new ClientExport($headings,$company_id), 'client-export.xlsx');
+            $fileName = 'client-export-'.time().$company_id.'.xlsx';
+            Excel::store(new ClientExport($headings, $company_id),'public/xlsx/'.$fileName);
         }elseif($type == "suppliers"){
-            return Excel::download(new SupplierExport($headings,$company_id), 'supplier-export.xlsx');
+            $fileName = 'supplier-export-'.time().$company_id.'.xlsx';
+            Excel::store(new SupplierExport($headings, $company_id),'public/xlsx/'.$fileName);
         }elseif($type == 'products'){
-            return Excel::download(new ProductExport($headings,$company_id), 'product-export.xlsx');
+            $fileName = 'product-export-'.time().$company_id.'.xlsx';
+            Excel::store(new ProductExport($headings, $company_id),'public/xlsx/'.$fileName);
         }elseif($type == 'service'){
-            return Excel::download(new ServiceExport($headings,$company_id), 'service-export.xlsx');
+            $fileName = 'service-export-'.time().$company_id.'.xlsx';
+            Excel::store(new ServiceExport($headings, $company_id),'public/xlsx/'.$fileName);
         }elseif($type == 'assets'){
-            return Excel::download(new AssetsExport($headings,$company_id), 'assets-export.xlsx');
+            $fileName = 'assets-export-'.time().$company_id.'.xlsx';
+            Excel::store(new AssetsExport($headings, $company_id),'public/xlsx/'.$fileName);
+               
         }
+        return response()->json([
+            'success' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+         ]); 
     }
 }
