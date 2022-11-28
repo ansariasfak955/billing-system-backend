@@ -78,7 +78,7 @@ class TableHelper
                 $table->integer('client_category')->default(0);
 
                 /* commercial fields */
-                $table->integer('payment_option_id')->default(0);
+                $table->integer('payment_option_id')->nullable();
                 $table->string('payment_date')->nullable();
                 $table->float('discount')->nullable();
                 $table->string('rate')->nullable();
