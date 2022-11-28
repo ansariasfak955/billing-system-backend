@@ -44,7 +44,7 @@ class ImportExportController extends Controller
         ]);
     }
     public function export(Request $request, $company_id, $type){
-    //   $headings = $request->headings;
+      $headings = $request->headings;
     //   $headings = [
     //         'Id',
     //        'Reference',
@@ -207,21 +207,39 @@ class ImportExportController extends Controller
 
    
         if($type == 'client' || $type == "potential_client"){
-            // return Excel::download(new ClientExport($headings,$company_id), 'client-export.xlsx');
             $fileName = 'client-export-'.time().$company_id.'.xlsx';
-            Excel::store(new ClientExport($headings, $company_id),'public/xlsx/'.$fileName);
+            $table = 'company_'.$request->company_id.'_clients';
+            Client::setGlobalTable($table);
+            $data =   Client::get($headings);
+            Excel::store(new ClientExport($headings, $data),'public/xlsx/'.$fileName);
+
         }elseif($type == "suppliers"){
             $fileName = 'supplier-export-'.time().$company_id.'.xlsx';
-            Excel::store(new SupplierExport($headings, $company_id),'public/xlsx/'.$fileName);
+            $table = 'company_'.$request->company_id.'_suppliers';
+            Supplier::setGlobalTable($table);
+            $data =   Supplier::get($headings);
+            Excel::store(new SupplierExport($headings, $data),'public/xlsx/'.$fileName);
+
         }elseif($type == 'products'){
             $fileName = 'product-export-'.time().$company_id.'.xlsx';
-            Excel::store(new ProductExport($headings, $company_id),'public/xlsx/'.$fileName);
+            $table = 'company_'.$request->company_id.'_products';
+            Product::setGlobalTable($table);
+            $data =   Product::get($headings);
+            Excel::store(new ProductExport($headings, $data),'public/xlsx/'.$fileName);
+
         }elseif($type == 'service'){
             $fileName = 'service-export-'.time().$company_id.'.xlsx';
-            Excel::store(new ServiceExport($headings, $company_id),'public/xlsx/'.$fileName);
+            $table = 'company_'.$request->company_id.'_services';
+            Service::setGlobalTable($table);
+            $data =   Service::get($headings);
+            Excel::store(new ServiceExport($headings, $data),'public/xlsx/'.$fileName);
+
         }elseif($type == 'assets'){
             $fileName = 'assets-export-'.time().$company_id.'.xlsx';
-            Excel::store(new AssetsExport($headings, $company_id),'public/xlsx/'.$fileName);
+            $table = 'company_'.$request->company_id.'_client_assets';
+            ClientAsset::setGlobalTable($table); 
+            $data =   ClientAsset::get($headings);
+            Excel::store(new AssetsExport($headings, $data),'public/xlsx/'.$fileName);
                
         }
         return response()->json([

@@ -13,10 +13,10 @@ class SupplierExport implements FromCollection, WithHeadings
     /**
     * @return \Illuminate\Support\Collection
     */
-    private $heading, $company_id;
-    public function __construct($headings, $company_id){
+    private $heading, $data;
+    public function __construct($headings, $data){
         $this->headings = $headings;
-        $this->company_id = $company_id;
+        $this->data = $data;
     }
     public function headings(): array
     {
@@ -25,8 +25,6 @@ class SupplierExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $table = 'company_'.$this->company_id.'_suppliers';
-        Supplier::setGlobalTable($table);
-        return  Supplier::get($this->headings);
+        return  $this->data;
     }
 }

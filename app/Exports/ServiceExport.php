@@ -13,10 +13,10 @@ class ServiceExport implements FromCollection, WithHeadings
     /**
     * @return \Illuminate\Support\Collection
     */
-    private $heading, $company_id;
-    public function __construct($headings, $company_id){
+    private $heading, $data;
+    public function __construct($headings, $data){
         $this->headings = $headings;
-        $this->company_id = $company_id;
+        $this->data = $data;
     }
     public function headings(): array
     {
@@ -24,8 +24,6 @@ class ServiceExport implements FromCollection, WithHeadings
     }
     public function collection()
     {   
-        $table = 'company_'.$this->company_id.'_services';
-        Service::setGlobalTable($table);
-        return  Service::get($this->headings);
+        return $this->data;
     }
 }
