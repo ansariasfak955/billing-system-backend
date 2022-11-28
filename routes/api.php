@@ -320,6 +320,7 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('tax-summary', 'ReportController@taxSummary');
             });
             Route::get('get-columns/{type}', 'ImportExportController@getColumns');
+            Route::post('export/{type}', 'ImportExportController@export');
 
         });
 
