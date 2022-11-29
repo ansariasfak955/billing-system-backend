@@ -26,17 +26,22 @@ class TechnicalIncidentController extends Controller
 
         $table = 'company_'.$request->company_id.'_technical_incidents';
         TechnicalIncident::setGlobalTable($table);
-        $technical_incidents = TechnicalIncident::get();
 
-        if($technical_incidents->count() == 0) {
+        $query = TechnicalIncident::query();
+        
+        if($request->search){
+            $query = $query->where('reference_number', 'like', '%'.$request->search.'%');
+        }
+        $query = $query->get();
+        if (!count($query)) {
             return response()->json([
                 "status" => false,
-                "message" => "No data found!"
+                "message" => "No clients found!"
             ]);
         } else {
             return response()->json([
                 "status" => true,
-                "technical_incidents" =>  $technical_incidents
+                "clients" =>  $query
             ]);  
         }
     }

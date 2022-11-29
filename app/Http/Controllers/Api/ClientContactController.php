@@ -27,23 +27,22 @@ class ClientContactController extends Controller
         $table = 'company_'.$request->company_id.'_client_contacts';
         ClientContact::setGlobalTable($table);
         $query = ClientContact::query();
-
-        if($request->client_id){
-            $query = $query->where('client_id', $request->client_id);
+        
+        if($request->search){
+            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('phone', 'like', '%'.$request->search.'%')->orWhere('email', 'like', '%'.$request->search.'%');
         }
-        $clients = $query->get();
-
-        if(!count($clients)){
+        $query = $query->get();
+        if (!count($query)) {
             return response()->json([
                 "status" => false,
-                "message" =>  "No data found"
+                "message" => "No clients found!"
             ]);
+        } else {
+            return response()->json([
+                "status" => true,
+                "clients" =>  $query
+            ]);  
         }
-
-        return response()->json([
-            "status" => true,
-            "client_contacts" => $clients
-        ]);
     }
 
 

@@ -206,7 +206,7 @@ class ImportExportController extends Controller
     //   ];
 
    
-        if($type == 'client' || $type == "potential_client"){
+        if($type == 'clients' || $type == "potential_clients"){
             $fileName = 'client-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_clients';
             Client::setGlobalTable($table);
@@ -227,7 +227,7 @@ class ImportExportController extends Controller
             $data =   Product::get($headings);
             Excel::store(new ProductExport($headings, $data),'public/xlsx/'.$fileName);
 
-        }elseif($type == 'service'){
+        }elseif($type == 'services'){
             $fileName = 'service-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_services';
             Service::setGlobalTable($table);
