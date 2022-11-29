@@ -34,7 +34,16 @@ class SalesEstimateController extends Controller
         $table = 'company_'.$request->company_id.'_sales_estimates';
 
         SalesEstimate::setGlobalTable($table);
-        $sales_estimate = SalesEstimate::where('reference', $request->type)->get();
+        $query = SalesEstimate::query();
+        // $sales_estimate = SalesEstimate::where('reference', $request->type)->get();
+
+        if($request->search){
+            $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+        }
+        if($request->type){
+            $query = $query->where('reference', $request->type);
+        }
+        $sales_estimate = $query->get();
 
         if ($sales_estimate->count() == 0) {
             return response()->json([

@@ -35,13 +35,13 @@ class PurchaseTableController extends Controller
 
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
-
-        $purchase_table = PurchaseTable::where('reference', $request->type)->get();
-
         $query = PurchaseTable::query();
         
         if($request->search){
             $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+        }
+        if($request->type){
+            $query = $query->where('reference', $request->type);
         }
         $purchase_table = $query->get();
 
