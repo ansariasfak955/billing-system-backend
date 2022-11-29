@@ -13,6 +13,8 @@ use App\Exports\SupplierExport;
 use App\Exports\ProductExport;
 use App\Exports\ServiceExport;
 use App\Exports\AssetsExport;
+// use App\Imports\ClientImport;
+// use Illuminate\Support\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Validator;
@@ -20,7 +22,6 @@ use Validator;
 class ImportExportController extends Controller
 {
     public function getColumns($company_id,$type){
-        // return $type;
         $columns = [];
         if($type == "client" || $type == "potential_client"){
             $getClientColumn = new Client;
@@ -247,4 +248,13 @@ class ImportExportController extends Controller
             'url' => url('/storage/xlsx/'.$fileName),
          ]); 
     }
+    // public function import(Request $request){
+    //     // Excel::import(new ClientImport,
+    //     //               $request->file('file')->store('files'));
+    //     // return redirect()->back();
+    //     // Excel::import(new ClientImport,request()->file('file'));
+    //     // $path1 = $request->file('mcafile')->store('temp'); 
+    //     // $path=storage_path('app').'/'.$path1;  
+    //     // $data = \Excel::import(new ClientImport,$path);
+    // }
 }
