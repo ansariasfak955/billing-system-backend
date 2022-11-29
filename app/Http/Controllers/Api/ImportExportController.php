@@ -244,7 +244,7 @@ class ImportExportController extends Controller
                
         }
         return response()->json([
-            'success' => true,
+            'status' => true,
             'url' => url('/storage/xlsx/'.$fileName),
          ]); 
     }
