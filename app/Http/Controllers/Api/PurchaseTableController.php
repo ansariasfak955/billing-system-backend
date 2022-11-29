@@ -26,24 +26,34 @@ class PurchaseTableController extends Controller
             ]);
         }
 
+        if(!$request->type){
+            return response()->json([
+                "status" => false,
+                "message" =>  "Please select type"
+            ]);
+        }
+
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
+
+        $purchase_table = PurchaseTable::where('reference', $request->type)->get();
 
         $query = PurchaseTable::query();
         
         if($request->search){
             $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
         }
-        $query = $query->get();
-        if (!count($query)) {
+        $purchase_table = $query->get();
+
+        if($purchase_table->count() == 0) {
             return response()->json([
                 "status" => false,
-                "message" => "No clients found!"
+                "message" => "No data found!"
             ]);
         } else {
             return response()->json([
                 "status" => true,
-                "clients" =>  $query
+                "data" =>  $purchase_table
             ]);  
         }
     }
