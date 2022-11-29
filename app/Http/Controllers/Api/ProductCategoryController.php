@@ -25,8 +25,14 @@ class ProductCategoryController extends Controller
         // $product_category =  new ProductCategory;
         $product_category_table = 'company_'.$request->company_id.'_product_categories';
         ProductCategory::setGlobalTable($product_category_table);
+        $query = ProductCategory::query();
 
-        if(ProductCategory::count() == 0){
+        if($request->search){
+            $query = $query->where('name', 'like', '%'.$request->search.'%');
+        }
+        $query = $query->get();
+
+        if(!count($query)){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -34,7 +40,7 @@ class ProductCategoryController extends Controller
         }
         return response()->json([
             "status" => true,
-            "product_categories" => ProductCategory::get()
+            "product_categories" => $query
         ]);
     }
 

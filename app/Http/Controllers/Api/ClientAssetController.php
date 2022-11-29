@@ -28,8 +28,8 @@ class ClientAssetController extends Controller
         if($request->client_id){
             $query =  $query->where('client_id', $request->client_id);
         }
-        if($request->s){
-            $query =  $query->where('name', 'like', '%'.$request->s.'%');
+        if($request->search){
+            $query =  $query->where('name', 'like', '%'.$request->search.'%');
         }
         $query = $query->get();
         if(!count($query)){
