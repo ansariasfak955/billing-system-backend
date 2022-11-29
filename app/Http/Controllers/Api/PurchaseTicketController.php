@@ -22,11 +22,20 @@ class PurchaseTicketController extends Controller
         $table = 'company_'.$request->company_id.'_purchase_tickets';
         PurchaseTicket::setGlobalTable($table);
 
-        if($request->supplier_id){
-            $purchase_ticket = PurchaseTicket::where('supplier_id' , $request->supplier_id)->get();
-        }else{
-            $purchase_ticket = PurchaseTicket::get();
+        // if($request->supplier_id){
+        //     $purchase_ticket = PurchaseTicket::where('supplier_id' , $request->supplier_id)->get();
+        // }else{
+        //     $purchase_ticket = PurchaseTicket::get();
+        // }
+        $query = PurchaseTicket::query();
+
+        if($request->search){
+            $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
         }
+        if($request->supplier_id){
+            $query = $query->where('supplier_id', $request->supplier_id);
+        }
+        $purchase_ticket = $query->get();
 
         if($purchase_ticket->count() == 0) {
             return response()->json([
