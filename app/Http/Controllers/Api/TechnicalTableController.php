@@ -42,7 +42,16 @@ class TechnicalTableController extends Controller
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
 
-        $technical_incidents = TechnicalTable::where('reference', $request->type)->get();
+        // $technical_incidents = TechnicalTable::where('reference', $request->type)->get();
+        $query = TechnicalTable::query();
+
+        if($request->search){
+            $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+        }
+        if($request->type){
+            $query = $query->where('reference', $request->type);
+        }
+        $technical_incidents = $query->get();
 
         if($technical_incidents->count() == 0) {
             return response()->json([

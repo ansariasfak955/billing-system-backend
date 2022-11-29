@@ -38,7 +38,17 @@ class InvoiceTableController extends Controller
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
 
-        $invoice = InvoiceTable::where('reference', $request->type)->get();
+        // $invoice = InvoiceTable::where('reference', $request->type)->get();
+
+        $query = InvoiceTable::query();
+
+        if($request->search){
+            $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+        }
+        if($request->type){
+            $query = $query->where('reference', $request->type);
+        }
+        $invoice = $query->get();
 
         if( !$request->invoice_id ){
 
