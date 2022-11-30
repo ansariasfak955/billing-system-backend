@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SalesEstimate;
 use App\Models\Item;
+use App\Models\InvoiceTable;
+use App\Models\Client;
 use App\Models\ItemMeta;
 use Validator;
 use Storage;
@@ -34,15 +36,21 @@ class SalesEstimateController extends Controller
         $table = 'company_'.$request->company_id.'_sales_estimates';
 
         SalesEstimate::setGlobalTable($table);
+        $clientTable = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientTable);
+
         $query = SalesEstimate::query();
         // $sales_estimate = SalesEstimate::where('reference', $request->type)->get();
 
-        if($request->search){
-            $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
-        }
         if($request->type){
             $query = $query->where('reference', $request->type);
         }
+        if($request->search){
+            $query = $query->Where('reference_number', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
+                $q->where('name',  'like','%'.$request->search.'%');
+            });
+        }
+
         $sales_estimate = $query->get();
 
         if ($sales_estimate->count() == 0) {
