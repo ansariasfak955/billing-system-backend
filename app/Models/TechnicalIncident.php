@@ -34,6 +34,12 @@ class TechnicalIncident extends Model
         return self::$globalTable;
     }
 
+    public function client(){
+
+        return $this->hasOne(Client::class,'id', 'client_id');
+    }
+
+
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }

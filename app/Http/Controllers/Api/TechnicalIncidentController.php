@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\TechnicalIncident;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Validator;
 use Auth;
@@ -27,10 +28,15 @@ class TechnicalIncidentController extends Controller
         $table = 'company_'.$request->company_id.'_technical_incidents';
         TechnicalIncident::setGlobalTable($table);
 
+        $clientTable = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientTable);
+
         $query = TechnicalIncident::query();
         
         if($request->search){
-            $query = $query->where('reference_number', 'like', '%'.$request->search.'%');
+            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
+                $q->where('name',  'like','%'.$request->search.'%');
+            });
         }
         $query = $query->get();
         if (!count($query)) {
