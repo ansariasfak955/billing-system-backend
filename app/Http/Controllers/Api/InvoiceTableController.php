@@ -8,6 +8,7 @@ use App\Models\InvoiceTable;
 use App\Models\InvoiceReceipt;
 use App\Models\Item;
 use App\Models\ItemMeta;
+use App\Models\Client;
 use Validator;
 use App\Jobs\SendInvoiceMail;
 use Storage;
@@ -37,17 +38,22 @@ class InvoiceTableController extends Controller
 
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
+        $clientTable = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientTable);
 
         // $invoice = InvoiceTable::where('reference', $request->type)->get();
 
         $query = InvoiceTable::query();
 
-        if($request->search){
-            $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
-        }
         if($request->type){
             $query = $query->where('reference', $request->type);
         }
+        if($request->search){
+            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
+                $q->where('name',  'like','%'.$request->search.'%');
+            });
+        }
+
         $invoice = $query->get();
 
         if( !$request->invoice_id ){
