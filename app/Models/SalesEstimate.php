@@ -50,6 +50,10 @@ class SalesEstimate extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+	public function client(){
+
+        return $this->hasOne(Client::class,'id', 'client_id');
+    }
 
 	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount'];
 
