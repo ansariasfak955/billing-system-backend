@@ -8,6 +8,7 @@ use App\Models\PurchaseReceipt;
 use App\Models\PurchaseTable;
 use App\Models\Item;
 use App\Models\ItemMeta;
+use App\Models\Supplier;
 use Validator;
 use Storage;
 
@@ -26,6 +27,8 @@ class PurchaseReceiptController extends Controller
         PurchaseReceipt::setGlobalTable($table);
         $purchase_table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchase_table);
+        $supplier_table = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplier_table);
         $query = PurchaseReceipt::query();
 
         if($request->purchase_id){
@@ -33,6 +36,13 @@ class PurchaseReceiptController extends Controller
         }
         if($request->type){
             $query =  $query->where('type', $request->type);
+        }
+        if($request->search){
+            $query =  $query->where('payment_option', 'like','%'.$request->search.'%')->orWhereHas('invoice', function($q) use ($request){
+                $q->where('reference_number',  'like','%'.$request->search.'%')->orWhereHas('supplier', function($q) use ($request){
+                    $q->where('name',  'like','%'.$request->search.'%');
+                });
+            });
         }
         $query = $query->with('invoice')->get();
         if(!count($query)){

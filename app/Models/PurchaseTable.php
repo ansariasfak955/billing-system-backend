@@ -30,6 +30,10 @@ class PurchaseTable extends Model
 
         return $this->hasMany(PurchaseReceipt::class, 'purchase_id');
     }
+    public function supplier(){
+
+        return $this->hasOne(Supplier::class,'id', 'supplier_id');
+    }
 
     public function getMetaDiscountAttribute(){
 		if(isset($this->item_meta)){
