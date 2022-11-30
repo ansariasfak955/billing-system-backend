@@ -321,6 +321,7 @@ Route::group(['namespace' => 'Api'], function() {
             });
             Route::get('get-columns/{type}', 'ImportExportController@getColumns');
             Route::post('export/{type}', 'ImportExportController@export');
+            Route::post('import/{type}', 'ImportExportController@import');
 
         });
 

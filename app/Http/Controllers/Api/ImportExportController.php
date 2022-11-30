@@ -13,10 +13,15 @@ use App\Exports\SupplierExport;
 use App\Exports\ProductExport;
 use App\Exports\ServiceExport;
 use App\Exports\AssetsExport;
-// use App\Imports\ClientImport;
-// use Illuminate\Support\File;
+use App\Imports\ClientImport;
+use App\Imports\SupplierImport;
+use App\Imports\ProductImport;
+use App\Imports\ServiceImport;
+use App\Imports\ClientAssetImport;
+use Illuminate\Support\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 
 class ImportExportController extends Controller
@@ -248,13 +253,38 @@ class ImportExportController extends Controller
             'url' => url('/storage/xlsx/'.$fileName),
          ]); 
     }
-    // public function import(Request $request){
-    //     // Excel::import(new ClientImport,
-    //     //               $request->file('file')->store('files'));
-    //     // return redirect()->back();
-    //     // Excel::import(new ClientImport,request()->file('file'));
-    //     // $path1 = $request->file('mcafile')->store('temp'); 
-    //     // $path=storage_path('app').'/'.$path1;  
-    //     // $data = \Excel::import(new ClientImport,$path);
-    // }
+    public function import(Request $request, $company_id, $type){
+        if(!$request->hasFile('file')){
+            return response()->json([
+                'status' => false,
+                'message' => 'Please choose a file!',
+            ]);
+        }
+        if($type == 'client' || $type == "potential_client"){
+            $path = Storage::putFile('public/file', $request->file('file'));
+            $import = new ClientImport($company_id);
+
+        }elseif($type == "suppliers"){
+            $path = Storage::putFile('public/file', $request->file('file'));
+            $import = new SupplierImport($company_id);
+
+        }elseif($type == 'products'){
+            $path = Storage::putFile('public/file', $request->file('file'));
+            $import = new ProductImport($company_id);
+
+        }elseif($type == 'service'){
+            $path = Storage::putFile('public/file', $request->file('file'));
+            $import = new ServiceImport($company_id);
+
+        }elseif($type == 'assets'){
+            $path = Storage::putFile('public/file', $request->file('file'));
+            $import = new ClientAssetImport($company_id);
+        }
+        Excel::import($import, $path);
+        Storage::delete($path);
+        return response()->json([
+            'status' => true,
+            'message' => 'Exported Sucessfully!',
+        ]);
+    }
 }
