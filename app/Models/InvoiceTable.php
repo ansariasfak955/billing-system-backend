@@ -28,6 +28,11 @@ class InvoiceTable extends Model
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }
+    public function client(){
+
+        return $this->hasOne(Client::class,'id', 'client_id');
+    }
+
     public function receipts(){
 
         return $this->hasMany(InvoiceReceipt::class, 'invoice_id');

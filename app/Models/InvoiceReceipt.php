@@ -25,7 +25,6 @@ class InvoiceReceipt extends Model
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }
-
     public function invoice(){
 
         return $this->hasOne(InvoiceTable::class, 'id', 'invoice_id');

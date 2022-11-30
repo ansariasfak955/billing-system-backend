@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\InvoiceReceipt;
 use App\Models\InvoiceTable;
 use App\Models\Item;
+use App\Models\Client;
+use App\Models\Supplier;
 use App\Models\ItemMeta;
 use Validator;
 use Storage;
@@ -24,6 +26,8 @@ class InvoiceReceiptController extends Controller
         InvoiceReceipt::setGlobalTable($table);
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($invoiceTable);
+        $clientTable = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientTable);
         $query = InvoiceReceipt::query();
 
         if($request->invoice_id){
@@ -31,6 +35,13 @@ class InvoiceReceiptController extends Controller
         }
         if($request->type){
             $query =  $query->where('type', $request->type);
+        }
+        if($request->search){
+            $query =  $query->where('payment_option', 'like','%'.$request->search.'%')->orWhereHas('invoice', function($q) use ($request){
+                $q->where('reference_number',  'like','%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
+                    $q->where('name',  'like','%'.$request->search.'%');
+                });
+            });
         }
         $query = $query->with('invoice')->get();
         if(!count($query)){
