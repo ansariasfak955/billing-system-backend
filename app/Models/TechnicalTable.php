@@ -28,6 +28,9 @@ class TechnicalTable extends Model
     public function item_meta(){
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }
+    public function client(){
+        return $this->hasMany(Client::class, 'id', 'client_id');
+    }
 
     public function getClientNameAttribute(){
         

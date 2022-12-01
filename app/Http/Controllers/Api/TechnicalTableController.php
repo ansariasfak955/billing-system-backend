@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TechnicalTable;
 use App\Models\Item;
+use App\Models\Client;
 use App\Models\ItemMeta;
 use Validator;
 use Storage;
@@ -41,12 +42,16 @@ class TechnicalTableController extends Controller
 
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
 
         // $technical_incidents = TechnicalTable::where('reference', $request->type)->get();
         $query = TechnicalTable::query();
 
         if($request->search){
-            $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
+                $q->where('name',  'like','%'.$request->search.'%');
+            });
         }
         if($request->type){
             $query = $query->where('reference', $request->type);

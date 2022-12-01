@@ -15,6 +15,11 @@ class PurchaseTicket extends Model
 
     public $appends = ['paid_by_name', 'employee_name','supplier_name'];
 
+    public function supplier(){
+
+        return $this->hasOne(Supplier::class,'id', 'supplier_id');
+    }
+
     public function getTable() {
         return self::$globalTable ;
     }

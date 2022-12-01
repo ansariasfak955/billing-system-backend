@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PurchaseTable;
 use App\Models\Item;
+use App\Models\Supplier;
 use App\Models\ItemMeta;
 use App\Models\PurchaseReceipt;
 use Validator;
@@ -35,10 +36,14 @@ class PurchaseTableController extends Controller
 
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
+        $supplier_table = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplier_table);
         $query = PurchaseTable::query();
         
         if($request->search){
-            $query = $query->where('reference', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhereHas('supplier', function($q) use ($request){
+                $q->where('name',  'like','%'.$request->search.'%');
+            });
         }
         if($request->type){
             $query = $query->where('reference', $request->type);
