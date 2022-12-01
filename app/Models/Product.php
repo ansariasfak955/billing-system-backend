@@ -56,31 +56,38 @@ class Product extends Model
 
     public function getStockAttribute()
     {
-        $table = $this->getTable();
-        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-        $product_stock = get_product_stock($company_id, $this->attributes['id']);
-        if ($product_stock != NULL) {
-            return $product_stock->sum('stock');
+        if(isset($this->attributes['id'])){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            $product_stock = get_product_stock($company_id, $this->attributes['id']);
+            if ($product_stock != NULL) {
+                return $product_stock->sum('stock');
+            }
+            return '';
         }
-        return '';
+        
     }
 
     public function getVirtualStockAttribute()
     {
-        $product_stock =  ProductStock::where('product_id', $this->attributes['id'])->sum('stock');
-        $items = $this->items()->sum('quantity');
-        return $product_stock - $items;
+        if(isset($this->attributes['id'])){
+            $product_stock =  ProductStock::where('product_id', $this->attributes['id'])->sum('stock');
+            $items = $this->items()->sum('quantity');
+            return $product_stock - $items;
+        }
     }
 
     public function getMinimumStockAttribute()
     {
-        $table = $this->getTable();
-        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-        $product_stock = get_product_stock($company_id, $this->attributes['id']);
-        if ($product_stock != NULL) {
-            return $product_stock->sum('minimum_stock');
+        if(isset($this->attributes['id'])){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            $product_stock = get_product_stock($company_id, $this->attributes['id']);
+            if ($product_stock != NULL) {
+                return $product_stock->sum('minimum_stock');
+            }
+            return '';
         }
-        return '';
     }
 
     public function getSalesStockValueAttribute(){
