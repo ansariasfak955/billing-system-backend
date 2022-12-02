@@ -365,7 +365,7 @@ function getReferenceTypes($type){
     return ['Client', 'Client Asset', 'Expense', 'Expense and investment', 'Incident', 'Potential Client', 'Product', 'Service', 'Supplier', 'Ordinary Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
 }
 function getReferenceTypePrefix($index){
-    $refrencePrefix = ['Client' => 'CLI', 'Client Asset' => 'AST', 'Expense' => 'EXP', 'Expense and investment' => 'EAI', 'Incident' => 'INC', 'Potential Client' => 'PCL', 'Product' => 'PO', 'Service' => 'SER', 'Supplier' =>'SUP','Ordinary Invoice' => 'INV', 'Purchase Delivery Note' => 'PDN', 'Purchase Invoice' => 'PINV', 'Purchase Order' => 'PO', 'Refund Invoice' => 'RET', 'Sales Delivery Note' => 'SDN', 'Sales Estimate' => 'SE', 'Sales Order' => 'SO', 'Work Delivery Note' => 'WDN', 'Work Estimate' => 'WE', 'Work Order' => 'WO'];
+    $refrencePrefix = ['Client' => 'CLI', 'Client Asset' => 'AST', 'Expense' => 'EXP', 'Expense and investment' => 'EAI', 'Incident' => 'INC', 'Potential Client' => 'PCL', 'Product' => 'PRO', 'Service' => 'SER', 'Supplier' =>'SUP','Ordinary Invoice' => 'INV', 'Purchase Delivery Note' => 'PDN', 'Purchase Invoice' => 'PINV', 'Purchase Order' => 'PO', 'Refund Invoice' => 'RET', 'Sales Delivery Note' => 'SDN', 'Sales Estimate' => 'SE', 'Sales Order' => 'SO', 'Work Delivery Note' => 'WDN', 'Work Estimate' => 'WE', 'Work Order' => 'WO'];
     return  $refrencePrefix[$index];
 }
 function generateReferences($company_id){
