@@ -27,42 +27,49 @@ class ClientImport implements ToModel, WithHeadingRow
         $request = $this->request;
         Client::setGlobalTable($table);
         $row['reference']= $request->reference;
+        //unset the empty columns to prevent integrity error
 
+        if(!@$row['client_category']){
+            unset($row['client_category']);
+        }
+        if(!@$row['agent']){
+            unset($row['agent']);
+        }
+        if(!@$row['rate']){
+            unset($row['rate']);
+        }
+        if(!@$row['payment_terms_id']){
+            unset($row['payment_terms_id']);
+        }
+        if(!@$row['invoice_to']){
+            unset($row['invoice_to']);
+        }
+        if(@$row['id']){
+            unset($row['id']);
+        }
+
+        if(!@$row['payment_option_id']){unset($row['payment_option_id']);}
+        //set the default value
         if($request->client_category){
             $row['client_category']= $request->client_category;
-        }else{
-            if(isset($row['client_category'])){
-                unset($row['client_category']);
-            }
         }
+
         if($request->agent){
             $row['agent']= $request->agent;
-        }else{
-            if(isset($row['agent'])){
-                unset($row['agent']);
-            }
         }
+
         if($request->rate){
             $row['rate']= $request->rate;
-        }else{
-            if(isset($row['rate'])){
-                unset($row['rate']);
-            }
         }
+
         if($request->payment_option_id){
             $row['payment_option_id']= $request->payment_option_id;
-        }else{
-            if(isset($row['payment_option_id'])){
-                unset($row['payment_option_id']);
-            }
         }
+
         if($request->payment_terms_id){
             $row['payment_terms_id']= $request->payment_terms_id;
-        }else{
-            if(isset($row['payment_terms_id'])){
-                unset($row['payment_terms_id']);
-            }
         }
+
         $row['reference_number'] = get_client_latest_ref_number($this->company_id, $request->reference, 1);
         return new Client($row);
     }
