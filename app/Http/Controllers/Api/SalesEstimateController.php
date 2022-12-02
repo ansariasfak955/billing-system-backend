@@ -9,6 +9,7 @@ use App\Models\Item;
 use App\Models\InvoiceTable;
 use App\Models\Client;
 use App\Models\ItemMeta;
+use App\Models\Reference;
 use Validator;
 use Storage;
 
@@ -50,7 +51,11 @@ class SalesEstimateController extends Controller
                 $q->where('name',  'like','%'.$request->search.'%');
             });
         }
-
+        if($request->type){
+            //get dynamic reference
+            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $query = $query->whereIn('reference', $refernce_ids);
+        }
         $sales_estimate = $query->get();
 
         if ($sales_estimate->count() == 0) {

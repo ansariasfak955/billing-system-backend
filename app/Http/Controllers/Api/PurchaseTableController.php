@@ -9,6 +9,7 @@ use App\Models\Item;
 use App\Models\Supplier;
 use App\Models\ItemMeta;
 use App\Models\PurchaseReceipt;
+use App\Models\Reference;
 use Validator;
 use Storage;
 
@@ -47,6 +48,11 @@ class PurchaseTableController extends Controller
         }
         if($request->type){
             $query = $query->where('reference', $request->type);
+        }
+        if($request->type){
+            //get dynamic reference
+            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $query = $query->whereIn('reference', $refernce_ids);
         }
         $purchase_table = $query->get();
 

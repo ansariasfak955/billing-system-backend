@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\Rate;
 use App\Models\Item;
+use App\Models\Reference;
 use App\Models\ProductRate;
 use Validator;
 
@@ -41,6 +42,14 @@ class ProductController extends Controller
         
         if($request->search){
             $products = $products->where('name', 'like', '%'.$request->search.'%')->orWhere('created_at' ,'<=', date('Y-m-d'))->orWhere('reference_number', 'like', '%'.$request->search.'%');
+        }
+        //set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type){
+            //get dynamic reference
+            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $products = $products->whereIn('reference', $refernce_ids);
         }
         $products = $products->get();
             

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClientAsset;
+use App\Models\Reference;
 use App\Models\ClientAssetAttachment;
 use Illuminate\Http\Request;
 use Validator;
@@ -30,6 +31,14 @@ class ClientAssetController extends Controller
         }
         if($request->search){
             $query =  $query->where('name', 'like', '%'.$request->search.'%');
+        }
+        //set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type){
+            //get dynamic reference
+            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $query = $query->whereIn('reference', $refernce_ids);
         }
         $query = $query->get();
         if(!count($query)){
