@@ -10,9 +10,10 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class ClientAssetImport implements ToModel, WithHeadingRow
 {
-    private $company_id;
-    public function __construct($company_id){
+    private $company_id, $request;
+    public function __construct($company_id, $request){
         $this->company_id = $company_id;
+        $this->request = $request;
     }
     /**
     * @param array $row
@@ -23,8 +24,19 @@ class ClientAssetImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $table = 'company_'.$this->company_id.'_client_assets';
+        $request = $this->request;
         ClientAsset::setGlobalTable($table); 
-        $row['reference_number'] = get_client_asset_latest_ref_number($this->company_id, 'ast', 1);
+        $row['reference'] = $request->reference;
+
+        if($request->subject_to_maintenance){
+            $row['subject_to_maintenance']= $request->subject_to_maintenance;
+        }else{
+            if(isset($row['subject_to_maintenance'])){
+                unset($row['subject_to_maintenance']);
+            }
+        }
+
+        $row['reference_number'] = get_client_asset_latest_ref_number($this->company_id, $request->reference, 1);
         return new ClientAsset($row);
     }
 }

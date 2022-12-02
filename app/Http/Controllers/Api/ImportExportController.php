@@ -278,15 +278,15 @@ class ImportExportController extends Controller
 
         }elseif($type == 'products'){
             $path = Storage::putFile('public/file', $request->file('file'));
-            $import = new ProductImport($company_id);
+            $import = new ProductImport($company_id, $request);
 
         }elseif($type == 'service'){
             $path = Storage::putFile('public/file', $request->file('file'));
-            $import = new ServiceImport($company_id);
+            $import = new ServiceImport($company_id, $request);
 
         }elseif($type == 'assets'){
             $path = Storage::putFile('public/file', $request->file('file'));
-            $import = new ClientAssetImport($company_id);
+            $import = new ClientAssetImport($company_id, $request);
         }
         Excel::import($import, $path);
         Storage::delete($path);
