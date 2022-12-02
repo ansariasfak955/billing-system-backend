@@ -46,7 +46,7 @@ class ImportExportController extends Controller
         }
         return response()->json([
             'status' => true,
-            'columns' => $columns
+            'columns' => (array)$columns
         ]);
     }
     public function export(Request $request, $company_id, $type){
@@ -244,7 +244,15 @@ class ImportExportController extends Controller
             $fileName = 'assets-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_client_assets';
             ClientAsset::setGlobalTable($table); 
-            $data =   ClientAsset::get($headings);
+            $haveClientId = '';
+            if( in_array('client_id', $headings) ){
+                unset($headings['client_id']);
+                $haveClientId = 1;
+            }
+            $data =   ClientAsset::get($headings)->toArray();
+            if($haveClientId){
+                $headings[] = 'client_name';
+            }
             Excel::store(new AssetsExport($headings, $data),'public/xlsx/'.$fileName);
                
         }
