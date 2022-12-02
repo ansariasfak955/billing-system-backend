@@ -5,6 +5,7 @@ use App\Models\Company;
 use App\Models\CustomStateType;
 use App\Models\CustomState;
 use App\Models\MyTemplate;
+use App\Models\Reference;
 use App\Models\MyTemplateMeta;
 use App\Models\DefaultPdfSendOption;
 use App\Models\Setting;
@@ -986,6 +987,9 @@ class TableHelper
                 $table->integer('last_reference')->nullable();
                 $table->integer('number_of_digit')->nullable();
                 $table->enum('by_default', ['0', '1'])->default(0);
+                $table->integer('template_id')->nullable();
+                $table->longText('comments')->nullable();
+                $table->longText('addendum')->nullable();
                 $table->timestamps();
             });
         }
@@ -3101,8 +3105,29 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
             "option_value" => "",
         ]);
         }
-
-        
+        //add dynamic reference entries
+        if (Schema::hasTable('company_'.$company_id.'_references')) {
+            Reference::setGlobalTable('company_'.$company_id.'_references');
+            MyTemplate::setGlobalTable('company_'.$company_id.'_my_templates');
+            foreach(getReferenceTypes('all') as $referenceType){
+                if(!Reference::where('type', $referenceType)->first()){
+                    $refrence = Reference::create([
+                        'name' => $referenceType,
+                        "type" => $referenceType,
+                        'prefix' => getReferenceTypePrefix($referenceType),
+                        'number_of_digit' => 5,
+                        "by_default" => "1"
+                    ]);
+                    $template_id = 0;
+                    if(in_array($referenceType, getReferenceTypes('template'))){
+                        $refrence->title = $referenceType;
+                        $template_id =MyTemplate::where('document_type', $referenceType)->pluck('id')->first() ?? 0;
+                        $refrence->template_id = $template_id;
+                        $refrence->save();
+                    }
+                }
+            }
+        }
         /* Creating dynamic company based default pdf options table */
         if (!Schema::hasTable('company_'.$company_id.'_default_pdf_send_options')) {
             Schema::create('company_'.$company_id.'_default_pdf_send_options', function (Blueprint $table) {

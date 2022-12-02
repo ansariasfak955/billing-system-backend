@@ -204,6 +204,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('update-template-field', 'MyTemplateController@updateTemplateField');
             Route::apiResource('users', UserController::class);
             Route::apiResource('references', ReferenceController::class);
+            Route::post('references/batch-delete', 'ReferenceController@batchDelete');
             Route::apiResource('service-attachments', ServiceAttachmentController::class);
             Route::apiResource('service-special-prices', ServiceSpecialPriceController::class);
             
