@@ -96,7 +96,7 @@ function get_client_latest_ref_number($company_id, $reference, $add)
     $client = \App\Models\Client::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
    
     if ($client != NULL) {
-        $reference_number = str_replace('0', '', $client->reference_number);
+        $reference_number = ltrim($client->reference_number, '0');
     	return generate_reference_num((int)$reference_number+$add,5);
     } else {
     	return '00001';
@@ -108,7 +108,7 @@ function get_client_asset_latest_ref_number($company_id, $reference, $add)
     \App\Models\ClientAsset::setGlobalTable($table);
     $clientAsset = \App\Models\ClientAsset::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($clientAsset != NULL) {
-        $reference_number = str_replace('0', '', $clientAsset->reference_number);
+        $reference_number = ltrim($clientAsset->reference_number, '0');
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';
@@ -120,7 +120,7 @@ function get_supplier_latest_ref_number($company_id, $reference, $add)
     \App\Models\Supplier::setGlobalTable($table);
     $Supplier = \App\Models\Supplier::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($Supplier != NULL) {
-        $reference_number = str_replace('0', '', $Supplier->reference_number);
+        $reference_number = ltrim($Supplier->reference_number, '0');
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';
@@ -132,7 +132,7 @@ function get_technical_incident_latest_ref_number($company_id, $reference, $add)
     \App\Models\TechnicalIncident::setGlobalTable($table);
     $TechnicalIncident = \App\Models\TechnicalIncident::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($TechnicalIncident != NULL) {
-        $reference_number = str_replace('0', '', $TechnicalIncident->reference_number);
+        $reference_number = ltrim($TechnicalIncident->reference_number, '0');
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';
@@ -144,7 +144,7 @@ function get_sales_estimate_latest_ref_number($company_id, $reference, $add)
     \App\Models\SalesEstimate::setGlobalTable($table);
     $SalesEstimate = \App\Models\SalesEstimate::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($SalesEstimate != NULL) {
-        $reference_number = str_replace('0', '', $SalesEstimate->reference_number);
+        $reference_number = ltrim($SalesEstimate->reference_number, '0');
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';
@@ -157,7 +157,7 @@ function get_technical_table_latest_ref_number($company_id, $reference, $add)
     \App\Models\TechnicalTable::setGlobalTable($table);
     $TechnicalTable = \App\Models\TechnicalTable::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($TechnicalTable != NULL) {
-        $reference_number = str_replace('0', '', $TechnicalTable->reference_number);
+        $reference_number = ltrim($TechnicalTable->reference_number, '0');
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';
@@ -169,7 +169,7 @@ function get_purchase_table_latest_ref_number($company_id, $reference, $add)
     \App\Models\PurchaseTable::setGlobalTable($table);
     $PurchaseTable = \App\Models\PurchaseTable::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($PurchaseTable != NULL) {
-        $reference_number = str_replace('0', '', $PurchaseTable->reference_number);
+        $reference_number =ltrim($PurchaseTable->reference_number, '0');
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';
@@ -181,7 +181,7 @@ function get_purchase_ticket_table_latest_ref_number($company_id, $reference, $a
     \App\Models\PurchaseTicket::setGlobalTable($table);
     $PurchaseTicket = \App\Models\PurchaseTicket::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($PurchaseTicket != NULL) {
-        $reference_number = str_replace('0', '', $PurchaseTicket->reference_number);
+        $reference_number = ltrim($PurchaseTicket->reference_number, '0');
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';
@@ -193,7 +193,7 @@ function get_invoice_table_latest_ref_number($company_id, $reference, $add)
     \App\Models\InvoiceTable::setGlobalTable($table);
     $InvoiceTable = \App\Models\InvoiceTable::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
     if ($InvoiceTable != NULL) {
-        $reference_number = str_replace('0', '', $InvoiceTable->reference_number);
+        $reference_number = ltrim($InvoiceTable->reference_number, '0');
         return generate_reference_num((int)$reference_number+$add,5);
     } else {
         return '00001';
@@ -211,7 +211,7 @@ function get_product_latest_ref_number($company_id, $reference, $add)
         return '00001';
     } else {
         if ($product != NULL) {
-            $reference_number = str_replace('0', '', $product->reference_number);
+            $reference_number = ltrim($product->reference_number, '0');
             return generate_reference_num((int)$reference_number+$add,5);
         } else {
             return '00001';
@@ -227,7 +227,7 @@ function get_service_latest_ref_number($company_id, $reference, $add){
         return '00001';
     } else {
         if ($service != NULL) {
-            $reference_number = str_replace('0', '', $service->reference_number);
+            $reference_number = ltrim($service->reference_number, '0');
             return generate_reference_num((int)$reference_number+$add,5);
         } else {
             return '00001';
@@ -239,7 +239,7 @@ function get_expense_and_investment_latest_ref_number($company_id, $reference, $
     $table = 'company_'.$company_id.'_expense_and_investments';
     \App\Models\ExpenseAndInvestment::setGlobalTable($table);
     $expense_and_investment = \App\Models\ExpenseAndInvestment::where('reference', $reference)->orderBy('reference_number', 'DESC')->first();
-    $reference_number = str_replace('0', '', $expense_and_investment->reference_number);
+    $reference_number = ltrim($expense_and_investment->reference_number, '0');
     if ($reference_number == NULL) {
         return '00001';
     } else {
