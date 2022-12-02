@@ -254,19 +254,27 @@ class ImportExportController extends Controller
          ]); 
     }
     public function import(Request $request, $company_id, $type){
-        if(!$request->hasFile('file')){
+
+        $validator = Validator::make($request->all(),[
+            'reference' => "required",
+            'file' => 'required'
+        ],[
+            'file.required' => 'Please choose a file!'
+        ]);
+        if ($validator->fails()) {
             return response()->json([
-                'status' => false,
-                'message' => 'Please choose a file!',
+                'status'  => false,
+                'message' => $validator->errors()->first()
             ]);
         }
+
         if($type == 'client' || $type == "potential_client"){
             $path = Storage::putFile('public/file', $request->file('file'));
-            $import = new ClientImport($company_id);
+            $import = new ClientImport($company_id, $request);
 
         }elseif($type == "suppliers"){
             $path = Storage::putFile('public/file', $request->file('file'));
-            $import = new SupplierImport($company_id);
+            $import = new SupplierImport($company_id, $request);
 
         }elseif($type == 'products'){
             $path = Storage::putFile('public/file', $request->file('file'));

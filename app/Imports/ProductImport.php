@@ -10,8 +10,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class ProductImport implements ToModel, WithHeadingRow
 {   
     private $company_id;
-    public function __construct($company_id){
+    public function __construct($company_id, $request){
         $this->company_id = $company_id;
+        $this->request = $request;
     }
     /**
     * @param array $row
