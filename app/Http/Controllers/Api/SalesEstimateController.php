@@ -46,7 +46,9 @@ class SalesEstimateController extends Controller
             $query = $query->where('reference', $request->type);
         }
         if($request->search){
-            $query = $query->Where('reference_number', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
+            $query = $query->Where('reference_number', 'like', '%'.$request->search.'%')->orWhere('title', 'like', '%'.$request->search.'%')
+            ->orWhere('status', 'like', '%'.$request->search.'%')->orWhere('date', 'like', '%'.$request->search.'%')
+            ->orWhereHas('client', function($q) use ($request){
                 $q->where('name',  'like','%'.$request->search.'%');
             });
         }

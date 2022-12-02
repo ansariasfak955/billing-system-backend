@@ -29,7 +29,9 @@ class ClientAssetController extends Controller
             $query =  $query->where('client_id', $request->client_id);
         }
         if($request->search){
-            $query =  $query->where('name', 'like', '%'.$request->search.'%');
+            $query =  $query->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')
+            ->orWhere('identifier', 'like', '%'.$request->search.'%')->orWhere('serial_number', 'like', '%'.$request->search.'%')
+            ->orWhere('client_name', 'like', '%'.$request->search.'%');
         }
         $query = $query->get();
         if(!count($query)){

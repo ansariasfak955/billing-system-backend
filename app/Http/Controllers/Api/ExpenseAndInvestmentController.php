@@ -40,7 +40,8 @@ class ExpenseAndInvestmentController extends Controller
         $expense_and_investment = ExpenseAndInvestment::query();
         
         if($request->search){
-            $expense_and_investment = $expense_and_investment->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+            $expense_and_investment = $expense_and_investment->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')
+            ->orWhere('price', 'like', '%'.$request->search.'%');
         }
         $expense_and_investment = $expense_and_investment->get();
             

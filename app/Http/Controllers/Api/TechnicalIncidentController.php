@@ -31,10 +31,11 @@ class TechnicalIncidentController extends Controller
         $clientTable = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientTable);
 
-        $query = TechnicalIncident::query();
+        $query = TechnicalIncident::query();    
         
         if($request->search){
-            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
+            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhere('status', 'like', '%'.$request->search.'%')
+            ->orWhere('description', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
                 $q->where('name',  'like','%'.$request->search.'%');
             });
         }

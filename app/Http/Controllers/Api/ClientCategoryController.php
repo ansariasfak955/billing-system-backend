@@ -24,13 +24,18 @@ class ClientCategoryController extends Controller
 
         $table = 'company_'.$request->company_id.'_client_categories';
         ClientCategory::setGlobalTable($table);
-        if($request->client_id){
 
-            $client_categories = ClientCategory::where('client_id', $request->client_id)->first();
-        }else{
-            $client_categories = ClientCategory::get();
+        $client_categories = ClientCategory::query();
+
+        if($request->search){
+
+            $client_categories = $client_categories->where('name', 'like', '%'.$request->search.'%')->orWhere('description', 'like', '%'.$request->search.'%');
+        }
+        if($request->client_id){
+            $client_categories = $client_categories->where('client_id', $request->client_id);
         }
 
+        $client_categories = $client_categories->get();
         if ($client_categories->count() == 0) {
             return response()->json([
                 "status" => false,

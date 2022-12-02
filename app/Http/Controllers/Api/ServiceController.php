@@ -42,7 +42,8 @@ class ServiceController extends Controller
         $service = Service::query();
         
         if($request->search){
-            $service = $service->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+            $service = $service->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')
+            ->orWhere('price', 'like', '%'.$request->search.'%');
         }
         $service = $service->get();
             
