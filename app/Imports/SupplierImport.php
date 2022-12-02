@@ -28,37 +28,42 @@ class SupplierImport implements ToModel, WithHeadingRow
         Supplier::setGlobalTable($table);
         $row['reference']= $request->reference;
 
+        //unset the empty columns to prevent integrity error
+        if(@$row['id'] = ''){
+            unset($row['id']);
+        }
+
         if($row['invoice_to'] = ''){
             unset($row['invoice_to']);
         }
+        if(!@$row['supplier_category']){
+            unset($row['supplier_category']);
+        }
+        if(!@$row['agent']){
+            unset($row['agent']);
+        }
+        if(!@$row['rate']){
+            unset($row['rate']);
+        }
+        if(!@$row['payment_terms_id']){
+            unset($row['payment_terms_id']);
+        }
 
+        //set the default value
         if($request->supplier_category){
             $row['supplier_category']= $request->supplier_category;
-        }else{
-            if(isset($row['supplier_category'])){
-                unset($row['supplier_category']);
-            }
         }
+
         if($request->agent){
             $row['agent']= $request->agent;
-        }else{
-            if(isset($row['agent'])){
-                unset($row['agent']);
-            }
         }
+
         if($request->rate){
             $row['rate']= $request->rate;
-        }else{
-            if(isset($row['rate'])){
-                unset($row['rate']);
-            }
         }
+
         if($request->payment_terms_id){
             $row['payment_terms_id']= $request->payment_terms_id;
-        }else{
-            if(isset($row['payment_terms_id'])){
-                unset($row['payment_terms_id']);
-            }
         }
 
         $row['reference_number'] = get_Supplier_latest_ref_number($this->company_id, $request->reference, 1);

@@ -28,12 +28,15 @@ class ClientAssetImport implements ToModel, WithHeadingRow
         ClientAsset::setGlobalTable($table); 
         $row['reference'] = $request->reference;
 
+        if(@$row['id']){
+            unset($row['id']);
+        }
+
+        if(!@$row['subject_to_maintenance']){
+            unset($row['subject_to_maintenance']);
+        }
         if($request->subject_to_maintenance){
             $row['subject_to_maintenance']= $request->subject_to_maintenance;
-        }else{
-            if(isset($row['subject_to_maintenance'])){
-                unset($row['subject_to_maintenance']);
-            }
         }
 
         $row['reference_number'] = get_client_asset_latest_ref_number($this->company_id, $request->reference, 1);
