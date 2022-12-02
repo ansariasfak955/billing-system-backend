@@ -7,9 +7,10 @@ use App\Models\ClientAsset;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class AssetsExport implements FromCollection, WithHeadings
+class AssetsExport implements FromArray, WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -23,8 +24,12 @@ class AssetsExport implements FromCollection, WithHeadings
     {
         return  $this->headings;
     }
-    public function collection()
-    {   
+    // public function collection()
+    // {   
+    //     return $this->data;
+    // }
+    public function array(): array
+    {
         return $this->data;
     }
 }

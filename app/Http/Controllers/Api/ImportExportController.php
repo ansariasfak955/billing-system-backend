@@ -244,8 +244,32 @@ class ImportExportController extends Controller
             $fileName = 'assets-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_client_assets';
             ClientAsset::setGlobalTable($table); 
-            $data =   ClientAsset::get($headings);
-            Excel::store(new AssetsExport($headings, $data),'public/xlsx/'.$fileName);
+
+            $haveClientId = '';
+
+            if( in_array('client_id', $headings) ){
+                $haveClientId = 1;
+            }
+
+            $data =  ClientAsset::get($headings)->toArray();
+
+            if($haveClientId){
+                $headings[] = 'client_name';
+                if (($key = array_search('client_id', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+
+            $finalData = [];
+            if(!empty($data)){
+                foreach($data as $arr){
+                   if($haveClientId){
+                    unset($arr['client_id']);
+                   }
+                   $finalData[] = $arr;
+                }
+            }
+            Excel::store(new AssetsExport($headings, $finalData),'public/xlsx/'.$fileName);
                
         }
         return response()->json([
