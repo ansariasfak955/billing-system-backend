@@ -27,7 +27,12 @@ class MyTemplateController extends Controller
             ]);
         }
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
-        if(MyTemplate::count() == 0){
+        $query = MyTemplate::query();
+        if($request->type){
+            $query = $query->where('document_type', $request->type);
+        }
+        $query = $query->get();
+        if(!count($query)){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -35,7 +40,7 @@ class MyTemplateController extends Controller
         }
         return response()->json([
             "status" => true,
-            "templates" => MyTemplate::get()
+            "templates" => $query
         ]);
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ExpenseAndInvestment;
+use App\Models\Reference;
 use Validator;
 
 
@@ -42,6 +43,14 @@ class ExpenseAndInvestmentController extends Controller
         if($request->search){
             $expense_and_investment = $expense_and_investment->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')
             ->orWhere('price', 'like', '%'.$request->search.'%');
+        }
+        //set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type){
+            //get dynamic reference
+            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $expense_and_investment = $expense_and_investment->whereIn('reference', $refernce_ids);
         }
         $expense_and_investment = $expense_and_investment->get();
             

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\ClientAttachment;
 use App\Models\ClientSpecialPrice;
+use App\Models\Reference;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -27,7 +28,7 @@ class ClientController extends Controller
 
         $table = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($table);
-
+        
         $query = Client::query();
         
         if($request->search){
@@ -35,6 +36,14 @@ class ClientController extends Controller
             ->orWhere('reference_number', 'like', '%'.$request->search.'%')->orWhere('tin', 'like', '%'.$request->search.'%')
             ->orWhere('email', 'like', '%'.$request->search.'%')->orWhere('agent', 'like', '%'.$request->search.'%')
             ->orWhere('phone_1', 'like', '%'.$request->search.'%')->orWhere('phone_2', 'like', '%'.$request->search.'%');
+        }
+        //set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type){
+            //get dynamic reference
+            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $query = $query->whereIn('reference', $refernce_ids);
         }
         $query = $query->get();
         if (!count($query)) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\TechnicalIncident;
 use App\Models\Client;
+use App\Models\Reference;
 use Illuminate\Http\Request;
 use Validator;
 use Auth;
@@ -38,6 +39,14 @@ class TechnicalIncidentController extends Controller
             ->orWhere('description', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
                 $q->where('name',  'like','%'.$request->search.'%');
             });
+        }
+        //set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type){
+            //get dynamic reference
+            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $query = $query->whereIn('reference', $refernce_ids);
         }
         $query = $query->get();
         if (!count($query)) {

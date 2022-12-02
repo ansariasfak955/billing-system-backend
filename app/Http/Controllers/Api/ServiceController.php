@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Models\Rate;
 use App\Models\ServiceRate;
+use App\Models\Reference;
 use Validator;
 
 class ServiceController extends Controller
@@ -44,6 +45,14 @@ class ServiceController extends Controller
         if($request->search){
             $service = $service->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')
             ->orWhere('price', 'like', '%'.$request->search.'%');
+        }
+        //set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type){
+            //get dynamic reference
+            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $service = $service->whereIn('reference', $refernce_ids);
         }
         $service = $service->get();
             

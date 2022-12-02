@@ -9,6 +9,7 @@ use App\Models\InvoiceReceipt;
 use App\Models\Item;
 use App\Models\ItemMeta;
 use App\Models\Client;
+use App\Models\Reference;
 use Validator;
 use App\Jobs\SendInvoiceMail;
 use Storage;
@@ -45,44 +46,36 @@ class InvoiceTableController extends Controller
 
         $query = InvoiceTable::query();
 
-        if($request->type){
-            $query = $query->where('reference', $request->type);
-        }
+       //set reference table
+       $referenceTable = 'company_'.$request->company_id.'_references';
+       Reference::setGlobalTable($referenceTable);
+       if($request->type){
+           //get dynamic reference
+           $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+           $query = $query->whereIn('reference', $refernce_ids);
+       }
         if($request->search){
             $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
                 $q->where('name',  'like','%'.$request->search.'%');
             });
         }
 
-        $invoice = $query->get();
-
-        if( !$request->invoice_id ){
-
-            if($invoice->count() == 0) {
-                return response()->json([
-                    "status" => false,
-                    "message" => "No data found!"
-                ]);
-            } else {
-                return response()->json([
-                    "status" => true,
-                    "data" =>  $invoice
-                ]);  
-            }
-        }else{
-            $invoice = InvoiceTable::where('reference', $request->type)->where('id', $request->invoice_id)->first();
-            if( $invoice ) {
-                return response()->json([
-                    "status" => false,
-                    "message" => "No data found!"
-                ]);
-            } else {
-                return response()->json([
-                    "status" => true,
-                    "data" =>  $invoice
-                ]);  
-            }
+        if( $request->invoice_id ){
+            $query = $query->where('id', $request->invoice_id);
         }
+        $query = $query->get();
+        if(!count($query)){
+
+                return response()->json([
+                    "status" => false,
+                    "message" => "No data found!"
+                ]);
+        }
+
+        return response()->json([
+            "status" => true,
+            "data" =>  $query
+        ]);  
     }
 
     /**

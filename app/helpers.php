@@ -354,3 +354,41 @@ function getCompanySetting($company , $key){
     App\Models\Setting::setGlobalTable('company_'.$company.'_settings');
     return App\Models\Setting::where('option_name', $key)->pluck('option_value')->first();
 }
+function getReferenceTypes($type){
+    if($type == 'template'){
+        return ['Ordinary Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
+    }
+    elseif($type == 'nottemplate'){
+
+        return ['Client', 'Client Asset', 'Expense', 'Expense and investment', 'Incident', 'Potential Client', 'Product', 'Service', 'Supplier'];
+    }
+    return ['Client', 'Client Asset', 'Expense', 'Expense and investment', 'Incident', 'Potential Client', 'Product', 'Service', 'Supplier', 'Ordinary Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
+}
+function getReferenceTypePrefix($index){
+    $refrencePrefix = ['Client' => 'CLI', 'Client Asset' => 'AST', 'Expense' => 'EXP', 'Expense and investment' => 'EAI', 'Incident' => 'INC', 'Potential Client' => 'PCL', 'Product' => 'PRO', 'Service' => 'SER', 'Supplier' =>'SUP','Ordinary Invoice' => 'INV', 'Purchase Delivery Note' => 'PDN', 'Purchase Invoice' => 'PINV', 'Purchase Order' => 'PO', 'Refund Invoice' => 'RET', 'Sales Delivery Note' => 'SDN', 'Sales Estimate' => 'SE', 'Sales Order' => 'SO', 'Work Delivery Note' => 'WDN', 'Work Estimate' => 'WE', 'Work Order' => 'WO'];
+    return  $refrencePrefix[$index];
+}
+function generateReferences($company_id){
+    if (Schema::hasTable('company_'.$company_id.'_references')) {
+        \App\Models\Reference::setGlobalTable('company_'.$company_id.'_references');
+        \App\Models\MyTemplate::setGlobalTable('company_'.$company_id.'_my_templates');
+        foreach(getReferenceTypes('all') as $referenceType){
+            if(!\App\Models\Reference::where('type', $referenceType)->first()){
+                $refrence = \App\Models\Reference::create([
+                    'name' => $referenceType,
+                    "type" => $referenceType,
+                    'prefix' => getReferenceTypePrefix($referenceType),
+                    'number_of_digit' => 5,
+                    "by_default" => "1"
+                ]);
+                $template_id = 0;
+                if(in_array($referenceType, getReferenceTypes('template'))){
+                    $refrence->title = $referenceType;
+                    $template_id = \App\Models\MyTemplate::where('document_type', $referenceType)->pluck('id')->first() ?? 0;
+                    $refrence->template_id = $template_id;
+                    $refrence->save();
+                }
+            }
+        }
+    }
+}

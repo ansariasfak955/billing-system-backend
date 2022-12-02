@@ -175,7 +175,9 @@ Route::get('clear-cache', function() {
     Artisan::call('cache:clear');
     return "Cache is cleared";
 });
-
+Route::get('generate-reference', function(){
+    generateReferences(474);
+});
 
 // 404 for undefined routes
 Route::any('/{page?}',function(){

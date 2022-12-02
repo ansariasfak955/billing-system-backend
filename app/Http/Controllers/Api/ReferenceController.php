@@ -54,12 +54,22 @@ class ReferenceController extends Controller
      */
     public function store(Request $request)
     {
+        $reference_table = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($reference_table);
         $validator = Validator::make($request->all(),[
             'name' => 'required',
             'type' => 'required',
-            'prefix' => 'required',       
+            'prefix' => 'required|unique:'.$reference_table,       
         ]);
-
+        if(in_array($request->type, getReferenceTypes('template'))){
+            $validator = Validator::make($request->all(),[
+                'name' => 'required',
+                'type' => 'required',
+                'prefix' => 'required',       
+                'prefix' => 'required|unique:'.$reference_table,      
+                'template_id' => 'required',       
+            ]);
+        }
         if ($validator->fails()) {
             return response()->json([
                 "status" => false,
@@ -67,11 +77,13 @@ class ReferenceController extends Controller
             ]);
         }
 
-        $reference_table = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($reference_table);
 
         $reference = Reference::create($request->except('company_id'));
-
+        if($request->by_default == '1'){
+            Reference::where('type', $request->type)->where('id', '!=', $reference->id)->update([
+                'by_default' => '0'
+            ]);
+        }
         return response()->json([
             "status" => true,
             "reference" => $reference,
@@ -113,11 +125,35 @@ class ReferenceController extends Controller
     public function update(Request $request)
     {
         $table = 'company_'.$request->company_id.'_references';
+        $validator = Validator::make($request->all(),[
+            'name' => 'required',
+            'type' => 'required',
+            'prefix' => "required|unique:$table,prefix,$request->reference"     
+        ]);
+        if(in_array($request->type, getReferenceTypes('template'))){
+            $validator = Validator::make($request->all(),[
+                'name' => 'required',
+                'type' => 'required',
+                'prefix' => "required|unique:$table,prefix,$request->reference"  ,       
+                'title' => 'required',       
+                'template_id' => 'required',       
+            ]);
+        }
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
         Reference::setGlobalTable($table);
         $reference = Reference::where('id', $request->reference)->first();
         $reference->update($request->except('company_id', '_method'));
         $reference->save();
-
+        if($request->by_default == '1'){
+            Reference::where('type', $request->type)->where('id', '!=', $reference->id)->update([
+                'by_default' => '0'
+            ]);
+        }
         return response()->json([
             "status" => true,
             "reference" => $reference,
@@ -136,17 +172,43 @@ class ReferenceController extends Controller
         $table = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($table);
         $reference = Reference::where('id', $request->reference)->first();
-        if($reference->delete()){
+        if(!$reference){
 
             return response()->json([
-                    'status' => true,
-                    'message' => "Deleted successfully!"
-            ]);
-        } else {
+                'status' => false,
+                'message' => "Retry deleting again!"
+           ]);
+        } 
+        if($reference->by_default == '1'){
             return response()->json([
-                    'status' => false,
-                    'message' => "Retry deleting again!"
+                'status' => false,
+                'message' => "Cannot delete by default reference!"
             ]);
         }
+        return response()->json([
+            'status' => true,
+            'message' => "Reference deleted successfully!"
+        ]);
+    }
+    public function batchDelete(Request $request){
+        $table = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($table);
+        $validator = Validator::make($request->all(),[
+            'ids'=>'required',
+        ],[
+            'ids.required' => 'Please select entry to delete'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+        $ids = explode(",", $request->ids);
+        Reference::whereIn('id', $ids)->where('by_default', '!=', '1')->delete(); 
+        return response()->json([
+            'status' => true,
+            'message' => 'References deleted successfully'
+        ]);
     }
 }
