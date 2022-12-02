@@ -31,7 +31,9 @@ class ClientController extends Controller
         $query = Client::query();
         
         if($request->search){
-            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('legal_name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%');
+            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('legal_name', 'like', '%'.$request->search.'%')
+            ->orWhere('reference_number', 'like', '%'.$request->search.'%')->orWhere('tin', 'like', '%'.$request->search.'%')
+            ->orWhere('email', 'like', '%'.$request->search.'%')->orWhere('agent', 'like', '%'.$request->search.'%');
         }
         $query = $query->get();
         if (!count($query)) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ClientContact;
 use Illuminate\Http\Request;
+use App\Models\Client;
 use Validator;
 
 class ClientContactController extends Controller
@@ -26,10 +27,14 @@ class ClientContactController extends Controller
         
         $table = 'company_'.$request->company_id.'_client_contacts';
         ClientContact::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
         $query = ClientContact::query();
         
         if($request->search){
-            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('phone', 'like', '%'.$request->search.'%')->orWhere('email', 'like', '%'.$request->search.'%');
+            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('phone', 'like', '%'.$request->search.'%')->orWhere('email', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
+                $q->where('name',  'like','%'.$request->search.'%');
+            });
         }
         $query = $query->get();
         if (!count($query)) {

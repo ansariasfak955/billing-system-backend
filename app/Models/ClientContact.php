@@ -24,6 +24,11 @@ class ClientContact extends Model
 
     protected static $globalTable = 'clients' ;
 
+    public function client(){
+
+        return $this->hasOne(Client::class,'id', 'client_id');
+    }
+
     public function getTable() {
         return self::$globalTable ;
     }
