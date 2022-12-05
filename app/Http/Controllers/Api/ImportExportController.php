@@ -96,49 +96,49 @@ class ImportExportController extends Controller
     //        'Ced_ruc',
     //        'Swift_aba'
     //   ];
-    //   $headings = [
-    //     "id",
-    //     "reference",
-    //     "reference_number",
-    //     "legal_name",
-    //     "name",
-    //     "tin",
-    //     "email",
-    //     "phone_1",
-    //     "address",
-    //     "city",
-    //     "state",
-    //     "zip_code",
-    //     "country",
-    //     "address_latitude",
-    //     "address_longitude",
-    //     "fax",
-    //     "phone_2",
-    //     "website",
-    //     "supplier_category",
-    //     "comments",
-    //     "popup_notice",
-    //     "created_from",
-    //     "payment_option_id",
-    //     "payment_terms_id",
-    //     "payment_date",
-    //     "payment_adjustment",
-    //     "discount",
-    //     "agent",
-    //     "rate",
-    //     "currency",
-    //     "subject_to_vat",
-    //     "maximum_risk",
-    //     "invoice_to",
-    //     "subject_to_income_tax",
-    //     "bank_account_format",
-    //     "bank_account_account",
-    //     "bank_account_bic",
-    //     "bank_account_name",
-    //     "bank_account_description",
-    //     "created_at",
-    //     "updated_at"
-    //   ];
+      $headings = [
+        "id",
+        "reference",
+        "reference_number",
+        "legal_name",
+        "name",
+        "tin",
+        "email",
+        "phone_1",
+        "address",
+        "city",
+        "state",
+        "zip_code",
+        "country",
+        "address_latitude",
+        "address_longitude",
+        "fax",
+        "phone_2",
+        "website",
+        "supplier_category",
+        "comments",
+        "popup_notice",
+        "created_from",
+        "payment_option_id",
+        "payment_terms_id",
+        "payment_date",
+        "payment_adjustment",
+        "discount",
+        "agent",
+        "rate",
+        "currency",
+        "subject_to_vat",
+        "maximum_risk",
+        "invoice_to",
+        "subject_to_income_tax",
+        "bank_account_format",
+        "bank_account_account",
+        "bank_account_bic",
+        "bank_account_name",
+        "bank_account_description",
+        "created_at",
+        "updated_at"
+      ];
     //   $headings = [
     //     "id",
     //     "reference",
@@ -216,14 +216,60 @@ class ImportExportController extends Controller
             $fileName = 'client-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_clients';
             Client::setGlobalTable($table);
-            $data =   Client::get($headings);
+
+            $haveClientId = '';
+
+            if( in_array('Client_category', $headings) ){
+                $haveClientId = 1;
+            }
+            $data =  Client::get($headings)->toArray();
+            if($haveClientId){
+                $headings[] = 'client_category_name';
+                if (($key = array_search('Client_category', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+            $finalData = [];
+            if(!empty($data)){
+                foreach($data as $arr){
+                   if($haveClientId){
+                    unset($arr['Client_category']);
+                   }
+                   $finalData[] = $arr;
+                }
+            }
+
             Excel::store(new ClientExport($headings, $data),'public/xlsx/'.$fileName);
 
         }elseif($type == "suppliers"){
             $fileName = 'supplier-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_suppliers';
             Supplier::setGlobalTable($table);
-            $data =   Supplier::get($headings);
+            
+            $haveSupplierId = '';
+
+            if( in_array('supplier_category', $headings) ){
+                $haveSupplierId = 1;
+            }
+            $data =  Supplier::get($headings)->toArray();
+            // return $data;
+            if($haveSupplierId){
+                $headings[] = 'supplier_category_name';
+                if (($key = array_search('supplier_category', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+            $finalData = [];
+            if(!empty($data)){
+                foreach($data as $arr){
+                   if($haveSupplierId){
+                    unset($arr['supplier_category']);
+                   }
+                   $finalData[] = $arr;
+                   return $arr;
+                }
+            }
+
             Excel::store(new SupplierExport($headings, $data),'public/xlsx/'.$fileName);
 
         }elseif($type == 'products'){
