@@ -245,31 +245,7 @@ class ImportExportController extends Controller
             $fileName = 'supplier-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_suppliers';
             Supplier::setGlobalTable($table);
-            
-            $haveSupplierId = '';
-
-            if( in_array('supplier_category', $headings) ){
-                $haveSupplierId = 1;
-            }
-            $data =  Supplier::get($headings)->toArray();
-            // return $data;
-            if($haveSupplierId){
-                $headings[] = 'supplier_category_name';
-                if (($key = array_search('supplier_category', $headings)) !== false) {
-                    unset($headings[$key]);
-                }
-            }
-            $finalData = [];
-            if(!empty($data)){
-                foreach($data as $arr){
-                   if($haveSupplierId){
-                    unset($arr['supplier_category']);
-                   }
-                   $finalData[] = $arr;
-                //    return $arr;
-                }
-            }
-
+            $data =   Supplier::get($headings);
             Excel::store(new SupplierExport($headings, $data),'public/xlsx/'.$fileName);
 
         }elseif($type == 'products'){
