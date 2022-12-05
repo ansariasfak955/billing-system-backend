@@ -15,7 +15,7 @@ class Client extends Model
 		'updated_at'
     ];
 
-    public $appends = ['client_category_name'];
+    public $appends = ['client_category_name','payment_terms_name','payment_option_id'];
 
     protected static $globalTable = 'clients' ;
 
@@ -37,6 +37,20 @@ class Client extends Model
             $table = $this->getTable();
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_category_name($company_id, $this->attributes['client_category']);
+        }
+    }
+    public function getPaymentTermsNameAttribute(){
+        if(isset( $this->attributes['payment_terms_id'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_payment_terms_name($company_id, $this->attributes['payment_terms_id']);
+        }
+    }
+    public function getPaymentOptionIdAttribute(){
+        if(isset( $this->attributes['payment_option_id'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_payment_option_name($company_id, $this->attributes['payment_option_id']);
         }
     }
     public function getTableColumns() {

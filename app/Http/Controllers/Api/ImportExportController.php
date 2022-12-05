@@ -51,182 +51,41 @@ class ImportExportController extends Controller
     }
     public function export(Request $request, $company_id, $type){
       $headings = $request->headings;
-    //   $headings = [
-    //         'Id',
-    //        'Reference',
-    //        'Legal_name',
-    //        'Tin',
-    //        'Phone_1',
-    //        'Address',
-    //        'State',
-    //        'Country',
-    //        'Name',
-    //        'Email',
-    //        'City',
-    //        'Zip_code',
-    //        'Address_latitude',
-    //        'Address_longitude',
-    //        'Fax',
-    //        'Website',
-    //        'Comments',
-    //        'Popup_notice',
-    //        'Created_from',
-    //        'Phone_2',
-    //        'Client_category',
-    //        'Payment_option_id',
-    //        'Payment_date',
-    //        'Discount',
-    //        'Rate',
-    //        'Currency',
-    //        'Subject_to_vat',
-    //        'Maximum_risk',
-    //        'Payment_terms_id',
-    //        'Payment_adjustment',
-    //        'Agent',
-    //        'Invoice_to',
-    //        'Subject_to_income_tax',
-    //        'Bank_account_format',
-    //        'Bank_account_account',
-    //        'Bank_account_bic',
-    //        'Bank_account_name',
-    //        'Bank_account_description',
-    //        'Created_at',
-    //        'Updated_at',
-    //        'Reference_number',
-    //        'Ced_ruc',
-    //        'Swift_aba'
-    //   ];
-    //   $headings = [
-    //     "id",
-    //     "reference",
-    //     "reference_number",
-    //     "legal_name",
-    //     "name",
-    //     "tin",
-    //     "email",
-    //     "phone_1",
-    //     "address",
-    //     "city",
-    //     "state",
-    //     "zip_code",
-    //     "country",
-    //     "address_latitude",
-    //     "address_longitude",
-    //     "fax",
-    //     "phone_2",
-    //     "website",
-    //     "supplier_category",
-    //     "comments",
-    //     "popup_notice",
-    //     "created_from",
-    //     "payment_option_id",
-    //     "payment_terms_id",
-    //     "payment_date",
-    //     "payment_adjustment",
-    //     "discount",
-    //     "agent",
-    //     "rate",
-    //     "currency",
-    //     "subject_to_vat",
-    //     "maximum_risk",
-    //     "invoice_to",
-    //     "subject_to_income_tax",
-    //     "bank_account_format",
-    //     "bank_account_account",
-    //     "bank_account_bic",
-    //     "bank_account_name",
-    //     "bank_account_description",
-    //     "created_at",
-    //     "updated_at"
-    //   ];
-    //   $headings = [
-    //     "id",
-    //     "reference",
-    //     "reference_number",
-    //     "name",
-    //     "price",
-    //     "purchase_price",
-    //     "barcode",
-    //     "image",
-    //     "product_category_id",
-    //     "is_active",
-    //     "description",
-    //     "private_comments",
-    //     "created_from",
-    //     "active_margin",
-    //     "purchase_margin",
-    //     "sales_margin",
-    //     "discount",
-    //     "minimum_price",
-    //     "tax",
-    //     "is_promotional",
-    //     "manage_stock",
-    //     "images",
-    //     "created_at",
-    //     "updated_at"
-    //   ];
-    //   $headings = [
-    //     "id",
-    //     "reference",
-    //     "name",
-    //     "price",
-    //     "purchase_price",
-    //     "image",
-    //     "vat",
-    //     "is_active",
-    //     "description",
-    //     "private_comments",
-    //     "created_from",
-    //     "active_margin",
-    //     "purchase_margin",
-    //     "sales_margin",
-    //     "discount",
-    //     "minimum_price",
-    //     "tax",
-    //     "is_promotional",
-    //     "manage_stock",
-    //     "images",
-    //     "created_at",
-    //     "updated_at",
-    //     "reference_number"
-    //   ];
-    //   $headings = [
-    //     "id",
-    //     "reference",
-    //     "reference_number",
-    //     "client_id",
-    //     "address",
-    //     "name",
-    //     "identifier",
-    //     "serial_number",
-    //     "brand",
-    //     "description",
-    //     "private_comments",
-    //     "model",
-    //     "subject_to_maintenance",
-    //     "start_of_warranty",
-    //     "end_of_warranty",
-    //     "main_image",
-    //     "created_at",
-    //     "updated_at"
-    //   ];
-
-   
         if($type == 'client' || $type == "potential_client"){
             $fileName = 'client-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_clients';
             Client::setGlobalTable($table);
 
             $haveClientCategoryId = '';
-
-            if( in_array('Client_category', $headings) ){
+            $havePaymentTermsId = '';
+            $havePaymentOptionId = '';
+            if( in_array('client_category', $headings) ){
                 $haveClientCategoryId = 1;
+            }
+            if( in_array('payment_terms_id', $headings) ){
+                $havePaymentTermsId = 1;
+            }
+            if( in_array('payment_option_id', $headings) ){
+                $havePaymentOptionId = 1;
             }
 
             $data =  Client::get($headings)->toArray();
+
             if($haveClientCategoryId){
-                $headings[] = 'Client_category_name';
-                if (($key = array_search('Client_category', $headings)) !== false) {
+                $headings[] = 'client_category_name';
+                if (($key = array_search('client_category', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+            if($havePaymentTermsId){
+                $headings[] = 'payment_terms_name';
+                if (($key = array_search('payment_terms_id', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+            if($havePaymentOptionId){
+                $headings[] = 'payment_option_name';
+                if (($key = array_search('payment_option_id', $headings)) !== false) {
                     unset($headings[$key]);
                 }
             }
@@ -235,19 +94,75 @@ class ImportExportController extends Controller
             if(!empty($data)){
                 foreach($data as $arr){
                    if($haveClientCategoryId){
-                    unset($arr['Client_category']);
+                    unset($arr['client_category']);
+                   }
+                   if($havePaymentTermsId){
+                    unset($arr['payment_terms_id']);
+                   }
+                   if($havePaymentOptionId){
+                    unset($arr['payment_option_id']);
                    }
                    $finalData[] = $arr;
                 }
             }
-            Excel::store(new ClientExport($headings, $data),'public/xlsx/'.$fileName);
+            Excel::store(new ClientExport($headings, $finalData),'public/xlsx/'.$fileName);
 
         }elseif($type == "suppliers"){
             $fileName = 'supplier-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_suppliers';
             Supplier::setGlobalTable($table);
-            $data =   Supplier::get($headings);
-            Excel::store(new SupplierExport($headings, $data),'public/xlsx/'.$fileName);
+
+            $haveSupplierCategoryId = '';
+            $havePaymentTermsId = '';
+            $havePaymentOptionId = '';
+
+            if( in_array('supplier_category', $headings) ){
+                $haveSupplierCategoryId = 1;
+            }
+            if( in_array('payment_terms_id', $headings) ){
+                $havePaymentTermsId = 1;
+            }
+            if( in_array('payment_option_id', $headings) ){
+                $havePaymentOptionId = 1;
+            }
+
+            $data =  Supplier::get($headings)->toArray();
+            if($haveSupplierCategoryId){
+                $headings[] = 'supplier_category_name';
+                if (($key = array_search('supplier_category', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+            if($havePaymentTermsId){
+                $headings[] = 'payment_terms_name';
+                if (($key = array_search('payment_terms_id', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+            if($havePaymentOptionId){
+                $headings[] = 'payment_option_name';
+                if (($key = array_search('payment_option_id', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+
+            $finalData = [];
+            if(!empty($data)){
+                foreach($data as $arr){
+                   if($haveSupplierCategoryId){
+                    unset($arr['supplier_category']);
+                   }
+                   if($havePaymentTermsId){
+                    unset($arr['payment_terms_id']);
+                   }
+                   if($havePaymentOptionId){
+                    unset($arr['payment_option_id']);
+                   }
+                   $finalData[] = $arr;
+                }
+            }
+
+            Excel::store(new SupplierExport($headings, $finalData),'public/xlsx/'.$fileName);
 
         }elseif($type == 'products'){
             $fileName = 'product-export-'.time().$company_id.'.xlsx';
