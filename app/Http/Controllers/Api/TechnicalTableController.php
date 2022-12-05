@@ -8,6 +8,7 @@ use App\Models\TechnicalTable;
 use App\Models\Item;
 use App\Models\Client;
 use App\Models\ItemMeta;
+use App\Models\Reference;
 use Validator;
 use Storage;
 
@@ -55,7 +56,9 @@ class TechnicalTableController extends Controller
             });
         }
         if($request->type){
-            $query = $query->where('reference', $request->type);
+            //get dynamic reference
+            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $query = $query->whereIn('reference', $refernce_ids);
         }
         $technical_incidents = $query->get();
 
