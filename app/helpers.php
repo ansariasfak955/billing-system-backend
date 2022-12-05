@@ -57,6 +57,12 @@ function get_supplier_name($company_id,$sup_id)
     \App\Models\Supplier::setGlobalTable($table);
     return \App\Models\Supplier::where('id', $sup_id)->pluck('name')->first();
 }
+function get_product_category_name($company_id,$product_category_id)
+{
+    $table = 'company_'.$company_id.'_product_categories';
+    \App\Models\Supplier::setGlobalTable($table);
+    return \App\Models\Supplier::where('id', $product_category_id)->pluck('name')->first();
+}
 
 function get_asset_name($company_id,$asset_id)
 {

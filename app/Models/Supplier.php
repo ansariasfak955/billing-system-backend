@@ -11,7 +11,7 @@ class Supplier extends Model
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected static $globalTable = 'suppliers' ;
 
-    public $appends = ['supplier_category_name','payment_terms_name','payment_option_id'];
+    public $appends = ['supplier_category_name','payment_terms_name','payment_option_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -37,7 +37,7 @@ class Supplier extends Model
             return get_payment_terms_name($company_id, $this->attributes['payment_terms_id']);
         }
     }
-    public function getPaymentOptionIdAttribute(){
+    public function getPaymentOptionNameAttribute(){
         if(isset( $this->attributes['payment_option_id'] )){
             $table = $this->getTable();
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);

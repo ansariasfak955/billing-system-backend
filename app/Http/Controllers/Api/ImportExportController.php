@@ -168,8 +168,33 @@ class ImportExportController extends Controller
             $fileName = 'product-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_products';
             Product::setGlobalTable($table);
-            $data =   Product::get($headings);
-            Excel::store(new ProductExport($headings, $data),'public/xlsx/'.$fileName);
+
+            $haveProductCategoryId = '';
+
+            if( in_array('product_category_id', $headings) ){
+                $haveProductCategoryId = 1;
+            }
+
+            $data =  Product::get($headings)->toArray();
+            if($haveProductCategoryId){
+                $headings[] = 'product_category_name';
+                if (($key = array_search('product_category_id', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+
+            $finalData = [];
+            if(!empty($data)){
+                foreach($data as $arr){
+                   if($haveProductCategoryId){
+                    unset($arr['product_category_id']);
+                   }
+                   $finalData[] = $arr;
+                   return $arr;
+                }
+            }
+            
+            Excel::store(new ProductExport($headings, $finalData),'public/xlsx/'.$fileName);
 
         }elseif($type == 'service'){
             $fileName = 'service-export-'.time().$company_id.'.xlsx';

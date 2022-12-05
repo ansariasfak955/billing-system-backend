@@ -21,7 +21,7 @@ class Product extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
-    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount', 'sales_stock_value', 'purchase_stock_value'];
+    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount', 'sales_stock_value', 'purchase_stock_value','product_category_name'];
 
     public function getAmountAttribute(){
         if(isset($this->attributes['price'])){
@@ -66,6 +66,13 @@ class Product extends Model
             return '';
         }
         
+    }
+    public function getProductCategoryNameAttribute(){
+        if(isset( $this->attributes['product_category_id'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_product_category_name($company_id, $this->attributes['product_category_id']);
+        }
     }
 
     public function getVirtualStockAttribute()
