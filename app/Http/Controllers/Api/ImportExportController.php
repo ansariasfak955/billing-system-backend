@@ -277,32 +277,35 @@ class ImportExportController extends Controller
                 'message' => $validator->errors()->first()
             ]);
         }
-
+        $path = Storage::putFile('public/file', $request->file('file'));
         if($type == 'client' || $type == "potential_client"){
-            $path = Storage::putFile('public/file', $request->file('file'));
             $import = new ClientImport($company_id, $request);
 
         }elseif($type == "suppliers"){
-            $path = Storage::putFile('public/file', $request->file('file'));
             $import = new SupplierImport($company_id, $request);
 
         }elseif($type == 'products'){
-            $path = Storage::putFile('public/file', $request->file('file'));
             $import = new ProductImport($company_id, $request);
 
         }elseif($type == 'service'){
-            $path = Storage::putFile('public/file', $request->file('file'));
             $import = new ServiceImport($company_id, $request);
 
         }elseif($type == 'assets'){
-            $path = Storage::putFile('public/file', $request->file('file'));
             $import = new ClientAssetImport($company_id, $request);
         }
-        Excel::import($import, $path);
+        try{
+            Excel::import($import, $path);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'Imposible to import because:An error occurred while reading the file. It does not seem to have a correct format.',
+            ]);
+        }
         Storage::delete($path);
         return response()->json([
             'status' => true,
-            'message' => 'Exported Sucessfully!',
+            'message' => 'Imported Sucessfully!',
         ]);
     }
 }
