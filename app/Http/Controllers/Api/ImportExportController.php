@@ -299,7 +299,7 @@ class ImportExportController extends Controller
         catch (\Exception $e){
             return response()->json([
                 'status' => false,
-                'message' => 'Imposible to import because:An error occurred while reading the file. It does not seem to have a correct format.',
+                'message' => 'Imposible to import because: An error occurred while reading the file. It does not seem to have a correct format.',
             ]);
         }
         Storage::delete($path);
