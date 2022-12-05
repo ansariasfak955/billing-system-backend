@@ -216,7 +216,30 @@ class ImportExportController extends Controller
             $fileName = 'client-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_clients';
             Client::setGlobalTable($table);
-            $data =   Client::get($headings);
+
+            $haveClientCategoryId = '';
+
+            if( in_array('Client_category', $headings) ){
+                $haveClientCategoryId = 1;
+            }
+
+            $data =  Client::get($headings)->toArray();
+            if($haveClientCategoryId){
+                $headings[] = 'Client_category_name';
+                if (($key = array_search('Client_category', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+
+            $finalData = [];
+            if(!empty($data)){
+                foreach($data as $arr){
+                   if($haveClientCategoryId){
+                    unset($arr['Client_category']);
+                   }
+                   $finalData[] = $arr;
+                }
+            }
             Excel::store(new ClientExport($headings, $data),'public/xlsx/'.$fileName);
 
         }elseif($type == "suppliers"){
