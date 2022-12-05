@@ -51,51 +51,51 @@ class ImportExportController extends Controller
     }
     public function export(Request $request, $company_id, $type){
       $headings = $request->headings;
-    //   $headings = [
-    //         'Id',
-    //        'Reference',
-    //        'Legal_name',
-    //        'Tin',
-    //        'Phone_1',
-    //        'Address',
-    //        'State',
-    //        'Country',
-    //        'Name',
-    //        'Email',
-    //        'City',
-    //        'Zip_code',
-    //        'Address_latitude',
-    //        'Address_longitude',
-    //        'Fax',
-    //        'Website',
-    //        'Comments',
-    //        'Popup_notice',
-    //        'Created_from',
-    //        'Phone_2',
-    //        'Client_category',
-    //        'Payment_option_id',
-    //        'Payment_date',
-    //        'Discount',
-    //        'Rate',
-    //        'Currency',
-    //        'Subject_to_vat',
-    //        'Maximum_risk',
-    //        'Payment_terms_id',
-    //        'Payment_adjustment',
-    //        'Agent',
-    //        'Invoice_to',
-    //        'Subject_to_income_tax',
-    //        'Bank_account_format',
-    //        'Bank_account_account',
-    //        'Bank_account_bic',
-    //        'Bank_account_name',
-    //        'Bank_account_description',
-    //        'Created_at',
-    //        'Updated_at',
-    //        'Reference_number',
-    //        'Ced_ruc',
-    //        'Swift_aba'
-    //   ];
+      $headings = [
+            'Id',
+           'Reference',
+           'Legal_name',
+           'Tin',
+           'Phone_1',
+           'Address',
+           'State',
+           'Country',
+           'Name',
+           'Email',
+           'City',
+           'Zip_code',
+           'Address_latitude',
+           'Address_longitude',
+           'Fax',
+           'Website',
+           'Comments',
+           'Popup_notice',
+           'Created_from',
+           'Phone_2',
+           'Client_category',
+           'Payment_option_id',
+           'Payment_date',
+           'Discount',
+           'Rate',
+           'Currency',
+           'Subject_to_vat',
+           'Maximum_risk',
+           'Payment_terms_id',
+           'Payment_adjustment',
+           'Agent',
+           'Invoice_to',
+           'Subject_to_income_tax',
+           'Bank_account_format',
+           'Bank_account_account',
+           'Bank_account_bic',
+           'Bank_account_name',
+           'Bank_account_description',
+           'Created_at',
+           'Updated_at',
+           'Reference_number',
+           'Ced_ruc',
+           'Swift_aba'
+      ];
     //   $headings = [
     //     "id",
     //     "reference",
@@ -217,23 +217,23 @@ class ImportExportController extends Controller
             $table = 'company_'.$request->company_id.'_clients';
             Client::setGlobalTable($table);
 
-            $haveClientId = '';
+            $haveClientCategoryId = '';
 
-            if( in_array('Client_category', $headings) ){
-                $haveClientId = 1;
+            if( in_array('client_category', $headings) ){
+                $haveClientCategoryId = 1;
             }
             $data =  Client::get($headings)->toArray();
-            if($haveClientId){
+            if($haveClientCategoryId){
                 $headings[] = 'client_category_name';
-                if (($key = array_search('Client_category', $headings)) !== false) {
+                if (($key = array_search('client_category', $headings)) !== false) {
                     unset($headings[$key]);
                 }
             }
             $finalData = [];
             if(!empty($data)){
                 foreach($data as $arr){
-                   if($haveClientId){
-                    unset($arr['Client_category']);
+                   if($haveClientCategoryId){
+                    unset($arr['client_category']);
                    }
                    $finalData[] = $arr;
                 }
