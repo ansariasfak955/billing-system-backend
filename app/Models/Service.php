@@ -12,12 +12,20 @@ class Service extends Model
     protected $fillable = ['name', 'price', 'reference', 'purchase_price', 'image', 'description', 'private_comments', 'vat', 'created_from', 'purchase_margin', 'sales_margin', 'discount', 'minimum_price', 'tax', 'images','reference_number'];
 
     protected static $globalTable = 'services' ;
+    protected $appends = ['product_category_name'];
 
     public function getTable() {
         return self::$globalTable ;
     }
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
+    }
+    public function getProductCategoryNameAttribute(){
+        if(isset( $this->attributes['product_category_id'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_product_category_name($company_id, $this->attributes['product_category_id']);
+        }
     }
 
     public function getImageAttribute()

@@ -190,7 +190,6 @@ class ImportExportController extends Controller
                     unset($arr['product_category_id']);
                    }
                    $finalData[] = $arr;
-                   return $arr;
                 }
             }
             
@@ -200,8 +199,32 @@ class ImportExportController extends Controller
             $fileName = 'service-export-'.time().$company_id.'.xlsx';
             $table = 'company_'.$request->company_id.'_services';
             Service::setGlobalTable($table);
-            $data =   Service::get($headings);
-            Excel::store(new ServiceExport($headings, $data),'public/xlsx/'.$fileName);
+
+            $haveProductCategoryId = '';
+
+            if( in_array('product_category_id', $headings) ){
+                $haveProductCategoryId = 1;
+            }
+
+            $data =  Service::get($headings)->toArray();
+            if($haveProductCategoryId){
+                $headings[] = 'product_category_name';
+                if (($key = array_search('product_category_id', $headings)) !== false) {
+                    unset($headings[$key]);
+                }
+            }
+
+            $finalData = [];
+            if(!empty($data)){
+                foreach($data as $arr){
+                   if($haveProductCategoryId){
+                    unset($arr['product_category_id']);
+                   }
+                   $finalData[] = $arr;
+                }
+            }
+
+            Excel::store(new ServiceExport($headings, $finalData),'public/xlsx/'.$fileName);
 
         }elseif($type == 'assets'){
             $fileName = 'assets-export-'.time().$company_id.'.xlsx';

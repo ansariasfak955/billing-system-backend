@@ -3,12 +3,12 @@
 namespace App\Exports;
 
 use App\Models\Service;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class ServiceExport implements FromCollection, WithHeadings
+class ServiceExport implements FromArray, WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -22,8 +22,12 @@ class ServiceExport implements FromCollection, WithHeadings
     {
         return  $this->headings;
     }
-    public function collection()
-    {   
+    // public function collection()
+    // {   
+    //     return $this->data;
+    // }
+    public function array(): array
+    {
         return $this->data;
     }
 }
