@@ -51,7 +51,7 @@ class InvoiceTableController extends Controller
        Reference::setGlobalTable($referenceTable);
        if($request->type){
            //get dynamic reference
-           $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+           $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
            $query = $query->whereIn('reference', $refernce_ids);
        }
         if($request->search){

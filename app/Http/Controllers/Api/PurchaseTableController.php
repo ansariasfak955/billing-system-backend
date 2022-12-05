@@ -48,7 +48,7 @@ class PurchaseTableController extends Controller
         }
         if($request->type){
             //get dynamic reference
-            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
         }
         $purchase_table = $query->get();

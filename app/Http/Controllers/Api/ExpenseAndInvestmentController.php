@@ -49,7 +49,7 @@ class ExpenseAndInvestmentController extends Controller
         Reference::setGlobalTable($referenceTable);
         if($request->type){
             //get dynamic reference
-            $refernce_ids = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $expense_and_investment = $expense_and_investment->whereIn('reference', $refernce_ids);
         }
         $expense_and_investment = $expense_and_investment->get();
