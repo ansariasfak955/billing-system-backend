@@ -402,3 +402,9 @@ function generateReferences($company_id){
         }
     }
 }
+function get_reference_type($company_id, $reference)
+{
+    $refernceTable = "company_".$company_id."_references";
+    \App\Models\Reference::setGlobalTable($refernceTable);
+    return \App\Models\Reference::where('prefix', $reference)->pluck('type')->first();
+}

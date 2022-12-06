@@ -55,7 +55,7 @@ class SalesEstimate extends Model
         return $this->hasOne(Client::class,'id', 'client_id');
     }
 
-	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount'];
+	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'reference_type'];
 
     public function getSignatureAttribute()
     {
@@ -105,6 +105,13 @@ class SalesEstimate extends Model
 
         if( isset( $this->attributes['date'] ) ){
             return date( 'Y-m-d', strtotime($this->attributes['date']) );
+        }
+    }
+	public function getReferenceTypeAttribute(){
+        if(isset( $this->attributes['reference'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_reference_type($company_id, $this->attributes['reference']);
         }
     }
 }

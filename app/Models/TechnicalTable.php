@@ -11,7 +11,7 @@ class TechnicalTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'technical_tables' ;
 
-    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount', 'meta_discount'];
+    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount', 'meta_discount', 'reference_type'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -90,6 +90,13 @@ class TechnicalTable extends Model
 
         if( isset( $this->attributes['date'] ) ){
             return date( 'Y-m-d', strtotime($this->attributes['date']) );
+        }
+    }
+    public function getReferenceTypeAttribute(){
+        if(isset( $this->attributes['reference'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_reference_type($company_id, $this->attributes['reference']);
         }
     }
 
