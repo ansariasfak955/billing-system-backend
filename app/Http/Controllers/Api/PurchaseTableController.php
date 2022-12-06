@@ -47,6 +47,9 @@ class PurchaseTableController extends Controller
             });
         }
         if($request->type){
+            //set reference table
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
             //get dynamic reference
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);

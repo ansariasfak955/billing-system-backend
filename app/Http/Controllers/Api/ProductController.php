@@ -44,10 +44,10 @@ class ProductController extends Controller
             $products = $products->where('name', 'like', '%'.$request->search.'%')->orWhere('created_at' ,'<=', date('Y-m-d'))
             ->orWhere('reference_number', 'like', '%'.$request->search.'%')->orWhere('price', 'like', '%'.$request->search.'%');
         }
-        //set reference table
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
         if($request->type){
+            //set reference table
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
             //get dynamic reference
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $products = $products->whereIn('reference', $refernce_ids);

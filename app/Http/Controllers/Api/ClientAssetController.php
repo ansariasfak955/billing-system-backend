@@ -34,10 +34,10 @@ class ClientAssetController extends Controller
             ->orWhere('identifier', 'like', '%'.$request->search.'%')->orWhere('serial_number', 'like', '%'.$request->search.'%')
             ->orWhere('client_name', 'like', '%'.$request->search.'%');
         }
-        //set reference table
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
         if($request->type){
+            //set reference table
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
             //get dynamic reference
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
