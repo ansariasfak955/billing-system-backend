@@ -63,7 +63,7 @@ class User extends Authenticatable
         self::$globalTable = $table;
     }
 
-    protected $appends = ['company_country','default_country','company_id','enable_technical_module'];
+    protected $appends = ['company_country','default_country','company_id','enable_technical_module','logo'];
 
     public function companies()
     {
@@ -130,6 +130,13 @@ class User extends Authenticatable
         $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
         if(isset($company_id)){
             return Company::where('id', $company_id)->pluck('enable_technical_module')->first();
+        }
+    }
+    public function getLogoAttribute(){
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        if(isset($company_id)){
+            return Company::where('id', $company_id)->pluck('logo')->first();
         }
     }
 }
