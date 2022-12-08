@@ -37,7 +37,7 @@ function get_client_name($company_id,$client_id)
 {
     $table = 'company_'.$company_id.'_clients';
     \App\Models\Client::setGlobalTable($table);
-    return \App\Models\Client::where('id', $client_id)->pluck('name')->first();
+    return \App\Models\Client::where('id', $client_id)->pluck('legal_name')->first();
 }
 function get_payment_terms_name($company_id,$payment_terms_id){
     $table = 'company_'.$company_id.'_payment_terms';
@@ -55,7 +55,7 @@ function get_supplier_name($company_id,$sup_id)
 {
     $table = 'company_'.$company_id.'_suppliers';
     \App\Models\Supplier::setGlobalTable($table);
-    return \App\Models\Supplier::where('id', $sup_id)->pluck('name')->first();
+    return \App\Models\Supplier::where('id', $sup_id)->pluck('legal_name')->first();
 }
 function get_product_category_name($company_id,$product_category_id)
 {
