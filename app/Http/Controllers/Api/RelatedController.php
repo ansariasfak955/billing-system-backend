@@ -27,10 +27,10 @@ class RelatedController extends Controller
         $data = [];
         $salesDatas = SalesEstimate::where('client_id', \Auth::id())->take(2)->get();
         $invoiceDatas = InvoiceTable::where('client_id', \Auth::id())->take(2)->get();
-        $technicalDatas = TechnicalTable::where('client_id', \Auth::id())->take(2)->get();
+        $technicalDatas = TechnicalTable::where('client_id', $request->id)->take(2)->get();
 
         if($request->type == "incidents"){
-            $technicalDatas = TechnicalTable::where('client_id', \Auth::id())->take(10)->get();
+            $technicalDatas = TechnicalTable::where('client_id', $request->id)->take(10)->get();
             foreach($technicalDatas as $technicalData){
                 $arr['id'] = $technicalData->id;
                 $arr['reference_number'] = $salesData->reference_number;
