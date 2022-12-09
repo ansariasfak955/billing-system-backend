@@ -35,6 +35,7 @@ class RelatedController extends Controller
                 $arr['id'] = $technicalData->id;
                 $arr['reference_number'] = $salesData->reference_number;
                 $arr['reference'] = $technicalData->reference;
+                $arr['reference_type'] = $technicalData->reference;
                 $arr['description'] = $technicalData->description;
                 $arr['status'] = $technicalData->status;
                 $arr['assigned_to'] = $technicalData->assigned_to;
@@ -48,6 +49,7 @@ class RelatedController extends Controller
                 $arr['id'] = $salesData->id;
                 $arr['reference_number'] = $salesData->reference_number;
                 $arr['reference'] = $salesData->reference;
+                $arr['reference_type'] = $salesData->reference;
                 $arr['title'] = $salesData->title;
                 $arr['created_by'] = $salesData->created_by;
                 $arr['status'] = $salesData->status;
@@ -61,6 +63,7 @@ class RelatedController extends Controller
                 $arr['id'] = $invoiceData->id;
                 $arr['reference_number'] = $invoiceData->reference_number;
                 $arr['reference'] = $invoiceData->reference;
+                $arr['reference_type'] = $invoiceData->reference;
                 $arr['title'] = $invoiceData->title;
                 $arr['created_by'] = $invoiceData->created_by;
                 $arr['status'] = $invoiceData->status;
@@ -74,6 +77,7 @@ class RelatedController extends Controller
                 $arr['id'] = $technicalData->id;
                 $arr['reference_number'] = $technicalData->reference_number;
                 $arr['reference'] = $technicalData->reference;
+                $arr['reference_type'] = $technicalData->reference;
                 $arr['title'] = $technicalData->title;
                 $arr['created_by'] = $technicalData->created_by;
                 $arr['status'] = $technicalData->status;
