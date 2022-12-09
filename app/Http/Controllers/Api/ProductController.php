@@ -41,8 +41,8 @@ class ProductController extends Controller
         $products = Product::query();
         
         if($request->search){
-            $products = $products->where('name', 'like', '%'.$request->search.'%')->orWhere('created_at' ,'<=', date('Y-m-d'))
-            ->orWhere('reference_number', 'like', '%'.$request->search.'%')->orWhere('price', 'like', '%'.$request->search.'%');
+            $products = $products->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')
+            ->orWhere('reference', 'like', '%'.$request->search.'%')->orWhere('price', 'like', '%'.$request->search.'%');
         }
         if($request->type){
             //set reference table
