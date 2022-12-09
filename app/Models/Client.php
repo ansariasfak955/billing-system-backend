@@ -15,7 +15,7 @@ class Client extends Model
 		'updated_at'
     ];
 
-    public $appends = ['client_category_name','payment_terms_name','payment_option_name'];
+    public $appends = ['client_category_name','payment_terms_name','payment_option_name','reference_type'];
 
     protected static $globalTable = 'clients' ;
 
@@ -55,5 +55,12 @@ class Client extends Model
     }
     public function getTableColumns() {
         return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    }
+    public function getReferenceTypeAttribute(){
+        if(isset( $this->attributes['reference'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_reference_type($company_id, $this->attributes['reference']);
+        }
     }
 }
