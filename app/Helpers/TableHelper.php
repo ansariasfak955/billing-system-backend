@@ -6,6 +6,7 @@ use App\Models\CustomStateType;
 use App\Models\CustomState;
 use App\Models\MyTemplate;
 use App\Models\Reference;
+use App\Models\ConsumptionTax;
 use App\Models\MyTemplateMeta;
 use App\Models\DefaultPdfSendOption;
 use App\Models\Setting;
@@ -3127,6 +3128,16 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
                     }
                 }
             }
+        }
+        // by default add value consumption tax
+        if (Schema::hasTable('company_'.$company_id.'_consumption_taxes')) {
+            ConsumptionTax::setGlobalTable('company_'.$company_id.'_consumption_taxes');
+                if(!ConsumptionTax::where('primary_name', 'INV')->first()){
+                    $consumptionTax = ConsumptionTax::create([
+                        'primary_name' => 'INV',
+                        'taxes' => '12%'
+                    ]);
+                }
         }
         /* Creating dynamic company based default pdf options table */
         if (!Schema::hasTable('company_'.$company_id.'_default_pdf_send_options')) {
