@@ -43,8 +43,8 @@ class ServiceController extends Controller
         $service = Service::query();
         
         if($request->search){
-            $service = $service->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')
-            ->orWhere('price', 'like', '%'.$request->search.'%');
+            $service = $service->where('name', 'like', '%'.$request->search.'%')->orWhere('reference', 'like', '%'.$request->search.'%')
+            ->orWhere('reference_number', 'like', '%'.$request->search.'%')->orWhere('price', 'like', '%'.$request->search.'%');
         }
         //set reference table
         $referenceTable = 'company_'.$request->company_id.'_references';
