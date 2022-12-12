@@ -25,15 +25,41 @@ class RelatedController extends Controller
         TechnicalTable::setGlobalTable($technicalTable);
 
         $data = [];
-        $salesDatas = SalesEstimate::where('client_id', $request->client_id)->take(2)->get();
-        $invoiceDatas = InvoiceTable::where('client_id', $request->client_id)->take(2)->get();
-        $technicalDatas = TechnicalTable::where('client_id', $request->client_id)->take(2)->get();
-
-        if($request->type == "incidents"){
-            $technicalDatas = TechnicalTable::where('client_id', $request->client_id)->take(10)->get();
+        if($request->client_id){
+            $salesDatas = SalesEstimate::where('client_id',$request->client_id)->latest('created_at')->get();
+            $invoiceDatas = InvoiceTable::where('client_id', $request->client_id)->latest('created_at')->get();
+            $technicalDatas = TechnicalTable::where('client_id',$request->client_id)->latest('created_at')->get();
+            foreach($salesDatas as $salesData){
+                $arr['id'] = $salesData->id;
+                $arr['reference_number'] = $salesData->reference_number;
+                $arr['reference'] = $salesData->reference;
+                $arr['reference_type'] = $salesData->reference_type;
+                $arr['description'] = $salesData->description;
+                $arr['status'] = $salesData->status;
+                $arr['assigned_to'] = $salesData->assigned_to;
+                $arr['created_by'] = $salesData->created_by;
+                $arr['date'] = $salesData->date;
+                $arr['activity'] = $salesData->activity;
+                $data[] = $arr;
+            }
+    
+            foreach($invoiceDatas as $invoiceData){
+                $arr['id'] = $invoiceData->id;
+                $arr['reference_number'] = $invoiceData->reference_number;
+                $arr['reference'] = $invoiceData->reference;
+                $arr['reference_type'] = $invoiceData->reference_type;
+                $arr['description'] = $invoiceData->description;
+                $arr['status'] = $invoiceData->status;
+                $arr['assigned_to'] = $invoiceData->assigned_to;
+                $arr['created_by'] = $invoiceData->created_by;
+                $arr['date'] = $invoiceData->date;
+                $arr['activity'] = $invoiceData->activity;
+                $data[] = $arr;
+            }
+    
             foreach($technicalDatas as $technicalData){
                 $arr['id'] = $technicalData->id;
-                $arr['reference_number'] = $salesData->reference_number;
+                $arr['reference_number'] = $technicalData->reference_number;
                 $arr['reference'] = $technicalData->reference;
                 $arr['reference_type'] = $technicalData->reference_type;
                 $arr['description'] = $technicalData->description;
@@ -44,49 +70,9 @@ class RelatedController extends Controller
                 $arr['activity'] = $technicalData->activity;
                 $data[] = $arr;
             }
+    
         }else{
-            foreach($salesDatas as $salesData){
-                $arr['id'] = $salesData->id;
-                $arr['reference_number'] = $salesData->reference_number;
-                $arr['reference'] = $salesData->reference;
-                $arr['reference_type'] = $salesData->reference_type;
-                $arr['title'] = $salesData->title;
-                $arr['created_by'] = $salesData->created_by;
-                $arr['status'] = $salesData->status;
-                $arr['type'] = $salesData->reference;
-                $arr['date'] = $salesData->date;
-                $arr['amount'] = $salesData->amount;
-                $data[] = $arr;
-            }
-    
-            foreach($invoiceDatas as $invoiceData){
-                $arr['id'] = $invoiceData->id;
-                $arr['reference_number'] = $invoiceData->reference_number;
-                $arr['reference'] = $invoiceData->reference;
-                $arr['reference_type'] = $invoiceData->reference_type;
-                $arr['title'] = $invoiceData->title;
-                $arr['created_by'] = $invoiceData->created_by;
-                $arr['status'] = $invoiceData->status;
-                $arr['type'] = $invoiceData->reference;
-                $arr['date'] = $invoiceData->date;
-                $arr['amount'] = $invoiceData->amount;
-                $data[] = $arr;
-            }
-    
-            foreach($technicalDatas as $technicalData){
-                $arr['id'] = $technicalData->id;
-                $arr['reference_number'] = $technicalData->reference_number;
-                $arr['reference'] = $technicalData->reference;
-                $arr['reference_type'] = $technicalData->reference_type;
-                $arr['title'] = $technicalData->title;
-                $arr['created_by'] = $technicalData->created_by;
-                $arr['status'] = $technicalData->status;
-                $arr['type'] = $technicalData->reference;
-                $arr['date'] = $technicalData->date;
-                $arr['amount'] = $technicalData->amount;
-                $data[] = $arr;
-            }
-    
+            
         }
 
         if(count($data)) {
