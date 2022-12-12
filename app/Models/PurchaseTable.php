@@ -128,6 +128,13 @@ class PurchaseTable extends Model
             }
         }
     }
+    public function getReferenceTypeAttribute(){
+        if(isset( $this->attributes['reference'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_reference_type($company_id, $this->attributes['reference']);
+        }
+    }
     public function getPercentageAttribute(){
 
         return 0;
