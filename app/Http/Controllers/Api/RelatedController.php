@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\InvoiceTable;
+use App\Models\PurchaseTable;
 use App\Models\SalesEstimate;
 use App\Models\TechnicalTable;
 use Illuminate\Http\Request;
@@ -12,6 +13,10 @@ use Illuminate\Http\Request;
 class RelatedController extends Controller
 {
     public function related(Request $request){
+
+        $table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($table);
+
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables); 
 
@@ -42,7 +47,7 @@ class RelatedController extends Controller
                 $arr['activity'] = $salesData->activity;
                 $data[] = $arr;
             }
-    
+        
             foreach($invoiceDatas as $invoiceData){
                 $arr['id'] = $invoiceData->id;
                 $arr['reference_number'] = $invoiceData->reference_number;
@@ -56,7 +61,7 @@ class RelatedController extends Controller
                 $arr['activity'] = $invoiceData->activity;
                 $data[] = $arr;
             }
-    
+        
             foreach($technicalDatas as $technicalData){
                 $arr['id'] = $technicalData->id;
                 $arr['reference_number'] = $technicalData->reference_number;
@@ -70,9 +75,22 @@ class RelatedController extends Controller
                 $arr['activity'] = $technicalData->activity;
                 $data[] = $arr;
             }
-    
-        }else{
-            
+        
+        }else if($request->supplier_id){
+            $purchaseDatas = PurchaseTable::where('supplier_id',$request->supplier_id)->latest('created_at')->get();
+            foreach($purchaseDatas  as $purchaseData){
+                $arr['id'] = $purchaseData->id;
+                $arr['reference_number'] = $purchaseData->reference_number;
+                $arr['reference'] = $purchaseData->reference;
+                $arr['reference_type'] = $purchaseData->reference_type;
+                $arr['description'] = $purchaseData->description;
+                $arr['status'] = $purchaseData->status;
+                $arr['assigned_to'] = $purchaseData->assigned_to;
+                $arr['created_by'] = $purchaseData->created_by;
+                $arr['date'] = $purchaseData->date;
+                $arr['activity'] = $purchaseData->activity;
+                $data[] = $arr;
+            }
         }
 
         if(count($data)) {
