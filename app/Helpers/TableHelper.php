@@ -3136,7 +3136,7 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
                 if(!ConsumptionTax::where('primary_name', 'IVA')->first()){
                     $consumptionTax = ConsumptionTax::create([
                         'primary_name' => 'IVA',
-                        'tax' => "12"
+                        'taxes' => "12"
                     ]);
                 }
         }  
@@ -3149,7 +3149,7 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
                     ];
                     PaymentTerm::create($data);
         }
-        // payment terms add static value
+                // payment terms add static value
         if (Schema::hasTable('company_'.$company_id.'_payment_terms')) {
             PaymentTerm::setGlobalTable('company_'.$company_id.'_payment_terms');
                 $data = [
