@@ -47,7 +47,7 @@ class SendEmailController extends Controller
             foreach($items as $item){
                 if($item->reference == 'PRO'){
                     $parent = Product::find($item->reference_id);
-                }elseif($item->reference == 'SER'){
+                }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
                 $item->reference  = $item->reference. $parent->reference_number ?? '-';
@@ -56,11 +56,13 @@ class SendEmailController extends Controller
             
         }
 
+
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
         MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
         Reference::setGlobalTable('company_'.$request->company_id.'_references');
         if($request->template_id){
             $template_id = $request->template_id;
+            return $template_id;
         }else{
             $template_id = Reference::where('type', $type)->where('by_default', '1')->pluck('template_id')->first();
         }
