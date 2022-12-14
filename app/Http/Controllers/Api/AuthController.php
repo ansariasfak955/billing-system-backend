@@ -146,6 +146,7 @@ class AuthController extends Controller
         $company->where('id', $company->id)->update([
             'user_id' => $user->id,
             'email'   => $user->email,
+            'phone' => $request->mobile_number
         ]);
 
         /* send emails on registration */
