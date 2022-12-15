@@ -3136,7 +3136,7 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
                 if(!ConsumptionTax::where('primary_name', 'IVA')->first()){
                     $consumptionTax = ConsumptionTax::create([
                         'primary_name' => 'IVA',
-                        'taxes' => '{"tax": 12,"by_defualt": 1}'
+                        'taxes' => '[{"tax": "12","by_defualt": "1"}]'
                     ]);
                 }
         }  
