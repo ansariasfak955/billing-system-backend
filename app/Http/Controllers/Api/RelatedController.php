@@ -35,61 +35,67 @@ class RelatedController extends Controller
             $invoiceDatas = InvoiceTable::where('client_id', $request->client_id)->latest('created_at')->get();
             $technicalDatas = TechnicalTable::where('client_id',$request->client_id)->latest('created_at')->get();
             foreach($salesDatas as $salesData){
-                $arr['id'] = $salesData->id;
-                $arr['reference_number'] = $salesData->reference_number;
-                $arr['reference'] = $salesData->reference;
-                $arr['reference_type'] = $salesData->reference_type;
-                $arr['description'] = $salesData->description;
-                $arr['status'] = $salesData->status;
-                $arr['assigned_to'] = $salesData->assigned_to;
-                $arr['created_by'] = $salesData->created_by;
-                $arr['date'] = $salesData->date;
-                $arr['activity'] = $salesData->activity;
-                $data[] = $arr;
+                // $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
+                // $arr['id'] = $salesData->id;
+                // $arr['reference_number'] = $salesData->reference_number;
+                // $arr['reference'] = $salesData->reference;
+                // $arr['reference_type'] = $salesData->reference_type;
+                // $arr['description'] = $salesData->description;
+                // $arr['status'] = $salesData->status;
+                // $arr['title'] = $salesData->title;
+                // $arr['assigned_to'] = $salesData->assigned_to;
+                // $arr['created_by'] = $salesData->created_by;
+                // $arr['date'] = $salesData->date;
+                // $arr['activity'] = $salesData->activity;
+
+                $data[] = $salesData;
             }
         
             foreach($invoiceDatas as $invoiceData){
-                $arr['id'] = $invoiceData->id;
-                $arr['reference_number'] = $invoiceData->reference_number;
-                $arr['reference'] = $invoiceData->reference;
-                $arr['reference_type'] = $invoiceData->reference_type;
-                $arr['description'] = $invoiceData->description;
-                $arr['status'] = $invoiceData->status;
-                $arr['assigned_to'] = $invoiceData->assigned_to;
-                $arr['created_by'] = $invoiceData->created_by;
-                $arr['date'] = $invoiceData->date;
-                $arr['activity'] = $invoiceData->activity;
-                $data[] = $arr;
+                // $arr['id'] = $invoiceData->id;
+                // $arr['reference_number'] = $invoiceData->reference_number;
+                // $arr['reference'] = $invoiceData->reference;
+                // $arr['reference_type'] = $invoiceData->reference_type;
+                // $arr['description'] = $invoiceData->description;
+                // $arr['status'] = $invoiceData->status;
+                // $arr['title'] = $invoiceData->title;
+                // $arr['assigned_to'] = $invoiceData->assigned_to;
+                // $arr['created_by'] = $invoiceData->created_by;
+                // $arr['date'] = $invoiceData->date;
+                // $arr['activity'] = $invoiceData->activity;
+                $data[] = $invoiceData;
             }
         
             foreach($technicalDatas as $technicalData){
-                $arr['id'] = $technicalData->id;
-                $arr['reference_number'] = $technicalData->reference_number;
-                $arr['reference'] = $technicalData->reference;
-                $arr['reference_type'] = $technicalData->reference_type;
-                $arr['description'] = $technicalData->description;
-                $arr['status'] = $technicalData->status;
-                $arr['assigned_to'] = $technicalData->assigned_to;
-                $arr['created_by'] = $technicalData->created_by;
-                $arr['date'] = $technicalData->date;
-                $arr['activity'] = $technicalData->activity;
-                $data[] = $arr;
+                // $arr['id'] = $technicalData->id;
+                // $arr['reference_number'] = $technicalData->reference_number;
+                // $arr['reference'] = $technicalData->reference;
+                // $arr['reference_type'] = $technicalData->reference_type;
+                // $arr['description'] = $technicalData->description;
+                // $arr['status'] = $technicalData->status;
+                // $arr['title'] = $technicalData->title;
+                // $arr['assigned_to'] = $technicalData->assigned_to;
+                // $arr['created_by'] = $technicalData->created_by;
+                // $arr['date'] = $technicalData->date;
+                // $arr['activity'] = $technicalData->activity;
+                $data[] = $technicalData;
             }
         
         }else if($request->supplier_id){
             $purchaseDatas = PurchaseTable::where('supplier_id',$request->supplier_id)->latest('created_at')->get();
             foreach($purchaseDatas  as $purchaseData){
-                $arr['id'] = $purchaseData->id;
-                $arr['reference_number'] = $purchaseData->reference_number;
-                $arr['reference'] = $purchaseData->reference;
-                $arr['reference_type'] = $purchaseData->reference_type;
-                $arr['description'] = $purchaseData->description;
-                $arr['status'] = $purchaseData->status;
-                $arr['assigned_to'] = $purchaseData->assigned_to;
-                $arr['created_by'] = $purchaseData->created_by;
-                $arr['date'] = $purchaseData->date;
-                $arr['activity'] = $purchaseData->activity;
-                $data[] = $arr;
+                // $arr['id'] = $purchaseData->id;
+                // $arr['reference_number'] = $purchaseData->reference_number;
+                // $arr['reference'] = $purchaseData->reference;
+                // $arr['reference_type'] = $purchaseData->reference_type;
+                // $arr['description'] = $purchaseData->description;
+                // $arr['status'] = $purchaseData->status;
+                // $arr['title'] = $purchaseData->title;
+                // $arr['assigned_to'] = $purchaseData->assigned_to;
+                // $arr['created_by'] = $purchaseData->created_by;
+                // $arr['date'] = $purchaseData->date;
+                // $arr['activity'] = $purchaseData->activity;
+                $data[] = $purchaseData;
             }
         }
 

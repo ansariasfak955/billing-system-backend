@@ -57,6 +57,7 @@ class InvoiceTableController extends Controller
        }
         if($request->search){
             $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhere('reference', 'like', '%'.$request->search.'%')
+            ->orWhere('title', 'like', '%'.$request->search.'%')->orWhere('status', 'like', '%'.$request->search.'%')->orWhere('date', 'like', '%'.$request->search.'%')
             ->orWhereHas('client', function($q) use ($request){
                 $q->where('legal_name',  'like','%'.$request->search.'%')->orWhere('email',  'like','%'.$request->search.'%');;
             });
