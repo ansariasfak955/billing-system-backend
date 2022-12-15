@@ -3142,21 +3142,22 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
         }  
             
         // payment terms add static value
-        if (Schema::hasTable('company_'.$company_id.'_payment_terms')) {
-            PaymentTerm::setGlobalTable('company_'.$company_id.'_payment_terms');
-                $data = [
-                    'name' => 'Immediate Payment',
-                    ];
-                    PaymentTerm::create($data);
-        }
-                // payment terms add static value
-        if (Schema::hasTable('company_'.$company_id.'_payment_terms')) {
-            PaymentTerm::setGlobalTable('company_'.$company_id.'_payment_terms');
-                $data = [
-                    'name' => '30-60-90 Days',
-                    ];
-                    PaymentTerm::create($data);
-        }
+        // if (Schema::hasTable('company_'.$company_id.'_payment_terms')) {
+        //     PaymentTerm::setGlobalTable('company_'.$company_id.'_payment_terms');
+        //         $data = [
+        //             'name' => 'Immediate Payment',
+        //             ];
+        //             PaymentTerm::create($data);
+        // }
+        //         // payment terms add static value
+        // if (Schema::hasTable('company_'.$company_id.'_payment_terms')) {
+        //     PaymentTerm::setGlobalTable('company_'.$company_id.'_payment_terms');
+        //         $data = [
+        //             'name' => '30-60-90 Days',
+        //             ];
+        //             PaymentTerm::create($data);
+        // }
+
         /* Creating dynamic company based default pdf options table */
         if (!Schema::hasTable('company_'.$company_id.'_default_pdf_send_options')) {
             Schema::create('company_'.$company_id.'_default_pdf_send_options', function (Blueprint $table) {

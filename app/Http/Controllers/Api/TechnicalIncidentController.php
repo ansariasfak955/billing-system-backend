@@ -38,7 +38,7 @@ class TechnicalIncidentController extends Controller
             $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhere('reference', 'like', '%'.$request->search.'%')
             ->orWhere('status', 'like', '%'.$request->search.'%')
             ->orWhere('description', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
-                $q->where('name',  'like','%'.$request->search.'%');
+                $q->where('legal_name',  'like','%'.$request->search.'%');
             });
         }
         //set reference table

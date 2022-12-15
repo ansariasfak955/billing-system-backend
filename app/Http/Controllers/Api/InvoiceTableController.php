@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\InvoiceTable;
 use App\Models\InvoiceReceipt;
 use App\Models\Item;
+use App\Models\PaymentTerm;
 use App\Models\ItemMeta;
 use App\Models\Client;
 use App\Models\Reference;
@@ -55,9 +56,9 @@ class InvoiceTableController extends Controller
            $query = $query->whereIn('reference', $refernce_ids);
        }
         if($request->search){
-            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->where('reference', 'like', '%'.$request->search.'%')
+            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhere('reference', 'like', '%'.$request->search.'%')
             ->orWhereHas('client', function($q) use ($request){
-                $q->where('name',  'like','%'.$request->search.'%')->where('email',  'like','%'.$request->search.'%');;
+                $q->where('legal_name',  'like','%'.$request->search.'%')->orWhere('email',  'like','%'.$request->search.'%');;
             });
         }
 
@@ -220,38 +221,34 @@ class InvoiceTableController extends Controller
                 }
                 $insertedInvoice = InvoiceTable::with(['items', 'item_meta'])->find($invoice->id);
                 $status = ($request->status == 'paid') ? '1' : '0';
-                if($request->payment_term == 'immediate'){
+                if($request->payment_term){
 
-                    InvoiceReceipt::create([
-                        'expiration_date' => date('Y-m-d'),
-                        'invoice_id' => $insertedInvoice->id,
-                        'amount' =>  ($insertedInvoice->amount) ? $insertedInvoice->amount  :0,
-                        'payment_option' => $request->payment_option,
-                        'paid' => $status,
-                        'type' => $insertedInvoice->reference
-                    ]);
-                    
-                }else{
-                    $partialAmount = 0 ;
+                    $table = 'company_'.$request->company_id.'_payment_terms';
+                    PaymentTerm::setGlobalTable($table);
+                    $paymentTerms = PaymentTerm::where('id', $request->payment_term)->pluck('terms')->first();
 
-                    if($insertedInvoice->amount){
-                        $partialAmount  = $insertedInvoice->amount/3;
-                    }
+                   if(count($paymentTerms)){
+                        foreach($paymentTerms as $key => $term){
+                            if($insertedInvoice->amount){
+                                $partialAmount  = $insertedInvoice->amount*$term->percentage/100;
+                            }
 
-                    for($i=1 ;$i<=3; $i++){
-                        $daysToBeAdded = $i*30;
-                        $expirationDate = Date('Y-m-d', strtotime("+$daysToBeAdded days"));
+                            $daysToBeAdded = $term->days;
+                            $expirationDate = Date('Y-m-d', strtotime("+$daysToBeAdded days"));
 
-                        InvoiceReceipt::create([
-                            'expiration_date' => $expirationDate,
-                            'invoice_id' => $insertedInvoice->id,
-                            'amount' =>  $partialAmount,
-                            'payment_option' => $request->payment_option,
-                            'paid' => $status,
-                            'type' => $insertedInvoice->reference
-                        ]);
-                    }
-                }
+                            InvoiceReceipt::create([
+                                'expiration_date' => $expirationDate,
+                                'invoice_id' => $insertedInvoice->id,
+                                'amount' =>  $partialAmount,
+                                'payment_option' => $request->payment_option,
+                                'paid' => $status,
+                                'type' => $insertedInvoice->reference
+                            ]);
+                        }
+                   }
+                   
+                }   
+
             }
 
             return response()->json([
