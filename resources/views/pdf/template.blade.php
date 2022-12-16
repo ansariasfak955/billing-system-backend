@@ -5,7 +5,9 @@
     $company_name_show = 0;
     $company_country_show = 0;
     $document_payment_info_show = 0;
+    $document_number_show = 0;
     $document_status_show = 0;
+    $document_date_show = 0;
     $document_status_text = 'Status:';
     $document_created_by_show = 0;
     $document_created_by_text = 'Created by:';
@@ -120,6 +122,30 @@
         @if($meta->category == 'Document Information' && $meta->type == 'document_status' && $meta->option_name == 'text')
             @php
             $document_status_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'document_date' && $meta->option_name == 'show')
+            @php
+            $document_date_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'document_date' && $meta->option_name == 'text')
+            @php
+            $document_date_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'document_number' && $meta->option_name == 'show')
+            @php
+            $document_number_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'document_number' && $meta->option_name == 'text')
+            @php
+            $document_number_text = $meta->option_value;
             @endphp
         @endif
 
@@ -351,7 +377,7 @@
         }
     </style>
 
-    <div style="position:relative; font-size: 13px; font-family:{{$font}};">
+    <div style="position:relative; font-size: 12px; font-family:{{$font}};">
         <img src="{{ $watermark_image }}" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px">
         <div style="margin-top: 0px;height: 45px;">
         @if($company_company_info_show != 1)
@@ -360,7 +386,7 @@
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         @if($company_logo_show)
-                            <img src="{{ asset('light.png') }}" alt="" srcset="" style="width: 120px; height: auto; object-fit: cover;">
+                            <img src="{{ $company->logo }}" alt="" srcset="" style="width: 120px; height: auto; object-fit: cover;">
                         @endif
                         </td>
                         <td class="header_border" @if($company_name_show || $company_country_show) @endif>
@@ -403,12 +429,26 @@
             <div style="margin-top: 20px;font-size: 13px">
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} INFO</th>
-                    <tr><td style="padding: 0; margin: 0;">Number: <b>INV00001</b></td></tr>
-                    <tr><td style="padding: 0; margin: 0;">Date: <b>{{ date('d F Y') }}</b></td></tr>
+                    @if($document_number_show == 1)
+                        <tr>
+                            <td style="padding: 0; margin: 0;">
+                            {{ $document_number_text ? $document_number_text : 'Number:'}} <b> INV00001</b>
+                            </td>
+                        </tr>
+                    @endif
+
+                    @if($document_number_show == 1)
+                        <tr>
+                            <td style="padding: 0; margin: 0;">
+                            {{ $document_date_text ? $document_date_text : 'Date:'}} <b>{{ date('d F Y') }}</b>
+                            </td>
+                        </tr>
+                    @endif
+
                     @if($document_payment_info_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}}<b>Online Bank Transfer</b>
+                                {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}}<b> Online Bank Transfer</b>
                             </td>
                         </tr>
                     @endif
@@ -416,7 +456,7 @@
                     @if($document_status_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_status_text ? $document_status_text : 'Status:'}}<b>Pending</b>
+                                {{ $document_status_text ? $document_status_text : 'Status:'}}<b> Pending</b>
                             </td>
                         </tr>
                     @endif
@@ -424,14 +464,14 @@
                     @if($document_created_by_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_created_by_text ? $document_created_by_text : 'Created by:'}}<b>Test View Account</b>
+                                {{ $document_created_by_text ? $document_created_by_text : 'Created by:'}}<b> Test View Account</b>
                             </td>
                         </tr>
                     @endif
 
                     <tr>
                         <td style="padding: 0; margin: 0;">
-                            Delivery to: <b>HongKong 9205 Olive Ave., 10977, Spring Valley, NY, United States</b>
+                            Delivery to: <b> HongKong 9205 Olive Ave., 10977, Spring Valley, NY, United States</b>
                         </td>
                     </tr>
 
@@ -499,7 +539,7 @@
                     </tr>
                 
                     <tr>
-                    {{$client_supplier_city_show}}
+                    {{@$client_supplier_city_show}}
                     <td style="padding: 0; margin: 0;">
                     @if(@$client_supplier_city_show == 1)
                         {{-- <b>{{$client_supplier_city_show}}</b>
