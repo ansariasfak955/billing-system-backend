@@ -5,9 +5,7 @@
     $company_name_show = 0;
     $company_country_show = 0;
     $document_payment_info_show = 0;
-    $document_number_show = 0;
     $document_status_show = 0;
-    $document_date_show = 0;
     $document_status_text = 'Status:';
     $document_created_by_show = 0;
     $document_created_by_text = 'Created by:';
@@ -437,7 +435,7 @@
                         </tr>
                     @endif
 
-                    @if($document_number_show == 1)
+                    @if($document_date_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                             {{ $document_date_text ? $document_date_text : 'Date:'}} <b>{{ date('d F Y') }}</b>
