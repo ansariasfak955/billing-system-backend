@@ -5,6 +5,8 @@
     $company_name_show = 0;
     $company_country_show = 0;
     $document_payment_info_show = 0;
+    $document_number_show = 0;
+    $document_date_show = 0;
     $document_status_show = 0;
     $document_status_text = 'Status:';
     $document_created_by_show = 0;
