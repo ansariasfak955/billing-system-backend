@@ -441,6 +441,13 @@ class PurchaseTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
+        if($purchase_table->status == 'unpaid'){
+            return response()->json([
+                'status' => false,
+                'message' => "Can not delete unpaid purchases invoice"
+            ]);
+        }
+
         Item::where('parent_id', $purchase_table->id)->delete();
         ItemMeta::where('parent_id', $purchase_table->id)->delete();
 

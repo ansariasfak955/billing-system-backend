@@ -417,6 +417,13 @@ class TechnicalTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
+        if($technical_incident->status == 'pending'){
+            return response()->json([
+                'status' => false,
+                'message' => "Can not delete pending work order"
+            ]);
+        }
+
         Item::where('parent_id', $technical_incident->id)->delete();
         ItemMeta::where('parent_id', $technical_incident->id)->delete();
 
@@ -454,6 +461,7 @@ class TechnicalTableController extends Controller
                 'message' => 'Deleted successfully'
             ]);
     }
+
     public function duplicate(Request $request){
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
