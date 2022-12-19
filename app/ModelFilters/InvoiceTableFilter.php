@@ -20,11 +20,6 @@ class InvoiceTableFilter extends ModelFilter
 
     public function search($search)
     {
-                // return $q->where('reference_number', 'like', '%'.$search.'%')->orWhere('reference', 'like', '%'.$search.'%')
-                // ->orWhere('title', 'like', '%'.$search.'%')->orWhere('status', 'like', '%'.$search.'%')->orWhere('date', 'like', '%'.$search.'%');
-                // ->orWhereHas('client', function($q) use ($request){
-                // $q->where('legal_name',  'like','%'.$search.'%')->orWhere('email',  'like','%'.$search.'%');;
-            // });
             return $this->where(function($q) use ($search)
             {
                 return $q->where('reference_number', 'like', '%'.$search.'%')->orWhere('reference', 'like', '%'.$search.'%')
@@ -33,6 +28,19 @@ class InvoiceTableFilter extends ModelFilter
                     $q->where('legal_name',  'like','%'.$search.'%')->orWhere('email',  'like','%'.$search.'%');;
                 });
             });
+    }
+
+    public function status($status)
+    {
+            $this->where('status', $status);
+    }
+    public function reference($reference)
+    {
+        $this->where('reference', $reference);
+    }
+    public function date($date)
+    {
+        $this->whereDate('date', $date);
     }
 
 }
