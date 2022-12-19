@@ -5,8 +5,6 @@
     $company_name_show = 0;
     $company_country_show = 0;
     $document_payment_info_show = 0;
-    $document_number_show = 0;
-    $document_date_show = 0;
     $document_status_show = 0;
     $document_status_text = 'Status:';
     $document_created_by_show = 0;
@@ -158,6 +156,18 @@
         @if($meta->category == 'Document Information' && $meta->type == 'document_created' && $meta->option_name == 'text')
             @php
             $document_created_by_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'document_delivery' && $meta->option_name == 'show')
+            @php
+            $document_delivery_to_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'document_delivery' && $meta->option_name == 'text')
+            @php
+            $document_delivery_to_text = $meta->option_value;
             @endphp
         @endif
 
@@ -429,7 +439,7 @@
             <div style="margin-top: 20px;font-size: 13px">
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} INFO</th>
-                    @if($document_number_show == 1)
+                    @if(@$document_number_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                             {{ $document_number_text ? $document_number_text : 'Number:'}} <b> INV00001</b>
@@ -437,7 +447,7 @@
                         </tr>
                     @endif
 
-                    @if($document_date_show == 1)
+                    @if(@$document_date_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                             {{ $document_date_text ? $document_date_text : 'Date:'}} <b>{{ date('d F Y') }}</b>
@@ -445,7 +455,7 @@
                         </tr>
                     @endif
 
-                    @if($document_payment_info_show == 1)
+                    @if(@$document_payment_info_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                                 {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}}<b> Online Bank Transfer</b>
@@ -453,7 +463,7 @@
                         </tr>
                     @endif
 
-                    @if($document_status_show == 1)
+                    @if(@$document_status_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                                 {{ $document_status_text ? $document_status_text : 'Status:'}}<b> Pending</b>
@@ -461,7 +471,7 @@
                         </tr>
                     @endif
                     
-                    @if($document_created_by_show == 1)
+                    @if(@$document_created_by_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                                 {{ $document_created_by_text ? $document_created_by_text : 'Created by:'}}<b> Test View Account</b>
@@ -469,11 +479,13 @@
                         </tr>
                     @endif
 
+                    @if(@$document_delivery_to_show ==1)
                     <tr>
                         <td style="padding: 0; margin: 0;">
-                            Delivery to: <b> HongKong 9205 Olive Ave., 10977, Spring Valley, NY, United States</b>
+                        {{ $document_delivery_to_text ? $document_delivery_to_text : 'Delivery to:'}} <b> HongKong 9205 Olive Ave., 10977, Spring Valley, NY, United States</b>
                         </td>
                     </tr>
+                    @endif
 
                     @if(@$document_delivery_by_show == 1)
                         <tr>
