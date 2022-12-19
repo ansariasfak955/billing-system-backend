@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
+
 use Awobaz\Compoships\Compoships;
 
 class InvoiceTable extends Model
 {
-    use HasFactory, Compoships;
+    use HasFactory, Compoships,Filterable;
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_tables' ;
 
@@ -99,5 +101,9 @@ class InvoiceTable extends Model
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_reference_type($company_id, $this->attributes['reference']);
         }
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\InvoiceTableFilter::class);
     }
 }

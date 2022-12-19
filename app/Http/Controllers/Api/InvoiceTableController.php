@@ -55,18 +55,8 @@ class InvoiceTableController extends Controller
            $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
            $query = $query->whereIn('reference', $refernce_ids);
        }
-        if($request->search){
-            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhere('reference', 'like', '%'.$request->search.'%')
-            ->orWhere('title', 'like', '%'.$request->search.'%')->orWhere('status', 'like', '%'.$request->search.'%')->orWhere('date', 'like', '%'.$request->search.'%')
-            ->orWhereHas('client', function($q) use ($request){
-                $q->where('legal_name',  'like','%'.$request->search.'%')->orWhere('email',  'like','%'.$request->search.'%');;
-            });
-        }
 
-        if( $request->invoice_id ){
-            $query = $query->where('id', $request->invoice_id);
-        }
-        $query = $query->get();
+        $query =  $query->filter($request->all())->get();
         if(!count($query)){
 
                 return response()->json([
