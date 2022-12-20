@@ -417,10 +417,16 @@ class TechnicalTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        if($technical_incident->status == 'pending'){
+        if($technical_incident->status == 'closed'){
             return response()->json([
                 'status' => false,
-                'message' => "Can not delete pending work order"
+                'message' => "Can not delete work order"
+            ]);
+        }
+        if($technical_incident->status == 'invoiced'){
+            return response()->json([
+                'status' => false,
+                'message' => "Can not delete work delivery note"
             ]);
         }
 

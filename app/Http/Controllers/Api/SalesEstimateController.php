@@ -428,6 +428,13 @@ class SalesEstimateController extends Controller
                 'message' => "Sales estimate not exist!"
             ]);
         } else {
+            if($sales_estimate->status == 'closed'){
+                return response()->json([
+                    'status' => false,
+                    'message' => "Can not delete estimate"
+                ]);
+            }
+
             if($sales_estimate->delete()){
                 Storage::delete('public/sales-estimate/signature/'.$sales_estimate->signature.'');
                 return response()->json([
