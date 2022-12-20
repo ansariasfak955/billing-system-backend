@@ -7,6 +7,10 @@ use App\Models\Client;
 use App\Models\ClientAttachment;
 use App\Models\ClientSpecialPrice;
 use App\Models\Reference;
+use App\Models\Item;
+use App\Models\InvoiceTable;
+use App\Models\InvoiceReceipt;
+
 use Illuminate\Http\Request;
 use Validator;
 
@@ -286,5 +290,44 @@ class ClientController extends Controller
             'message' => 'Duplicate Clients successfully',
             'data' =>  Client::with('client_attachments')->find( $duplicatedClient->id)
         ]);
+    }
+
+    public function TotalBalance(Request $request){
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        // set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        //get dynamic reference
+        $refernce_ids = Reference::where('type', 'Ordinary Invoice')->pluck('prefix')->toArray();
+        $refernce_id = Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
+
+        $invoiceBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
+        $invoiceRefundBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get()->sum('amount');
+        $invoiceTotalBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->get()->sum('amount');
+        // dd($invoiceTotalBalance);
+        $data = [
+                "Unpaid Invoices" => "$ ". number_format($invoiceBalance, 2), 
+                "Unpaid Refunds" => "$ ". number_format($invoiceRefundBalance, 2), 
+                "Available Balance" => "$ ". number_format(0, 2), 
+                "Total Balance" => "$ ". number_format($invoiceTotalBalance, 2) 
+        ];
+        
+
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+         
     }
 }
