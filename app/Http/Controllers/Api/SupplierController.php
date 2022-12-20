@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Supplier;
 use App\Models\Reference;
+use App\Models\Item;
+use App\Models\PurchaseReceipt;
+use App\Models\PurchaseTable;
 use App\Models\supplierSpecialPrice;
 use Illuminate\Http\Request;
 use Validator;
@@ -264,5 +267,41 @@ class SupplierController extends Controller
             'message' => 'Duplicate Suppliers Successfully',
             'data' => $technicalSupplier
         ]);
+    }
+
+    public function TotalBalance(Request $request){
+
+        $table = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        //get dynamic reference
+        $refernce_ids = Reference::where('type', 'Purchase Invoice')->pluck('prefix')->toArray();
+
+        $purchasesUnpaid = PurchaseTable::with('items')->where('supplier_id', $request->supplier_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
+        $purchasesTotalBalance = PurchaseTable::with('items')->where('supplier_id', $request->supplier_id)->get()->sum('amount');
+        $data = [
+            "Unpaid Purchase" => "$ ". number_format($purchasesUnpaid, 2), 
+            "Unpaid Refunds" => "$ ". number_format(0, 2), 
+            "Available Balance" => "$ ". number_format(0, 2), 
+            "Total Balance" => "$ ". number_format($purchasesTotalBalance, 2) 
+        ];
+    
+
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+
     }
 }

@@ -37,6 +37,10 @@ class PurchaseTableController extends Controller
 
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($invoiceReceiptTable);
         $supplier_table = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($supplier_table);
         $query = PurchaseTable::query();
