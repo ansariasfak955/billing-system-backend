@@ -292,7 +292,7 @@ class ClientController extends Controller
         ]);
     }
 
-    public function TotalBalance(Request $request){
+    public function clientBalance(Request $request){
         $table = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($table);
 
@@ -317,10 +317,10 @@ class ClientController extends Controller
         $invoiceTotalBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->get()->sum('amount');
         // dd($invoiceTotalBalance);
         $data = [
-                "Unpaid Invoices" => "$ ". number_format($invoiceBalance, 2), 
-                "Unpaid Refunds" => "$ ". number_format($invoiceRefundBalance, 2), 
-                "Available Balance" => "$ ". number_format(0, 2), 
-                "Total Balance" => "$ ". number_format($invoiceTotalBalance, 2) 
+                "unpaid_invoices" => "$ ". number_format($invoiceBalance, 2), 
+                "unpaid_refunds" => "$ ". number_format($invoiceRefundBalance, 2), 
+                "available_balance" => "$ ". number_format(0, 2), 
+                "total_balance" => "$ ". number_format($invoiceTotalBalance, 2) 
         ];
         
 

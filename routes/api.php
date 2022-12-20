@@ -233,7 +233,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('clients/batch-delete', 'ClientController@batchDelete');
             Route::post('clients/duplicate-client', 'ClientController@duplicate');
             Route::post('clients/export', 'ClientController@export');
-            Route::get('get-balance', 'ClientController@TotalBalance');
+            Route::get('client-balance', 'ClientController@clientBalance');
             Route::apiResource('client-contacts', ClientContactController::class);
             Route::apiResource('client-special-prices', ClientSpecialPriceController::class);
             Route::apiResource('client-assets', ClientAssetController::class);
@@ -276,7 +276,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('suppliers', SupplierController::class);
             Route::post('suppliers/batch-delete', 'SupplierController@batchDelete');
             Route::post('suppliers/duplicate-supplier', 'SupplierController@duplicate');
-            Route::get('get-balance', 'SupplierController@TotalBalance');
+            Route::get('supplier-balance', 'SupplierController@supplierBalance');
             Route::apiResource('purchase-attachments', PurchaseAttachmentController::class);
             Route::apiResource('supplier-addresses', SupplierAddressController::class);
             Route::apiResource('supplier-special-prices', SupplierSpecialPriceController::class);

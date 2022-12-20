@@ -269,7 +269,7 @@ class SupplierController extends Controller
         ]);
     }
 
-    public function TotalBalance(Request $request){
+    public function supplierBalance(Request $request){
 
         $table = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($table);
@@ -291,10 +291,10 @@ class SupplierController extends Controller
         $purchasesUnpaid = PurchaseTable::with('items')->where('supplier_id', $request->supplier_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
         $purchasesTotalBalance = PurchaseTable::with('items')->where('supplier_id', $request->supplier_id)->get()->sum('amount');
         $data = [
-            "Unpaid Purchase" => "$ ". number_format($purchasesUnpaid, 2), 
-            "Unpaid Refunds" => "$ ". number_format(0, 2), 
-            "Available Balance" => "$ ". number_format(0, 2), 
-            "Total Balance" => "$ ". number_format($purchasesTotalBalance, 2) 
+            "unpaid_purchase" => "$ ". number_format($purchasesUnpaid, 2), 
+            "unpaid_refunds" => "$ ". number_format(0, 2), 
+            "available_balance" => "$ ". number_format(0, 2), 
+            "total_balance" => "$ ". number_format($purchasesTotalBalance, 2) 
         ];
     
 
