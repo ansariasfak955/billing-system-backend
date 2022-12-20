@@ -451,6 +451,18 @@ class PurchaseTableController extends Controller
                 'message' => "Can not delete unpaid purchases invoice"
             ]);
         }
+        if($purchase_table->status == 'received'){
+            return response()->json([
+                'status' => false,
+                'message' => "Can not delete purchases invoice"
+            ]);
+        }
+        if($purchase_table->status == 'invoiced'){
+            return response()->json([
+                'status' => false,
+                'message' => "Can not delete purchases invoice"
+            ]);
+        }
 
         Item::where('parent_id', $purchase_table->id)->delete();
         ItemMeta::where('parent_id', $purchase_table->id)->delete();
