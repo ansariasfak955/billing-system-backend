@@ -8,12 +8,14 @@ use App\Models\MyTemplate;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Item;
+use App\Models\SendMail;
 use App\Models\SalesEstimate;
 use App\Models\MyTemplateMeta;
 use App\Models\Reference;
 use App\Models\Service;
 use PDF;
 use Mail;
+use Storage;
 use Validator;
 use App;
 
@@ -68,14 +70,23 @@ class SendEmailController extends Controller
         }else{
             $template_id = Reference::where('type', $type)->where('by_default', '1')->pluck('template_id')->first();
         }
-        $template = MyTemplate::where('id', $template_id)->first();
+        $template = MyTemplate::where('id', $template_id)->first(); 
         // return storage_path('fonts');
         
         if($request->send_to){
-            
+
             return $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','salesEstimate', 'total', 'request'))->save('my_stored_file.pdf')->stream();
         }
+        
+        $salesEstimate = $template->id."/my_stored_file";
         $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','salesEstimate', 'total','request'));
+        \Storage::put('/public/temp/'.$salesEstimate, $pdf->output());
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/temp/'.$salesEstimate),
+         ]);
+
         return $pdf->stream();
 
     }
