@@ -401,8 +401,8 @@
                         @endif
                         </td>
                         <td class="header_border" @if($company_name_show || $company_country_show) @endif>
-                            <span style="margin-left: 30px;">{{ $company_name_show == 1 ? $company->name : 'Name' }}</span> <br>
-                            <span style="margin-left: 30px;">{{ $company_legal_name_show == 1 ? $company_legal_name_text: 'Legal Name' }}</span> <br>
+                            <span style="margin-left: 30px;">Name {{ $company_name_show == 1 ? $company->name : '' }}</span> <br>
+                            <span style="margin-left: 30px;">Legal Name {{ $company_legal_name_show == 1 ? $company_legal_name_text: '' }}</span> <br>
                             <span style="margin-left: 30px;">{{ $company_country_show == 1 ? $company->country : '' }}</span>
                         </td>
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
