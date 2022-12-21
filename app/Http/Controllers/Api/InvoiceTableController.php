@@ -448,18 +448,11 @@ class InvoiceTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
         
-        // $status = InvoiceReceipt::where('invoice_id', $invoice->id)->where('paid', '0')->first();
-        // if($status){
-        //     return response()->json([
-        //         'status' => false,
-        //         'message' => "Can not delete unpaid invoice!"
-        //     ]);
-        // }
 
         if($invoice->status == 'unpaid'){
             return response()->json([
                 'status' => false,
-                'message' => "Can not delete unpaid invoice"
+                'message' => "Unable to delete documents"
             ]);
         }
 

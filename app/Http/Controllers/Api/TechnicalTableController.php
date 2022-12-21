@@ -420,13 +420,13 @@ class TechnicalTableController extends Controller
         if($technical_incident->status == 'closed'){
             return response()->json([
                 'status' => false,
-                'message' => "Can not delete work order"
+                'message' => "Unable to delete documents"
             ]);
         }
         if($technical_incident->status == 'invoiced'){
             return response()->json([
                 'status' => false,
-                'message' => "Can not delete work delivery note"
+                'message' => "Unable to delete documents"
             ]);
         }
 

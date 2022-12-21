@@ -246,6 +246,13 @@ class TechnicalIncidentController extends Controller
             ]);
         }
 
+        if($technical_incident->status == 'closed'){
+            return response()->json([
+                'status' => false,
+                'message' => 'Unable to delete documents'
+            ]);
+        }
+
         if($technical_incident->delete()){
             return response()->json([
                 'status' => true,

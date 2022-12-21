@@ -431,7 +431,7 @@ class SalesEstimateController extends Controller
             if($sales_estimate->status == 'closed'){
                 return response()->json([
                     'status' => false,
-                    'message' => "Can not delete estimate"
+                    'message' => "Unable to delete documents"
                 ]);
             }
 

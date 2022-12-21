@@ -448,19 +448,19 @@ class PurchaseTableController extends Controller
         if($purchase_table->status == 'unpaid'){
             return response()->json([
                 'status' => false,
-                'message' => "Can not delete unpaid purchases invoice"
+                'message' => "Unable to delete documents"
             ]);
         }
         if($purchase_table->status == 'received'){
             return response()->json([
                 'status' => false,
-                'message' => "Can not delete purchases invoice"
+                'message' => "Unable to delete documents"
             ]);
         }
         if($purchase_table->status == 'invoiced'){
             return response()->json([
                 'status' => false,
-                'message' => "Can not delete purchases invoice"
+                'message' => "Unable to delete documents"
             ]);
         }
 
