@@ -3,6 +3,7 @@
     $company_logo_show = 0;
     $company_website_show = [];
     $company_name_show = 0;
+    $company_legal_name_show = 0;
     $company_country_show = 0;
     $document_payment_info_show = 0;
     $document_reference_show = 0;
@@ -62,6 +63,11 @@
         @if($meta->category == 'Company Information' && $meta->type == 'name' && $meta->option_name == 'show')
             @php
             $company_name_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'legal' && $meta->option_name == 'show')
+            @php
+            $company_legal_name_show = $meta->option_value;
             @endphp
         @endif
 
@@ -391,6 +397,7 @@
                         </td>
                         <td class="header_border" @if($company_name_show || $company_country_show) @endif>
                             <span style="margin-left: 30px;">{{ $company_name_show == 1 ? $company->name : '' }}</span> <br>
+                            <span style="margin-left: 30px;">{{ $company_legal_name_show == 1 ? $company->legal_name : '' }}</span> <br>
                             <span style="margin-left: 30px;">{{ $company_country_show == 1 ? $company->country : '' }}</span>
                         </td>
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
