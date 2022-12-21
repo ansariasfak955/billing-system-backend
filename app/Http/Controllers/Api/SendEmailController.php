@@ -12,6 +12,8 @@ use App\Models\SalesEstimate;
 use App\Models\MyTemplateMeta;
 use App\Models\Reference;
 use App\Models\Service;
+use PDF;
+use Mail;
 use Validator;
 use App;
 
@@ -75,5 +77,6 @@ class SendEmailController extends Controller
         }
         $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','salesEstimate', 'total','request'));
         return $pdf->stream();
+
     }
 }
