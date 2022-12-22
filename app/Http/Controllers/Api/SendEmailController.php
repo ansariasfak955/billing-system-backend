@@ -54,7 +54,7 @@ class SendEmailController extends Controller
                 }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
-                $item->reference  = $item->reference. $parent->reference_number ?? '-';
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
                 $products[] = $item;
             }
             
@@ -66,7 +66,6 @@ class SendEmailController extends Controller
         Reference::setGlobalTable('company_'.$request->company_id.'_references');
         if($request->template_id){
             $template_id = $request->template_id;
-            return $template_id;
         }else{
             $template_id = Reference::where('type', $type)->where('by_default', '1')->pluck('template_id')->first();
         }
