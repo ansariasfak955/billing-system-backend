@@ -12,8 +12,8 @@
     $company_company_info_show = 0;
     $document_title_show = 0;
     $document_title_text = '';
-    $font = $template->font;
-    $color = $template->color;
+    $font = @$template->font;
+    $color = @$template->color;
 @endphp
   
     <style>
@@ -50,7 +50,7 @@
     
     
 
-    @foreach($template->metas as $meta)
+    @foreach(@$template->metas as $meta)
         @if($meta->category == 'Company Information' && $meta->type == 'logo' && $meta->option_name == 'show')
             @php
             $company_logo_show = $meta->option_value;
@@ -404,13 +404,13 @@
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} INFO</th>
 
-                    <tr><td style="padding: 0; margin: 0;">Number: <b>{{ @$salesEstimate->reference.''.@$salesEstimate->reference_number }}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;">Number: <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
 
-                    <tr><td style="padding: 0; margin: 0;">Date: <b>{{ @$salesEstimate->date }}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;">Date: <b>{{ @$invoiceData->date }}</b></td></tr>
                     @if($document_payment_info_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}} <b>{{ @$salesEstimate->payment_option }}</b>
+                                {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}} <b>{{ @$invoiceData->payment_option }}</b>
                             </td>
                         </tr>
                     @endif
@@ -418,7 +418,7 @@
                     @if($document_status_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_status_text ? $document_status_text : 'Status:'}} <b>{{ @$salesEstimate->status }}</b>
+                                {{ $document_status_text ? $document_status_text : 'Status:'}} <b>{{ @$invoiceData->status }}</b>
                             </td>
                         </tr>
                     @endif
@@ -433,14 +433,14 @@
 
                     <tr>
                         <td style="padding: 0; margin: 0;">
-                            Delivery to: <b>{{ @$salesEstimate->delivery_address }}</b>
+                            Delivery to: <b>{{ @$invoiceData->delivery_address }}</b>
                         </td>
                     </tr>
 
                     @if(@$document_delivery_by_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>{{ @$salesEstimate->delivery_option }}</b>
+                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>{{ @$invoiceData->delivery_option }}</b>
                             </td>
                         </tr>
                     @endif

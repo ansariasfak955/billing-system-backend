@@ -8,11 +8,11 @@ use App\Models\MyTemplate;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Item;
-use App\Models\SendMail;
 use App\Models\SalesEstimate;
 use App\Models\MyTemplateMeta;
 use App\Models\Reference;
 use App\Models\Service;
+use App\Mail\SendMail;
 use PDF;
 use Mail;
 use Storage;
@@ -44,8 +44,8 @@ class SendEmailController extends Controller
         if($type == 'Sales Estimate'){
             $table = 'company_'.$request->company_id.'_sales_estimates';
             SalesEstimate::setGlobalTable($table);
-            $salesEstimate = SalesEstimate::with('items')->find($request->id);
-            $items =  $salesEstimate->items;
+            $invoiceData = SalesEstimate::with('items')->find($request->id);
+            $items =  $invoiceData->items;
             $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
             foreach($items as $item){
@@ -73,21 +73,31 @@ class SendEmailController extends Controller
         $template = MyTemplate::where('id', $template_id)->first(); 
         // return storage_path('fonts');
         
-        if($request->send_to){
-
-            return $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','salesEstimate', 'total', 'request'))->save('my_stored_file.pdf')->stream();
-        }
         
-        $salesEstimate = $template->id."/my_stored_file";
-        $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','salesEstimate', 'total','request'));
-        \Storage::put('/public/temp/'.$salesEstimate, $pdf->output());
-
+        $attachment =  $template->id."_invoice.pdf";
+        $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
+        
+        \Storage::put('/public/temp/'.$attachment, $pdf->output());
+        if($request->send_to){
+            $subject = $request->subject;
+            $body = $request->body;
+            Mail::to($request->send_to)->send(new SendMail($attachment, $subject , $body, $pdf));
+            return response()->json([
+                'status' => true,
+                'message' => 'Mail Sent!',
+            ]);
+        }
         return response()->json([
             'status' => true,
-            'url' => url('/storage/temp/'.$salesEstimate),
+            'url' => url('/storage/temp/'.$attachment),
          ]);
 
-        return $pdf->stream();
+            //delete the file
+            if(file_exists(public_path().'/storage/temp/'. $attachment)){
+                unlink(public_path().'/storage/temp/'. $attachment);
+            }
+            
+        return $pdf->stream();  
 
     }
 }
