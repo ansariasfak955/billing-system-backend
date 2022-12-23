@@ -428,7 +428,7 @@ class SalesEstimateController extends Controller
                 'message' => "Sales estimate not exist!"
             ]);
         } else {
-            if($sales_estimate->status == 'closed'){
+            if($sales_estimate->status == 'closed' || $sales_estimate->status == 'invoiced'){
                 return response()->json([
                     'status' => false,
                     'message' => "Unable to delete documents"
