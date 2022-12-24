@@ -417,7 +417,8 @@ class TechnicalTableController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        if($technical_incident->status == 'closed' || $technical_incident->status == 'invoiced'){
+        $restrictDelete = ['closed', 'invoiced', 'Closed', 'Invoiced'];
+        if(in_array($technical_incident->status,  $restrictDelete)){
             return response()->json([
                 'status' => false,
                 'message' => "Unable to delete documents"
