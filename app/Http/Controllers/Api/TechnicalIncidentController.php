@@ -249,7 +249,7 @@ class TechnicalIncidentController extends Controller
         if($technical_incident->status == 'closed' || $technical_incident->status == 'Closed'){
             return response()->json([
                 'status' => false,
-                'message' => 'Unable to delete documents'
+                'message' => 'Closed Incident cannot be deleted!'
             ]);
         }
 
