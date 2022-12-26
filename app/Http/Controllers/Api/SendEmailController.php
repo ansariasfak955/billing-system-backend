@@ -58,6 +58,38 @@ class SendEmailController extends Controller
                 $products[] = $item;
             }
             
+        }elseif($type == 'Sales Order'){
+            $table = 'company_'.$request->company_id.'_sales_estimates';
+            SalesEstimate::setGlobalTable($table);
+            $invoiceData = SalesEstimate::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference != 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
+        }elseif($type == 'Sales Delivery Note'){
+            $table = 'company_'.$request->company_id.'_sales_estimates';
+            SalesEstimate::setGlobalTable($table);
+            $invoiceData = SalesEstimate::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference != 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
         }
 
 
