@@ -392,7 +392,7 @@
         </div>
 
         @if(@$document_type_show == 1)
-            <div style="text-align: center; margin-top: 20px;">
+            <div style="text-align: center; margin-top: 25px;">
                 <h2>{{ ($request->format == 'pro_forma') ? 'PRO FORMA' : $template->name }}</h2>
                 @if($document_title_show && $document_title_text)
                     {{ $document_title_text }}

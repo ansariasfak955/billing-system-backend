@@ -9,6 +9,8 @@ use App\Models\Company;
 use App\Models\Product;
 use App\Models\Item;
 use App\Models\SalesEstimate;
+use App\Models\TechnicalTable;
+use App\Models\InvoiceTable;
 use App\Models\MyTemplateMeta;
 use App\Models\Reference;
 use App\Models\Service;
@@ -90,6 +92,87 @@ class SendEmailController extends Controller
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
                 $products[] = $item;
             }
+        }elseif($type == 'Work Estimate'){
+            $table = 'company_'.$request->company_id.'_technical_tables';
+            TechnicalTable::setGlobalTable($table);
+            $invoiceData = TechnicalTable::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference == 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
+        }elseif($type == 'Work Order'){
+            $table = 'company_'.$request->company_id.'_technical_tables';
+            TechnicalTable::setGlobalTable($table);
+            $invoiceData = TechnicalTable::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference == 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
+        }
+        elseif($type == 'Work Delivery Note'){
+            $table = 'company_'.$request->company_id.'_technical_tables';
+            TechnicalTable::setGlobalTable($table);
+            $invoiceData = TechnicalTable::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference == 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
+        }elseif($type == 'Ordinary Invoice'){
+            $table = 'company_'.$request->company_id.'_invoice_tables';
+            InvoiceTable::setGlobalTable($table);
+            $invoiceData = InvoiceTable::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = InvoiceTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference == 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
+        }elseif($type == 'Refund Invoice'){
+            $table = 'company_'.$request->company_id.'_invoice_tables';
+            InvoiceTable::setGlobalTable($table);
+            $invoiceData = InvoiceTable::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = InvoiceTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference == 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
         }
 
 
@@ -103,7 +186,6 @@ class SendEmailController extends Controller
         }
         $template = MyTemplate::where('id', $template_id)->first(); 
         // return storage_path('fonts');
-        
         
         $attachment =  $template->id."_invoice.pdf";
         $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
