@@ -11,6 +11,7 @@ use App\Models\Item;
 use App\Models\SalesEstimate;
 use App\Models\TechnicalTable;
 use App\Models\InvoiceTable;
+use App\Models\PurchaseTable;
 use App\Models\MyTemplateMeta;
 use App\Models\Reference;
 use App\Models\Service;
@@ -163,6 +164,54 @@ class SendEmailController extends Controller
             $invoiceData = InvoiceTable::with('items')->find($request->id);
             $items =  $invoiceData->items;
             $total = InvoiceTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference == 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
+        }elseif($type == 'Purchase Order'){
+            $table = 'company_'.$request->company_id.'_purchase_tables';
+            PurchaseTable::setGlobalTable($table);
+            $invoiceData = PurchaseTable::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference == 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
+        }elseif($type == 'Purchase Delivery Note'){
+            $table = 'company_'.$request->company_id.'_purchase_tables';
+            PurchaseTable::setGlobalTable($table);
+            $invoiceData = PurchaseTable::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $products = [];
+            foreach($items as $item){
+                if($item->reference == 'PRO'){
+                    $parent = Product::find($item->reference_id);
+                }elseif($item->reference == 'SER'){
+                    $parent = Service::find($item->reference_id);
+                }
+                $item->reference  = $item->reference. @$parent->reference_number ?? '-';
+                $products[] = $item;
+            }
+        }elseif($type == 'Purchase Invoice'){
+            $table = 'company_'.$request->company_id.'_purchase_tables';
+            PurchaseTable::setGlobalTable($table);
+            $invoiceData = PurchaseTable::with('items')->find($request->id);
+            $items =  $invoiceData->items;
+            $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
