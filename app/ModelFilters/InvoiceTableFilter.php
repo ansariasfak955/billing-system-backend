@@ -42,5 +42,17 @@ class InvoiceTableFilter extends ModelFilter
     {
         $this->whereDate('date', $date);
     }
+    public function legalName($legalName)
+    {
+            return $this->whereHas('client', function($q) use ($legalName){
+                $q->where('legal_name', $legalName);
+            });
+    }
+    public function email($email)
+    {
+            return $this->whereHas('client', function($q) use ($email){
+                $q->where('email', $email);
+            });
+    }
 
 }
