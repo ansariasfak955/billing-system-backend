@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Awobaz\Compoships\Compoships;
+use EloquentFilter\Filterable;
 use URL;
 
 class SalesEstimate extends Model
 {
-    use HasFactory, Compoships;
+    use HasFactory, Compoships, Filterable;
 
     protected $fillable = [
     	'reference',
@@ -113,5 +114,9 @@ class SalesEstimate extends Model
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_reference_type($company_id, $this->attributes['reference']);
         }
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\SalesTableFilter::class);
     }
 }

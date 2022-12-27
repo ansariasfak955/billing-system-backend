@@ -41,14 +41,7 @@ class SalesEstimateController extends Controller
         Client::setGlobalTable($clientTable);
 
         $query = SalesEstimate::query();
-        // $sales_estimate = SalesEstimate::where('reference', $request->type)->get();
-        if($request->search){
-            $query = $query->Where('reference_number', 'like', '%'.$request->search.'%')->orWhere('title', 'like', '%'.$request->search.'%')
-            ->orWhere('status', 'like', '%'.$request->search.'%')->orWhere('date', 'like', '%'.$request->search.'%')->orWhere('reference', 'like', '%'.$request->search.'%')
-            ->orWhereHas('client', function($q) use ($request){
-                $q->where('legal_name',  'like','%'.$request->search.'%');
-            });
-        }
+
         if($request->type){
             //set reference table
             $referenceTable = 'company_'.$request->company_id.'_references';
@@ -57,7 +50,7 @@ class SalesEstimateController extends Controller
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
         }
-        $sales_estimate = $query->get();
+        $sales_estimate = $query->filter($request->all())->get();
 
         if ($sales_estimate->count() == 0) {
             return response()->json([
