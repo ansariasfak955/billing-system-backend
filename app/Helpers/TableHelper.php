@@ -11,6 +11,7 @@ use App\Models\ConsumptionTax;
 use App\Models\MyTemplateMeta;
 use App\Models\DefaultPdfSendOption;
 use App\Models\Setting;
+use App\Models\Rate;
 use App\Models\PaymentOption;
 // use Spatie\Permission\Models\Role;
 use App\Models\Role;
@@ -3139,7 +3140,16 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
                         'taxes' => '[{"tax": 12,"by_defualt": 1}]'
                     ]);
                 }
-        }  
+        } 
+
+        // add by default base tariff
+        if (Schema::hasTable('company_'.$company_id.'_rates')) {
+            Rate::setGlobalTable('company_'.$company_id.'_rates');
+                $data = [
+                    'name' => 'Base Tariff',
+                    ];
+                    Rate::create($data);
+        }
             
         // payment terms add static value
         // if (Schema::hasTable('company_'.$company_id.'_payment_terms')) {
