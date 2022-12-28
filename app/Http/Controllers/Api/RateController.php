@@ -86,7 +86,7 @@ class RateController extends Controller
             $rate->sales_margin = $product_rate->sales_margin;
             $rate->save();
         }
-        foreach($services as $service_rate){
+        foreach($services as $service_rate){$updateRate = $rate->update($request->except('company_id', '_method'));
             $serviceRate = ServiceRate::create(['name' => $request->name, 'description' =>$request->description, 'service_id' => $service_rate->id]);
             $serviceRate->purchase_price = $service_rate->purchase_price;
             $serviceRate->sales_price = $service_rate->price;
@@ -136,6 +136,12 @@ class RateController extends Controller
     public function update(Request $request)
     {
         Rate::setGlobalTable('company_'.$request->company_id.'_rates');
+
+        $productRate = 'company_'.$request->company_id.'_product_rates';
+        ProductRate::setGlobalTable($productRate);
+
+        $serviceRate = 'company_'.$request->company_id.'_service_rates';
+        ServiceRate::setGlobalTable($serviceRate);
         $validator = Validator::make($request->all(),[
             'name' => 'required'          
         ]);
@@ -147,8 +153,15 @@ class RateController extends Controller
             ]);
         }
         $rate = Rate::where('id', $request->rate)->first();
+        $rate_name = $rate->name;
         
         $updateRate = $rate->update($request->except('company_id', '_method'));
+        ProductRate::where('name', $rate_name)->update([
+            'name' => $request->name
+        ]);
+        ServiceRate::where('name', $rate_name)->update([
+            'name' => $request->name
+        ]);
         // dd($updateRate);
 
         return response()->json([
