@@ -397,7 +397,7 @@
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         @if($company_logo_show)
-                            <img src="{{ $company->logo }}" alt="" srcset="" style="width: 120px; height: 80px; object-fit: cover;">
+                            <img src="{{ $company->logo }}" alt="" srcset="" style="width: 100px; height: 70px; object-fit: cover;">
                         @endif
                         </td>
                         <td class="header_border" @if($company_name_show || $company_country_show) @endif>
