@@ -680,7 +680,7 @@
                                         <tr>
                                             <th class="table_heading" style="padding: 5px 0; text-align: left">TOTAL</th>
                                             <td style="padding: 0; margin: 0;"></td>
-                                            <th style="text-align: right">$ {{ $total+$vat }}</th>
+                                            <th style="text-align: right">$ {{ $total+$vat  }}</th>
                                         </tr>
                                     </table>
                                 </div>
