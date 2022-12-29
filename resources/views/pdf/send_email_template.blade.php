@@ -611,9 +611,9 @@
                 </table>
             </div>
         </div>
-            @php
-            $vat = $subtotal*21/100;
-            @endphp
+        @php
+            $vat = $subtotal*$product->vat/100;
+        @endphp
 
             
         
@@ -673,7 +673,7 @@
                                         @if($request->format != 'before_tax') 
                                             <tr style="border-bottom: 1px solid gray;">
                                                 <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $total }}</td>
-                                                <td style="padding: 5px 0; text-align: center"><span> VAT 21%</span></td>
+                                                <td style="padding: 5px 0; text-align: center"><span> VAT {{ $product->vat }}%</span></td>
                                                 <td style="padding: 5px 0; text-align: right">{{ $vat }}</td>
                                             </tr>
                                         @endif
