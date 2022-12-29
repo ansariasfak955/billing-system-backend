@@ -592,7 +592,7 @@
                             @if($request->format != 'without_values')
                                 @if($request->format != 'without_totals')
                                     <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                        <p style="marging: 0; padding: 0">{{ $total }}</p>
+                                        <p style="marging: 0; padding: 0">{{ $product->subtotal }}</p>
                                     </td>
                                 @endif
                                 @if($request->format != 'before_tax') 
@@ -611,9 +611,9 @@
                 </table>
             </div>
         </div>
-        @php
+            @php
             $vat = $subtotal*$product->vat/100;
-        @endphp
+            @endphp
 
             
         
@@ -710,17 +710,17 @@
                                 <tr style="border-bottom: 1px solid gray;">
                                     <th class="table_heading" style="padding: 5px 0; text-align: left;">BASE</th>
                                     <th></th>
-                                    <th class="table_heading" style="padding: 5px 0; text-align: right;">$ {{ $total }}</th>
+                                    <th class="table_heading" style="padding: 5px 0; text-align: right;">$ {{ $subtotal }}</th>
                                 </tr>
                                 <tr style="border-bottom: 1px solid gray;">
-                                    <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $total }}</td>
+                                    <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $subtotal }}</td>
                                     <td style="padding: 5px 0; text-align: center"><span> VAT 21%</span></td>
                                     <td style="padding: 5px 0; text-align: right">{{ $vat }}</td>
                                 </tr>
                                 <tr>
                                     <th class="table_heading" style="padding: 5px 0; text-align: left">TOTAL</th>
                                     <td style="padding: 0; margin: 0;"></td>
-                                    <th style="text-align: right">$ {{ $subtotal }}</th>
+                                    <th style="text-align: right">$ {{ $total }}</th>
                                 </tr>
                             </table>
                         </div>
