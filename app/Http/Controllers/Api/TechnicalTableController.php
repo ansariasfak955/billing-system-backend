@@ -204,7 +204,7 @@ class TechnicalTableController extends Controller
                        'discount'      => $discount,
                        'tax'           => $tax,
                        'income_tax'    => $income_tax,
-                       'subtotal'     => $subtotal,
+                       'subtotal'     => number_format($subtotal, 2),
                        'vat'           => $vat
                    ]);
                }
