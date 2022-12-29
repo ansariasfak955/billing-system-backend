@@ -244,22 +244,23 @@ class SendEmailController extends Controller
             $subject = $request->subject;
             $body = $request->body;
             Mail::to($request->send_to)->send(new SendMail($attachment, $subject , $body, $pdf));
+             //delete the file
+            if(file_exists(public_path().'/storage/temp/'. $attachment)){
+                unlink(public_path().'/storage/temp/'. $attachment);
+            }
             return response()->json([
                 'status' => true,
                 'message' => 'Mail Sent!',
             ]);
         }
+        if($request->download){
+
+            return $pdf->stream();  
+        }
         return response()->json([
             'status' => true,
             'url' => url('/storage/temp/'.$attachment),
-         ]);
-
-            //delete the file
-            if(file_exists(public_path().'/storage/temp/'. $attachment)){
-                unlink(public_path().'/storage/temp/'. $attachment);
-            }
-            
-        return $pdf->stream();  
+        ]);           
 
     }
 }
