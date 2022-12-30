@@ -29,7 +29,7 @@ class TechnicalIncident extends Model
     ];
 
     protected static $globalTable = 'technical_incidents';
-	public $appends = ['client_name','created_by_name'];
+	public $appends = ['client_name','created_by_name','reference_type'];
     public function getTable() {
         return self::$globalTable;
     }
@@ -59,6 +59,13 @@ class TechnicalIncident extends Model
             $table = $this->getTable();
             $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_client_name($createdby, $this->attributes['created_by']);
+        }
+    }
+    public function getReferenceTypeAttribute(){
+        if(isset( $this->attributes['reference'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_reference_type($company_id, $this->attributes['reference']);
         }
     }
 }
