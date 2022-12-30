@@ -274,6 +274,23 @@ class TechnicalTableController extends Controller
     public function update(Request $request)
     {
         $table = 'company_'.$request->company_id.'_technical_tables';
+        $validator = Validator::make($request->all(),[
+            'title' => "required|unique:$table",
+            'client_id' => 'required',
+            'reference' => 'required',
+            'tin' => 'required'
+        ], [
+            'client_id.required' => 'Please select client.',
+            'tin.required' => 'Ced/Ruc number is required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
         $technical_incident = TechnicalTable::with(['items', 'item_meta'])->where('id', $request->technical_table)->first();
         $itemTable = 'company_'.$request->company_id.'_items';

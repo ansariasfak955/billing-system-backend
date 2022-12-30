@@ -312,6 +312,21 @@ class InvoiceTableController extends Controller
      */
     public function update(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'client_id' => 'required',
+            'reference' => 'required',
+            'tin' => 'required'
+        ], [
+            'client_id.required' => 'Please select client.',
+            'tin.required' => 'Ced/Ruc number is required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
         $invoice = InvoiceTable::with('items', 'item_meta')->where('id', $request->invoice)->first();
