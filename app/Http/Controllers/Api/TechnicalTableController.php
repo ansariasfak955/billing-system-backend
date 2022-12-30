@@ -91,8 +91,10 @@ class TechnicalTableController extends Controller
             'title' => "required|unique:$table",
             'client_id' => 'required',
             'reference' => 'required',
+            'tin' => 'required'
         ], [
-            'client_id.required' => 'Please select client.'
+            'client_id.required' => 'Please select client.',
+            'tin.required' => 'Ced/Ruc number is required'
         ]);
 
         if ($validator->fails()) {

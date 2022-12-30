@@ -90,8 +90,10 @@ class PurchaseTableController extends Controller
         $validator = Validator::make($request->all(),[
             'supplier_id' => 'required',
             'reference' => 'required',
+            'tin' => 'required'
         ], [
-            'supplier_id.required' => 'Please select supplier.'
+            'supplier_id.required' => 'Please select supplier.',
+            'tin.required' => 'Ced/Ruc number is required'
         ]);
 
         if ($validator->fails()) {
