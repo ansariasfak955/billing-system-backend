@@ -1004,8 +1004,8 @@ class TableHelper
                 $table->string('reference')->nullable();
                 $table->string('reference_number')->nullable();
                 $table->string('name');
-                $table->float('price');
-                $table->float('purchase_price')->nullable();
+                $table->decimal('price', 10, 2)->default(0)->change();
+                $table->decimal('purchase_price', 10, 2)->default(0)->change();
                 $table->string('image')->nullable();
                 $table->string('vat')->nullable();
                 $table->integer('product_category_id')->default(0);
@@ -1014,10 +1014,10 @@ class TableHelper
                 $table->longText('private_comments')->nullable();
                 $table->string('created_from')->nullable();
                 $table->enum('active_margin', ['0', '1'])->default('0');
-                $table->float('purchase_margin')->nullable();
-                $table->float('sales_margin')->nullable();
-                $table->float('discount')->nullable();
-                $table->float('minimum_price')->nullable();
+                $table->decimal('purchase_margin', 10, 2)->default(0)->change();
+                $table->decimal('sales_margin', 10, 2)->default(0)->change();
+                $table->decimal('discount', 10, 2)->default(0)->change();
+                $table->decimal('minimum_price', 10, 2)->default(0)->change();
                 $table->string('tax')->nullable();
                 $table->enum('is_promotional', ['0', '1'])->default('0');
                 $table->enum('manage_stock', ['0', '1'])->default('0');
