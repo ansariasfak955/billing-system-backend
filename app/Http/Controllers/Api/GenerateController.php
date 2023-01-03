@@ -36,57 +36,58 @@ class GenerateController extends Controller
         if($request->from_type == 'Sales Estimate'){
             $table = 'company_'.$request->company_id.'_sales_estimates';
             SalesEstimate::setGlobalTable($table);
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
             
                 $salesEstimate = SalesEstimate::with('items')->find($request->id);
 
-                if($request->to_type){
+                if($request->to_type == 'Sales Order' || $request->to_type == 'Sales Delivery Note'){
                     $salesEstimate = SalesEstimate::with('items')->find($request->id);
-                    $duplicatedEstimate = $salesEstimate->replicate();
-                    $duplicatedEstimate->created_at = now();
-                    $duplicatedEstimate->reference = $referenceType ;
-                    $duplicatedEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
-                    $duplicatedEstimate->save();
+
+                    $generateEstimate = $salesEstimate->replicate();
+                    $generateEstimate->created_at = now();
+                    $generateEstimate->reference = $referenceType ;
+                    $generateEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
+                    $generateEstimate->save();
                     
                     foreach($salesEstimate->items as $salesItems){
-                        $duplicatedItem = $salesItems->replicate();
-                        $duplicatedItem->created_at = now();
-                        $duplicatedItem->parent_id =  $duplicatedEstimate->id;
-                        $duplicatedItem->save();
+                        $generateItem = $salesItems->replicate();
+                        $generateItem->created_at = now();
+                        $generateItem->type = $referenceType ;
+                        $generateItem->parent_id =  $generateEstimate->id;
+                        $generateItem->save();
                     }
             
                     return response()->json([
                         'status' => true,
                         'message' => 'Generate successfully',
-                        'data' =>  SalesEstimate::with('items')->find($duplicatedEstimate->id)
+                        'data' =>  SalesEstimate::with('items')->find($generateEstimate->id)
                     ]);
-                }
-        }elseif($request->from_type == 'Sales Estimate'){
-            $table = 'company_'.$request->company_id.'_sales_estimates';
-            SalesEstimate::setGlobalTable($table);
-            
-                $salesEstimate = SalesEstimate::with('items')->find($request->id);
-
-                if($request->to_type){
+                }elseif($request->to_type == 'Ordinary Invoice'){
                     $table = 'company_'.$request->company_id.'_invoice_tables';
                     InvoiceTable::setGlobalTable($table);
-                    $salesEstimate = InvoiceTable::with('items')->find($request->id);
-                    $duplicatedEstimate = $salesEstimate->replicate();
-                    $duplicatedEstimate->created_at = now();
-                    $duplicatedEstimate->reference = $referenceType ;
-                    $duplicatedEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
-                    $duplicatedEstimate->save();
+                    // $invoiceGenerate = InvoiceTable::create($request->all());
+
+                    // $generateEstimate = $salesEstimate->replicate();
+                    $array = $salesEstimate->toArray();
+                    $generateEstimate = InvoiceTable::create($array);
+                    $generateEstimate->created_at = now();
+                    $generateEstimate->reference = $referenceType ;
+                    $generateEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
+                    $generateEstimate->save();
                     
                     foreach($salesEstimate->items as $salesItems){
-                        $duplicatedItem = $salesItems->replicate();
-                        $duplicatedItem->created_at = now();
-                        $duplicatedItem->parent_id =  $duplicatedEstimate->id;
-                        $duplicatedItem->save();
+                        $generateItem = $salesItems->replicate();
+                        $generateItem->created_at = now();
+                        $generateItem->type = $referenceType ;
+                        $generateItem->parent_id =  $generateEstimate->id;
+                        $generateItem->save();
                     }
             
                     return response()->json([
                         'status' => true,
                         'message' => 'Generate successfully',
-                        'data' =>  $duplicatedEstimate
+                        'data' =>  InvoiceTable::with('items')->find($generateEstimate->id)
                     ]);
                 }
         }
