@@ -48,12 +48,12 @@ class Item extends Model
                 $quantity = 1;
             }
 
-            $basePrice = $this->attributes['base_price'];
-            $discount = $this->attributes['discount'];
+            $basePrice = (float)$this->attributes['base_price'];
+            $discount = (float)$this->attributes['discount'];
             if($basePrice){
 
                 $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity + $tax;
-                return $amount;
+                return (float)$amount;
             }
             return 0;
         }
