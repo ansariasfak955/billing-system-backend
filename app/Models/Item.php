@@ -53,7 +53,7 @@ class Item extends Model
             if($basePrice){
 
                 $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity + $tax;
-                return $amount;
+                return (float)$amount;
             }
             return 0;
         }
