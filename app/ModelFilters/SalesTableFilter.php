@@ -3,6 +3,7 @@
 namespace App\ModelFilters;
 
 use EloquentFilter\ModelFilter;
+use Carbon\Carbon;
 
 class SalesTableFilter extends ModelFilter
 {
@@ -53,5 +54,16 @@ class SalesTableFilter extends ModelFilter
             return $this->whereHas('client', function($q) use ($client_name){
                 $q->where('legal_name', 'LIKE', '%'.$client_name.'%');
             });
+    }
+    public function endDate($date)
+    {
+        $endDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('end_date', '<=', $endDate->format('Y-m-d'));
+    }
+
+    public function startDate($date)
+    {
+        $startDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('start_date', '>=', $startDate->format('Y-m-d'));
     }
 }
