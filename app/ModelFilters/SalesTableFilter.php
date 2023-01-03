@@ -12,11 +12,6 @@ class SalesTableFilter extends ModelFilter
     *
     * @var array
     */
-    // private $request;
-    // public function __construct($request){
-    //     $this->request = $request;
-    // }
-
     public $relations = [];
 
     public function sales($id){
@@ -35,25 +30,25 @@ class SalesTableFilter extends ModelFilter
     }
     public function status($status)
     {
-        // $ids = explode(",", $status);
-        // $multipleStatus = SalesEstimate::whereIn('id', $ids);
-        $this->where('status', 'LIKE', '%'.$status.'%');
+        $statuses = explode(",", $status);
+        return $this->whereIn('status', $statuses);
+        // $this->where('status', 'LIKE', '%'.$status.'%');
     }
     public function reference($reference)
     {
-        $this->where('reference', 'LIKE', '%'.$reference.'%');
+        return $this->where('reference', 'LIKE', '%'.$reference.'%');
     }
     public function referenceNumber($referenceNumber)
     {
-        $this->where('reference_number', 'LIKE', '%'.$referenceNumber.'%');
+        return $this->where('reference_number', 'LIKE', '%'.$referenceNumber.'%');
     }
     public function title($title)
     {
-        $this->where('title', 'LIKE', '%'.$title.'%');
+        return $this->where('title', 'LIKE', '%'.$title.'%');
     }
     public function createdByName($createdByName)
     {
-        $this->where('created_by', 'LIKE', '%'.$createdByName.'%');
+        return $this->where('created_by', 'LIKE', '%'.$createdByName.'%');
     }
     public function clientName($client_name)
     {
