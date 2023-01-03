@@ -30,30 +30,28 @@ class SalesTableFilter extends ModelFilter
     }
     public function status($status)
     {
-            $this->where('status', $status);
+            $this->where('status', 'LIKE', '%'.$status.'%');
     }
     public function reference($reference)
     {
-        $this->where('reference', $reference);
+        $this->where('reference', 'LIKE', '%'.$reference.'%');
     }
-    public function date($date)
+    public function referenceNumber($referenceNumber)
     {
-        $this->whereDate('date', $date);
+        $this->where('reference_number', 'LIKE', '%'.$referenceNumber.'%');
     }
     public function title($title)
     {
-        $this->where('title', $title);
+        $this->where('title', 'LIKE', '%'.$title.'%');
     }
-    public function legalName($legalName)
+    public function createdByName($createdByName)
     {
-            return $this->whereHas('client', function($q) use ($legalName){
-                $q->where('legal_name', $legalName);
-            });
+        $this->where('created_by', 'LIKE', '%'.$createdByName.'%');
     }
-    public function email($email)
+    public function clientName($client_name)
     {
-            return $this->whereHas('client', function($q) use ($email){
-                $q->where('email', $email);
+            return $this->whereHas('client', function($q) use ($client_name){
+                $q->where('legal_name', 'LIKE', '%'.$client_name.'%');
             });
     }
 }
