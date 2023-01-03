@@ -52,7 +52,7 @@ class SalesTableFilter extends ModelFilter
     public function createdByName($createdByName)
     {
             return $this->whereHas('client', function($q) use ($createdByName){
-                $q->where('created_by', $createdByName);
+                $q->where('legal_name', $createdByName);
             });
     }
     public function clientName($client_name)

@@ -53,15 +53,15 @@ class InvoiceTableFilter extends ModelFilter
     }
     public function createdByName($createdByName)
     {
-            return $this->whereHas('client', function($q) use ($createdByName){
-                $q->where('created_by', $createdByName);
-            });
+        return $this->whereHas('client', function($q) use ($createdByName){
+            $q->where('legal_name', $createdByName);
+        });
     }
     public function clientName($client_name)
     {
-            return $this->whereHas('client', function($q) use ($client_name){
-                $q->where('legal_name', 'LIKE', '%'.$client_name.'%');
-            });
+        return $this->whereHas('client', function($q) use ($client_name){
+            $q->where('legal_name', 'LIKE', '%'.$client_name.'%');
+        });
     }
     public function endDate($date)
     {

@@ -57,9 +57,9 @@ class TechnicalTableFilter extends ModelFilter
     }
     public function createdByName($createdByName)
     {
-            return $this->whereHas('client', function($q) use ($createdByName){
-                $q->where('created_by', $createdByName);
-            });
+        return $this->whereHas('client', function($q) use ($createdByName){
+            $q->where('legal_name', $createdByName);
+        });
     }
     public function endDate($date)
     {
