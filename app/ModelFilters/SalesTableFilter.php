@@ -3,7 +3,6 @@
 namespace App\ModelFilters;
 
 use EloquentFilter\ModelFilter;
-use Carbon\Carbon;
 
 class SalesTableFilter extends ModelFilter
 {
@@ -13,6 +12,11 @@ class SalesTableFilter extends ModelFilter
     *
     * @var array
     */
+    // private $request;
+    // public function __construct($request){
+    //     $this->request = $request;
+    // }
+
     public $relations = [];
 
     public function sales($id){
@@ -31,7 +35,9 @@ class SalesTableFilter extends ModelFilter
     }
     public function status($status)
     {
-            $this->where('status', 'LIKE', '%'.$status.'%');
+        // $ids = explode(",", $status);
+        // $multipleStatus = SalesEstimate::whereIn('id', $ids);
+        $this->where('status', 'LIKE', '%'.$status.'%');
     }
     public function reference($reference)
     {
@@ -58,12 +64,12 @@ class SalesTableFilter extends ModelFilter
     public function endDate($date)
     {
         $endDate = \Carbon\Carbon::parse($date);
-        return $this->whereDate('end_date', '<=', $endDate->format('Y-m-d'));
+        return $this->whereDate('date', '<=', $endDate->format('Y-m-d'));
     }
 
     public function startDate($date)
     {
         $startDate = \Carbon\Carbon::parse($date);
-        return $this->whereDate('start_date', '>=', $startDate->format('Y-m-d'));
+        return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
     }
 }
