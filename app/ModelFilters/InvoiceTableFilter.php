@@ -32,27 +32,47 @@ class InvoiceTableFilter extends ModelFilter
 
     public function status($status)
     {
-            $this->where('status', $status);
+        $statuses = explode(",", $status);
+        return $this->whereIn('status', $statuses);
     }
     public function reference($reference)
     {
-        $this->where('reference', $reference);
+        return $this->where('reference', $reference);
+    }
+    public function referenceNumber($referenceNumber)
+    {
+        return $this->where('reference_number', 'LIKE', '%'.$referenceNumber.'%');
+    }
+    public function title($title)
+    {
+        return $this->where('title', 'LIKE', '%'.$title.'%');
     }
     public function date($date)
     {
-        $this->whereDate('date', $date);
+        return $this->whereDate('date', $date);
     }
-    public function legalName($legalName)
+    public function createdByName($createdByName)
     {
-            return $this->whereHas('client', function($q) use ($legalName){
-                $q->where('legal_name', $legalName);
+            return $this->whereHas('client', function($q) use ($createdByName){
+                $q->where('created_by', $createdByName);
             });
     }
-    public function email($email)
+    public function clientName($client_name)
     {
-            return $this->whereHas('client', function($q) use ($email){
-                $q->where('email', $email);
+            return $this->whereHas('client', function($q) use ($client_name){
+                $q->where('legal_name', 'LIKE', '%'.$client_name.'%');
             });
+    }
+    public function endDate($date)
+    {
+        $endDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('date', '<=', $endDate->format('Y-m-d'));
+    }
+
+    public function startDate($date)
+    {
+        $startDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
     }
 
 }

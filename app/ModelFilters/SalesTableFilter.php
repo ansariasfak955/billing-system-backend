@@ -32,7 +32,6 @@ class SalesTableFilter extends ModelFilter
     {
         $statuses = explode(",", $status);
         return $this->whereIn('status', $statuses);
-        // $this->where('status', 'LIKE', '%'.$status.'%');
     }
     public function reference($reference)
     {
@@ -46,9 +45,15 @@ class SalesTableFilter extends ModelFilter
     {
         return $this->where('title', 'LIKE', '%'.$title.'%');
     }
+    public function date($date)
+    {
+        return $this->whereDate('date', $date);
+    }
     public function createdByName($createdByName)
     {
-        return $this->where('created_by', 'LIKE', '%'.$createdByName.'%');
+            return $this->whereHas('client', function($q) use ($createdByName){
+                $q->where('created_by', $createdByName);
+            });
     }
     public function clientName($client_name)
     {
