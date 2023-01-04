@@ -627,14 +627,14 @@ class TableHelper
                 $table->integer('parent_id')->nullable();
                 $table->string('name')->nullable();
                 $table->longText('description')->nullable();
-                $table->decimal('base_price', 10, 2)->default(0);
+                $table->decimal('base_price', 10, 2)->nullable();
                 $table->string('quantity')->nullable();
-                $table->decimal('discount', 10, 2)->default(0);
+                $table->decimal('discount', 10, 2)->nullable();
                 $table->string('tax')->nullable();
                 $table->string('income_tax')->nullable();
                 $table->string('type')->nullable();
                 //add new columns
-                $table->decimal('subtotal', 10, 2)->default(0.00);
+                $table->decimal('subtotal', 10, 2)->nullable();
                 $table->string('vat')->nullable();
                 $table->timestamps();
             });
@@ -927,8 +927,8 @@ class TableHelper
                 $table->string('reference')->nullable();
                 $table->string('reference_number')->nullable();
                 $table->string('name');
-                $table->decimal('price', 10, 2)->default(0);
-                $table->decimal('purchase_price', 10, 2)->default(0);
+                $table->decimal('price', 10, 2)->nullable();
+                $table->decimal('purchase_price', 10, 2)->nullable();
                 $table->string('barcode')->nullable();
                 $table->string('image')->nullable();
                 $table->integer('product_category_id')->default(0);
@@ -937,10 +937,10 @@ class TableHelper
                 $table->longText('private_comments')->nullable();
                 $table->string('created_from')->nullable();
                 $table->enum('active_margin', ['0', '1'])->default('0');
-                $table->decimal('purchase_margin', 10, 2)->default(0);
-                $table->decimal('sales_margin', 10, 2)->default(0);
-                $table->decimal('discount', 10, 2)->default(0);
-                $table->decimal('minimum_price', 10, 2)->default(0);
+                $table->decimal('purchase_margin', 10, 2)->nullable();
+                $table->decimal('sales_margin', 10, 2)->nullable();
+                $table->decimal('discount', 10, 2)->nullable();
+                $table->decimal('minimum_price', 10, 2)->nullable();
                 $table->string('tax')->nullable();
                 $table->enum('is_promotional', ['0', '1'])->default('0');
                 $table->enum('manage_stock', ['0', '1'])->default('0');
@@ -969,12 +969,12 @@ class TableHelper
                 $table->integer('product_id');
                 $table->string('name');
                 $table->longText('description')->nullable();
-                $table->decimal('purchase_price', 10, 2)->default(0);
-                $table->decimal('sales_price', 10, 2)->default(0);
+                $table->decimal('purchase_price', 10, 2)->nullable();
+                $table->decimal('sales_price', 10, 2)->nullable();
                 $table->string('purchase_margin')->nullable();
                 $table->string('sales_margin')->nullable();
-                $table->decimal('discount', 10, 2)->default(0);
-                $table->decimal('special_price', 10, 2)->default(0);
+                $table->decimal('discount', 10, 2)->nullable();
+                $table->decimal('special_price', 10, 2)->nullable();
                 $table->timestamps();
             });
         }
@@ -1004,8 +1004,8 @@ class TableHelper
                 $table->string('reference')->nullable();
                 $table->string('reference_number')->nullable();
                 $table->string('name');
-                $table->decimal('price', 10, 2)->default(0);
-                $table->decimal('purchase_price', 10, 2)->default(0);
+                $table->decimal('price', 10, 2)->nullable();
+                $table->decimal('purchase_price', 10, 2)->nullable();
                 $table->string('image')->nullable();
                 $table->string('vat')->nullable();
                 $table->integer('product_category_id')->default(0);
@@ -1014,10 +1014,10 @@ class TableHelper
                 $table->longText('private_comments')->nullable();
                 $table->string('created_from')->nullable();
                 $table->enum('active_margin', ['0', '1'])->default('0');
-                $table->decimal('purchase_margin', 10, 2)->default(0);
-                $table->decimal('sales_margin', 10, 2)->default(0);
-                $table->decimal('discount', 10, 2)->default(0);
-                $table->decimal('minimum_price', 10, 2)->default(0);
+                $table->decimal('purchase_margin', 10, 2)->nullable();
+                $table->decimal('sales_margin', 10, 2)->nullable();
+                $table->decimal('discount', 10, 2)->nullable();
+                $table->decimal('minimum_price', 10, 2)->nullable();
                 $table->string('tax')->nullable();
                 $table->enum('is_promotional', ['0', '1'])->default('0');
                 $table->enum('manage_stock', ['0', '1'])->default('0');
@@ -1032,12 +1032,12 @@ class TableHelper
                 $table->integer('service_id');
                 $table->string('name');
                 $table->longText('description')->nullable();
-                $table->decimal('purchase_price', 10, 2)->default(0);
-                $table->decimal('sales_price', 10, 2)->default(0);
+                $table->decimal('purchase_price', 10, 2)->nullable();
+                $table->decimal('sales_price', 10, 2)->nullable();
                 $table->string('purchase_margin')->nullable();
                 $table->string('sales_margin')->nullable();
-                $table->decimal('discount', 10, 2)->default(0);
-                $table->decimal('special_price', 10, 2)->default(0);
+                $table->decimal('discount', 10, 2)->nullable();
+                $table->decimal('special_price', 10, 2)->nullable();
                 $table->timestamps();
             });
         }
