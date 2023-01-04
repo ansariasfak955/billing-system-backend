@@ -196,6 +196,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('product-rates', ProductRateController::class);
             Route::apiResource('product-attachments', ProductAttachmentController::class);
             Route::apiResource('roles', RoleController::class);
+            Route::get('get-master-role-permissions', 'RoleController@getMasterRolePermissions');
             Route::apiResource('custom_states', CustomStateController::class);
             Route::apiResource('my_templates', MyTemplateController::class);
             Route::post('my_templates-bulk-delete', 'MyTemplateController@bulkDelete');

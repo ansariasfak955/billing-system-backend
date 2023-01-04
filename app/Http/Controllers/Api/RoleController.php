@@ -339,4 +339,77 @@ class RoleController extends Controller
             'message' => 'Role and permissions copied successfully'
         ]);
     }
+    public function getMasterRolePermissions(Request $request){
+        $validator = Validator::make($request->all(),[
+            'name' => 'required'          
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+        $role = \DB::table('roles')->where('name',$request->name)->first();
+        if(! $role ){
+            return response()->json([
+                "status" => false,
+                'message' => 'Role Not Found!'
+            ]);
+        }
+        $all_permissions = [];
+        $role_has_permissions = "role_has_permissions";
+        $permissions = Permission::where('parent_id', 0)->with('children')->get();
+
+        foreach($permissions as $permission){
+            if(count($permission->children) != 0){
+
+                foreach($permission->children as $second_permission){
+                    $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $second_permission->id)->first();
+                    if( $exists ){
+                        $second_permission->setAttribute('is_checked', 'yes');
+                    } else {
+                        $second_permission->setAttribute('is_checked', 'no');
+                    } 
+                    if(count($second_permission->children) != 0){
+                    
+                        foreach($second_permission->children as $third_permission){
+                            // $exists = $role->permissions->contains($third_permission->id);
+                            $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $third_permission->id)->first();
+                            if($exists){
+                                $third_permission->setAttribute('is_checked', 'yes');
+                            } else {
+                                $third_permission->setAttribute('is_checked', 'no');
+                            } 
+                        }
+                    }
+                }
+
+            }
+
+            // $exists = $role->permissions->contains($permission->id);
+            $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $permission->id)->first();
+            if($exists ){
+                $permission->setAttribute('is_checked', 'yes');
+            } else {
+                $permission->setAttribute('is_checked', 'no');
+            }
+           
+        }
+
+        $role_has_permissions = "role_has_permissions";
+        $selected_permissions = \DB::table($role_has_permissions)->where('role_id', $request->role)->pluck('permission_id');
+
+        $selected_permission_ids = [];
+        foreach ($selected_permissions as $permission_id) {
+            $selected_permission_ids[] =  "$permission_id";
+        }
+ 
+        return response()->json([
+            "status" => true,
+            "role" => $role,
+            "permissions" => $permissions,
+            "selected_permissions" => $selected_permission_ids,
+        ]);
+    }
 }
