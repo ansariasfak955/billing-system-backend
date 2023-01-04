@@ -11,6 +11,7 @@ use App\Models\Item;
 use App\Models\SalesEstimate;
 use App\Models\TechnicalTable;
 use App\Models\InvoiceTable;
+use App\Models\TechnicalIncident;
 use App\Models\PurchaseTable;
 use App\Models\MyTemplateMeta;
 use App\Models\Reference;
@@ -203,6 +204,46 @@ class GenerateController extends Controller
                     'message' => 'Generate successfully',
                     'data' =>  PurchaseTable::with('items')->find($generatePurchaseEstimate->id)
                 ]);
+            }
+        }if($request->from_type == 'Incident'){
+            $table = 'company_'.$request->company_id.'_technical_incidents';
+            TechnicalIncident::setGlobalTable($table);
+
+            $technicalIncident = TechnicalIncident::find($request->id);
+
+            if($request->to_type == 'Work Estimate' || $request->to_type == 'Work Order' || $request->to_type == 'Work Delivery Note'){
+                $table = 'company_'.$request->company_id.'_technical_tables';
+                TechnicalTable::setGlobalTable($table);
+
+                $array = $technicalIncident->toArray();
+                $generateTechnicalIncident = TechnicalTable::create($array);
+                $generateTechnicalIncident->created_at = now();
+                $generateTechnicalIncident->reference = $referenceType ;
+                $generateTechnicalIncident->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateTechnicalIncident->save();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Generate successfully',
+                    'data' =>  TechnicalTable::find($generateTechnicalIncident->id)
+                ]);
+            }elseif($request->to_type == 'Ordinary Invoice'){
+                $table = 'company_'.$request->company_id.'_invoice_tables';
+                InvoiceTable::setGlobalTable($table);
+
+                $array = $technicalIncident->toArray();
+                $generateInvoice = InvoiceTable::create($array);
+                $generateInvoice->created_at = now();
+                $generateInvoice->reference = $referenceType ;
+                $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateInvoice->save();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Generate successfully',
+                    'data' =>  InvoiceTable::find($generateInvoice->id)
+                ]);
+
             }
         }
 
