@@ -88,6 +88,94 @@ class GenerateController extends Controller
                         'data' =>  InvoiceTable::with('items')->find($generateEstimate->id)
                     ]);
                 }
+        }elseif($request->from_type == 'Sales Order'){
+            $table = 'company_'.$request->company_id.'_sales_estimates';
+            SalesEstimate::setGlobalTable($table);
+
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+
+            $salesOrder = SalesEstimate::with('items')->find($request->id);
+            
+            if($request->to_type == 'Sales Delivery Note'){
+                $generateSalesOrder = $salesOrder->replicate();
+                $generateSalesOrder->created_at = now();
+                $generateSalesOrder->reference = $referenceType ;
+                $generateSalesOrder->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateSalesOrder->save();
+                    
+                foreach($salesOrder->items as $salesItems){
+                    $generateItem = $salesItems->replicate();
+                    $generateItem->created_at = now();
+                    $generateItem->type = $referenceType ;
+                    $generateItem->parent_id =  $generateSalesOrder->id;
+                    $generateItem->save();
+                }
+            
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Generate successfully',
+                    'data' =>  SalesEstimate::with('items')->find($generateSalesOrder->id)
+                ]);
+            }elseif($request->to_type == 'Ordinary Invoice'){
+                $table = 'company_'.$request->company_id.'_invoice_tables';
+                InvoiceTable::setGlobalTable($table);
+
+                $array = $salesOrder->toArray();
+                $generateInvoice = InvoiceTable::create($array);
+                $generateInvoice->created_at = now();
+                $generateInvoice->reference = $referenceType ;
+                $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateInvoice->save();
+                
+                foreach($salesOrder->items as $invoiceItems){
+                    $generateInvoiceItem = $invoiceItems->replicate();
+                    $generateInvoiceItem->created_at = now();
+                    $generateInvoiceItem->type = $referenceType ;
+                    $generateInvoiceItem->parent_id =  $generateInvoice->id;
+                    $generateInvoiceItem->save();
+                }
+        
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Generate successfully',
+                    'data' =>  InvoiceTable::with('items')->find($generateInvoice->id)
+                ]);
+            }
+        }elseif($request->from_type == 'Sales Delivery Note'){
+            $table = 'company_'.$request->company_id.'_sales_estimates';
+            SalesEstimate::setGlobalTable($table);
+
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+
+            $salesOrder = SalesEstimate::with('items')->find($request->id);
+            
+            if($request->to_type == 'Ordinary Invoice'){
+                $table = 'company_'.$request->company_id.'_invoice_tables';
+                InvoiceTable::setGlobalTable($table);
+
+                $array = $salesOrder->toArray();
+                $generateInvoice = InvoiceTable::create($array);
+                $generateInvoice->created_at = now();
+                $generateInvoice->reference = $referenceType ;
+                $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateInvoice->save();
+                
+                foreach($salesOrder->items as $invoiceItems){
+                    $generateInvoiceItem = $invoiceItems->replicate();
+                    $generateInvoiceItem->created_at = now();
+                    $generateInvoiceItem->type = $referenceType ;
+                    $generateInvoiceItem->parent_id =  $generateInvoice->id;
+                    $generateInvoiceItem->save();
+                }
+        
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Generate successfully',
+                    'data' =>  InvoiceTable::with('items')->find($generateInvoice->id)
+                ]);
+            }
         }elseif($request->from_type == 'Work Estimate'){
 
             $table = 'company_'.$request->company_id.'_technical_tables';
@@ -141,6 +229,94 @@ class GenerateController extends Controller
                     'status' => true,
                     'message' => 'Generate successfully',
                     'data' =>  InvoiceTable::with('items')->find($generateTechnicalEstimate->id)
+                ]);
+            }
+        }elseif($request->from_type == 'Work Order'){
+            $table = 'company_'.$request->company_id.'_technical_tables';
+            TechnicalTable::setGlobalTable($table);
+
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+
+            $technicalWorkOrder =  TechnicalTable::with('items')->find($request->id);
+            
+            if($request->to_type == 'Work Delivery Note'){
+                $generateTechnicalEstimate = $technicalWorkOrder->replicate();
+                $generateTechnicalEstimate->created_at = now();
+                $generateTechnicalEstimate->reference = $referenceType ;
+                $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateTechnicalEstimate->save();
+                
+                foreach($technicalWorkOrder->items as $technicalItems){
+                    $generateItem = $technicalItems->replicate();
+                    $generateItem->created_at = now();
+                    $generateItem->type = $referenceType ;
+                    $generateItem->parent_id =  $generateTechnicalEstimate->id;
+                    $generateItem->save();
+                }
+        
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Generate successfully',
+                    'data' =>  TechnicalTable::with('items')->find($generateTechnicalEstimate->id)
+                ]);
+            }elseif($request->to_type == 'Ordinary Invoice'){
+                $table = 'company_'.$request->company_id.'_invoice_tables';
+                InvoiceTable::setGlobalTable($table);
+
+                $array = $technicalWorkOrder->toArray();
+                $generateOrdinaryInvoice = InvoiceTable::create($array);
+                $generateOrdinaryInvoice->created_at = now();
+                $generateOrdinaryInvoice->reference = $referenceType ;
+                $generateOrdinaryInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateOrdinaryInvoice->save();
+                
+                foreach($technicalWorkOrder->items as $invoiceItems){
+                    $generateInvoiceItem = $invoiceItems->replicate();
+                    $generateInvoiceItem->created_at = now();
+                    $generateInvoiceItem->type = $referenceType ;
+                    $generateInvoiceItem->parent_id =  $generateOrdinaryInvoice->id;
+                    $generateInvoiceItem->save();
+                }
+        
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Generate successfully',
+                    'data' =>  InvoiceTable::with('items')->find($generateOrdinaryInvoice->id)
+                ]);
+            }
+        }elseif($request->from_type == 'Work Delivery Note'){
+            $table = 'company_'.$request->company_id.'_technical_tables';
+            TechnicalTable::setGlobalTable($table);
+
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+
+            $technicalWorkDeliveryNote =  TechnicalTable::with('items')->find($request->id);
+            
+            if($request->to_type == 'Ordinary Invoice'){
+                $table = 'company_'.$request->company_id.'_invoice_tables';
+                InvoiceTable::setGlobalTable($table);
+
+                $array = $technicalWorkDeliveryNote->toArray();
+                $generateInvoiceWorkDeliveryNote = InvoiceTable::create($array);
+                $generateInvoiceWorkDeliveryNote->created_at = now();
+                $generateInvoiceWorkDeliveryNote->reference = $referenceType ;
+                $generateInvoiceWorkDeliveryNote->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateInvoiceWorkDeliveryNote->save();
+                
+                foreach($technicalWorkDeliveryNote->items as $invoiceItems){
+                    $generateItem = $invoiceItems->replicate();
+                    $generateItem->created_at = now();
+                    $generateItem->type = $referenceType ;
+                    $generateItem->parent_id =  $generateInvoiceWorkDeliveryNote->id;
+                    $generateItem->save();
+                }
+        
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Generate successfully',
+                    'data' =>  InvoiceTable::with('items')->find($generateInvoiceWorkDeliveryNote->id)
                 ]);
             }
         }elseif($request->from_type == 'Ordinary Invoice'){
@@ -205,7 +381,39 @@ class GenerateController extends Controller
                     'data' =>  PurchaseTable::with('items')->find($generatePurchaseEstimate->id)
                 ]);
             }
-        }if($request->from_type == 'Incident'){
+        }elseif($request->from_type == 'Purchase Delivery Note'){
+            $table = 'company_'.$request->company_id.'_purchase_tables';
+            PurchaseTable::setGlobalTable($table);
+    
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+
+            $purchaseDeliveryNote = PurchaseTable::with('items')->find($request->id);
+
+            if($request->to_type == 'Purchase Invoice'){
+
+                $generateDeliveryNote = $purchaseDeliveryNote->replicate();
+                $generateDeliveryNote->created_at = now();
+                $generateDeliveryNote->reference = $referenceType ;
+                $generateDeliveryNote->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateDeliveryNote->save();
+                
+                foreach($purchaseDeliveryNote->items as $purchaseItems){
+                    $generateItem = $purchaseItems->replicate();
+                    $generateItem->created_at = now();
+                    $generateItem->type = $referenceType ;
+                    $generateItem->parent_id =  $generateDeliveryNote->id;
+                    $generateItem->save();
+                }
+        
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Generate successfully',
+                    'data' =>  PurchaseTable::with('items')->find($generateDeliveryNote->id)
+                ]);
+            }
+
+        }elseif($request->from_type == 'Incident'){
             $table = 'company_'.$request->company_id.'_technical_incidents';
             TechnicalIncident::setGlobalTable($table);
 
