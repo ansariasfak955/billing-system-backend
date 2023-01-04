@@ -341,7 +341,7 @@ class RoleController extends Controller
     }
     public function getMasterRolePermissions(Request $request){
         $validator = Validator::make($request->all(),[
-            'name' => 'required'          
+            'names' => 'required'          
         ]);
 
         if ($validator->fails()) {
@@ -350,8 +350,9 @@ class RoleController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        $role = \DB::table('roles')->where('name',$request->name)->first();
-        if(! $role ){
+        $names = explode(',',$request->names);
+        $roleIds = \DB::table('roles')->whereIn('name', $names)->pluck('id')->toArray();
+        if(empty($roleIds) ){
             return response()->json([
                 "status" => false,
                 'message' => 'Role Not Found!'
@@ -365,8 +366,8 @@ class RoleController extends Controller
             if(count($permission->children) != 0){
 
                 foreach($permission->children as $second_permission){
-                    $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $second_permission->id)->first();
-                    if( $exists ){
+                    $exists = \DB::table($role_has_permissions)->whereIn('role_id' , $roleIds)->where('permission_id' , $second_permission->id)->count();
+                    if( $exists > 0  ){
                         $second_permission->setAttribute('is_checked', 'yes');
                     } else {
                         $second_permission->setAttribute('is_checked', 'no');
@@ -375,8 +376,8 @@ class RoleController extends Controller
                     
                         foreach($second_permission->children as $third_permission){
                             // $exists = $role->permissions->contains($third_permission->id);
-                            $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $third_permission->id)->first();
-                            if($exists){
+                            $exists = \DB::table($role_has_permissions)->whereIn('role_id' , $roleIds)->where('permission_id' , $third_permission->id)->count();
+                            if($exists > 0){
                                 $third_permission->setAttribute('is_checked', 'yes');
                             } else {
                                 $third_permission->setAttribute('is_checked', 'no');
@@ -388,8 +389,8 @@ class RoleController extends Controller
             }
 
             // $exists = $role->permissions->contains($permission->id);
-            $exists = \DB::table($role_has_permissions)->where('role_id' , $role->id)->where('permission_id' , $permission->id)->first();
-            if($exists ){
+            $exists = \DB::table($role_has_permissions)->whereIn('role_id' , $roleIds)->where('permission_id' , $permission->id)->count();
+            if($exists > 0 ){
                 $permission->setAttribute('is_checked', 'yes');
             } else {
                 $permission->setAttribute('is_checked', 'no');
@@ -398,7 +399,7 @@ class RoleController extends Controller
         }
 
         $role_has_permissions = "role_has_permissions";
-        $selected_permissions = \DB::table($role_has_permissions)->where('role_id', $request->role)->pluck('permission_id');
+        $selected_permissions = \DB::table($role_has_permissions)->whereIn('role_id', $roleIds)->pluck('permission_id');
 
         $selected_permission_ids = [];
         foreach ($selected_permissions as $permission_id) {
@@ -407,7 +408,6 @@ class RoleController extends Controller
  
         return response()->json([
             "status" => true,
-            "role" => $role,
             "permissions" => $permissions,
             "selected_permissions" => $selected_permission_ids,
         ]);
