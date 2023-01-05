@@ -334,7 +334,29 @@ function get_roles_permissions($company_id)
         'advanced settings' => 'Advanced Settings',
         'automatic tasks' => 'Automatic Tasks',
     ];
-
+    $reports_arr = [
+        'Overview',
+        'Invoicing by Client',
+        'Invoicing by Agent',
+        'Invoicing by Item',
+        'Cash Flow Overview',
+        'Cash Flow by Payment Options',
+        'Cash Flow by Agent',
+        'Sales Overview',
+        'Sales by Client',
+        'Sales by Agent',
+        'Sales by Item',
+        'Technical Service Overview',
+        'Incidents by Client',
+        'Incidents by Agent',
+        'Technical Service by Client',
+        'Technical Service by Agent',
+        'Technical Service by Item',
+        'Purchases by Provider',
+        'Purchases by Item',
+        'Stock Valuation',
+        'View tax reports',
+    ];
     $model_has_roles_table = "company_".$company_id."_model_has_roles";
     $role_id = \DB::table($model_has_roles_table)->where('model_id', Auth::user()->id)->pluck('role_id')->first();
 
@@ -385,6 +407,30 @@ function get_roles_permissions($company_id)
                 'delete' => array(
                     'is_checked' => $delete != NULL ? 1 : 0
                 )
+            )
+        );
+    }
+    foreach ($reports_arr as $permission_key) {
+
+        $permission_key_new = \App\Models\Permission::where('name', $permission_key)->first();
+        $role_has_permissions = 'company_'.$company_id.'_role_has_permissions';
+        $is_checked = 0;
+        if( $permission_key_new ){
+            
+            $access = \DB::table($role_has_permissions)
+                ->where('role_id', $role_id)
+                ->where('permission_id', $permission_key_new->id)
+                ->first();
+            if( $access ){
+                $is_checked = 1;
+            }
+        }
+
+        $filtered_key = str_replace(' ','_', strtolower( $permission_key ) );
+
+        $permission_arr['reports'][] = array(
+            "$filtered_key" => array(
+                'is_checked' =>  $is_checked
             )
         );
     }
