@@ -32,9 +32,6 @@ class SupplierController extends Controller
         Supplier::setGlobalTable($table);
         $query = Supplier::query();
         
-        if($request->search){
-            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('legal_name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')->orWhere('reference', 'like', '%'.$request->search.'%');
-        }
         //set reference table
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
@@ -43,7 +40,7 @@ class SupplierController extends Controller
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
         }
-        $query = $query->get();
+        $query = $query->filter($request->all())->get();
 
         if (!count($query)) {
             return response()->json([

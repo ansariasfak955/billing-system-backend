@@ -37,14 +37,8 @@ class PurchaseReceiptController extends Controller
         if($request->type){
             $query =  $query->where('type', $request->type);
         }
-        if($request->search){
-            $query =  $query->where('payment_option', 'like','%'.$request->search.'%')->orWhereHas('invoice', function($q) use ($request){
-                $q->where('reference_number',  'like','%'.$request->search.'%')->orWhereHas('supplier', function($q) use ($request){
-                    $q->where('name',  'like','%'.$request->search.'%');
-                });
-            });
-        }
-        $query = $query->with('invoice')->get();
+
+        $query = $query->with('invoice')->filter($request->all())->get();
         if(!count($query)){
             return response()->json([
                 "status" => false,

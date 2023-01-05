@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class Supplier extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected static $globalTable = 'suppliers' ;
 
@@ -47,5 +48,9 @@ class Supplier extends Model
 
     public function getTableColumns() {
         return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\SupplierFilter::class);
     }
 }

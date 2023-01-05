@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class PurchaseReceipt extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
     
     protected $guarded = ['id' , 'created_at', 'updated_at'];
 
@@ -24,6 +25,9 @@ class PurchaseReceipt extends Model
     public function invoice(){
         return $this->hasOne(PurchaseTable::class, 'id', 'purchase_id');
     }
+    public function supplier(){
+        return $this->hasOne(Supplier::class, 'id', 'purchase_id');
+    }
     
     public function getPaymentOptionNameAttribute(){
         if(isset($this->attributes['payment_option'])){
@@ -36,5 +40,9 @@ class PurchaseReceipt extends Model
         if(isset($this->attributes['expiration_date'])){
             return date('Y-m-d', strtotime($this->attributes['expiration_date']));
         }
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\PurchaseReceiptFilter::class);
     }
 }
