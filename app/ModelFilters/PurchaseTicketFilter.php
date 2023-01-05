@@ -23,11 +23,11 @@ class PurchaseTicketFilter extends ModelFilter
         {
             return $q->where('reference_number', 'like', '%'.$search.'%')->orWhere('date', 'like', '%'.$search.'%')
             ->orWhere('status', 'like', '%'.$search.'%')->orWhere('payment_date', 'like', '%'.$search.'%')->orWhere('amount', 'like', '%'.$search.'%')
+            ->orWhereHas('user', function($q) use ($search){
+                $q->where('name',  'like','%'.$search.'%');
+            })
             ->orWhereHas('supplier', function($q) use ($search){
                 $q->where('legal_name',  'like','%'.$search.'%');
-                // ->orWhereHas('user', function($q) use ($search){
-                //     $q->where('name',  'like','%'.$search.'%');
-                // });
             });
         });
     }
@@ -41,6 +41,11 @@ class PurchaseTicketFilter extends ModelFilter
     public function supplierName($supplierName){
         return $this->WhereHas('supplier', function($q) use ($supplierName){
             $q->where('legal_name',  'like','%'.$supplierName.'%');
+        });
+    }
+    public function employeeName($employeeName){
+        return $this->WhereHas('user', function($q) use ($employeeName){
+            $q->where('name',  'like','%'.$employeeName.'%');
         });
     }
         public function paymentStartDate($date)

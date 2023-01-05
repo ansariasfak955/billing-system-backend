@@ -19,9 +19,9 @@ class PurchaseTicket extends Model
     public function supplier(){
         return $this->hasOne(Supplier::class,'id', 'supplier_id');
     }
-    // public function user(){
-    //     return $this->hasOne(User::class,'id', 'employee');
-    // }
+    public function user(){
+        return $this->hasOne(User::class,'id', 'employee');
+    }
 
     public function getTable() {
         return self::$globalTable ;
