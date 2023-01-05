@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class ClientAsset extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
 
     protected $fillable = [
         "client_id",
@@ -54,6 +55,9 @@ class ClientAsset extends Model
     public function attachments(){
         return $this->hasMany(ClientAssetAttachment::class, 'asset_id')->where('type', 'attachments');
     }
+    public function client(){
+        return $this->hasOne(Client::class,'id', 'client_id');
+    }
 
     public function getClientNameAttribute(){
         
@@ -65,5 +69,9 @@ class ClientAsset extends Model
     }
     public function getTableColumns() {
         return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\ClientAssetFilter::class);
     }
 }

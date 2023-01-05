@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class Service extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
 
     protected $fillable = ['name', 'price', 'reference', 'purchase_price', 'image', 'description', 'private_comments', 'vat', 'created_from', 'purchase_margin', 'sales_margin', 'discount', 'minimum_price', 'tax', 'images','reference_number'];
 
@@ -38,6 +39,10 @@ class Service extends Model
     }
     public function getTableColumns() {
         return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\ServiceFilter::class);
     }
 
 }

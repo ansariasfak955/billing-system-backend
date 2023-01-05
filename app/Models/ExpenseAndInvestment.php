@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class ExpenseAndInvestment extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
 
     protected $fillable = ['name', 'price', 'reference', 'purchase_price', 'image', 'description', 'private_comments', 'vat', 'created_from', 'purchase_margin', 'sales_margin', ' discount', 'minimum_price', 'tax', 'images','reference_number'];
 
@@ -27,5 +28,9 @@ class ExpenseAndInvestment extends Model
         } else {
             return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
         }
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\ExpensiInvestmentFilter::class);
     }
 }

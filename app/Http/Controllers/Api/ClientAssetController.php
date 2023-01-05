@@ -7,6 +7,7 @@ use App\Models\ClientAsset;
 use App\Models\Reference;
 use App\Models\ClientAssetAttachment;
 use Illuminate\Http\Request;
+use App\Models\Client;
 use Validator;
 class ClientAssetController extends Controller
 {
@@ -25,14 +26,11 @@ class ClientAssetController extends Controller
         }
         $table = 'company_'.$request->company_id.'_client_assets';
         ClientAsset::setGlobalTable($table);
+        $clientTable = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientTable);
         $query = ClientAsset::query();
         if($request->client_id){
             $query =  $query->where('client_id', $request->client_id);
-        }
-        if($request->search){
-            $query =  $query->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')
-            ->orWhere('identifier', 'like', '%'.$request->search.'%')->orWhere('serial_number', 'like', '%'.$request->search.'%')
-            ->orWhere('client_name', 'like', '%'.$request->search.'%');
         }
         if($request->type){
             //set reference table
@@ -42,7 +40,7 @@ class ClientAssetController extends Controller
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
         }
-        $query = $query->get();
+        $query = $query->filter($request->all())->get();
         if(!count($query)){
             return response()->json([
                 "status" => false,

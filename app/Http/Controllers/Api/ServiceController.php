@@ -26,26 +26,11 @@ class ServiceController extends Controller
                 "message" =>  "Please select company"
             ]);
         }
-        // Service::setGlobalTable('company_'.$request->company_id.'_services');
-        // if(Service::count() == 0){
-        //     return response()->json([
-        //         "status" => false,
-        //         "message" =>  "No data found"
-        //     ]);
-        // }
-        // return response()->json([
-        //     "status" => true,
-        //     "products" =>  Service::get()
-        // ]);
         $table = 'company_'.$request->company_id.'_services';
         Service::setGlobalTable($table);
 
         $service = Service::query();
         
-        if($request->search){
-            $service = $service->where('name', 'like', '%'.$request->search.'%')->orWhere('reference', 'like', '%'.$request->search.'%')
-            ->orWhere('reference_number', 'like', '%'.$request->search.'%')->orWhere('price', 'like', '%'.$request->search.'%');
-        }
         //set reference table
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
@@ -54,7 +39,7 @@ class ServiceController extends Controller
             $refernce_ids = Reference::where('type',urldecode($request->type))->pluck('prefix')->toArray();
             $service = $service->whereIn('reference', $refernce_ids);
         }
-        $service = $service->get();
+        $service = $service->filter($request->all())->get();
             
             
         if ( $service->count() == 0 ) {
