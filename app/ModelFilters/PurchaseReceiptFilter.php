@@ -35,9 +35,9 @@ class PurchaseReceiptFilter extends ModelFilter
             $q->where('reference_number',  'like','%'.$referenceNumber.'%');
         });
     }
-    public function legalName($legalName){
-        return $this->WhereHas('invoice', function($q) use ($legalName){
-            $q->where('legal_name',  'like','%'.$legalName.'%');
+    public function supplierName($supplierName){
+        return $this->WhereHas('invoice', function($q) use ($supplierName){
+            $q->where('name',  'like','%'.$supplierName.'%');
         });
     }
     public function paymentStartDate($date)
