@@ -428,10 +428,9 @@ function get_roles_permissions($company_id)
 
         $filtered_key = str_replace(' ','_', strtolower( $permission_key ) );
 
-        $permission_arr['reports'][] = array(
-            "$filtered_key" => array(
+        $permission_arr['reports']["$filtered_key"] = array(
                 'is_checked' =>  $is_checked
-            )
+
         );
     }
 
