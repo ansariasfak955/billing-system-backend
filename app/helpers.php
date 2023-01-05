@@ -303,6 +303,7 @@ function get_roles_permissions($company_id)
         'delivery notes' => 'Delivery Notes',
         'incidents' => 'Incidents',
         'work estimate' => 'Work Estimate',
+        'work orders' => 'Work Orders',
         'work delivery notes' => 'Work Delivery Notes',
         'invoices' => 'Invoices',
         'refunds' => 'Refunds',
