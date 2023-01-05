@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class Client extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
 
     protected $guarded = [
     	'id', 
@@ -62,5 +63,9 @@ class Client extends Model
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_reference_type($company_id, $this->attributes['reference']);
         }
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\ClientFilter::class);
     }
 }

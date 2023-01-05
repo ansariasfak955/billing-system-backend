@@ -31,12 +31,7 @@ class ClientContactController extends Controller
         Client::setGlobalTable($table);
         $query = ClientContact::query();
         
-        if($request->search){
-            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('phone', 'like', '%'.$request->search.'%')->orWhere('email', 'like', '%'.$request->search.'%')->orWhereHas('client', function($q) use ($request){
-                $q->where('name',  'like','%'.$request->search.'%');
-            });
-        }
-        $query = $query->get();
+        $query = $query->filter($request->all())->get();
         if (!count($query)) {
             return response()->json([
                 "status" => false,

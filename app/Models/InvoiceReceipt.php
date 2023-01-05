@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class InvoiceReceipt extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_receipts' ;
     protected $appends = ['payment_option_name'];
@@ -27,7 +28,7 @@ class InvoiceReceipt extends Model
     }
     public function client(){
 
-        return $this->hasOne(Client::class,'id', 'client_id');
+        return $this->hasOne(Client::class,'id', 'invoice_id');
     }
 
     public function invoice(){
@@ -45,5 +46,9 @@ class InvoiceReceipt extends Model
         if(isset($this->attributes['expiration_date'])){
             return date('Y-m-d', strtotime($this->attributes['expiration_date']));
         }
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\InvoiceReceiptFilter::class);
     }
 }

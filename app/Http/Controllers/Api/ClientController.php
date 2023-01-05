@@ -35,12 +35,6 @@ class ClientController extends Controller
         
         $query = Client::query();
         
-        if($request->search){
-            $query = $query->where('name', 'like', '%'.$request->search.'%')->orWhere('legal_name', 'like', '%'.$request->search.'%')
-            ->orWhere('reference_number', 'like', '%'.$request->search.'%')->orWhere('tin', 'like', '%'.$request->search.'%')
-            ->orWhere('email', 'like', '%'.$request->search.'%')->orWhere('agent', 'like', '%'.$request->search.'%')
-            ->orWhere('phone_1', 'like', '%'.$request->search.'%')->orWhere('phone_2', 'like', '%'.$request->search.'%');
-        }
         //set reference table
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
@@ -49,7 +43,7 @@ class ClientController extends Controller
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
         }
-        $query = $query->get();
+        $query = $query->filter($request->all())->get();
         if (!count($query)) {
             return response()->json([
                 "status" => false,
