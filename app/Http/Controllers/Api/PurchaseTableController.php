@@ -45,11 +45,6 @@ class PurchaseTableController extends Controller
         Supplier::setGlobalTable($supplier_table);
         $query = PurchaseTable::query();
         
-        if($request->search){
-            $query = $query->where('reference_number', 'like', '%'.$request->search.'%')->orWhereHas('supplier', function($q) use ($request){
-                $q->where('name',  'like','%'.$request->search.'%');
-            });
-        }
         if($request->type){
             //set reference table
             $referenceTable = 'company_'.$request->company_id.'_references';
@@ -58,7 +53,7 @@ class PurchaseTableController extends Controller
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
         }
-        $purchase_table = $query->get();
+        $purchase_table = $query->filter($request->all())->get();
 
         if($purchase_table->count() == 0) {
             return response()->json([

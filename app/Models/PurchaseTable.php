@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Awobaz\Compoships\Compoships;
+use EloquentFilter\Filterable;
+
 class PurchaseTable extends Model
 {
-    use HasFactory, Compoships;
+    use HasFactory, Compoships,Filterable;
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
@@ -147,5 +149,8 @@ class PurchaseTable extends Model
 
         return 0;
     }
-
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\PurchaseTableFilter::class);
+    }
 }

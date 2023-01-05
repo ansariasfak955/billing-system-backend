@@ -33,17 +33,8 @@ class ProductController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
-        // if ( $request->type ){
-        //     $products = Product::whereDate('created_at' ,'<=', date('Y-m-d'))->get();
-        // }else{
-        //     $products = Product::get();
-        // }
         $products = Product::query();
         
-        if($request->search){
-            $products = $products->where('name', 'like', '%'.$request->search.'%')->orWhere('reference_number', 'like', '%'.$request->search.'%')
-            ->orWhere('reference', 'like', '%'.$request->search.'%')->orWhere('price', 'like', '%'.$request->search.'%');
-        }
         if($request->type){
             //set reference table
             $referenceTable = 'company_'.$request->company_id.'_references';
@@ -52,7 +43,7 @@ class ProductController extends Controller
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $products = $products->whereIn('reference', $refernce_ids);
         }
-        $products = $products->get();
+        $products = $products->filter($request->all())->get();
             
             
         if ( $products->count() == 0 ) {
