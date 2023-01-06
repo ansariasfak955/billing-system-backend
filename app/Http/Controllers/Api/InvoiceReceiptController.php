@@ -215,7 +215,7 @@ class InvoiceReceiptController extends Controller
         InvoiceReceipt::whereIn('id', $idsArr)->update($request->except(['ids', 'company_id']));
 
         return response()->json([
-            'status' => false,
+            'status' => true,
             'message' => "Operation Successful!"
         ]);
     }
