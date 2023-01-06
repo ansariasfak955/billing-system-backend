@@ -65,5 +65,20 @@ class InvoiceReceiptFilter extends ModelFilter
         $endDate = \Carbon\Carbon::parse($date);
         return $this->whereDate('expiration_date', '<=', $endDate->format('Y-m-d'));
     }
+    public function amount($amount)
+    {
+        return $this->where('amount', $amount);
+    }
+    public function paidBy($client_name)
+    {
+        return $this->whereHas('client', function($q) use ($client_name){
+            $q->where('name', 'LIKE', '%'.$client_name.'%');
+        });
+    }
+    public function paymentOption($options)
+    {
+       $optionsArr = explode(',', $options);
+       return $this->whereIn('payment_option', $optionsArr);
+    }
 
 }

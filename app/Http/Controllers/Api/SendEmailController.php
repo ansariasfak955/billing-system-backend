@@ -263,4 +263,55 @@ class SendEmailController extends Controller
         ]);           
 
     }
+    public function sendAttachmentEmail(Request $request){
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required',
+            'type' => 'required',
+            'send_to' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $type = urldecode($request->type);
+        if($type == 'client_attachments'){
+            
+        }elseif($type == 'client_asset_attachments'){
+
+        }elseif($type == 'expense_attachments'){
+
+        }elseif($type == 'invoice_attachments'){
+
+        }elseif($type == 'product_attachments'){
+
+        }elseif($type == 'purchase_attachments'){
+
+        }
+        elseif($type == 'sales_attachments'){
+
+        }
+        elseif($type == 'service_attachments'){
+
+        }elseif($type == 'supplier_attachments'){
+
+        }elseif($type == 'technical_incident_attachments'){
+
+        }elseif($type == 'technical_table_attachments'){
+            
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid Attachment Type'
+            ]);
+        }
+        $subject = $request->subject;
+        $body = $request->body;
+        Mail::to($request->send_to)->send(new SendMail($attachment, $subject , $body, $pdf));
+        return response()->json([
+            'status' => true,
+            'message' => 'Mail Sent!',
+        ]);
+    }
 }

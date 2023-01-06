@@ -27,9 +27,9 @@ class PurchaseReceiptFilter extends ModelFilter
             });
         });
     }
-    public function paymentOption($payment_option){
-        return $this->where('payment_option', 'like', '%'.$payment_option.'%');
-    }
+    // public function paymentOption($payment_option){
+    //     return $this->where('payment_option', 'like', '%'.$payment_option.'%');
+    // }
     public function referenceNumber($referenceNumber){
         return $this->WhereHas('invoice', function($q) use ($referenceNumber){
             $q->where('reference_number',  'like','%'.$referenceNumber.'%');
@@ -59,5 +59,20 @@ class PurchaseReceiptFilter extends ModelFilter
     {
         $endDate = \Carbon\Carbon::parse($date);
         return $this->whereDate('expiration_date', '<=', $endDate->format('Y-m-d'));
+    }
+    public function amount($amount)
+    {
+        return $this->where('amount', $amount);
+    }
+    public function paidBy($client_name)
+    {
+        return $this->whereHas('client', function($q) use ($client_name){
+            $q->where('name', 'LIKE', '%'.$client_name.'%');
+        });
+    }
+    public function paymentOption($options)
+    {
+       $optionsArr = explode(',', $options);
+       return $this->whereIn('payment_option', $optionsArr);
     }
 }
