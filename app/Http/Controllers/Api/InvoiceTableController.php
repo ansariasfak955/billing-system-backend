@@ -233,7 +233,7 @@ class InvoiceTableController extends Controller
                             InvoiceReceipt::create([
                                 'expiration_date' => $expirationDate,
                                 'invoice_id' => $insertedInvoice->id,
-                                'amount' =>  number_format($partialAmount, 2),
+                                'amount' =>  round($partialAmount, 2),
                                 'payment_option' => $request->payment_option,
                                 'paid' => $status,
                                 'type' => $insertedInvoice->reference
