@@ -15,7 +15,20 @@ use App\Models\PurchaseTable;
 use App\Models\MyTemplateMeta;
 use App\Models\Reference;
 use App\Models\Service;
+//attachment tables
+// use App\Models\ClientAssetAttachmentController;
+// use App\Models\ClientAttachment;
+// use App\Models\ExpenseAttachment;
+// use App\Models\InvoiceAttachment;
+// use App\Models\ProductAttachment;
+// use App\Models\PurchaseAttachment;
+// use App\Models\SalesAttachment;
+// use App\Models\TechnicalTable;
+// use App\Models\TechnicalTable;
+// use App\Models\TechnicalTable;
+// use App\Models\TechnicalTable;
 use App\Mail\SendMail;
+use App\Mail\SendAttachmentsMail;
 use PDF;
 use Mail;
 use Storage;
@@ -277,38 +290,52 @@ class SendEmailController extends Controller
         }
         $type = urldecode($request->type);
         if($type == 'client_attachments'){
-            
+            $path =public_path().'/storage/clients/documents/';
         }elseif($type == 'client_asset_attachments'){
-
+            $path = public_path().'/storage/clients/assets/documents/';
         }elseif($type == 'expense_attachments'){
-
+            $path = public_path().'/storage/expense/documents/';
         }elseif($type == 'invoice_attachments'){
-
+            $path = public_path().'/storage/invoice/documents/';
         }elseif($type == 'product_attachments'){
-
+            $path = public_path().'/storage/clients/documents/';
         }elseif($type == 'purchase_attachments'){
-
+            $path = public_path().'/storage/suppliers/documents/';
         }
         elseif($type == 'sales_attachments'){
-
+            $path = public_path().'/storage/sales/documents/';
         }
         elseif($type == 'service_attachments'){
-
+            $path = public_path().'/storage/service/documents/';
         }elseif($type == 'supplier_attachments'){
-
+            $path = public_path().'/storage/suppliers/attachments/';
         }elseif($type == 'technical_incident_attachments'){
-
+            $path = public_path().'/storage/technical-incidents/documents/';
         }elseif($type == 'technical_table_attachments'){
-            
+            $path = public_path().'/storage/clients/technical/documents/';
         }else{
             return response()->json([
                 'status' => false,
                 'message' => 'Invalid Attachment Type'
             ]);
         }
+        $table = 'company_'.$request->company_id.'_'.$type;
+        $totalAttachments = \DB::table($table)->whereIn('id', explode(',', $request->ids) )->get();
+        $attachments = [];
+        foreach($totalAttachments as $attachment){
+            if( file_exists($path.$attachment->document) ){
+               $attachments[] = $path.$attachment->document;
+            }
+        }
+        if(empty( $attachments)){
+            return response()->json([
+                'status' => false,
+                'message' => 'No Attachment found on the system to send!',
+            ]);
+        }
         $subject = $request->subject;
         $body = $request->body;
-        Mail::to($request->send_to)->send(new SendMail($attachment, $subject , $body, $pdf));
+        Mail::to($request->send_to)->send(new SendAttachmentsMail($attachments, $subject , $body));
         return response()->json([
             'status' => true,
             'message' => 'Mail Sent!',
