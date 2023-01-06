@@ -41,8 +41,10 @@ class InvoiceReceiptFilter extends ModelFilter
     }
     public function clientName($client_name)
     {
-        return $this->whereHas('client', function($q) use ($client_name){
-            $q->where('name', 'LIKE', '%'.$client_name.'%');
+        return $this->whereHas('invoice', function($q) use ($client_name){
+            $q->whereHas('client', function($q) use ($client_name){
+                $q ->where('legal_name', 'LIKE', '%'.$client_name.'%');
+            });   
         });
     }
     public function paymentStartDate($date)

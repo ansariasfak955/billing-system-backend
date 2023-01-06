@@ -19,9 +19,9 @@ class SendAttachmentsMail extends Mailable
      *
      * @return void
      */
-    public function __construct($attachments, $subject = null, $body = null )
+    public function __construct($files, $subject = null, $body = null )
     {
-        $this->attachments = $attachments;
+        $this->files = $files;
         $this->subject = $subject;
         $this->body = $body;
     }
@@ -34,9 +34,9 @@ class SendAttachmentsMail extends Mailable
     public function build()
     {
         $this->subject($this->subject)
-            ->view('emails.send-attachments');
+            ->markdown('emails.send-attachments');
   
-        foreach ($this->attachments as $file){
+        foreach ($this->files as $file){
             $this->attach($file);
         }
   
