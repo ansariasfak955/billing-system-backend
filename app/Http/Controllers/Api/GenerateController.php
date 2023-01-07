@@ -47,7 +47,7 @@ class GenerateController extends Controller
                     $generateEstimate = $salesEstimate->replicate();
                     $generateEstimate->created_at = now();
                     $generateEstimate->reference = $referenceType ;
-                    $generateEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
+                    // $generateEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
                     $generateEstimate->save();
                     
                     foreach($salesEstimate->items as $salesItems){
@@ -71,7 +71,7 @@ class GenerateController extends Controller
                     $generateEstimate = InvoiceTable::create($array);
                     $generateEstimate->created_at = now();
                     $generateEstimate->reference = $referenceType ;
-                    $generateEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                    // $generateEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                     $generateEstimate->save();
                     
                     foreach($salesEstimate->items as $invoiceItems){
@@ -101,7 +101,7 @@ class GenerateController extends Controller
                 $generateSalesOrder = $salesOrder->replicate();
                 $generateSalesOrder->created_at = now();
                 $generateSalesOrder->reference = $referenceType ;
-                $generateSalesOrder->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateSalesOrder->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateSalesOrder->save();
                     
                 foreach($salesOrder->items as $salesItems){
@@ -125,7 +125,7 @@ class GenerateController extends Controller
                 $generateInvoice = InvoiceTable::create($array);
                 $generateInvoice->created_at = now();
                 $generateInvoice->reference = $referenceType ;
-                $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoice->save();
                 
                 foreach($salesOrder->items as $invoiceItems){
@@ -159,7 +159,7 @@ class GenerateController extends Controller
                 $generateInvoice = InvoiceTable::create($array);
                 $generateInvoice->created_at = now();
                 $generateInvoice->reference = $referenceType ;
-                $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoice->save();
                 
                 foreach($salesOrder->items as $invoiceItems){
@@ -190,7 +190,7 @@ class GenerateController extends Controller
                 $generateTechnicalEstimate = $technicalEstimate->replicate();
                 $generateTechnicalEstimate->created_at = now();
                 $generateTechnicalEstimate->reference = $referenceType ;
-                $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateTechnicalEstimate->save();
                 
                 foreach($technicalEstimate->items as $technicalItems){
@@ -214,7 +214,7 @@ class GenerateController extends Controller
                 $generateTechnicalEstimate = InvoiceTable::create($array);
                 $generateTechnicalEstimate->created_at = now();
                 $generateTechnicalEstimate->reference = $referenceType ;
-                $generateTechnicalEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateTechnicalEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateTechnicalEstimate->save();
                 
                 foreach($technicalEstimate->items as $invoiceItems){
@@ -244,7 +244,7 @@ class GenerateController extends Controller
                 $generateTechnicalEstimate = $technicalWorkOrder->replicate();
                 $generateTechnicalEstimate->created_at = now();
                 $generateTechnicalEstimate->reference = $referenceType ;
-                $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateTechnicalEstimate->save();
                 
                 foreach($technicalWorkOrder->items as $technicalItems){
@@ -268,7 +268,7 @@ class GenerateController extends Controller
                 $generateOrdinaryInvoice = InvoiceTable::create($array);
                 $generateOrdinaryInvoice->created_at = now();
                 $generateOrdinaryInvoice->reference = $referenceType ;
-                $generateOrdinaryInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateOrdinaryInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateOrdinaryInvoice->save();
                 
                 foreach($technicalWorkOrder->items as $invoiceItems){
@@ -302,7 +302,7 @@ class GenerateController extends Controller
                 $generateInvoiceWorkDeliveryNote = InvoiceTable::create($array);
                 $generateInvoiceWorkDeliveryNote->created_at = now();
                 $generateInvoiceWorkDeliveryNote->reference = $referenceType ;
-                $generateInvoiceWorkDeliveryNote->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateInvoiceWorkDeliveryNote->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoiceWorkDeliveryNote->save();
                 
                 foreach($technicalWorkDeliveryNote->items as $invoiceItems){
@@ -333,7 +333,7 @@ class GenerateController extends Controller
                 $generateInvoiceEstimate = $invoiceEstimate->replicate();
                 $generateInvoiceEstimate->created_at = now();
                 $generateInvoiceEstimate->reference = $referenceType ;
-                $generateInvoiceEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateInvoiceEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoiceEstimate->save();
                 
                 foreach($invoiceEstimate->items as $invoiceItems){
@@ -364,7 +364,7 @@ class GenerateController extends Controller
                 $generatePurchaseEstimate = $purchaseOrderEstimate->replicate();
                 $generatePurchaseEstimate->created_at = now();
                 $generatePurchaseEstimate->reference = $referenceType ;
-                $generatePurchaseEstimate->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generatePurchaseEstimate->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generatePurchaseEstimate->save();
                 
                 foreach($purchaseOrderEstimate->items as $purchaseItems){
@@ -395,7 +395,7 @@ class GenerateController extends Controller
                 $generateDeliveryNote = $purchaseDeliveryNote->replicate();
                 $generateDeliveryNote->created_at = now();
                 $generateDeliveryNote->reference = $referenceType ;
-                $generateDeliveryNote->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateDeliveryNote->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateDeliveryNote->save();
                 
                 foreach($purchaseDeliveryNote->items as $purchaseItems){
@@ -427,7 +427,7 @@ class GenerateController extends Controller
                 $generateTechnicalIncident = TechnicalTable::create($array);
                 $generateTechnicalIncident->created_at = now();
                 $generateTechnicalIncident->reference = $referenceType ;
-                $generateTechnicalIncident->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateTechnicalIncident->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateTechnicalIncident->save();
 
                 return response()->json([
@@ -443,7 +443,7 @@ class GenerateController extends Controller
                 $generateInvoice = InvoiceTable::create($array);
                 $generateInvoice->created_at = now();
                 $generateInvoice->reference = $referenceType ;
-                $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                // $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoice->save();
 
                 return response()->json([
