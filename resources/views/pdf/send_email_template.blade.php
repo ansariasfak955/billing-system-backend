@@ -447,11 +447,13 @@
 
                     <tr><td style="padding: 0; margin: 0;">Number: <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
 
+                    <tr><td style="padding: 0; margin: 0;">Client Name: <b>{{ @$invoiceData->client->legal_name }}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{ @$invoiceData->client->tin }}</b></td></tr>
                     <tr><td style="padding: 0; margin: 0;">Date: <b>{{ @$invoiceData->date }}</b></td></tr>
                     @if($document_payment_info_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}} <b>{{ @$invoiceData->payment_option->name }}</b>
+                                {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}} <b>{{ @$invoiceData->payment_options->name }}</b>
                             </td>
                         </tr>
                     @endif
@@ -473,7 +475,7 @@
                     @if(@$document_delivery_by_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>{{ @$invoiceData->delivery_option->name }}</b>
+                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>{{ @$invoiceData->delivery_options->name }}</b>
                             </td>
                         </tr>
                     @endif
@@ -527,7 +529,7 @@
 
                     <tr><td style="padding: 0; margin: 0;">
                     @if(@$client_supplier_zip_code_show == 1) 
-                        @if(!$company)
+                        @if($company->pincode)
                             Zip Code: <b>{{ $company->pincode }}</b>
                         @endif
                     @endif
@@ -540,9 +542,7 @@
                     @if(@$client_supplier_city_show == 1)
                         {{-- <b>{{$client_supplier_city_show}}</b>
                     @else --}}
-                    @if(!$company)
-                            City: <b>{{ $company->city }}</b>
-                        @elseif($company)
+                        @if($company->city)
                             City: <b>{{ $company->city }}</b>
                         @endif
                     @endif
@@ -553,9 +553,7 @@
                     @if(@$client_supplier_state_show == 1) 
                         {{-- <b>{{$client_supplier_state_show}}</b>
                     @else --}}
-                    @if(!$company)
-                            State: <b>{{ $company->state }}</b>
-                        @elseif($company)
+                        @if($company->state)
                             State: <b>{{ $company->state }}</b>
                         @endif
                     @endif
@@ -566,9 +564,7 @@
                     @if(@$client_supplier_country_show == 1)
                         {{-- <b>{{$client_supplier_country_show}}</b>
                     @else --}}
-                        @if(!$company)
-                            Country: <b>{{ $company->country }}</b>
-                        @elseif($company)
+                        @if($company->country)
                             Country: <b>{{ $company->country }}</b>
                         @endif
                     @endif
