@@ -34,7 +34,10 @@ class InvoiceTable extends Model
 
         return $this->hasOne(Client::class,'id', 'client_id');
     }
+    public function payment_option(){
 
+        return $this->hasOne(PaymentOption::class,'id', 'payment_option');
+    }
     public function receipts(){
 
         return $this->hasMany(InvoiceReceipt::class, 'invoice_id');

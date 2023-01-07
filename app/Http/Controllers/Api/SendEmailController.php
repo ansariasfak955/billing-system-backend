@@ -8,6 +8,7 @@ use App\Models\MyTemplate;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Item;
+use App\Models\PaymentOption;
 use App\Models\SalesEstimate;
 use App\Models\TechnicalTable;
 use App\Models\InvoiceTable;
@@ -158,7 +159,9 @@ class SendEmailController extends Controller
         }elseif($type == 'Ordinary Invoice'){
             $table = 'company_'.$request->company_id.'_invoice_tables';
             InvoiceTable::setGlobalTable($table);
-            $invoiceData = InvoiceTable::with('items')->find($request->id);
+            $table = 'company_'.$request->company_id.'_payment_options';
+            PaymentOption::setGlobalTable($table);
+            $invoiceData = InvoiceTable::with(['items','payment_option'])->find($request->id);
             $items =  $invoiceData->items;
             $total = InvoiceTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];

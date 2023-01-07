@@ -4,6 +4,12 @@
     $company_website_show = [];
     $company_name_show = 0;
     $company_country_show = 0;
+    $company_city_show = 0;
+    $company_commercial_name_show = 0;
+    $company_pincode_show = 0;
+    $company_address_show = 0;
+    $company_tin_show = 0;
+    $company_phone_show = 0;
     $document_payment_info_show = 0;
     $document_status_show = 0;
     $document_status_text = 'Status:';
@@ -62,6 +68,26 @@
             $company_name_show = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'commercial_name' && $meta->option_name == 'show')
+            @php
+            $company_commercial_name_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'pincode' && $meta->option_name == 'show')
+            @php
+            $company_pincode_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'address' && $meta->option_name == 'show')
+            @php
+            $company_address_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'tin' && $meta->option_name == 'show')
+            @php
+            $company_tin_show = $meta->option_value;
+            @endphp
+        @endif
 
         @if($meta->category == 'Company Information' && $meta->type == 'email' && $meta->option_name == 'show')
             @php
@@ -90,6 +116,18 @@
             $company_country_show = $meta->option_value;
             @endphp
         @endif
+
+        @if($meta->category == 'Company Information' && $meta->type == 'city' && $meta->option_name == 'show')
+            @php
+            $company_city_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'phone' && $meta->option_name == 'show')
+            @php
+            $company_phone_show = $meta->option_value;
+            @endphp
+        @endif
+
 
         @if($meta->category == 'Company Information' && $meta->type == 'hide_company_information' && $meta->option_name == 'show')
             @php
@@ -364,8 +402,9 @@
                         @endif
                         </td>
                         <td class="header_border" @if($company_name_show || $company_country_show) @endif>
-                            <span style="margin-left: 30px;">{{ $company_name_show == 1 ? $company->name : '' }}</span> <br>
-                            <span style="margin-left: 30px;">{{ $company_country_show == 1 ? $company->country : '' }}</span>
+                            <span style="margin-left: 30px;">Name: {{ $company_name_show == 1 ? $company->name : '' }} {{ $company_commercial_name_show == 1 ? $company->commercial_name : ''}}</span> <br>
+                            <span style="margin-left: 30px;">{{ $company_address_show == 1 ? $company->address: '' }} {{ $company_pincode_show == 1 ? $company->pincode: '' }} {{ $company_city_show == 1 ? $company->city: '' }} {{ $company_country_show == 1 ? $company->country : '' }}</span>  <br>
+                            <span style="margin-left: 30px;">{{ $company_tin_show == 1 ? $company->tin : '' }}</span>
                         </td>
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
                             @if(@$company_email_show['show'] ==1)
@@ -383,7 +422,9 @@
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
                                 @endif
+                                <br>
                             @endif
+                            <span style="margin-left: 30px;">Telefono {{ $company_phone_show == 1 ? $company->phone : '' }}</span>
                         </td>
                     </tr>
                 </table>
@@ -392,7 +433,7 @@
         </div>
 
         @if(@$document_type_show == 1)
-            <div style="text-align: center; margin-top: 25px;">
+            <div style="text-align: center; margin-top: 50px;">
                 <h2>{{ ($request->format == 'pro_forma') ? 'PRO FORMA' : $template->name }}</h2>
                 @if($document_title_show && $document_title_text)
                     {{ $document_title_text }}
@@ -400,7 +441,7 @@
             </div>
         @endif
         <div style="height:400px">
-            <div style="margin-top: 20px;font-size: 13px">
+            <div style="margin-top: 0px;font-size: 13px">
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} INFO</th>
 
@@ -410,15 +451,7 @@
                     @if($document_payment_info_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}} <b>{{ @$invoiceData->payment_option }}</b>
-                            </td>
-                        </tr>
-                    @endif
-
-                    @if($document_status_show == 1)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">
-                                {{ $document_status_text ? $document_status_text : 'Status:'}} <b>{{ @$invoiceData->status }}</b>
+                                {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}} <b>{{ @$invoiceData->payment_option->name }}</b>
                             </td>
                         </tr>
                     @endif
@@ -440,7 +473,7 @@
                     @if(@$document_delivery_by_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>{{ @$invoiceData->delivery_option }}</b>
+                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>{{ @$invoiceData->delivery_option->name }}</b>
                             </td>
                         </tr>
                     @endif
@@ -494,8 +527,11 @@
 
                     <tr><td style="padding: 0; margin: 0;">
                     @if(@$client_supplier_zip_code_show == 1) 
-                        {{-- <b>{{$client_supplier_zip_code_show}}</b> --}}
-                        Zip Code: <b>{{ $company->pincode }}</b>
+                        @if(!$company)
+                            Zip Code: <b>{{ $company->pincode }}</b>
+                        @elseif($company)
+                            Zip Code: <b>{{ $company->pincode }}</b>
+                        @endif
                     @endif
                         </td>
                     </tr>
@@ -506,7 +542,11 @@
                     @if(@$client_supplier_city_show == 1)
                         {{-- <b>{{$client_supplier_city_show}}</b>
                     @else --}}
-                        City: <b>{{ $company->city }}</b>
+                    @if(!$company)
+                            City: <b>{{ $company->city }}</b>
+                        @elseif($company)
+                            City: <b>{{ $company->city }}</b>
+                        @endif
                     @endif
                         </td>
                     </tr>
@@ -515,7 +555,11 @@
                     @if(@$client_supplier_state_show == 1) 
                         {{-- <b>{{$client_supplier_state_show}}</b>
                     @else --}}
-                        State: <b>{{ $company->state }}</b>
+                    @if(!$company)
+                            State: <b>{{ $company->state }}</b>
+                        @elseif($company)
+                            State: <b>{{ $company->state }}</b>
+                        @endif
                     @endif
                         </td>
                     </tr>
@@ -524,7 +568,11 @@
                     @if(@$client_supplier_country_show == 1)
                         {{-- <b>{{$client_supplier_country_show}}</b>
                     @else --}}
-                        Country: <b>{{ $company->country }}</b>
+                        @if(!$company)
+                            Country: <b>{{ $company->country }}</b>
+                        @elseif($company)
+                            Country: <b>{{ $company->country }}</b>
+                        @endif
                     @endif
                         </td>
                     </tr>
@@ -537,20 +585,15 @@
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">NAME</th>
-                        @if($request->format != 'without_values') 
-                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">PRICE</th>
-                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
-                        @endif
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DESCRIPTION</th>
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">QTY.</th>
+                        @if($request->format != 'without_values') 
+                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
+                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">PRICE</th>
+                        @endif
                         @if($request->format != 'without_values')
                             @if($request->format != 'without_totals')
                                 <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">SUBTOTAL</th>
-                            @endif
-                            @if($request->format != 'before_tax') 
-                                @if($request->format != 'without_totals')
-                                    <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">TAXES</th>
-                                @endif
                             @endif
                         @endif
                     </tr>
@@ -578,29 +621,22 @@
                                 <p style="marging: 0; padding: 0">{{ $product->name }}</p>
                                 <span>{{ $product->description }}</span>
                             </td>
-                            @if($request->format != 'without_values') 
-                                <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                    <p style="marging: 0; padding: 0">{{ $product->base_price }}</p>
-                                </td>
-                                <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                    <p style="marging: 0; padding: 0">{{ $product->discount }}</p>
-                                </td>
-                            @endif
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                 <p style="marging: 0; padding: 0">{{ $product->quantity }}</p>
                             </td>
+                            @if($request->format != 'without_values') 
+                                <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                                    <p style="marging: 0; padding: 0">{{ $product->discount }}</p>
+                                </td>
+                                <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                                    <p style="marging: 0; padding: 0">{{ $product->base_price }}</p>
+                                </td>
+                            @endif
                             @if($request->format != 'without_values')
                                 @if($request->format != 'without_totals')
                                     <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                         <p style="marging: 0; padding: 0">{{ $product->subtotal }}</p>
                                     </td>
-                                @endif
-                                @if($request->format != 'before_tax') 
-                                    @if($request->format != 'without_totals')
-                                        <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                            <p style="marging: 0; padding: 0">{{ $product->vat }}</p>
-                                        </td>
-                                    @endif
                                 @endif
                             @endif
                             @php
