@@ -529,8 +529,6 @@
                     @if(@$client_supplier_zip_code_show == 1) 
                         @if(!$company)
                             Zip Code: <b>{{ $company->pincode }}</b>
-                        @elseif($company)
-                            Zip Code: <b>{{ $company->pincode }}</b>
                         @endif
                     @endif
                         </td>
