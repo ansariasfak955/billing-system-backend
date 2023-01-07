@@ -52,10 +52,14 @@ class SalesEstimate extends Model
         self::$globalTable = $table;
     }
 	public function client(){
-
         return $this->hasOne(Client::class,'id', 'client_id');
     }
-
+    public function payment_options(){
+        return $this->hasOne(PaymentOption::class,'id', 'payment_option');
+    }
+    public function delivery_options(){
+        return $this->hasOne(DeliveryOption::class,'id', 'delivery_option');
+    }
 	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'reference_type'];
 
     public function getSignatureAttribute()

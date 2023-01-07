@@ -468,14 +468,17 @@
 
                     <tr>
                         <td style="padding: 0; margin: 0;">
+                        @if($invoiceData->delivery_address)
                             Delivery to: <b>{{ @$invoiceData->delivery_address }}</b>
+                        @endif
                         </td>
                     </tr>
 
                     @if(@$document_delivery_by_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>{{ @$invoiceData->delivery_options->name }}</b>
+                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}}
+                                        <b>{{ @$invoiceData->delivery_options->name }}</b>
                             </td>
                         </tr>
                     @endif

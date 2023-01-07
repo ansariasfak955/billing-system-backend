@@ -59,11 +59,17 @@ class SendEmailController extends Controller
         Product::setGlobalTable($productTable);
         $serviceTable = 'company_'.$request->company_id.'_services';
         Service::setGlobalTable($serviceTable);
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+        $deliveryOption = 'company_'.$request->company_id.'_delivery_options';
+        DeliveryOption::setGlobalTable($deliveryOption);
+        $clienTable = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clienTable);
         $company = Company::where('id', $request->company_id)->first();
         if($type == 'Sales Estimate'){
             $table = 'company_'.$request->company_id.'_sales_estimates';
             SalesEstimate::setGlobalTable($table);
-            $invoiceData = SalesEstimate::with('items')->find($request->id);
+            $invoiceData = SalesEstimate::with(['items','payment_options','client'])->find($request->id);
             $items =  $invoiceData->items;
             $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
@@ -80,7 +86,7 @@ class SendEmailController extends Controller
         }elseif($type == 'Sales Order'){
             $table = 'company_'.$request->company_id.'_sales_estimates';
             SalesEstimate::setGlobalTable($table);
-            $invoiceData = SalesEstimate::with('items')->find($request->id);
+            $invoiceData = SalesEstimate::with(['items','payment_options','client','delivery_options'])->find($request->id);
             $items =  $invoiceData->items;
             $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
@@ -112,7 +118,7 @@ class SendEmailController extends Controller
         }elseif($type == 'Work Estimate'){
             $table = 'company_'.$request->company_id.'_technical_tables';
             TechnicalTable::setGlobalTable($table);
-            $invoiceData = TechnicalTable::with('items')->find($request->id);
+            $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options'])->find($request->id);
             $items =  $invoiceData->items;
             $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
@@ -128,7 +134,7 @@ class SendEmailController extends Controller
         }elseif($type == 'Work Order'){
             $table = 'company_'.$request->company_id.'_technical_tables';
             TechnicalTable::setGlobalTable($table);
-            $invoiceData = TechnicalTable::with('items')->find($request->id);
+            $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options'])->find($request->id);
             $items =  $invoiceData->items;
             $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
@@ -145,7 +151,7 @@ class SendEmailController extends Controller
         elseif($type == 'Work Delivery Note'){
             $table = 'company_'.$request->company_id.'_technical_tables';
             TechnicalTable::setGlobalTable($table);
-            $invoiceData = TechnicalTable::with('items')->find($request->id);
+            $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options'])->find($request->id);
             $items =  $invoiceData->items;
             $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
@@ -161,16 +167,9 @@ class SendEmailController extends Controller
         }elseif($type == 'Ordinary Invoice'){
             $table = 'company_'.$request->company_id.'_invoice_tables';
             InvoiceTable::setGlobalTable($table);
-            $table = 'company_'.$request->company_id.'_payment_options';
-            PaymentOption::setGlobalTable($table);
-            $deliveryOption = 'company_'.$request->company_id.'_delivery_options';
-            DeliveryOption::setGlobalTable($deliveryOption);
-            $clienTable = 'company_'.$request->company_id.'_clients';
-            Client::setGlobalTable($clienTable);
             $invoiceData = InvoiceTable::with(['items','payment_options','delivery_options','client'])->find($request->id);
-            // dd($invoiceData);
             $items =  $invoiceData->items;
-            $total = InvoiceTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = InvoiceTable::with(['items','payment_options','client'])->where('id',$request->id)->get()->sum('amount');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -200,7 +199,7 @@ class SendEmailController extends Controller
         }elseif($type == 'Purchase Order'){
             $table = 'company_'.$request->company_id.'_purchase_tables';
             PurchaseTable::setGlobalTable($table);
-            $invoiceData = PurchaseTable::with('items')->find($request->id);
+            $invoiceData = PurchaseTable::with()->find($request->id);
             $items =  $invoiceData->items;
             $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];

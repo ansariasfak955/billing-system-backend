@@ -33,6 +33,12 @@ class TechnicalTable extends Model
     public function client(){
         return $this->hasMany(Client::class, 'id', 'client_id');
     }
+    public function payment_options(){
+        return $this->hasOne(PaymentOption::class,'id', 'payment_option');
+    }
+    public function delivery_options(){
+        return $this->hasOne(DeliveryOption::class,'id', 'delivery_option');
+    }
 
     public function getClientNameAttribute(){
         
