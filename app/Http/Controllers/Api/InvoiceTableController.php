@@ -223,6 +223,7 @@ class InvoiceTableController extends Controller
 
                    if(is_array($paymentTerms)&& count($paymentTerms)){
                         foreach($paymentTerms as $key => $term){
+                            $partialAmount = 0;
                             if($insertedInvoice->amount){
                                 $partialAmount  = $insertedInvoice->amount*$term->percentage/100;
                             }
