@@ -84,7 +84,7 @@ class TechnicalTable extends Model
         if(isset( $this->attributes['created_by'] )){
             $table = $this->getTable();
             $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-            return get_client_name($createdby, $this->attributes['created_by']);
+            return get_user_name($createdby, $this->attributes['created_by']);
         }
     }
 
