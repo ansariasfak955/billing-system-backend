@@ -258,7 +258,7 @@ class SendEmailController extends Controller
         $template = MyTemplate::where('id', $template_id)->first(); 
         // return storage_path('fonts');
         
-        $attachment =  $template->id."_invoice.pdf";
+        $attachment =  rand(1, 10).$template->id."_invoice.pdf";
         $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
         
         \Storage::put('/public/temp/'.$attachment, $pdf->output());

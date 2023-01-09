@@ -2,6 +2,7 @@
     $company_email_show = [];
     $company_logo_show = 0;
     $company_website_show = [];
+    $company_phone_show = [];
     $company_name_show = 0;
     $company_legal_name_show = 0;
     $company_country_show = 0;
@@ -95,6 +96,17 @@
         @if($meta->category == 'Company Information' && $meta->type == 'website' && $meta->option_name == 'text')
             @php
             $company_website_show['value'] = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Company Information' && $meta->type == 'phone' && $meta->option_name == 'show')
+            @php
+            $company_phone_show['show'] = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'phone' && $meta->option_name == 'text')
+            @php
+            $company_phone_show['value'] = $meta->option_value;
             @endphp
         @endif
 
@@ -401,9 +413,10 @@
                         @endif
                         </td>
                         <td class="header_border" @if($company_name_show || $company_country_show) @endif>
-                            <span style="margin-left: 30px;">Company Name: {{ $company_name_show == 1 ? $company->name : '' }}</span> <br>
-                            <span style="margin-left: 30px;">Legal Name: {{ $company_legal_name_show == 1 ? $company_legal_name_text: '' }}</span> <br>
-                            <span style="margin-left: 30px;">{{ $company_country_show == 1 ? $company->country : '' }}</span>
+                            <span>Company Name:</span>
+                            <span style="margin-left: 30px;">{{  @$company->commercial_name }}</span> <br>
+                            <span>Address:</span><br>
+                            <span style="margin-left: 30px;">{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span>
                         </td>
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
                             @if(@$company_email_show['show'] ==1)
@@ -416,10 +429,18 @@
                                 <br>
                             @endif
                             @if(@$company_website_show['show'])    
-                                <span style="margin-left: 30px;">website</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                                <span style="margin-left: 30px;">Website:</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
+                                @endif
+                            @endif
+                            <br>
+                            @if(@$company_phone_show['show'])    
+                                <span style="margin-left: 30px;">Phone:</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
+                                    {{$company_phone_show['value']}}
+                                @elseif(@$company_phone_show['show'] ==1 && @!$company_phone_show['value'])
+                                    {{ $company->phone}}
                                 @endif
                             @endif
                         </td>
@@ -430,7 +451,7 @@
         </div>
 
         @if(@$document_type_show == 1)
-            <div style="text-align: center; margin-top: 20px;">
+            <div style="text-align: center; margin-top: 70px;">
                 <h2>{{ $template->name }}</h2>
                 @if($document_title_show && $document_title_text)
                     {{ $document_title_text }}
@@ -448,7 +469,8 @@
                             </td>
                         </tr>
                     @endif
-
+                    <tr><td style="padding: 0; margin: 0;">Client Name: <b>Johnny</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>54578</b></td></tr>
                     @if($document_date_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
@@ -465,13 +487,13 @@
                         </tr>
                     @endif
 
-                    @if($document_status_show == 1)
+                    {{-- @if($document_status_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                                 {{ $document_status_text ? $document_status_text : 'Status:'}}<b> Pending</b>
                             </td>
                         </tr>
-                    @endif
+                    @endif --}}
                     
                     @if($document_created_by_show == 1)
                         <tr>
@@ -587,12 +609,12 @@
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">NAME</th>
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">PRICE</th>
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DESCRIPTION</th>
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">QTY.</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
+                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">PRICE</th>
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">SUBTOTAL</th>
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">TAXES</th>
+                       {{--  <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">TAXES</th> --}}
                     </tr>
                     @php
                     $subtotal = 0;
@@ -619,20 +641,20 @@
                                 <span>{{ $product->description }}</span>
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                <p style="marging: 0; padding: 0">{{ $product->price }}</p>
+                                <p style="marging: 0; padding: 0">1</p>
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                 <p style="marging: 0; padding: 0">0</p>
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                <p style="marging: 0; padding: 0">1</p>
+                                <p style="marging: 0; padding: 0">{{ $product->price }}</p>
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                 <p style="marging: 0; padding: 0">{{ $product->price }}</p>
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                           {{--  <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                 <p style="marging: 0; padding: 0">VAT 21%</p>
-                            </td>
+                            </td> --}}
                             @php
                             $subtotal += $product->price;
                             @endphp

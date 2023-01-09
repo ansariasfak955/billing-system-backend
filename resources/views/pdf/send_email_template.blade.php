@@ -401,10 +401,11 @@
                             <img src="{{ $company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; object-fit: cover;">
                         @endif
                         </td>
-                        <td class="header_border" @if($company_name_show || $company_country_show) @endif>
-                            <span style="margin-left: 30px;">Name: {{ $company_name_show == 1 ? $company->name : '' }} {{ $company_commercial_name_show == 1 ? $company->commercial_name : ''}}</span> <br>
-                            <span style="margin-left: 30px;">{{ $company_address_show == 1 ? $company->address: '' }} {{ $company_pincode_show == 1 ? $company->pincode: '' }} {{ $company_city_show == 1 ? $company->city: '' }} {{ $company_country_show == 1 ? $company->country : '' }}</span>  <br>
-                            <span style="margin-left: 30px;">{{ $company_tin_show == 1 ? $company->tin : '' }}</span>
+                       <td class="header_border" @if($company_name_show || $company_country_show) @endif>
+                            <span>Company Name:</span>
+                            <span style="margin-left: 30px;">{{  @$company->commercial_name }}</span> <br>
+                            <span>Address:</span><br>
+                            <span style="margin-left: 30px;">{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span>
                         </td>
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
                             @if(@$company_email_show['show'] ==1)
@@ -424,7 +425,7 @@
                                 @endif
                                 <br>
                             @endif
-                            <span style="margin-left: 30px;">Telefono {{ $company_phone_show == 1 ? $company->phone : '' }}</span>
+                            <span style="margin-left: 30px;">Phone: {{ $company_phone_show == 1 ? $company->phone : '' }}</span>
                         </td>
                     </tr>
                 </table>
@@ -446,11 +447,17 @@
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} INFO</th>
 
                     <tr><td style="padding: 0; margin: 0;">Number: <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
+                    @if(@$invoiceData->client->legal_name)
+                        <tr><td style="padding: 0; margin: 0;">Client Name: <b>{{ @$invoiceData->client->legal_name }}</b></td></tr>
+                    @endif
+                    @if(@$invoiceData->client->tin)
+                        <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{ @$invoiceData->client->tin }}</b></td></tr>
+                    @endif
+                    @if(@$invoiceData->date)
+                     <tr><td style="padding: 0; margin: 0;">Date: <b>{{ @$invoiceData->date }}</b></td></tr>
+                    @endif
 
-                    <tr><td style="padding: 0; margin: 0;">Client Name: <b>{{ @$invoiceData->client->legal_name }}</b></td></tr>
-                    <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{ @$invoiceData->client->tin }}</b></td></tr>
-                    <tr><td style="padding: 0; margin: 0;">Date: <b>{{ @$invoiceData->date }}</b></td></tr>
-                    @if($document_payment_info_show == 1)
+                    @if($document_payment_info_show == 1 && @$invoiceData->payment_options->name)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                                 {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}} <b>{{ @$invoiceData->payment_options->name }}</b>
@@ -458,10 +465,10 @@
                         </tr>
                     @endif
                     
-                    @if($document_created_by_show == 1)
+                    @if($document_created_by_show == 1 && @$invoiceData->created_by)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_created_by_text ? $document_created_by_text : 'Created by:'}} <b>Test View Account</b>
+                                {{ $document_created_by_text ? $document_created_by_text : 'Created by:'}} <b>{{ @$invoiceData->created_by }}</b>
                             </td>
                         </tr>
                     @endif
@@ -474,7 +481,7 @@
                         </td>
                     </tr>
 
-                    @if(@$document_delivery_by_show == 1)
+                    @if(@$document_delivery_by_show == 1 && @$invoiceData->delivery_options->name)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                                 {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}}
