@@ -13,7 +13,7 @@ class TechnicalTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'technical_tables' ;
 
-    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount', 'meta_discount', 'reference_type'];
+    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount', 'meta_discount', 'reference_type', 'agent_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -87,7 +87,14 @@ class TechnicalTable extends Model
             return get_user_name($createdby, $this->attributes['created_by']);
         }
     }
-
+    public function getAgentNameAttribute(){
+        
+        if(isset( $this->attributes['agent_id'] )){
+            $table = $this->getTable();
+            $company = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_user_name($company, $this->attributes['agent_id']);
+        }
+    }
 	public function getAmountAttribute(){
         
       if(isset($this->items)){
