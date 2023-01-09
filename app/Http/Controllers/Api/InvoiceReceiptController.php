@@ -10,6 +10,8 @@ use App\Models\Item;
 use App\Models\Client;
 use App\Models\Supplier;
 use App\Models\ItemMeta;
+use App\Models\Company;
+use App;
 use Validator;
 use Storage;
 class InvoiceReceiptController extends Controller
@@ -231,12 +233,25 @@ class InvoiceReceiptController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
+        $company = Company::where('id', $request->company_id)->first();
+
+        $pdf = App::make('dompdf.wrapper');
         $idsArr = explode(',', $request->ids);
         $table = 'company_'.$request->company_id.'_invoice_receipts';
-
-        return response()->json([
-            'status' => true,
-            'message' => "Operation Successful!"
-        ]);
+        InvoiceReceipt::setGlobalTable($table);
+        foreach($idsArr as $id){
+            $receipt = InvoiceReceipt::find($id);
+            if($request->view == 1){
+    
+                return view('pdf.receipt', compact('receipt', 'company'));
+            }
+            $pdf->loadView('pdf.receipt', compact('receipt', 'company'));
+            return   $pdf->stream();
+        }
+        // return response()->json([
+        //     'status' => true,
+        //     'message' => "Operation Successful!",
+        //     'data' => $pdfs
+        // ]);
     }
 }

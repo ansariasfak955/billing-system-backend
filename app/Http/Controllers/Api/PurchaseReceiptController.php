@@ -9,6 +9,9 @@ use App\Models\PurchaseTable;
 use App\Models\Item;
 use App\Models\ItemMeta;
 use App\Models\Supplier;
+use App\Models\Company;
+use App;
+
 use Validator;
 use Storage;
 
@@ -220,20 +223,26 @@ class PurchaseReceiptController extends Controller
         $validator = Validator::make($request->all(),[
             'ids' => 'required',                  
         ]);
-
+        $company = Company::where('id', $request->company_id)->first();
         if ($validator->fails()) {
             return response()->json([
                 "status" => false,
                 "message" => $validator->errors()->first()
             ]);
         }
+        $pdf = App::make('dompdf.wrapper');
         $idsArr = explode(',', $request->ids);
         $table = 'company_'.$request->company_id.'_purchase_receipts';
         PurchaseReceipt::setGlobalTable($table);
 
-        return response()->json([
-            'status' => true,
-            'message' => "Operation Successful!"
-        ]);
+        foreach($idsArr as $id){
+            $receipt = PurchaseReceipt::find($id);
+            if($request->view == 1){
+    
+                return view('pdf.receipt', compact('receipt', 'company'));
+            }
+            $pdf->loadView('pdf.receipt', compact('receipt', 'company'));
+            return   $pdf->stream();
+        }
     }
 }
