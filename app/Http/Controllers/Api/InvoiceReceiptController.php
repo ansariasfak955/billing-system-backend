@@ -219,4 +219,24 @@ class InvoiceReceiptController extends Controller
             'message' => "Operation Successful!"
         ]);
     }
+    public function download(Request $request){
+
+        $validator = Validator::make($request->all(),[
+            'ids' => 'required',                  
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => $validator->errors()->first()
+            ]);
+        }
+        $idsArr = explode(',', $request->ids);
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+
+        return response()->json([
+            'status' => true,
+            'message' => "Operation Successful!"
+        ]);
+    }
 }

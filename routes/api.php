@@ -272,6 +272,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('invoice-attachments', InvoiceAttachmentController::class);
             Route::apiResource('invoice-receipts', InvoiceReceiptController::class);
             Route::post('invoice-receipts-bulk-pay', 'InvoiceReceiptController@bulkPay');
+            Route::post('invoice-receipts-download', 'InvoiceReceiptController@download');
 
             // Purchases 
             Route::apiResource('suppliers', SupplierController::class);
@@ -291,6 +292,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('purchase-tickets/batch-delete', 'PurchaseTicketController@batchDelete');
             Route::post('purchase-tickets/duplicate-tickets', 'PurchaseTicketController@duplicate');
             Route::post('purchase-receipts-bulk-pay', 'PurchaseReceiptController@bulkPay');
+            Route::post('purchase-receipts-download', 'PurchaseReceiptController@download');
             Route::get('purchase-sent-invoice-summary', 'PurchaseTableController@sentInvoices');
             
             /* Items */
