@@ -20,7 +20,7 @@ class TechnicalTableAttachment extends Model
     public function getDocumentAttribute()
     {
         if ($this->attributes['document']) {
-            return url('/storage').'/clients/technical/documents/'.$this->attributes['document'];
+            return url('/storage').'/technical/documents/'.$this->attributes['document'];
         } else {
             return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
         }

@@ -321,7 +321,7 @@ class SendEmailController extends Controller
         }elseif($type == 'technical_incident_attachments'){
             $path = public_path().'/storage/technical-incidents/documents/';
         }elseif($type == 'technical_table_attachments'){
-            $path = public_path().'/storage/clients/technical/documents/';
+            $path = public_path().'/storage/technical/documents/';
         }else{
             return response()->json([
                 'status' => false,
