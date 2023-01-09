@@ -9,6 +9,10 @@
         .header_border {
             border-left: 2px solid {{ $color }} !important;
         }
+        .border_bottom {
+            width: 33%;
+            border-bottom: 2px solid {{ $color }} !important;
+        }
         
     </style>
 
@@ -74,10 +78,74 @@
         </div>
 
             <div style="text-align: center; margin-top: 70px;">
-                <h2>Receipt</h2>
+                <h1>Receipt</h1>
             </div>
         <div style="height:400px">
-            <div style="margin-top: 20px;font-size: 13px">
+            <div style="margin-top: 20px;font-size: 20px">
+                <table style="width:100%">
+                    <tr>
+
+                        <td class="" >
+                            <span class="border_bottom">INVOICE</span><br>
+                            <span>{{@$receipt->invoice->reference}}{{@$receipt->invoice->reference_number}}</span><
+                        </td>
+
+                        <td class="" >
+                            <span class="border_bottom">PAYMENT OPTION</span><br>
+                            <span>{{@$receipt->payment_option_name}}</span><
+                        </td>
+
+                        <td class="" >
+                            <span class="border_bottom">AMOUNT</span><br>
+                            <span>{{@$receipt->amount}}</span><
+                        </td>
+                    </tr>
+                    <br>
+                    <tr>
+
+                        <td class="" >
+                            <span class="border_bottom">PAYMENT DATE</span><br>
+                            <span>@if(@$receipt->payment_date)
+                                {{date('Y-m-d', strtotime($receipt->payment_date))}}
+                                @endif</span><
+                        </td>
+                        
+                        <td class="" >
+                            <span class="border_bottom">PAYMENT TERMS</span><br>
+                            <span>{{@$receipt->invoice->payment_term_name}}</span><
+                        </td>
+
+                    </tr>
+                    <br>
+                    <tr>
+
+                        <td class="" >
+                            <span class="border_bottom" >CONCEPT</span><br>
+                            <span>{{@$receipt->concept}}</span><
+                        </td>   
+
+                    </tr>
+                    <br>
+                    <tr>
+
+                        <td class="" >
+                            <span class="border_bottom">TIN</span><br>
+                            <span>{{@$receipt->client->tin}}</span><
+                        </td>   
+                        <td class="" >
+                            <span class="border_bottom">ISSUED TO</span><br>
+                            <span>{{@$receipt->client->legal_name}}</span><
+                        </td>  
+                    </tr>
+                    <br>
+                    <tr>
+
+                        <td class="" >
+                            <span class=""> SIGNED</span><
+                            <span></span><
+                        </td>  
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

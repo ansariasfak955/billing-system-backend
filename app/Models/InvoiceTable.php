@@ -14,7 +14,7 @@ class InvoiceTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount','amount_paid', 'amount_due', 'reference_type'];
+    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount','amount_paid', 'amount_due', 'reference_type', 'payment_term_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -61,7 +61,14 @@ class InvoiceTable extends Model
             return get_client_name($client_id, $this->attributes['client_id']);
         }
     }
-
+    public function getPaymentTermNameAttribute(){
+        
+        if(isset( $this->attributes['payment_term'] )){
+            $table = $this->getTable();
+            $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_payment_terms_name($client_id, $this->attributes['payment_term']);
+        }
+    }
 	public function getCreatedByNameAttribute(){
         
         if(isset( $this->attributes['created_by'] )){

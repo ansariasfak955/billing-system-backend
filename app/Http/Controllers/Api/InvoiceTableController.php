@@ -221,7 +221,7 @@ class InvoiceTableController extends Controller
                     PaymentTerm::setGlobalTable($table);
                     $paymentTerms = PaymentTerm::where('id', $request->payment_term)->pluck('terms')->first();
 
-                   if(count($paymentTerms)){
+                   if(is_array($paymentTerms)&& count($paymentTerms)){
                         foreach($paymentTerms as $key => $term){
                             if($insertedInvoice->amount){
                                 $partialAmount  = $insertedInvoice->amount*$term->percentage/100;

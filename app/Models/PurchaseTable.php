@@ -13,7 +13,7 @@ class PurchaseTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type'];
+    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -36,7 +36,10 @@ class PurchaseTable extends Model
 
         return $this->hasOne(Supplier::class,'id', 'supplier_id');
     }
+    public function client(){
 
+        return $this->hasOne(Supplier::class,'id', 'supplier_id');
+    }
     public function getMetaDiscountAttribute(){
 		if(isset($this->item_meta)){
 			return $this->item_meta->pluck('discount')->first();
@@ -45,10 +48,18 @@ class PurchaseTable extends Model
 
 	public function getClientNameAttribute(){
         
-        if(isset( $this->attributes['client_id'] )){
+        if(isset( $this->attributes['supplier_id'] )){
+            $table = $this->getTable();
+            $company = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_supplier_name($company, $this->attributes['supplier_id']);
+        }
+    }
+	public function getPaymentTermNameAttribute(){
+        
+        if(isset( $this->attributes['payment_term'] )){
             $table = $this->getTable();
             $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-            return get_client_name($client_id, $this->attributes['client_id']);
+            return get_payment_terms_name($client_id, $this->attributes['payment_term']);
         }
     }
     

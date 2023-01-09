@@ -238,9 +238,13 @@ class InvoiceReceiptController extends Controller
         $pdf = App::make('dompdf.wrapper');
         $idsArr = explode(',', $request->ids);
         $table = 'company_'.$request->company_id.'_invoice_receipts';
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        $clientTable = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientTable);
+        InvoiceTable::setGlobalTable($invoiceTable);
         InvoiceReceipt::setGlobalTable($table);
         foreach($idsArr as $id){
-            $receipt = InvoiceReceipt::find($id);
+            $receipt = InvoiceReceipt::with(['invoice', 'client'])->find($id);
             if($request->view == 1){
     
                 return view('pdf.receipt', compact('receipt', 'company'));

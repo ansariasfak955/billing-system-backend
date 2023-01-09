@@ -234,9 +234,12 @@ class PurchaseReceiptController extends Controller
         $idsArr = explode(',', $request->ids);
         $table = 'company_'.$request->company_id.'_purchase_receipts';
         PurchaseReceipt::setGlobalTable($table);
-
+        $receipt_table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($receipt_table);
+        $clientTable = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($clientTable);
         foreach($idsArr as $id){
-            $receipt = PurchaseReceipt::find($id);
+            $receipt = PurchaseReceipt::with(['invoice', 'client'])->find($id);
             if($request->view == 1){
     
                 return view('pdf.receipt', compact('receipt', 'company'));
