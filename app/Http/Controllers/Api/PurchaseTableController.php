@@ -10,6 +10,7 @@ use App\Models\Supplier;
 use App\Models\ItemMeta;
 use App\Models\PurchaseReceipt;
 use App\Models\Reference;
+use App\Models\PaymentTerm;
 use Validator;
 use Storage;
 
@@ -210,38 +211,53 @@ class PurchaseTableController extends Controller
                }
                 $insertedInvoice = PurchaseTable::with(['items', 'item_meta'])->find($purchase_table->id);
                 $status = ($request->status == 'paid') ? '1' : '0';
-                if($request->payment_term == 'immediate'){
+                //receipts
+                if($request->payment_term){
 
-                    PurchaseReceipt::create([
-                        'expiration_date' => date('Y-m-d'),
-                        'purchase_id' => $insertedInvoice->id,
-                        'amount' =>  ($insertedInvoice->amount) ? $insertedInvoice->amount  :0,
-                        'payment_option' => $request->payment_option,
-                        'paid' => $status,
-                        'type' => $insertedInvoice->reference
-                    ]);
-                    
-                }else{
-                    $partialAmount = 0 ;
+                    $table = 'company_'.$request->company_id.'_payment_terms';
+                    PaymentTerm::setGlobalTable($table);
+                    $paymentTerms = PaymentTerm::where('id', $request->payment_term)->pluck('terms')->first();
 
-                    if($insertedInvoice->amount){
-                        $partialAmount  = $insertedInvoice->amount/3;
-                    }
+                   if(is_array($paymentTerms)&& count($paymentTerms)){
+                        foreach($paymentTerms as $key => $term){
+                            $partialAmount = 0;
+                            if($insertedInvoice->amount){
+                                $partialAmount  = $insertedInvoice->amount*$term->percentage/100;
+                            }
 
-                    for($i=1 ;$i<=3; $i++){
-                        $daysToBeAdded = $i*30;
-                        $expirationDate = Date('Y-m-d', strtotime("+$daysToBeAdded days"));
+                            $daysToBeAdded = $term->days;
+                            $expirationDate = Date('Y-m-d', strtotime("+$daysToBeAdded days"));
 
+                            PurchaseReceipt::create([
+                                'expiration_date' => $expirationDate,
+                                'invoice_id' => $insertedInvoice->id,
+                                'amount' =>  round($partialAmount, 2),
+                                'payment_option' => $request->payment_option,
+                                'paid' => $status,
+                                'type' => $insertedInvoice->reference
+                            ]);
+                        }
+                   }else{
                         PurchaseReceipt::create([
-                            'expiration_date' => $expirationDate,
-                            'purchase_id' => $insertedInvoice->id,
-                            'amount' =>  $partialAmount,
+                            'expiration_date' => date('Y-m-d'),
+                            'invoice_id' => $insertedInvoice->id,
+                            'amount' =>  round($insertedInvoice->amount, 2),
                             'payment_option' => $request->payment_option,
                             'paid' => $status,
                             'type' => $insertedInvoice->reference
                         ]);
-                    }
-                }
+                   }
+                   
+                }else{
+                    PurchaseReceipt::create([
+                        'expiration_date' => date('Y-m-d'),
+                        'invoice_id' => $insertedInvoice->id,
+                        'amount' =>  round($insertedInvoice->amount, 2),
+                        'payment_option' => $request->payment_option,
+                        'paid' => $status,
+                        'type' => $insertedInvoice->reference
+                    ]);
+                }  
            }
 
             return response()->json([

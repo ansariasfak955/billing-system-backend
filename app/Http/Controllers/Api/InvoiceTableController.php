@@ -240,8 +240,26 @@ class InvoiceTableController extends Controller
                                 'type' => $insertedInvoice->reference
                             ]);
                         }
+                   }else{
+                        InvoiceReceipt::create([
+                            'expiration_date' => date('Y-m-d'),
+                            'invoice_id' => $insertedInvoice->id,
+                            'amount' =>  round($insertedInvoice->amount, 2),
+                            'payment_option' => $request->payment_option,
+                            'paid' => $status,
+                            'type' => $insertedInvoice->reference
+                        ]);
                    }
                    
+                }else{
+                    InvoiceReceipt::create([
+                        'expiration_date' => date('Y-m-d'),
+                        'invoice_id' => $insertedInvoice->id,
+                        'amount' =>  round($insertedInvoice->amount, 2),
+                        'payment_option' => $request->payment_option,
+                        'paid' => $status,
+                        'type' => $insertedInvoice->reference
+                    ]);
                 }   
 
             }
