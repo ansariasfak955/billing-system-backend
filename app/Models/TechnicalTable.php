@@ -31,7 +31,7 @@ class TechnicalTable extends Model
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }
     public function client(){
-        return $this->hasMany(Client::class, 'id', 'client_id');
+        return $this->hasOne(Client::class, 'id', 'client_id');
     }
     public function payment_options(){
         return $this->hasOne(PaymentOption::class,'id', 'payment_option');
