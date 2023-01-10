@@ -20,8 +20,8 @@ class ServiceFilter extends ModelFilter
     public function search($search){
         return $this->where(function($q) use ($search)
         {
-            return $q->where('name', 'like', '%'.$request->search.'%')->orWhere('reference', 'like', '%'.$request->search.'%')
-            ->orWhere('reference_number', 'like', '%'.$request->search.'%')->orWhere('price', 'like', '%'.$request->search.'%');
+            return $q->where('name', 'like', '%'.$search.'%')->orWhere('reference', 'like', '%'.$search.'%')
+            ->orWhere('reference_number', 'like', '%'.$search.'%')->orWhere('price', 'like', '%'.$search.'%');
         });
     }
 
