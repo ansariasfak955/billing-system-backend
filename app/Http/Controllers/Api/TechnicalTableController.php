@@ -154,7 +154,7 @@ class TechnicalTableController extends Controller
 
         if( $request->reference_number  ){
             $technical_incidents = TechnicalTable::create($request->except('company_id'));
-            $technical_incidents->created_by = \Auth::id();
+            // $technical_incidents->created_by = \Auth::id();
             $technical_incidents->save();
             // dd($request->all());
             if($request->item){
