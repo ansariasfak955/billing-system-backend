@@ -456,9 +456,9 @@
                     @if(@$invoiceData->date)
                      <tr><td style="padding: 0; margin: 0;">Date: <b>{{ @$invoiceData->date }}</b></td></tr>
                     @endif
-                    <!-- @if(@$invoiceData->status)
+                    @if(@$invoiceData->status)
                      <tr><td style="padding: 0; margin: 0;">Status: <b>{{ @$invoiceData->status }}</b></td></tr>
-                    @endif -->
+                    @endif
 
                     @if($document_payment_info_show == 1 && @$invoiceData->payment_options->name)
                         <tr>
