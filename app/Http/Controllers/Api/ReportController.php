@@ -634,7 +634,7 @@ class ReportController extends Controller
                             "label" => "Withdrawals", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                " " . InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                                " " . InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
                             ] 
                         ], 
                     [
@@ -642,7 +642,7 @@ class ReportController extends Controller
                         "label" => "Balance", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                        " " . Item::where('type', 'inv')->sum('subtotal') - InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                        " " . InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount') - InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
                         ] 
                     ] 
                 ], 
@@ -678,7 +678,7 @@ class ReportController extends Controller
                         "label" => "Refunds", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 3474
+                            "$ ". InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
                         ] 
                     ], 
                     [
