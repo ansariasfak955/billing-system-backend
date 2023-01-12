@@ -60,7 +60,7 @@ class SalesEstimate extends Model
     public function delivery_options(){
         return $this->hasOne(DeliveryOption::class,'id', 'delivery_option');
     }
-	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'reference_type'];
+	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'reference_type','agent_name'];
 
     public function getSignatureAttribute()
     {
@@ -89,6 +89,14 @@ class SalesEstimate extends Model
             $table = $this->getTable();
             $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_client_name($client_id, $this->attributes['client_id']);
+        }
+    }
+    public function getAgentNameAttribute(){
+        
+        if(isset( $this->attributes['agent_id'] )){
+            $table = $this->getTable();
+            $company = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_user_name($company, $this->attributes['agent_id']);
         }
     }
 
