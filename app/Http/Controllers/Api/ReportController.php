@@ -758,7 +758,7 @@ class ReportController extends Controller
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
 
-        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        $supplierTables = 'company_'.$request->company_idInciden.'_suppliers';
         Supplier::setGlobalTable($supplierTables); 
 
         $itemTable = 'company_'.$request->company_id.'_items';
