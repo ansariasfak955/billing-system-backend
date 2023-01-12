@@ -521,7 +521,81 @@ class ReportController extends Controller
                 ]
             ];
 
-        }elseif( $request->type == "agent" ){
+        }elseif($request->type == "incidents_by_client"){
+            $data = [
+                "incidents_by_client" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 500
+                        ] 
+                    ], 
+                    [
+                            "type" => "bar", 
+                            "label" => "Refused", 
+                            "backgroundColor" => "#FB6363", 
+                            "data" => [
+                                "$ ". 500
+                            ]
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Resolved", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 500
+                        ]
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 500
+                        ]
+                    ],
+                ],
+            ];
+        }elseif($request->type == "incidents_by_agent"){
+            $data = [
+                "incidents_by_agent" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 500
+                        ] 
+                    ], 
+                    [
+                            "type" => "bar", 
+                            "label" => "Refused", 
+                            "backgroundColor" => "#FB6363", 
+                            "data" => [
+                                "$ ". 500
+                            ]
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Resolved", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 500
+                        ]
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 500
+                        ]
+                    ],
+                ],
+            ];
+        }elseif($request->type == "agent" ){
             $agent_ids  = TechnicalTable::pluck('agent_id')->toArray();
             $client_ids  = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
 
