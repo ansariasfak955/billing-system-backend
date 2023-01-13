@@ -655,7 +655,7 @@
             </div>
         </div>
             @php
-            $vat = $subtotal*$product->vat/100;
+            $vat = $total*$product->vat/100;
             $totals = $total+$vat;
             @endphp
 
