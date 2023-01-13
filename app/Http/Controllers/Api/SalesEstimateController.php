@@ -127,7 +127,7 @@ class SalesEstimateController extends Controller
             $request['sent_date'] = get_formatted_datetime($request->sent_date);
         }
 
-        $request['created_by'] =\Auth::id();
+        // $request['created_by'] =\Auth::id();
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
 

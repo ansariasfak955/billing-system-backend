@@ -157,7 +157,7 @@ class InvoiceTableController extends Controller
 
         if( $request->reference_number  ){
             $invoice = InvoiceTable::create($request->except('company_id'));
-            $invoice->created_by = \Auth::id();
+            // $invoice->created_by = \Auth::id();
             $invoice->save();
             // dd($request->all());
             if($request->item){

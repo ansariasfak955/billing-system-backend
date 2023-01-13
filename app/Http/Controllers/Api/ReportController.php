@@ -521,7 +521,81 @@ class ReportController extends Controller
                 ]
             ];
 
-        }elseif( $request->type == "agent" ){
+        }elseif($request->type == "incidents_by_client"){
+            $data = [
+                "incidents_by_client" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 500
+                        ] 
+                    ], 
+                    [
+                            "type" => "bar", 
+                            "label" => "Refused", 
+                            "backgroundColor" => "#FB6363", 
+                            "data" => [
+                                "$ ". 500
+                            ]
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Resolved", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 500
+                        ]
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 500
+                        ]
+                    ],
+                ],
+            ];
+        }elseif($request->type == "incidents_by_agent"){
+            $data = [
+                "incidents_by_agent" => [
+                    [
+                        "type" => "bar", 
+                        "label" => "Pending", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 500
+                        ] 
+                    ], 
+                    [
+                            "type" => "bar", 
+                            "label" => "Refused", 
+                            "backgroundColor" => "#FB6363", 
+                            "data" => [
+                                "$ ". 500
+                            ]
+                    ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Resolved", 
+                        "backgroundColor" => "#FE9140", 
+                        "data" => [
+                            "$ ". 500
+                        ]
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "$ ". 500
+                        ]
+                    ],
+                ],
+            ];
+        }elseif($request->type == "agent" ){
             $agent_ids  = TechnicalTable::pluck('agent_id')->toArray();
             $client_ids  = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
 
@@ -634,7 +708,7 @@ class ReportController extends Controller
                             "label" => "Withdrawals", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                " " . InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                                " " . InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
                             ] 
                         ], 
                     [
@@ -642,7 +716,7 @@ class ReportController extends Controller
                         "label" => "Balance", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                        " " . Item::where('type', 'inv')->sum('subtotal') - InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                        " " . InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount') - InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
                         ] 
                     ] 
                 ], 
@@ -678,7 +752,7 @@ class ReportController extends Controller
                         "label" => "Refunds", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 3474
+                            "$ ". InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
                         ] 
                     ], 
                     [
@@ -758,7 +832,7 @@ class ReportController extends Controller
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
 
-        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        $supplierTables = 'company_'.$request->company_idInciden.'_suppliers';
         Supplier::setGlobalTable($supplierTables); 
 
         $itemTable = 'company_'.$request->company_id.'_items';

@@ -125,7 +125,7 @@ class TechnicalIncidentController extends Controller
         if( $request->reference_number  ){
 
             $technical_incidents = TechnicalIncident::create($request->except('company_id', 'type'));
-            $technical_incidents->created_by = Auth::id();
+            // $technical_incidents->created_by = Auth::id();
             $technical_incidents->notifications = $notifications;
             $technical_incidents->save();
 
