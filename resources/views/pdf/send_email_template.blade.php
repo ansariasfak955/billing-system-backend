@@ -31,7 +31,7 @@
             border-left: 2px solid {{ $color }} !important;
         }
         .section{
-            margin-left: 150px;
+            margin-left: 120px;
         }
         .sectionLeft{
             /* margin-left: 50px; */
