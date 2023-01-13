@@ -390,21 +390,21 @@
     </style>
 
     <div style="position:relative; ">
-        <img src="{{ $watermark_image }}" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px">
+        <!-- <img src="{{ $watermark_image }}" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px"> -->
         <div style="margin-top: 0px;height: 45px;">
         @if($company_company_info_show != 1)
             <div style="margin-top: 0px;">
-                <table style="border-collapse: collapse; width:100%">
+                <table style="border-collapse: collapse; width:100%;">
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         @if($company_logo_show)
                             <img src="{{ $company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; object-fit: cover;">
                         @endif
                         </td>
-                       <td class="header_border" @if($company_name_show || $company_country_show) @endif>
-                            <span>Company Name:</span>
-                            <span style="margin-left: 30px;">{{  @$company->commercial_name }}</span> <br>
-                            <span>Address:</span><br>
+                       <td class="header_border"  @if($company_name_show || $company_country_show) @endif>
+                            <span style="margin-left: 30px;">Company Name:</span>
+                            <span>{{  @$company->commercial_name }}</span> <br>
+                            <span style="margin-left: 30px;">Address:</span><br>
                             <span style="margin-left: 30px;">{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span>
                         </td>
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
@@ -655,7 +655,8 @@
             </div>
         </div>
             @php
-            $vat = $subtotal*21/100;
+            $vat = $subtotal*$product->vat/100;
+            $totals = $total+$vat;
             @endphp
 
             
@@ -716,14 +717,14 @@
                                         @if($request->format != 'before_tax') 
                                             <tr style="border-bottom: 1px solid gray;">
                                                 <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $total }}</td>
-                                                <td style="padding: 5px 0; text-align: center"><span> VAT 21%</span></td>
+                                                <td style="padding: 5px 0; text-align: center"><span> VAT {{$product->vat}}%</span></td>
                                                 <td style="padding: 5px 0; text-align: right">{{ $vat }}</td>
                                             </tr>
                                         @endif
                                         <tr>
                                             <th class="table_heading" style="padding: 5px 0; text-align: left">TOTAL</th>
                                             <td style="padding: 0; margin: 0;"></td>
-                                            <th style="text-align: right">$ {{ $total }}</th>
+                                            <th style="text-align: right">$ {{ $totals }}</th>
                                         </tr>
                                     </table>
                                 </div>
