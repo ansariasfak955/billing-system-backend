@@ -30,6 +30,12 @@
         .header_border {
             border-left: 2px solid {{ $color }} !important;
         }
+        .section{
+            margin-left: 150px;
+        }
+        .sectionLeft{
+            /* margin-left: 50px; */
+        }
         
     </style>
 
@@ -401,15 +407,18 @@
                             <img src="{{ $company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; object-fit: cover;">
                         @endif
                         </td>
-                       <td class="header_border"  @if($company_name_show || $company_country_show) @endif>
-                            <span style="margin-left: 30px;">Company Name:</span>
+                        <span class="section">
+                        <td class="header_border" style="width:250px"  @if($company_name_show || $company_country_show) @endif>
+                            <span style="margin-left: 20px;">Company Name:</span>
                             <span>{{  @$company->commercial_name }}</span> <br>
-                            <span style="margin-left: 30px;">Address:</span><br>
-                            <span style="margin-left: 30px;">{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span>
+                            <span style="margin-left: 20px;">Address:</span><br>
+                            <span style="margin-left: 20px;">{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span>
                         </td>
+                        </span>
+                        <span class="sectionLeft">
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
                             @if(@$company_email_show['show'] ==1)
-                                <span style="margin-left: 30px;">Email:</span> 
+                                <span style="margin-left: 20px;">Email:</span> 
                                 @if(@$company_email_show['show'] ==1 && @$company_email_show['value'])
                                     {{$company_email_show['value']}}
                                 @elseif(@$company_email_show['show'] ==1 && @!$company_email_show['value'])
@@ -418,15 +427,16 @@
                                 <br>
                             @endif
                             @if(@$company_website_show['show'])    
-                                <span style="margin-left: 30px;">website</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                                <span style="margin-left: 20px;">website</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
                                 @endif
                                 <br>
                             @endif
-                            <span style="margin-left: 30px;">Phone: {{ $company_phone_show == 1 ? $company->phone : '' }}</span>
+                            <span style="margin-left: 20px;">Phone: {{ $company_phone_show == 1 ? $company->phone : '' }}</span>
                         </td>
+                        </span>
                     </tr>
                 </table>
             </div>
