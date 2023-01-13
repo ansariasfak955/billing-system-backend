@@ -276,7 +276,7 @@ class SendEmailController extends Controller
             ]);
         }
         if($request->download){
-
+            
             return $pdf->stream();  
         }
         return response()->json([
