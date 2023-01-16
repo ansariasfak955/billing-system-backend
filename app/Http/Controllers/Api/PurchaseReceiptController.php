@@ -33,10 +33,6 @@ class PurchaseReceiptController extends Controller
         $supplier_table = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($supplier_table);
         $query = PurchaseReceipt::query();
-
-        if($request->purchase_id){
-            $query =  $query->where('purchase_id', $request->purchase_id);
-        }
         if($request->type){
             $query =  $query->where('type', $request->type);
         }
