@@ -47,6 +47,11 @@ class InvoiceReceipt extends Model
             return date('Y-m-d', strtotime($this->attributes['expiration_date']));
         }
     }
+    public function getPaymentDateAttribute(){
+        if(isset($this->attributes['payment_date'])){
+            return date('Y-m-d', strtotime($this->attributes['payment_date']));
+        }
+    }
     public function modelFilter()
     {
         return $this->provideFilter(\App\ModelFilters\InvoiceReceiptFilter::class);
