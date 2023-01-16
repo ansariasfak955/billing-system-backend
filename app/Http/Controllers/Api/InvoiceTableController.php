@@ -42,6 +42,8 @@ class InvoiceTableController extends Controller
         InvoiceTable::setGlobalTable($table);
         $clientTable = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientTable);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
         $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
         InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
         // $invoice = InvoiceTable::where('reference', $request->type)->get();
