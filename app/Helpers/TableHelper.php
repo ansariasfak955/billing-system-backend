@@ -317,7 +317,7 @@ class TableHelper
 
                 // add new column
                 $table->string('generated_from')->nullable();
-                
+
                 $table->timestamps();
             });
         }
@@ -435,6 +435,10 @@ class TableHelper
             $table->string('tin')->nullable();
             $table->string('signature')->nullable();
             $table->string('type')->nullable();
+
+            // add new column
+            $table->string('generated_from')->nullable();
+            
             $table->timestamps();
             });
         }

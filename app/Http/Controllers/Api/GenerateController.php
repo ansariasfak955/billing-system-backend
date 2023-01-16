@@ -374,6 +374,7 @@ class GenerateController extends Controller
 
                 $generatePurchaseEstimate = $purchaseOrderEstimate->replicate();
                 $generatePurchaseEstimate->created_at = now();
+                $generatePurchaseEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generatePurchaseEstimate->reference.$generatePurchaseEstimate->reference_number;
                 $generatePurchaseEstimate->reference = $referenceType ;
                 // $generatePurchaseEstimate->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generatePurchaseEstimate->save();
@@ -405,6 +406,7 @@ class GenerateController extends Controller
 
                 $generateDeliveryNote = $purchaseDeliveryNote->replicate();
                 $generateDeliveryNote->created_at = now();
+                $generateDeliveryNote->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateDeliveryNote->reference.$generateDeliveryNote->reference_number;
                 $generateDeliveryNote->reference = $referenceType ;
                 // $generateDeliveryNote->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateDeliveryNote->save();
@@ -437,6 +439,7 @@ class GenerateController extends Controller
                 $array = $technicalIncident->toArray();
                 $generateTechnicalIncident = TechnicalTable::create($array);
                 $generateTechnicalIncident->created_at = now();
+                $generateTechnicalIncident->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateTechnicalIncident->reference.$generateTechnicalIncident->reference_number;
                 $generateTechnicalIncident->reference = $referenceType ;
                 // $generateTechnicalIncident->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateTechnicalIncident->save();
@@ -453,6 +456,7 @@ class GenerateController extends Controller
                 $array = $technicalIncident->toArray();
                 $generateInvoice = InvoiceTable::create($array);
                 $generateInvoice->created_at = now();
+                $generateInvoice->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoice->reference.$generateInvoice->reference_number;
                 $generateInvoice->reference = $referenceType ;
                 // $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoice->save();
