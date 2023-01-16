@@ -309,7 +309,7 @@ class ClientController extends Controller
         $invoiceBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
         $invoiceRefundBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get()->sum('amount');
         $invoiceTotalBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->get()->sum('amount');
-        // dd($invoiceTotalBalance);
+        // dd($invoiceBalance);
         $data = [
                 "unpaid_invoices" => "$ ". number_format($invoiceBalance, 2), 
                 "unpaid_refunds" => "$ ". number_format($invoiceRefundBalance, 2), 
@@ -323,5 +323,52 @@ class ClientController extends Controller
             "data" =>  $data
         ]);
          
+    }
+    public function unpaidInvoices(Request $request){
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        // set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        //get dynamic reference
+        $refernce_ids = Reference::where('type', 'Ordinary Invoice')->pluck('prefix')->toArray();
+
+        $unpaidInvoice = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->where('status', 'unpaid')->get();
+
+        return response()->json([
+            "status" => true,
+            "data" =>  $unpaidInvoice
+        ]);
+        
+    }
+    public function unpaidRefund(Request $request){
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        // set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        //get dynamic reference
+        $refernce_id = Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
+
+        $unpaidRefund = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->where('status', 'unpaid')->get();
+
+        return response()->json([
+            "status" => true,
+            "data" =>  $unpaidRefund
+        ]);
     }
 }

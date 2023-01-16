@@ -235,6 +235,8 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('clients/duplicate-client', 'ClientController@duplicate');
             Route::post('clients/export', 'ClientController@export');
             Route::get('client-balance', 'ClientController@clientBalance');
+            Route::get('unpaid-invoices', 'ClientController@unpaidInvoices');
+            Route::get('unpaid-refund', 'ClientController@unpaidRefund');
             Route::apiResource('client-contacts', ClientContactController::class);
             Route::apiResource('client-special-prices', ClientSpecialPriceController::class);
             Route::apiResource('client-assets', ClientAssetController::class);
