@@ -35,8 +35,11 @@ class SalesEstimateController extends Controller
             ]);
         }
         $table = 'company_'.$request->company_id.'_sales_estimates';
-
         SalesEstimate::setGlobalTable($table);
+        
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
         $clientTable = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientTable);
 
