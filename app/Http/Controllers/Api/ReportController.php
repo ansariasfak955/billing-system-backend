@@ -15,6 +15,7 @@ use App\Models\TechnicalTable;
 use App\Models\InvoiceReceipt;
 use App\Models\PurchaseReceipt;
 use App\Models\Supplier;
+use App\Models\ConsumptionTax;
 use App\Models\Product;
 use App\Models\TechnicalIncident;
 use Illuminate\Http\Request;
@@ -838,6 +839,9 @@ class ReportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        ConsumptionTax::setGlobalTable('company_'.$request->company_id.'_consumption_taxes');
+        $query = ConsumptionTax::query();
+
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
         $data = [];
@@ -866,12 +870,25 @@ class ReportController extends Controller
                     "$756" 
                     ] 
                 ] 
+            ],
+            "subtotal_tax" => [
+                [
+                    "data" => [
+                        // Item::where('type', 'inv')->sum('subtotal')
+                    ]
+                ]
             ]
         ];
         
+        // $taxes = ConsumptionTax::get();
+        // foreach($taxes as $key => $consumptionTax){
+        //     $data = $consumptionTax->tax;
+            
+        // }
         return response()->json([
             "status" => true,
             "data" =>  $data
         ]);
+
     }
 }
