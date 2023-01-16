@@ -17,6 +17,9 @@ class PurchaseReceiptFilter extends ModelFilter
     public function purchaseReceipt($id){
         return $this->where('id', $id);
     }
+    public function purchaseId($id){
+        return $this->where('purchase_id', $id);
+    }
     public function search($search){
         return $this->where(function($q) use ($search)
         {

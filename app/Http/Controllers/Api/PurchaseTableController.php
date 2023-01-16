@@ -230,7 +230,7 @@ class PurchaseTableController extends Controller
 
                             PurchaseReceipt::create([
                                 'expiration_date' => $expirationDate,
-                                'invoice_id' => $insertedInvoice->id,
+                                'purchase_id' => $insertedInvoice->id,
                                 'amount' =>  round($partialAmount, 2),
                                 'payment_option' => $request->payment_option,
                                 'paid' => $status,
@@ -240,7 +240,7 @@ class PurchaseTableController extends Controller
                    }else{
                         PurchaseReceipt::create([
                             'expiration_date' => date('Y-m-d'),
-                            'invoice_id' => $insertedInvoice->id,
+                            'purchase_id' => $insertedInvoice->id,
                             'amount' =>  round($insertedInvoice->amount, 2),
                             'payment_option' => $request->payment_option,
                             'paid' => $status,
@@ -251,7 +251,7 @@ class PurchaseTableController extends Controller
                 }else{
                     PurchaseReceipt::create([
                         'expiration_date' => date('Y-m-d'),
-                        'invoice_id' => $insertedInvoice->id,
+                        'purchase_id' => $insertedInvoice->id,
                         'amount' =>  round($insertedInvoice->amount, 2),
                         'payment_option' => $request->payment_option,
                         'paid' => $status,
