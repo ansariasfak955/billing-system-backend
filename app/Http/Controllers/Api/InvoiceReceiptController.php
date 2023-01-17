@@ -168,7 +168,6 @@ class InvoiceReceiptController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
         $invoice = InvoiceReceipt::where('id', $request->invoice_receipt)->first();
-        
         // $invoice->update($request->except('company_id', '_method'));
 
 
