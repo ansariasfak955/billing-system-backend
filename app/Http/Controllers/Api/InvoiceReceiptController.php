@@ -28,6 +28,8 @@ class InvoiceReceiptController extends Controller
         InvoiceReceipt::setGlobalTable($table);
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($invoiceTable);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
         $clientTable = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientTable);
         $query = InvoiceReceipt::query();
@@ -39,7 +41,7 @@ class InvoiceReceiptController extends Controller
             $query =  $query->where('type', $request->type);
         }
 
-        $query = $query->with('invoice','client')->filter($request->all())->get();
+        $query = $query->with('invoice','client','items')->filter($request->all())->get();
         if(!count($query)){
             return response()->json([
                 "status" => false,
@@ -163,6 +165,8 @@ class InvoiceReceiptController extends Controller
         InvoiceReceipt::setGlobalTable($table);
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($invoiceTable);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
         $invoice = InvoiceReceipt::where('id', $request->invoice_receipt)->first();
         
         $invoice->update($request->except('company_id', '_method'));
@@ -170,7 +174,7 @@ class InvoiceReceiptController extends Controller
 
         return response()->json([
             "status" => true,
-            "invoice" => InvoiceReceipt::with('invoice')->where('id', $request->invoice_receipt)->first()
+            "invoice" => InvoiceReceipt::with('invoice','items')->where('id', $request->invoice_receipt)->first()
         ]);
     }
 
@@ -257,5 +261,42 @@ class InvoiceReceiptController extends Controller
         //     'message' => "Operation Successful!",
         //     'data' => $pdfs
         // ]);
+    }
+    public function createSubReceipt(Request $request){
+        $validator = Validator::make($request->all(), [
+            'invoice_id' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
+        $invoice = InvoiceReceipt::where('id', $request->invoice_id)->first();
+        $amount = $invoice->amount;
+        $invoice->amount = $amount-($request->amount ?? 0);
+        $invoice->save();
+        // $invoice->update($request->except('company_id'));
+
+        $receipt = InvoiceReceipt::create([
+            'invoice_id' => $invoice->id,
+            'concept' => $request->concept,
+            'payment_option' => $request->payment_option,
+            'bank_account' => $request->bank_account,
+            'payment_date' => $request->payment_date,
+            'amount' => $request->amount,
+            'expiration_date' => $request->expiration_date,
+            'paid' => isset($invoice['paid']) ? $invoice['paid'] : 0,
+            'paid_by' => $request->paid_by
+        ]);
+
+        return response()->json([
+            "status" => true,
+            "data" => $receipt
+        ]);
+
     }
 }
