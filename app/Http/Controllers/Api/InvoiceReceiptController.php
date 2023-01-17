@@ -167,7 +167,7 @@ class InvoiceReceiptController extends Controller
         InvoiceTable::setGlobalTable($invoiceTable);
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
-        $invoice = InvoiceReceipt::where('id', $request->invoice_receipt)->first();
+        $invoiceReceipt = InvoiceReceipt::where('id', $request->invoice_receipt)->first();
         // $invoice->update($request->except('company_id', '_method'));
 
 
@@ -176,19 +176,19 @@ class InvoiceReceiptController extends Controller
         //     "invoice" => InvoiceReceipt::with('invoice','items')->where('id', $request->invoice_receipt)->first()
         // ]);
         
-        $amount = $invoice->amount;
-        $invoice->amount = $amount-($request->amount ?? 0);
-        $invoice->save();
+        $amount = $invoiceReceipt->amount;
+        $invoiceReceipt->amount = $amount-($request->amount ?? 0);
+        $invoiceReceipt->save();
 
         $receipt = InvoiceReceipt::create([
-            'invoice_id' => $invoice->id,
+            'invoice_id' => $invoiceReceipt->invoice_id,
             'concept' => $request->concept,
             'payment_option' => $request->payment_option,
             'bank_account' => $request->bank_account,
             'payment_date' => $request->payment_date,
             'amount' => $request->amount,
             'expiration_date' => $request->expiration_date,
-            'paid' => isset($invoice['paid']) ? $invoice['paid'] : 0,
+            'paid' => isset($invoiceReceipt['paid']) ? $invoiceReceipt['paid'] : 0,
             'paid_by' => $request->paid_by
         ]);
 
