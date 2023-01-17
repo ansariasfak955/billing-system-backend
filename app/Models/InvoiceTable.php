@@ -91,7 +91,11 @@ class InvoiceTable extends Model
 	  }
     }
 	public function getAmountDueAttribute(){
-
+        if(isset($this->attributes['status'])){
+            if($this->attributes['status'] == 'paid'){
+                return 0;
+            }
+        }
       if(isset($this->receipts)){
 		$amount =  $this->receipts->where('paid', '0')->sum('amount');
         if($amount){
