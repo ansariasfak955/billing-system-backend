@@ -234,6 +234,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('clients/batch-delete', 'ClientController@batchDelete');
             Route::post('clients/duplicate-client', 'ClientController@duplicate');
             Route::post('clients/export', 'ClientController@export');
+            Route::post('clients/export-receipt', 'ClientController@exportReceipt');
             Route::get('client-balance', 'ClientController@clientBalance');
             Route::get('unpaid-invoices', 'ClientController@unpaidInvoices');
             Route::get('unpaid-refund', 'ClientController@unpaidRefund');

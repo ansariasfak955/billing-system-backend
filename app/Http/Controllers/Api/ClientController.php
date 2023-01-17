@@ -8,9 +8,10 @@ use App\Models\ClientAttachment;
 use App\Models\ClientSpecialPrice;
 use App\Models\Reference;
 use App\Models\Item;
+use App\Exports\ExportReceipt;
 use App\Models\InvoiceTable;
 use App\Models\InvoiceReceipt;
-
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -370,5 +371,31 @@ class ClientController extends Controller
             "status" => true,
             "data" =>  $unpaidRefund
         ]);
+    }
+    public function exportReceipt(Request $request, $company_id){
+        $validator = Validator::make($request->All(), [
+            'id' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+               'status' => false,
+               'message' => $validator->errors()->first() 
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        // set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        //get dynamic reference
+        $refernce_ids = Reference::where('type', 'Ordinary Invoice')->pluck('prefix')->toArray();
+
+        $exportInvoice = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->where('status', 'unpaid')->get();
+
+        return Excel::download(new ExportReceipt($exportInvoice), 'invoice.xlsx');
     }
 }
