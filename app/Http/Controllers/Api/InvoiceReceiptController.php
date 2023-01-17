@@ -169,12 +169,33 @@ class InvoiceReceiptController extends Controller
         Item::setGlobalTable($itemTable);
         $invoice = InvoiceReceipt::where('id', $request->invoice_receipt)->first();
         
-        $invoice->update($request->except('company_id', '_method'));
+        // $invoice->update($request->except('company_id', '_method'));
 
+
+        // return response()->json([
+        //     "status" => true,
+        //     "invoice" => InvoiceReceipt::with('invoice','items')->where('id', $request->invoice_receipt)->first()
+        // ]);
+        
+        $amount = $invoice->amount;
+        $invoice->amount = $amount-($request->amount ?? 0);
+        $invoice->save();
+
+        $receipt = InvoiceReceipt::create([
+            'invoice_id' => $invoice->id,
+            'concept' => $request->concept,
+            'payment_option' => $request->payment_option,
+            'bank_account' => $request->bank_account,
+            'payment_date' => $request->payment_date,
+            'amount' => $request->amount,
+            'expiration_date' => $request->expiration_date,
+            'paid' => isset($invoice['paid']) ? $invoice['paid'] : 0,
+            'paid_by' => $request->paid_by
+        ]);
 
         return response()->json([
             "status" => true,
-            "invoice" => InvoiceReceipt::with('invoice','items')->where('id', $request->invoice_receipt)->first()
+            "data" => $receipt
         ]);
     }
 
