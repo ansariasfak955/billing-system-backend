@@ -31,5 +31,18 @@ class DefaultPdfSendController extends Controller
             "default_pdf_option" => $query
         ]);
     }
+    public function update(Request $request){
+        $table = 'company_'.$request->company_id.'_default_pdf_send_options';
+        DefaultPdfSendOption::setGlobalTable($table);
+        $defaultPdfSendOptions = DefaultPdfSendOption::where('id', $request->default_pdf)->first();
+        $defaultPdfSendOptions->update($request->except('company_id', '_method'));
+        $defaultPdfSendOptions->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Default pdf send option update successfull',
+            'data' => $defaultPdfSendOptions
+        ]);
+    }
 
 }
