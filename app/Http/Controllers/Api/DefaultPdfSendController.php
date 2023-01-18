@@ -44,5 +44,16 @@ class DefaultPdfSendController extends Controller
             'data' => $defaultPdfSendOptions
         ]);
     }
+    public function show(Request $request){
+        $table = 'company_'.$request->company_id.'_default_pdf_send_options';
+        DefaultPdfSendOption::setGlobalTable($table);
+
+        $defaultPdfSendOptions = DefaultPdfSendOption::find($request->default_pdf);
+
+        return response()->json([
+            'status' => true,
+            'data' => $defaultPdfSendOptions
+        ]);
+    }
 
 }
