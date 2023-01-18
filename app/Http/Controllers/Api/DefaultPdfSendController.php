@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DefaultPdfSendOption;
+use App\Models\Reference;
 
 class DefaultPdfSendController extends Controller
 {
@@ -54,6 +55,18 @@ class DefaultPdfSendController extends Controller
             'status' => true,
             'data' => $defaultPdfSendOptions
         ]);
+    }
+    public function getDefaultPdfOption(Request $request){
+        $table = 'company_'.$request->company_id.'_default_pdf_send_options';
+        DefaultPdfSendOption::setGlobalTable($table);
+
+        $getDefaultPdf = DefaultPdfSendOption::where('type', $request->type)->first();
+
+        return response()->json([
+            'status' => true,
+            'data' => $getDefaultPdf
+        ]);
+
     }
 
 }
