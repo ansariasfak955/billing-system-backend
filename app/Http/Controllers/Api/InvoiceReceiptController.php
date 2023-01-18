@@ -194,7 +194,7 @@ class InvoiceReceiptController extends Controller
 
         return response()->json([
             "status" => true,
-            "data" => $receipt
+            "data" => InvoiceReceipt::with('invoice')->find($receipt->id)
         ]);
     }
 
