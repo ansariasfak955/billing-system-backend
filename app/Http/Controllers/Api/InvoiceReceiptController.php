@@ -188,7 +188,7 @@ class InvoiceReceiptController extends Controller
             'payment_date' => $request->payment_date,
             'amount' => $request->amount,
             'expiration_date' => $request->expiration_date,
-            'paid' => isset($invoiceReceipt['paid']) ? $invoiceReceipt['paid'] : 0,
+            'paid' =>$request->paid ?? 0,
             'paid_by' => $request->paid_by
         ]);
 
