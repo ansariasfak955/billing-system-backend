@@ -304,7 +304,7 @@ Route::group(['namespace' => 'Api'], function() {
             
             // Default pdf send option
             Route::apiResource('default-pdf', DefaultPdfSendController::class);
-            Route::post('get-default-pdf', 'DefaultPdfSendController@getDefaultPdfOption');
+            Route::get('get-default-pdf', 'DefaultPdfSendController@getDefaultPdfOption');
             //payment option
             Route::apiResource('payment-options', PaymentOptionController::class);
             Route::post('payment-options/batch-delete', 'PaymentOptionController@batchDelete');
