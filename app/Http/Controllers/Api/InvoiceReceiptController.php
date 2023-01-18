@@ -179,7 +179,12 @@ class InvoiceReceiptController extends Controller
         $amount = $invoiceReceipt->amount;
         $invoiceReceipt->amount = $amount-($request->amount ?? 0);
         if($request->paid){
-            $invoiceReceipt->status =  'partially paid';
+            $invoice  = InvoiceTable::find($$invoiceReceipt->invoice_id);
+            if($invoice){
+
+                $invoice->status =  'partially paid';
+                $invoice->save();
+            }
         }
         $invoiceReceipt->save();
 
