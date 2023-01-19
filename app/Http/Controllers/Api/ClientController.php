@@ -11,6 +11,9 @@ use App\Models\Item;
 use App\Exports\InvoiceExport;
 use App\Models\InvoiceTable;
 use App\Models\InvoiceReceipt;
+use App\Models\PaymentOption;
+use App\Models\Deposit;
+use App\Models\PaymentTerm;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -301,6 +304,8 @@ class ClientController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        $deposit = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($deposit);
         // set reference table
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
@@ -311,13 +316,18 @@ class ClientController extends Controller
         $invoiceBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
         $invoiceRefundBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get()->sum('amount');
         $invoiceTotalBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->get()->sum('amount');
-        // dd($invoiceBalance);
+        $deposit = Deposit::where('client_id', $request->client_id)->get('amount');
+        // dd($deposit);
+        // $rm = (float) $rm + (float) $diff;
+        // $total = (int) $invoiceTotalBalance - (int) $deposit;
+        // dd($total);
         $data = [
                 "unpaid_invoices" => "$ ". number_format($invoiceBalance, 2), 
                 "unpaid_refunds" => "$ ". number_format($invoiceRefundBalance, 2), 
                 "available_balance" => "$ ". number_format(0, 2), 
                 "total_balance" => "$ ". number_format($invoiceTotalBalance, 2) 
-        ];
+                // "total_balance" => "$ ". $invoiceTotalBalance - $deposit
+            ];
         
 
         return response()->json([
@@ -342,7 +352,7 @@ class ClientController extends Controller
         //get dynamic reference
         $refernce_ids = Reference::where('type', 'Ordinary Invoice')->pluck('prefix')->toArray();
 
-        $unpaidInvoice = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->where('status', 'unpaid')->get();
+        $unpaidInvoice = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get();
 
         return response()->json([
             "status" => true,
@@ -366,7 +376,7 @@ class ClientController extends Controller
         //get dynamic reference
         $refernce_id = Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
 
-        $unpaidRefund = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->where('status', 'unpaid')->get();
+        $unpaidRefund = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get();
 
         return response()->json([
             "status" => true,
@@ -385,10 +395,16 @@ class ClientController extends Controller
         }
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
+        $paymentOption = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($paymentOption);
+        $table = 'company_'.$request->company_id.'_payment_terms';
+        PaymentTerm::setGlobalTable($table);
 
         $fileName = 'invoices-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $invoices = InvoiceTable::with('client')->whereIn('id', $ids)->get();
+        $invoices = InvoiceTable::with('client','payment_options','payment_terms')->whereIn('id', $ids)->get();
 
         Excel::store(new InvoiceExport($invoices), 'public/xlsx/'.$fileName);
 

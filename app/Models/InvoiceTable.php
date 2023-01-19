@@ -38,6 +38,10 @@ class InvoiceTable extends Model
 
         return $this->hasOne(PaymentOption::class,'id', 'payment_option');
     }
+    public function payment_terms(){
+
+        return $this->hasOne(PaymentTerm::class,'id', 'payment_term');
+    }
     public function delivery_options(){
 
         return $this->hasOne(DeliveryOption::class,'id', 'delivery_option');
