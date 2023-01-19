@@ -8,11 +8,12 @@ use App\Models\ClientAttachment;
 use App\Models\ClientSpecialPrice;
 use App\Models\Reference;
 use App\Models\Item;
-use App\Exports\ExportReceipt;
+use App\Exports\InvoiceExport;
 use App\Models\InvoiceTable;
 use App\Models\InvoiceReceipt;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 
 class ClientController extends Controller
@@ -374,7 +375,7 @@ class ClientController extends Controller
     }
     public function exportReceipt(Request $request, $company_id){
         $validator = Validator::make($request->All(), [
-            'id' => 'required'
+            'ids' => 'required'
         ]);
         if($validator->fails()){
             return response()->json([
@@ -385,17 +386,15 @@ class ClientController extends Controller
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
 
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
+        $fileName = 'invoices-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $invoices = InvoiceTable::with('client')->whereIn('id', $ids)->get();
 
-        // set reference table
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-        //get dynamic reference
-        $refernce_ids = Reference::where('type', 'Ordinary Invoice')->pluck('prefix')->toArray();
+        Excel::store(new InvoiceExport($invoices), 'public/xlsx/'.$fileName);
 
-        $exportInvoice = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->where('status', 'unpaid')->get();
-
-        return Excel::download(new ExportReceipt($exportInvoice), 'invoice.xlsx');
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+         ]); 
     }
 }
