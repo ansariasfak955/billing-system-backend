@@ -14,7 +14,7 @@ class InvoiceTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount','amount_paid', 'amount_due', 'reference_type', 'payment_term_name', 'agent_name'];
+    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount','amount_paid', 'amount_due', 'reference_type', 'payment_term_name', 'agent_name','amount_with_out_vat'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -94,6 +94,11 @@ class InvoiceTable extends Model
 		return $this->items->sum('amount');
 	  }
     }
+    public function getAmountWithOutVatAttribute(){
+        if(isset($this->items)){
+          return $this->items->sum('base_price');
+        }
+      }
 	public function getAmountDueAttribute(){
         if(isset($this->attributes['status'])){
             if($this->attributes['status'] == 'paid'){

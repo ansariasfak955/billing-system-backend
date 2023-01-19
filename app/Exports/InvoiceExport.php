@@ -17,6 +17,7 @@ class InvoiceExport implements FromView
     }
     public function view(): View
     {
+        // dd($this->total);
         $invoices = $this->invoices;
         return view('exports.invoices', compact('invoices'));
     }

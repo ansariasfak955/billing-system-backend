@@ -42,7 +42,14 @@
             <td>{{@$invoice->payment_terms->name}}</td>
             <td>{{@$invoice->client->email}}</td>
             <td>{{@$invoice->client->email}}</td>
-            <td></td>
+            <td>{{(@$invoice->subject_to_vat)?'yes':'no'}}</td>
+            <td>{{(@$invoice->subject_to_income_tax)?'yes':'no'}}</td>
+            <td>{{@$invoice->amount_with_out_vat}}</td>
+            <td>{{@$invoice->amount - @$invoice->amount_with_out_vat}}</td>
+            <td>{{@$invoice->amount}}</td>
+            <td>{{@$invoice->amount_paid}}</td>
+            <td>{{@$invoice->amount_due}}</td>
+            <td>{{@$invoice->title}}</td>
         </tr>
         @endforeach
     </tbody>

@@ -398,11 +398,12 @@ class ClientController extends Controller
         PaymentOption::setGlobalTable($paymentOption);
         $table = 'company_'.$request->company_id.'_payment_terms';
         PaymentTerm::setGlobalTable($table);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
 
         $fileName = 'invoices-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
         $invoices = InvoiceTable::with('client','payment_options','payment_terms')->whereIn('id', $ids)->get();
-
         Excel::store(new InvoiceExport($invoices), 'public/xlsx/'.$fileName);
 
         return response()->json([
