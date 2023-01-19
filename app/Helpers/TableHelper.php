@@ -3210,6 +3210,20 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
             }
         }
 
+        /* Creating dynamic company based default pdf options table */
+        if (!Schema::hasTable('company_'.$company_id.'_deposits')) {
+             Schema::create('company_'.$company_id.'_deposits', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('concept')->nullable();
+                $table->string('date')->nullable();
+                $table->string('payment_option')->nullable();
+                $table->string('amount')->nullable();
+                $table->string('paid_by')->nullable();
+                $table->string('type')->nullable();
+                $table->timestamps();
+            }); 
+        }
+
         if (!Schema::hasColumn('company_'.$company_id.'_roles', 'guard_name')){
             Schema::table('company_'.$company_id.'_roles', function (Blueprint $table) {
                 $table->string('guard_name')->nullable();

@@ -339,6 +339,9 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('send-attachments-email', 'SendEmailController@sendAttachmentEmail');
             Route::post('generates', 'GenerateController@generate');
 
+            // Invoice Deposit
+            Route::apiResource('deposit', DepositController::class);
+
         });
 
         /* Activity Type */
