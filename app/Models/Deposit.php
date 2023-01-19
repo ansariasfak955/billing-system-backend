@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class Deposit extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
 
     protected $fillable = [
         'concept',
@@ -15,7 +16,8 @@ class Deposit extends Model
         'payment_option',
         'amount',
         'paid_by',
-        'type'
+        'type',
+        'client_id'
     ];
 
     protected static $globalTable = 'deposits' ;
@@ -25,6 +27,10 @@ class Deposit extends Model
     }
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\InvoiceDepositFiltersFilter::class);
     }
 
 }

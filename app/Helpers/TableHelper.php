@@ -3220,6 +3220,7 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
                 $table->string('amount')->nullable();
                 $table->string('paid_by')->nullable();
                 $table->string('type')->nullable();
+                $table->string('client_id')->nullable();
                 $table->timestamps();
             }); 
         }

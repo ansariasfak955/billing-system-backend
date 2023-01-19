@@ -23,7 +23,7 @@ class DepositController extends Controller
         Deposit::setGlobalTable($table);
 
         $query = Deposit::query();
-        $query = $query->get();
+        $query = $query->filter($request->all())->get();
 
         if(!count($query)){
             return response()->json([
@@ -42,6 +42,7 @@ class DepositController extends Controller
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
+            'client_id' => 'required',
             'amount' => 'required'
         ],[
             'amount.required' => 'The amount of this deposit must be higher than 0.'
