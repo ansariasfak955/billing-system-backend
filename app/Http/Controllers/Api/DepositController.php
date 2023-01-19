@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Deposit;
 use App\Models\Client;
+use App\Exports\InvoiceDepositWithdrawExport;
 use Validator;
+use Excel;
 
 class DepositController extends Controller
 {
@@ -70,6 +72,30 @@ class DepositController extends Controller
         return response()->json([
             'status' => true,
             'data' => $invoiceDeposit
+        ]);
+    }
+    public function export(Request $request, $company_id){
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $fileName = 'Account-Transactions-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $invoiceDeposits = Deposit::whereIn('id', $ids)->get();
+
+        Excel::store(new InvoiceDepositWithdrawExport($invoiceDeposits), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
         ]);
     }
 }
