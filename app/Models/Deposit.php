@@ -30,10 +30,10 @@ class Deposit extends Model
     }
     public function getPaidByNameAttribute(){
         
-        if(isset( $this->attributes['created_by'] )){
+        if(isset( $this->attributes['paid_by'] )){
             $table = $this->getTable();
             $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-            return get_user_name($createdby, $this->attributes['created_by']);
+            return get_user_email($createdby, $this->attributes['paid_by']);
         }
     }
     public function getPaymentOptionNameAttribute(){
