@@ -64,6 +64,20 @@ class DepositController extends Controller
             'data' => $invoiceDeposit
         ]);
     }
+    public function update(Request $request){
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $depositUpdate = Deposit::where('id', $request->deposit)->first();
+        $depositUpdate->update($request->except('company_id', '_method'));
+        $depositUpdate->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Deposit update successfully',
+            'data' => $depositUpdate
+        ]);
+    }
     public function show(Request $request){
         $table = 'company_'.$request->company_id.'_deposits';
         Deposit::setGlobalTable($table);
