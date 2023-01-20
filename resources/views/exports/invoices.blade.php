@@ -23,6 +23,18 @@
             <td>Paid Amount</td>
             <td>Outstanding Amount</td>
             <td>Title</td>
+            <td>Sent</td>
+            <td>Billing Address</td>
+            <td>Billing Address Twon/City</td>
+            <td>Billing Address Post/Zip</td>
+            <td>Email Sent Date</td>
+            <td>Delivery Option</td>
+            <td>Currency</td>
+            <td>Currency Rate</td>
+            <td>Comments</td>
+            <td>Private Comments</td>
+            <td>Addendum</td>
+            <td>Signature Name</td>
         </tr>
     </thead>
     <tbody>
@@ -50,6 +62,18 @@
             <td>{{@$invoice->amount_paid}}</td>
             <td>{{@$invoice->amount_due}}</td>
             <td>{{@$invoice->title}}</td>
+            <td>{{@$invoice->sent_date}}</td>
+            <td>{{@$invoice->inv_address}}</td>
+            <td>{{@$invoice->del_address}}</td>
+            <td>{{@$invoice->tin}}</td>
+            <td>{{@$invoice->email_sent_date}}</td>
+            <td>{{@$invoice->delivery_options->name}}</td>
+            <td>{{@$invoice->currency}}</td>
+            <td>{{@$invoice->currency_rate}}</td>
+            <td>{{@$invoice->comments}}</td>
+            <td>{{@$invoice->private_comments}}</td>
+            <td>{{@$invoice->addendum}}</td>
+            <td>{{@$invoice->signature}}</td>
         </tr>
         @endforeach
     </tbody>

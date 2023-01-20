@@ -14,6 +14,7 @@ use App\Models\InvoiceReceipt;
 use App\Models\PaymentOption;
 use App\Models\Deposit;
 use App\Models\PaymentTerm;
+use App\Models\DeliveryOption;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -400,10 +401,12 @@ class ClientController extends Controller
         PaymentTerm::setGlobalTable($table);
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
+        $table = 'company_'.$request->company_id.'_delivery_options';
+        DeliveryOption::setGlobalTable($table);
 
         $fileName = 'invoices-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $invoices = InvoiceTable::with('client','payment_options','payment_terms')->whereIn('id', $ids)->get();
+        $invoices = InvoiceTable::with('client','payment_options','payment_terms','delivery_options')->whereIn('id', $ids)->get();
         Excel::store(new InvoiceExport($invoices), 'public/xlsx/'.$fileName);
 
         return response()->json([
