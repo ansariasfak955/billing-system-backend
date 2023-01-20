@@ -30,7 +30,7 @@ class TechnicalIncident extends Model
     ];
 
     protected static $globalTable = 'technical_incidents';
-	public $appends = ['client_name','created_by_name','reference_type','assigned_to_name'];
+	public $appends = ['client_name','created_by_name','reference_type','assigned_to_name','invoice_to_name'];
     public function getTable() {
         return self::$globalTable;
     }
@@ -51,6 +51,13 @@ class TechnicalIncident extends Model
             $table = $this->getTable();
             $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_client_name($client_id, $this->attributes['client_id']);
+        }
+    }
+    public function getInvoiceToNameAttribute(){
+        if(isset( $this->attributes['invoice_to'] )){
+            $table = $this->getTable();
+            $client_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_client_name($client_id, $this->attributes['invoice_to']);
         }
     }
     public function getDateAttribute(){
