@@ -324,7 +324,7 @@ class ClientController extends Controller
                 "unpaid_invoices" => "$ ". number_format($invoiceBalance, 2), 
                 "unpaid_refunds" => "$ ". number_format($invoiceRefundBalance, 2), 
                 "available_balance" => "$ ". number_format($deposit - $invoiceWithdraw, 2),  
-                "total_balance" => "$ ". number_format($invoiceWithdraw + $invoiceTotalBalance - $deposit, 2)
+                "total_balance" => "$ ". number_format(($invoiceTotalBalance - $deposit) + $invoiceWithdraw , 2)
             ];
         
 
