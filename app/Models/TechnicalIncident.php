@@ -30,7 +30,7 @@ class TechnicalIncident extends Model
     ];
 
     protected static $globalTable = 'technical_incidents';
-	public $appends = ['client_name','created_by_name','reference_type'];
+	public $appends = ['client_name','created_by_name','reference_type','assigned_to_name'];
     public function getTable() {
         return self::$globalTable;
     }
@@ -53,13 +53,26 @@ class TechnicalIncident extends Model
             return get_client_name($client_id, $this->attributes['client_id']);
         }
     }
-	
+    public function getDateAttribute(){
+
+        if( isset( $this->attributes['date'] ) ){
+            return date( 'Y-m-d', strtotime($this->attributes['date']) );
+        }
+    }
 	public function getCreatedByNameAttribute(){
         
         if(isset( $this->attributes['created_by'] )){
             $table = $this->getTable();
             $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_client_name($createdby, $this->attributes['created_by']);
+        }
+    }
+    public function getAssignedToNameAttribute(){
+
+        if(isset( $this->attributes['assigned_to'] )){
+            $table = $this->getTable();
+            $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_user_name($createdby, $this->attributes['assigned_to']);
         }
     }
     public function getReferenceTypeAttribute(){
