@@ -262,7 +262,7 @@ class PurchaseTableController extends Controller
 
             return response()->json([
                 "status" => true,
-                "data" => PurchaseTable::with(['items', 'item_meta'])->find($purchase_table->id),
+                "data" => PurchaseTable::with(['items', 'item_meta','receipts'])->find($purchase_table->id),
                 "message" => "Saved successfully"
             ]);
         }else{
