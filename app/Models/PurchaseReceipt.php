@@ -25,6 +25,10 @@ class PurchaseReceipt extends Model
     public function invoice(){
         return $this->hasOne(PurchaseTable::class, 'id', 'purchase_id');
     }
+    public function items(){
+
+        return $this->hasMany(Item::class, 'parent_id');
+    }
     public function supplier(){
         return $this->hasOne(Supplier::class, 'id', 'purchase_id');
     }

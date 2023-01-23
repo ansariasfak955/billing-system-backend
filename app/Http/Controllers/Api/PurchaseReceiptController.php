@@ -33,11 +33,13 @@ class PurchaseReceiptController extends Controller
         $supplier_table = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($supplier_table);
         $query = PurchaseReceipt::query();
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
         if($request->type){
             $query =  $query->where('type', $request->type);
         }
 
-        $query = $query->with('invoice')->filter($request->all())->get();
+        $query = $query->with('invoice','supplier','items')->filter($request->all())->get();
         if(!count($query)){
             return response()->json([
                 "status" => false,
@@ -161,7 +163,7 @@ class PurchaseReceiptController extends Controller
 
         return response()->json([
             "status" => true,
-            "Purchase" => $receipt
+            "data" => PurchaseReceipt::with('invoice')->find($receipt->id)
         ]);
     }
 
