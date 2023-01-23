@@ -156,6 +156,10 @@ class PurchaseReceiptController extends Controller
     {
         $table = 'company_'.$request->company_id.'_purchase_receipts';
         PurchaseReceipt::setGlobalTable($table);
+        $purchaseTable = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTable);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
         $receipt = PurchaseReceipt::where('id', $request->purchase_receipt)->first();
         
         $receipt->update($request->except('company_id', '_method'));
@@ -163,7 +167,7 @@ class PurchaseReceiptController extends Controller
 
         return response()->json([
             "status" => true,
-            "data" => PurchaseReceipt::with('invoice')->find($receipt->id)
+            "data" => PurchaseReceipt::with('invoice','items')->where('id', $request->purchase_receipt)->first()
         ]);
     }
 
