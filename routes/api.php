@@ -346,6 +346,7 @@ Route::group(['namespace' => 'Api'], function() {
             // Catalog Export
             Route::post('product-export', 'CatalogExportController@productExport');
             Route::post('service-export', 'CatalogExportController@serviceExport');
+            Route::post('expense-investment-export', 'CatalogExportController@expenseInvestmentsExport');
 
 
             // Other configuration
