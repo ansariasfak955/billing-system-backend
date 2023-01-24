@@ -8,13 +8,14 @@ use App\Models\ClientAttachment;
 use App\Models\ClientSpecialPrice;
 use App\Models\Reference;
 use App\Models\Item;
-use App\Exports\InvoiceExport;
 use App\Models\InvoiceTable;
 use App\Models\InvoiceReceipt;
 use App\Models\PaymentOption;
 use App\Models\Deposit;
 use App\Models\PaymentTerm;
 use App\Models\DeliveryOption;
+use App\Exports\InvoiceExport;
+use App\Exports\ClientsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -408,6 +409,29 @@ class ClientController extends Controller
         $ids = explode(',', $request->ids);
         $invoices = InvoiceTable::with('client','payment_options','payment_terms','delivery_options')->whereIn('id', $ids)->get();
         Excel::store(new InvoiceExport($invoices), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+         ]); 
+    }
+    public function clientExport(Request $request, $company_id){
+        $validator = Validator::make($request->All(), [
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+               'status' => false,
+               'message' => $validator->errors()->first() 
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
+
+        $fileName = 'Clients-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $clients = Client::whereIn('id', $ids)->get();
+        Excel::store(new ClientsExport($clients), 'public/xlsx/'.$fileName);
 
         return response()->json([
             'status' => true,
