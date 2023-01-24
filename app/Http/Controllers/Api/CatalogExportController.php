@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Service;
 use App\Models\ExpenseAndInvestment;
+use App\Models\ClientAsset;
 use App\Exports\CatalogProductExport;
 use App\Exports\CatalogServiceExport;
 use App\Exports\ExpenseInvestmentExport;
+use App\Exports\ClientAssetsExport;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -83,6 +85,30 @@ class CatalogExportController extends Controller
         $ids = explode(',', $request->ids);
         $expenseInvestments = ExpenseAndInvestment::whereIn('id', $ids)->get();
         Excel::store(new ExpenseInvestmentExport($expenseInvestments), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+        ]);
+    }
+    public function clientAssetExport(Request $request, $company_id){
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+
+        $table = 'company_'.$request->company_id.'_client_assets';
+        ClientAsset::setGlobalTable($table);
+
+        $fileName = 'Client-Asstes-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $clientAssets = ClientAsset::whereIn('id', $ids)->get();
+        Excel::store(new ClientAssetsExport($clientAssets), 'public/xlsx/'.$fileName);
 
         return response()->json([
             'status' => true,
