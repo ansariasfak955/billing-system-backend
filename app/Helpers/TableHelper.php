@@ -10,6 +10,7 @@ use App\Models\PaymentTerm;
 use App\Models\ConsumptionTax;
 use App\Models\MyTemplateMeta;
 use App\Models\DefaultPdfSendOption;
+use App\Models\OtherConfiguration;
 use App\Models\Setting;
 use App\Models\Rate;
 use App\Models\PaymentOption;
@@ -1086,6 +1087,218 @@ class TableHelper
                 $table->timestamps();
             });
         }
+
+        /* Creating dynamic company based other configuration table */
+        if (!Schema::hasTable('company_'.$company_id.'_other_configurations')) {
+            Schema::create('company_'.$company_id.'_other_configurations', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('type')->nullable();
+                $table->string('value')->nullable();
+                $table->string('parent_id')->nullable();
+                $table->timestamps();
+            }); 
+
+            OtherConfiguration::setGlobalTable('company_'.$company_id.'_other_configurations');
+        
+            $businessDocuments = ['Show income tax', 'Block prices below base price', 'Allow invoice deletion', 'Bill to', 'Allow invoice editing', 'Update prices after creating/editing purchase documents', 'Block prices below base sales price', 'Allow reference editing on invoices', 'Exchange unit and price positions'];
+            $businessVisibilitys = ['Sales Estimates','Incidents','Work Delivery Notes','Purchase Delivery Notes','Refund Invoices','Sales Order','Work Estimate','Expenses','Purchase Invoices','Sales Delivery Note','Work Orders','Purchase Orders','Invoices'];
+            $calendars = ['Create events on activity'];
+            $apps = ['Offline Mode'];
+            $incident = ['Manually organize employee incidents'];
+            $emails = ['Email read receipts'];
+            $payments = ['Activate SEPA (Single Euro Payments Area)'];
+            $priceRates = ['Activate Price Rates','Include Price Rates as a discount for the base sales price'];
+            $clientAssets = ['Activate client assets','Show assets without customers in incidents and documents'];
+            $clientRisks = ['Activate client risk popup'];
+            $automaticTasks = ['Activate Automatic Tasks'];
+            $Accountings = ['Activate Accounting'];
+            $inboxs = ['Activate Inbox'];
+            $connects = ['Activate Connect','Include the STEL Order logo in the footer of your emails'];
+            $apis = ['Activate API'];
+
+            if (!OtherConfiguration::where('type', 'Business Documents')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Business Documents',
+                    ]);
+                    foreach($businessDocuments as $businessDocument){
+                        OtherConfiguration::create([
+                            "type" => $businessDocument,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+            if (!OtherConfiguration::where('type', 'Business Document Visibility')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Business Document Visibility',
+                    ]);
+                    foreach($businessVisibilitys as $businessVisibility){
+                        OtherConfiguration::create([
+                            "type" => $businessVisibility,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+            if (!OtherConfiguration::where('type', 'Calendar')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Calendar',
+                    ]);
+                    foreach($calendars as $calendar){
+                        OtherConfiguration::create([
+                            "type" => $calendar,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+            if (!OtherConfiguration::where('type', 'App')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'App',
+                    ]);
+                    foreach($apps as $app){
+                        OtherConfiguration::create([
+                            "type" => $app,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+            if (!OtherConfiguration::where('type', 'Incident')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Incident',
+                    ]);
+                    foreach($incident as $incidents){
+                        OtherConfiguration::create([
+                            "type" => $incidents,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+            if (!OtherConfiguration::where('type', 'Emails')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Emails',
+                    ]);
+                    foreach($emails as $email){
+                        OtherConfiguration::create([
+                            "type" => $email,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+                if (!OtherConfiguration::where('type', 'Payments')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Payments',
+                    ]);
+                    foreach($payments as $payment){
+                        OtherConfiguration::create([
+                            "type" => $payment,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+                if (!OtherConfiguration::where('type', 'Price Rates')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Price Rates',
+                    ]);
+                    foreach($priceRates as $priceRate){
+                        OtherConfiguration::create([
+                            "type" => $priceRate,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+                if (!OtherConfiguration::where('type', 'Client Assets')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Client Assets',
+                    ]);
+                    foreach($clientAssets as $clientAsset){
+                        OtherConfiguration::create([
+                            "type" => $clientAsset,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+                if (!OtherConfiguration::where('type', 'Client risk popup')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Client risk popup',
+                    ]);
+                    foreach($clientRisks as $clientRisk){
+                        OtherConfiguration::create([
+                            "type" => $clientRisk,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+                if (!OtherConfiguration::where('type', 'Automatic Tasks')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Automatic Tasks',
+                    ]);
+                    foreach($automaticTasks as $automaticTask){
+                        OtherConfiguration::create([
+                            "type" => $automaticTask,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+                if (!OtherConfiguration::where('type', 'Accounting')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Accounting',
+                    ]);
+                    foreach($Accountings as $Accounting){
+                        OtherConfiguration::create([
+                            "type" => $Accounting,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+                if (!OtherConfiguration::where('type', 'Inbox')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Inbox',
+                    ]);
+                    foreach($inboxs as $inbox){
+                        OtherConfiguration::create([
+                            "type" => $inbox,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+                if (!OtherConfiguration::where('type', 'Connect')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'Connect',
+                    ]);
+                    foreach($connects as $connect){
+                        OtherConfiguration::create([
+                            "type" => $connect,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+                if (!OtherConfiguration::where('type', 'API')->exists()) {
+                    $parent = OtherConfiguration::create([
+                    "type" => 'API',
+                    ]);
+                    foreach($apis as $api){
+                        OtherConfiguration::create([
+                            "type" => $api,
+                            "value" => "0",
+                            "parent_id" => $parent->id,
+                        ]);
+                    }
+                }
+
+        }
+
         /* Creating dynamic company based expense Attachment table */
         if (!Schema::hasTable('company_'.$company_id.'_expense_attachments')) {
             Schema::create('company_'.$company_id.'_expense_attachments', function (Blueprint $table) {

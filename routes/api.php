@@ -342,7 +342,9 @@ Route::group(['namespace' => 'Api'], function() {
             // Invoice Deposit
             Route::apiResource('deposit', DepositController::class);
             Route::post('deposit-export', 'DepositController@export');
-
+            
+            // Other configuration
+            Route::apiResource('other-configuration', OtherConfigurationController::class);
         });
 
         /* Activity Type */
