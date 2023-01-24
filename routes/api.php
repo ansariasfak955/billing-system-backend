@@ -344,8 +344,9 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('deposit-export', 'DepositController@export');
             
             // Catalog Export
-            Route::post('catalog-export', 'CatalogExportController@productExport');
-            
+            Route::post('product-export', 'CatalogExportController@productExport');
+            Route::post('service-export', 'CatalogExportController@serviceExport');
+
 
             // Other configuration
             Route::apiResource('other-configuration', OtherConfigurationController::class);

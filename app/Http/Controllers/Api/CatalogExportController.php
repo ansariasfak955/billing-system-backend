@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Exports\CatalogExport;
+use App\Models\Service;
+use App\Exports\CatalogProductExport;
+use App\Exports\CatalogServiceExport;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -29,12 +31,36 @@ class CatalogExportController extends Controller
         $fileName = 'product-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
         $products = Product::whereIn('id', $ids)->get();
-        Excel::store(new CatalogExport($products), 'public/xlsx/'.$fileName);
+        Excel::store(new CatalogProductExport($products), 'public/xlsx/'.$fileName);
 
         return response()->json([
             'status' => true,
             'url' => url('/storage/xlsx/'.$fileName),
         ]);
 
+    }
+    public function serviceExport(Request $request, $company_id){
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $fileName = 'service-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $services = Service::whereIn('id', $ids)->get();
+        Excel::store(new CatalogServiceExport($services), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+        ]);
     }
 }
