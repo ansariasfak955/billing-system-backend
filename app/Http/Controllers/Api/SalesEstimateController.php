@@ -10,6 +10,8 @@ use App\Models\InvoiceTable;
 use App\Models\Client;
 use App\Models\ItemMeta;
 use App\Models\Reference;
+use App\Exports\SalesEstimateExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Storage;
 
@@ -517,6 +519,32 @@ class SalesEstimateController extends Controller
             'data' =>  SalesEstimate::with('items')->find($duplicatedEstimate->id)
         ]);
         
+    }
+    public function salesEstimateExport(Request $request, $company_id){
+        $validator = Validator::make($request->all(),[
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($table);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $fileName = 'SalesEstimate-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $salesEstimates = SalesEstimate::whereIn('id', $ids)->get();
+        Excel::store(new SalesEstimateExport($salesEstimates), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+        ]);
+
     }
 
 }

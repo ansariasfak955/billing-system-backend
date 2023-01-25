@@ -254,6 +254,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('sales-estimates', SalesEstimateController::class);
             Route::post('sales-estimates/batch-delete', 'SalesEstimateController@batchDelete');
             Route::post('sales-estimates/duplicate_sales', 'SalesEstimateController@duplicate');
+            Route::post('sales-estimates-export', 'SalesEstimateController@salesEstimateExport');
             Route::apiResource('sales-attachments', SalesAttachmentController::class);
 
             /* Technical Service */
