@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\PurchaseTable;
 use App\Models\Item;
 use App\Models\Supplier;
+use App\Models\PaymentOption;
+use App\Models\DeliveryOption;
 use App\Models\ItemMeta;
 use App\Models\PurchaseReceipt;
 use App\Models\Reference;
@@ -628,12 +630,16 @@ class PurchaseTableController extends Controller
         }
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
+        $paymentOption = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($paymentOption);
+        $table = 'company_'.$request->company_id.'_payment_terms';
+        PaymentTerm::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_delivery_options';
+        DeliveryOption::setGlobalTable($table);
 
         $fileName = 'PurchaseOrder-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $purchaseOrders = PurchaseTable::whereIn('id', $ids)->get();
+        $purchaseOrders = PurchaseTable::with('supplier','category','payment_options','payment_terms','delivery_options')->whereIn('id', $ids)->get();
         Excel::store(new PurchaseOrderExport($purchaseOrders), 'public/xlsx/'.$fileName);
 
         return response()->json([

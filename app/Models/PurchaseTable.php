@@ -13,7 +13,7 @@ class PurchaseTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name'];
+    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name','amount_with_out_vat'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -40,6 +40,18 @@ class PurchaseTable extends Model
 
         return $this->hasOne(Supplier::class,'id', 'supplier_id');
     }
+    public function category(){
+        return $this->hasOne(ClientCategory::class,'id', 'client_category');
+    }
+    public function payment_options(){
+        return $this->hasOne(PaymentOption::class,'id', 'payment_option');
+    }
+    public function payment_terms(){
+        return $this->hasOne(PaymentTerm::class,'id', 'payment_term');
+    }
+    public function delivery_options(){
+        return $this->hasOne(DeliveryOption::class,'id', 'delivery_option');
+    }
     public function getMetaDiscountAttribute(){
 		if(isset($this->item_meta)){
 			return $this->item_meta->pluck('discount')->first();
@@ -54,6 +66,11 @@ class PurchaseTable extends Model
             return get_supplier_name($company, $this->attributes['supplier_id']);
         }
     }
+    public function getAmountWithOutVatAttribute(){
+        if(isset($this->items)){
+          return $this->items->sum('base_price');
+        }
+      }
 	public function getPaymentTermNameAttribute(){
         
         if(isset( $this->attributes['payment_term'] )){
