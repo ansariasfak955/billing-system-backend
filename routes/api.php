@@ -285,6 +285,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('suppliers', SupplierController::class);
             Route::post('suppliers/batch-delete', 'SupplierController@batchDelete');
             Route::post('suppliers/duplicate-supplier', 'SupplierController@duplicate');
+            Route::post('suppliers-export', 'SupplierController@supplierExport');
             Route::get('supplier-balance', 'SupplierController@supplierBalance');
             Route::apiResource('purchase-attachments', PurchaseAttachmentController::class);
             Route::apiResource('supplier-addresses', SupplierAddressController::class);

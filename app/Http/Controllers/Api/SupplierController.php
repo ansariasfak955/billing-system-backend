@@ -9,6 +9,8 @@ use App\Models\Item;
 use App\Models\PurchaseReceipt;
 use App\Models\PurchaseTable;
 use App\Models\supplierSpecialPrice;
+use App\Exports\PurchaseSupplierExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -300,5 +302,30 @@ class SupplierController extends Controller
             "data" =>  $data
         ]);
 
+    }
+    public function supplierExport(Request $request, $company_id){
+        $validator = Validator::make($request->all(),[
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($table);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $fileName = 'Suppliers-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $suppliers = PurchaseTable::whereIn('id', $ids)->get();
+        Excel::store(new PurchaseSupplierExport($suppliers), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+        ]);
     }
 }
