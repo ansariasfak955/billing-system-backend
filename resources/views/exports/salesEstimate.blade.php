@@ -24,15 +24,7 @@
             <th>Title</th>
             <th>Validity Date</th>
             <th>Billing Address</th>
-            <th>Billing Address Town/City</th>
-            <th>Billing Address State/Region</th>
-            <th>Billing Address Post/Zip</th>
-            <th>Billing Address Country</th>
             <th>Delivery Address</th>
-            <th>Delivery Address Town/City</th>
-            <th>Delivery Address State/Region</th>
-            <th>Delivery Address Post/Zip</th>
-            <th>Delivery Address Country</th>
             <th>Email Sent Date</th>
             <th>Currency</th>
             <th>Currency Rate</th>
@@ -61,9 +53,9 @@
             <td>{{@$salesEstimate->client->bank_account_bic}}</td>
             <td>{{@$salesEstimate->created_by_name}}</td>
             <td>{{@$salesEstimate->created_by_name}}</td>
-            <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
-            <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
-            <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
+            <td>{{(@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
+            <td>{{(@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
+            <td>{{(@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
             <td>{{@$salesEstimate->amount_with_out_vat}}</td>
             <td>{{@$salesEstimate->amount - @$salesEstimate->amount_with_out_vat}}</td>
             <td>{{@$salesEstimate->amount}}</td>

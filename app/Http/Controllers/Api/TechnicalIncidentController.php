@@ -323,10 +323,12 @@ class TechnicalIncidentController extends Controller
         }
         $table = 'company_'.$request->company_id.'_technical_incidents';
         TechnicalIncident::setGlobalTable($table);
+        $client = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($client);
 
         $fileName = 'Incidents-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $incidents = TechnicalIncident::whereIn('id', $ids)->get();
+        $incidents = TechnicalIncident::with('client')->whereIn('id', $ids)->get();
         Excel::store(new TechnicalIncidentExport($incidents), 'public/xlsx/'.$fileName);
 
         return response()->json([
