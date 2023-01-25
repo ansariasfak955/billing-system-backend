@@ -28,8 +28,6 @@
             <th>Agent</th>
             <th>Invoice To</th>
             <th>Currency</th>
-            <th>Primary Tax</th>
-            <th>Secondary Tax</th>
             <th>Income Tax</th>
             <th>Account Name</th>
             <th>Bank Account</th>
@@ -38,8 +36,40 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($suppliers as $supplier)
         <tr>
-            <td></td>
+            <td>{{@$supplier->reference.''.@$supplier->reference_number}}</td>
+            <td>{{@$supplier->legal_name}}</td>
+            <td>{{@$supplier->name}}</td>
+            <td>{{@$supplier->tin}}</td>
+            <td>{{@$supplier->phone_1}}</td>
+            <td>{{@$supplier->phone_2}}</td>
+            <td>{{@$supplier->email}}</td>
+            <td>{{@$supplier->address}}</td>
+            <td>{{@$supplier->city}}</td>
+            <td>{{@$supplier->state}}</td>
+            <td>{{@$supplier->zip_code}}</td>
+            <td>{{@$supplier->country}}</td>
+            <td>{{@$supplier->address_latitude}}</td>
+            <td>{{@$supplier->address_longitude}}</td>
+            <td>{{@$supplier->website}}</td>
+            <td>{{@$supplier->supplier_category_name}}</td>
+            <td>{{@$supplier->comments}}</td>
+            <td>{{@$supplier->payment_options->name}}</td>
+            <td>{{@$supplier->payment_terms->name}}</td>
+            <td>{{@$supplier->payment_date}}</td>
+            <td>{{@$supplier->payment_adjustment}}</td>
+            <td>{{@$supplier->discount}}</td>
+            <td>{{@$supplier->rate}}</td>
+            <td>{{@$supplier->agent}}</td>
+            <td>{{@$supplier->invoice_to}}</td>
+            <td>{{@$supplier->currency}}</td>
+            <td>{{@$supplier->subject_to_income_tax}}</td>
+            <td>{{@$supplier->bank_account_name}}</td>
+            <td>{{@$supplier->bank_account_account}}</td>
+            <td>{{@$supplier->bank_account_bic}}</td>
+            <td>{{@$supplier->bank_account_description}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

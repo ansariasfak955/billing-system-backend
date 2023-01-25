@@ -20,6 +20,12 @@ class Supplier extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    public function payment_options(){
+        return $this->hasOne(PaymentOption::class,'id', 'payment_option_id');
+    }
+    public function payment_terms(){
+        return $this->hasOne(PaymentTerm::class,'id', 'payment_terms_id');
+    }
     public function purchases(){
         return $this->hasMany(PurchaseTable::class, 'supplier_id');
     }

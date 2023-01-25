@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Supplier;
 use App\Models\Reference;
 use App\Models\Item;
+use App\Models\PaymentTerm;
+use App\Models\PaymentOption;
 use App\Models\PurchaseReceipt;
 use App\Models\PurchaseTable;
 use App\Models\supplierSpecialPrice;
@@ -313,14 +315,16 @@ class SupplierController extends Controller
                 'message' => $validator->errors()->first()
             ]);
         }
-        $table = 'company_'.$request->company_id.'_purchase_tables';
-        PurchaseTable::setGlobalTable($table);
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
+        $table = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($table);
+        $paymentOptions = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($paymentOptions);
+        $paymentTerms = 'company_'.$request->company_id.'_payment_terms';
+        PaymentTerm::setGlobalTable($paymentTerms);
 
         $fileName = 'Suppliers-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $suppliers = PurchaseTable::whereIn('id', $ids)->get();
+        $suppliers = Supplier::with('payment_options','payment_terms')->whereIn('id', $ids)->get();
         Excel::store(new PurchaseSupplierExport($suppliers), 'public/xlsx/'.$fileName);
 
         return response()->json([

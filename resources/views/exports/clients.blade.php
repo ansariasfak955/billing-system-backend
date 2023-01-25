@@ -56,7 +56,7 @@
             <td>{{@$client->address_latitude}}</td>
             <td>{{@$client->address_longitude}}</td>
             <td>{{@$client->website}}</td>
-            <td>{{@$client->category->client_category}}</td>
+            <td>{{@$client->client_category_name}}</td>
             <td>{{@$client->comments}}</td>
             <td>{{@$client->payment_options->payment_option_id}}</td>
             <td>{{@$client->payment_terms->payment_terms_id}}</td>
