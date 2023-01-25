@@ -24,8 +24,8 @@ class IncomeTaxController extends Controller
         IncomeTax::setGlobalTable('company_'.$request->company_id.'_income_taxes');
         $query = IncomeTax::query();
 
-        $taxes = $query->first();
-        if( !$taxes){
+        $taxes = $query->get();
+        if( !count($taxes)){
             return response()->json([
                 "status" => false,
                 "message" =>  "No data found"
@@ -50,12 +50,18 @@ class IncomeTaxController extends Controller
         $validator = Validator::make($request->all(),[
             'name' => 'required',
             'subtractive' => "in:1,0",
+            'by_default' => "in:1,0",
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 "status" => false,
                 "message" => $validator->errors()->first()
+            ]);
+        }
+        if($request->by_default == '1'){
+            IncomeTax::where('by_default','1')->update([
+                'by_default' => '0'
             ]);
         }
         $tax =IncomeTax::create($request->except(['company_id', 'taxes']));
@@ -121,6 +127,11 @@ class IncomeTaxController extends Controller
             ]);
         }
         $tax = IncomeTax::find($request->income_tax);
+        if($request->by_default == '1'){
+            IncomeTax::where('by_default','1')->update([
+                'by_default' => '0'
+            ]);
+        }
         $tax->update($request->except(['company_id', 'taxes']));
         
         if($request->taxes){
@@ -153,6 +164,12 @@ class IncomeTaxController extends Controller
             return response()->json([
                 "status" => false,
                 "message" => "Not Found"
+            ]);
+        }
+        if($tax->by_default == '1'){
+            return response()->json([
+                "status" => false,
+                "message" => "Cannot delete by default tax"
             ]);
         }
 

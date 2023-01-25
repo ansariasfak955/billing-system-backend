@@ -50,6 +50,7 @@ class ConsumptionTaxController extends Controller
         $validator = Validator::make($request->all(),[
             'primary_name' => 'required',
             'by_default_in_sales' => "in:1,0",
+            'by_default' => "in:1,0",
             'by_default_in_purchases' => "in:1,0",
             'activate_secondary_tax' => "in:1,0",
             'secondary_by_default_in_sales' => "in:1,0",
@@ -63,13 +64,17 @@ class ConsumptionTaxController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-        $tax =ConsumptionTax::create($request->except(['company_id', 'taxes']));
+        if($request->by_default == '1'){
+            ConsumptionTax::where('by_default','1')->update([
+                'by_default' => '0'
+            ]);
+        }
+        $tax = ConsumptionTax::create($request->except(['company_id', 'taxes']));
         
         if($request->taxes){
             $tax->taxes = json_encode($request->taxes);
             $tax->save();
         }
-
         return response()->json([
             "status" => true,
             "tax" => $tax,
@@ -131,6 +136,11 @@ class ConsumptionTaxController extends Controller
             ]);
         }
         $tax = ConsumptionTax::find($request->cosumption_tax);
+        if($request->by_default == '1'){
+            ConsumptionTax::where('by_default','1')->update([
+                'by_default' => '0'
+            ]);
+        }
         $tax->update($request->except(['company_id', 'taxes']));
         
         if($request->taxes){
@@ -165,7 +175,12 @@ class ConsumptionTaxController extends Controller
                 "message" => "Not Found"
             ]);
         }
-
+        if($tax->by_default == '1'){
+            return response()->json([
+                "status" => false,
+                "message" => "Cannot delete by default tax"
+            ]);
+        }
         $tax->delete();
 
         return response()->json([
