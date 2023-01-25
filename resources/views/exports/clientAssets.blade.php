@@ -22,8 +22,27 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($clientAssets as $clientAsset)
         <tr>
-            <td></td>
+            <td>{{@$clientAsset->reference.''.@$clientAsset->reference_number}}</td>
+            <td>{{@$clientAsset->name}}</td>
+            <td>{{@$clientAsset->identifier}}</td>
+            <td>{{@$clientAsset->serial_number}}</td>
+            <td>{{@$clientAsset->client->reference.''.@$clientAsset->client->reference_number}}</td>
+            <td>{{@$clientAsset->client->legal_name}}</td>
+            <td>{{@$clientAsset->address}}</td>
+            <td>{{@$clientAsset->client->city}}</td>
+            <td>{{@$clientAsset->client->state}}</td>
+            <td>{{@$clientAsset->client->zip_code}}</td>
+            <td>{{@$clientAsset->client->country}}</td>
+            <td>{{@$clientAsset->brand}}</td>
+            <td>{{@$clientAsset->model}}</td>
+            <td>{{(@$clientAsset->subject_to_maintenance)? 'yes':'no'}}</td>
+            <td>{{@$clientAsset->start_of_warranty}}</td>
+            <td>{{@$clientAsset->end_of_warranty}}</td>
+            <td>{{@$clientAsset->description}}</td>
+            <td>{{@$clientAsset->private_comments}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

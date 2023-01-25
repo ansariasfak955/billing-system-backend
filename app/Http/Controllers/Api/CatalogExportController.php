@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Client;
 use App\Models\Service;
 use App\Models\ExpenseAndInvestment;
 use App\Models\ClientAsset;
@@ -104,10 +105,12 @@ class CatalogExportController extends Controller
 
         $table = 'company_'.$request->company_id.'_client_assets';
         ClientAsset::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
 
-        $fileName = 'Client-Asstes-'.time().$company_id.'.xlsx';
+        $fileName = 'ClientAsstes-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $clientAssets = ClientAsset::whereIn('id', $ids)->get();
+        $clientAssets = ClientAsset::with('client')->whereIn('id', $ids)->get();
         Excel::store(new ClientAssetsExport($clientAssets), 'public/xlsx/'.$fileName);
 
         return response()->json([
