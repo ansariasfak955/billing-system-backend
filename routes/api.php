@@ -295,6 +295,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('purchase-tables', PurchaseTableController::class);
             Route::post('purchase-tables/batch-delete', 'PurchaseTableController@batchDelete');
             Route::post('purchase-tables/duplicate_supplier', 'PurchaseTableController@Duplicate');
+            Route::post('purchase-tables-export', 'PurchaseTableController@purchaseOrderExport');
             Route::apiResource('purchase-receipts', PurchaseReceiptController::class);
             Route::apiResource('purchase-tickets', PurchaseTicketController::class);
             Route::post('purchase-tickets/batch-delete', 'PurchaseTicketController@batchDelete');

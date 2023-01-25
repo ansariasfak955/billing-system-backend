@@ -11,6 +11,8 @@ use App\Models\ItemMeta;
 use App\Models\PurchaseReceipt;
 use App\Models\Reference;
 use App\Models\PaymentTerm;
+use App\Exports\PurchaseOrderExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Storage;
 
@@ -613,5 +615,30 @@ class PurchaseTableController extends Controller
                 'message' => 'Duplicate Purchase Successfully',
                 'data' => PurchaseTable::with('receipts','items')->find($duplicatePurchase->id)
             ]);
+    }
+    public function purchaseOrderExport(Request $request, $company_id){
+        $validator = Validator::make($request->all(),[
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($table);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $fileName = 'PurchaseOrder-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $purchaseOrders = PurchaseTable::whereIn('id', $ids)->get();
+        Excel::store(new PurchaseOrderExport($purchaseOrders), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+        ]);
     }
 }
