@@ -18,6 +18,7 @@ class PurchaseReceiptExport implements FromView
        public function view(): View
     {
         $purchaseReceipts = $this->purchaseReceipts;
+        dd($purchaseReceipts);
         return view('exports.purchaseReceipt', compact('purchaseReceipts'));
     }
 }

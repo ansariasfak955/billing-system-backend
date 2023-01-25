@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\PurchaseReceipt;
 use App\Models\PurchaseTable;
 use App\Models\Item;
+use App\Models\PaymentOption;
 use App\Models\ItemMeta;
 use App\Models\Supplier;
 use App\Models\Company;
@@ -261,12 +262,19 @@ class PurchaseReceiptController extends Controller
                 'message' => $validator->errors()->first()
             ]);
         }
-        $table = 'company_'.$request->company_id.'_purchase_receipts';
-        PurchaseReceipt::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($table);
+        $purchaseTable = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTable);
+        $purchaseReceipt = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($purchaseReceipt);
+        $paymentOptions = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($paymentOptions);
 
         $fileName = 'Receipts-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $purchaseReceipts = PurchaseReceipt::whereIn('id', $ids)->get();
+        $purchaseReceipts = PurchaseReceipt::with('invoice','supplier','payment_options')->whereIn('id', $ids)->get();
         Excel::store(new PurchaseReceiptExport($purchaseReceipts), 'public/xlsx/'.$fileName);
 
         return response()->json([

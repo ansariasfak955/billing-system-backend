@@ -18,7 +18,6 @@ class PurchaseOrderExport implements FromView
        public function view(): View
     {
         $purchaseOrders = $this->purchaseOrders;
-        dd($purchaseOrders);
         return view('exports.purchaseOrder', compact('purchaseOrders'));
     }
 }

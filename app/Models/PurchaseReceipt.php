@@ -35,6 +35,9 @@ class PurchaseReceipt extends Model
     public function client(){
         return $this->hasOne(Supplier::class, 'id', 'purchase_id');
     }
+    public function payment_options(){
+        return $this->hasOne(PaymentOption::class,'id', 'payment_option');
+    }
     public function getPaymentOptionNameAttribute(){
         if(isset($this->attributes['payment_option'])){
             $table = $this->getTable();
