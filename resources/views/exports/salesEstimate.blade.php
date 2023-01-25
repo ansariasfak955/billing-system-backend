@@ -64,8 +64,8 @@
             <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
             <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
             <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
-            <td>{({@$salesEstimate->amount}}</td>
-            <td>{({@$salesEstimate->amount}}</td>
+            <td>{({@$salesEstimate->amount_with_out_vat}}</td>
+            <td>{({@$salesEstimate->amount - @$salesEstimate->amount_with_out_vat}}</td>
             <td>{({@$salesEstimate->amount}}</td>
             <td>{({@$salesEstimate->title}}</td>
             <td>{({@$salesEstimate->valid_until}}</td>
