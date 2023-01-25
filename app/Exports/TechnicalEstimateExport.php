@@ -18,6 +18,7 @@ class TechnicalEstimateExport implements FromView
        public function view(): View
     {
         $technicalEstimates = $this->technicalEstimates;
+        dd($technicalEstimates);
         return view('exports.technicalEstimate', compact('technicalEstimates'));
     }
 }

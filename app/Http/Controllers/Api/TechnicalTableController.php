@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TechnicalTable;
 use App\Models\Item;
+use App\Models\PaymentOption;
 use App\Models\Client;
 use App\Models\ItemMeta;
 use App\Models\Reference;
@@ -535,10 +536,14 @@ class TechnicalTableController extends Controller
         }
         $table = 'company_'.$request->company_id.'_technical_tables';
         TechnicalTable::setGlobalTable($table);
+        $client = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($client);
+        $paymentOptions = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($paymentOptions);
 
         $fileName = 'TechnicalEstimate-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $technicalEstimates = TechnicalTable::whereIn('id', $ids)->get();
+        $technicalEstimates = TechnicalTable::with('client','payment_options')->whereIn('id', $ids)->get();
         Excel::store(new TechnicalEstimateExport($technicalEstimates), 'public/xlsx/'.$fileName);
 
         return response()->json([

@@ -3,21 +3,15 @@
         <tr>
             <th>Reference</th>
             <th>Date</th>
-            <th>Date</th>
             <th>Client</th>
             <th>Client TIN</th>
-            <th>Client Category</th>
             <th>Client Email</th>
             <th>Client Phone 1</th>
             <th>Client Phone 2</th>
             <th>Status</th>
             <th>Payment Option</th>
-            <th>Bank Account</th>
-            <th>BIC/SWIFT</th>
             <th>Created By</th>
             <th>Agent</th>
-            <th>Primary Tax</th>
-            <th>Secondary Tax</th>
             <th>Income Tax</th>
             <th>Total</th>
             <th>Total Tax</th>
@@ -25,15 +19,7 @@
             <th>Title</th>
             <th>Validity Date</th>
             <th>Billing Address</th>
-            <th>Billing Address Town/City</th>
-            <th>Billing Address State/Region</th>
-            <th>Billing Address Post/Zip</th>
-            <th>Billing Address Country</th>
             <th>Work Address</th>
-            <th>Work Address Town/City</th>
-            <th>Work Address State/Region</th>
-            <th>Work Address Post/Zip</th>
-            <th>Work Address Country</th>
             <th>Email Sent Date</th>
             <th>Invoice To</th>
             <th>Currency</th>
@@ -42,13 +28,39 @@
             <th>Private Comments</th>
             <th>Addendum</th>
             <th>Signed</th>
-            <th>Signature Name</th>
-            <th>Signature TIN</th>
         </tr>
     </thead>
     <tbody>
+        @foreach($technicalEstimates as $technicalEstimate)
         <tr>
-            <td></td>
+            <td>{{@$technicalEstimate->reference.''.@$technicalEstimate->reference_number}}</td>
+            <td>{{@$technicalEstimate->date}}</td>
+            <td>{{@$technicalEstimate->client->legal_name}}</td>
+            <td>{{@$technicalEstimate->client->tin}}</td>
+            <td>{{@$technicalEstimate->client->email}}</td>
+            <td>{{@$technicalEstimate->client->phone_1}}</td>
+            <td>{{@$technicalEstimate->client->phone_2}}</td>
+            <td>{{@$technicalEstimate->status}}</td>
+            <td>{{@$technicalEstimate->payment_options->name}}</td>
+            <td>{{@$technicalEstimate->created_by_name}}</td>
+            <td>{{@$technicalEstimate->agent_name}}</td>
+            <td>{{@$technicalEstimate->subject_to_income_tax}}</td>
+            <td>{{@$technicalEstimate->amount_with_out_vat}}</td>
+            <td>{{@$technicalEstimate->amount - @$technicalEstimate->amount_with_out_vat}}</td>
+            <td>{{@$technicalEstimate->amount}}</td>
+            <td>{{@$technicalEstimate->title}}</td>
+            <td>{{@$technicalEstimate->valid_until}}</td>
+            <td>{{@$technicalEstimate->inv_address}}</td>
+            <td>{{@$technicalEstimate->work_address}}</td>
+            <td>{{@$technicalEstimate->email_sent_date}}</td>
+            <td>{{@$technicalEstimate->agent_name}}</td>
+            <td>{{@$technicalEstimate->currency}}</td>
+            <td>{{@$technicalEstimate->currency_rate}}</td>
+            <td>{{@$technicalEstimate->comments}}</td>
+            <td>{{@$technicalEstimate->private_comments}}</td>
+            <td>{{@$technicalEstimate->addendum}}</td>
+            <td>{{@$technicalEstimate->signature}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>
