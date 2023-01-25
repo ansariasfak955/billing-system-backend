@@ -279,6 +279,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('invoice-receipts', InvoiceReceiptController::class);
             Route::post('invoice-receipts-bulk-pay', 'InvoiceReceiptController@bulkPay');
             Route::post('invoice-receipts-download', 'InvoiceReceiptController@download');
+            Route::post('invoice-receipts-export', 'InvoiceReceiptController@receiptExport');
             Route::post('create-sub-receipt', 'InvoiceReceiptController@createSubReceipt');
 
             // Purchases 
