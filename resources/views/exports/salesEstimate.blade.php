@@ -64,21 +64,21 @@
             <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
             <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
             <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
-            <td>{({@$salesEstimate->amount_with_out_vat}}</td>
-            <td>{({@$salesEstimate->amount - @$salesEstimate->amount_with_out_vat}}</td>
-            <td>{({@$salesEstimate->amount}}</td>
-            <td>{({@$salesEstimate->title}}</td>
-            <td>{({@$salesEstimate->valid_until}}</td>
-            <td>{({@$salesEstimate->inv_address}}</td>
-            <td>{({@$salesEstimate->delivery_address}}</td>
-            <td>{({@$salesEstimate->email_sent_date}}</td>
-            <td>{({@$salesEstimate->currency}}</td>
-            <td>{({@$salesEstimate->currency_rate}}</td>
-            <td>{({@$salesEstimate->comments}}</td>
-            <td>{({@$salesEstimate->private_comments}}</td>
-            <td>{({@$salesEstimate->addendum}}</td>
-            <td>{({@$salesEstimate->signature}}</td>
-            <td>{({@$salesEstimate->tin}}</td>
+            <td>{{@$salesEstimate->amount_with_out_vat}}</td>
+            <td>{{@$salesEstimate->amount - @$salesEstimate->amount_with_out_vat}}</td>
+            <td>{{@$salesEstimate->amount}}</td>
+            <td>{{@$salesEstimate->title}}</td>
+            <td>{{@$salesEstimate->valid_until}}</td>
+            <td>{{@$salesEstimate->inv_address}}</td>
+            <td>{{@$salesEstimate->delivery_address}}</td>
+            <td>{{@$salesEstimate->email_sent_date}}</td>
+            <td>{{@$salesEstimate->currency}}</td>
+            <td>{{@$salesEstimate->currency_rate}}</td>
+            <td>{{@$salesEstimate->comments}}</td>
+            <td>{{@$salesEstimate->private_comments}}</td>
+            <td>{{@$salesEstimate->addendum}}</td>
+            <td>{{@$salesEstimate->signature}}</td>
+            <td>{{@$salesEstimate->tin}}</td>
         </tr>
         @endforeach
     </tbody>
