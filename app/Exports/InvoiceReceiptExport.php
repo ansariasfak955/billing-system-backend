@@ -11,13 +11,13 @@ class InvoiceReceiptExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $services;
-    public function __construct($services){
-        $this->services = $services;
+    protected $invoiceReceipts;
+    public function __construct($invoiceReceipts){
+        $this->invoiceReceipts = $invoiceReceipts;
     }
        public function view(): View
     {
-        $services = $this->services;
-        return view('exports.invoiceReceipt', compact('services'));
+        $invoiceReceipts = $this->invoiceReceipts;
+        return view('exports.invoiceReceipt', compact('invoiceReceipts'));
     }
 }

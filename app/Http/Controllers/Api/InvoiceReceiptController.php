@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\InvoiceReceipt;
 use App\Models\InvoiceTable;
+use App\Models\PaymentOption;
 use App\Models\Item;
 use App\Models\Client;
 use App\Models\Supplier;
@@ -341,10 +342,16 @@ class InvoiceReceiptController extends Controller
         }
         $table = 'company_'.$request->company_id.'_invoice_receipts';
         InvoiceReceipt::setGlobalTable($table);
+        $client = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($client);
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+        $paymentOptions = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($paymentOptions);
 
         $fileName = 'Receipts-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $invoiceReceipts = InvoiceReceipt::whereIn('id', $ids)->get();
+        $invoiceReceipts = InvoiceReceipt::with('client','invoice','payment_options')->whereIn('id', $ids)->get();
         Excel::store(new InvoiceReceiptExport($invoiceReceipts), 'public/xlsx/'.$fileName);
 
         return response()->json([

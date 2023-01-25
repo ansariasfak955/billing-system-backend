@@ -11,7 +11,7 @@ class InvoiceReceipt extends Model
     use HasFactory,Filterable;
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_receipts' ;
-    protected $appends = ['payment_option_name'];
+    protected $appends = ['payment_option_name','paid_by'];
     public function getTable() {
         return self::$globalTable ;
     }
@@ -30,6 +30,9 @@ class InvoiceReceipt extends Model
 
         return $this->hasOne(Client::class,'id', 'invoice_id');
     }
+    public function payment_options(){
+        return $this->hasOne(PaymentOption::class,'id', 'payment_option');
+    }
 
     public function invoice(){
 
@@ -40,6 +43,14 @@ class InvoiceReceipt extends Model
             $table = $this->getTable();
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_payment_option_name($company_id, $this->attributes['payment_option']);
+        }
+    }
+    public function getCreatedByNameAttribute(){
+        
+        if(isset( $this->attributes['paid_by'] )){
+            $table = $this->getTable();
+            $createdby = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_user_name($createdby, $this->attributes['paid_by']);
         }
     }
     public function getExpirationDateAttribute(){
