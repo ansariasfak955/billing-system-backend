@@ -10,8 +10,9 @@ use App\Models\Item;
 use App\Models\ItemMeta;
 use App\Models\Supplier;
 use App\Models\Company;
+use App\Exports\PurchaseReceiptExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App;
-
 use Validator;
 use Storage;
 
@@ -249,5 +250,28 @@ class PurchaseReceiptController extends Controller
             $pdf->loadView('pdf.receipt', compact('receipt', 'company'));
             return   $pdf->stream();
         }
+    }
+    public function receiptExport(Request $request, $company_id){
+        $validator = Validator::make($request->all(),[
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $fileName = 'Receipts-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $purchaseReceipts = PurchaseReceipt::whereIn('id', $ids)->get();
+        Excel::store(new PurchaseReceiptExport($purchaseReceipts), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+        ]);
     }
 }

@@ -302,6 +302,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('purchase-tickets/duplicate-tickets', 'PurchaseTicketController@duplicate');
             Route::post('purchase-receipts-bulk-pay', 'PurchaseReceiptController@bulkPay');
             Route::post('purchase-receipts-download', 'PurchaseReceiptController@download');
+            Route::post('purchase-receipts-export', 'PurchaseReceiptController@receiptExport');
             Route::get('purchase-sent-invoice-summary', 'PurchaseTableController@sentInvoices');
             
             /* Items */
