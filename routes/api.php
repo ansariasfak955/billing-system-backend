@@ -266,6 +266,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('technical-tables', TechnicalTableController::class);
             Route::post('technical-tables/batch-delete', 'TechnicalTableController@batchDelete');
             Route::post('technical-tables/duplicate_service', 'TechnicalTableController@duplicate');
+            Route::post('technical-tables/estimate-export', 'TechnicalTableController@technicalEstimateExport');
             Route::apiResource('technical-table-attachments', TechnicalTableAttachmentController::class);
 
             // Invoicing 

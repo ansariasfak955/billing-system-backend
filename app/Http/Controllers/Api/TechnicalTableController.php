@@ -9,6 +9,8 @@ use App\Models\Item;
 use App\Models\Client;
 use App\Models\ItemMeta;
 use App\Models\Reference;
+use App\Exports\TechnicalEstimateExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Storage;
 
@@ -520,5 +522,29 @@ class TechnicalTableController extends Controller
             'data' => TechnicalTable::with('items')->find($technicalTables->id)
        ]);
         
+    }
+    public function technicalEstimateExport(Request $request, $company_id){
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($table);
+
+        $fileName = 'TechnicalEstimate-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $technicalEstimates = TechnicalTable::whereIn('id', $ids)->get();
+        Excel::store(new TechnicalEstimateExport($technicalEstimates), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+        ]);
+
     }
 }
