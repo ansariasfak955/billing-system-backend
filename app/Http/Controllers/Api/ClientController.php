@@ -426,14 +426,15 @@ class ClientController extends Controller
                'message' => $validator->errors()->first() 
             ]);
         }
-        $table = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($table);
+
         $table = 'company_'.$request->company_id.'_client_categories';
         ClientCategory::setGlobalTable($table);
-        $table = 'company_'.$request->company_id.'_payment_options';
-        PaymentOption::setGlobalTable($table);
-        $table = 'company_'.$request->company_id.'_payment_terms';
-        PaymentTerm::setGlobalTable($table);
+        $client = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($client);
+        $paymentOptions = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($paymentOptions);
+        $paymentTerms = 'company_'.$request->company_id.'_payment_terms';
+        PaymentTerm::setGlobalTable($paymentTerms);
 
         $fileName = 'Clients-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);

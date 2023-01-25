@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SalesEstimate;
 use App\Models\Item;
+use App\Models\PaymentOption;
 use App\Models\InvoiceTable;
 use App\Models\Client;
 use App\Models\ItemMeta;
@@ -532,12 +533,16 @@ class SalesEstimateController extends Controller
         }
         $table = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($table);
+        $client = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($client);
+        $paymentOptions = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($paymentOptions);
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
         $fileName = 'SalesEstimate-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $salesEstimates = SalesEstimate::whereIn('id', $ids)->get();
+        $salesEstimates = SalesEstimate::with('client','payment_options')->whereIn('id', $ids)->get();
         Excel::store(new SalesEstimateExport($salesEstimates), 'public/xlsx/'.$fileName);
 
         return response()->json([

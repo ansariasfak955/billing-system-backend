@@ -45,8 +45,41 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($salesEstimates as $salesEstimate)
         <tr>
-            <td></td>
+            <td>{{@$salesEstimate->reference.''.$salesEstimate->reference_number}}</td>
+            <td>{{@$salesEstimate->date}}</td>
+            <td>{{@$salesEstimate->client->legal_name}}</td>
+            <td>{{@$salesEstimate->client->tin}}</td>
+            <td>{{@$salesEstimate->client->client_category}}</td>
+            <td>{{@$salesEstimate->client->email}}</td>
+            <td>{{@$salesEstimate->client->phone_1}}</td>
+            <td>{{@$salesEstimate->client->phone_2}}</td>
+            <td>{{@$salesEstimate->status}}</td>
+            <td>{{@$salesEstimate->payment_options->payment_option}}</td>
+            <td>{{@$salesEstimate->client->bank_account_account}}</td>
+            <td>{{@$salesEstimate->client->bank_account_bic}}</td>
+            <td>{{@$salesEstimate->created_by_name}}</td>
+            <td>{{@$salesEstimate->created_by_name}}</td>
+            <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
+            <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
+            <td>{({@$salesEstimate->subject_to_income_tax)? 'yes':'no'}}</td>
+            <td>{({@$salesEstimate->amount}}</td>
+            <td>{({@$salesEstimate->amount}}</td>
+            <td>{({@$salesEstimate->amount}}</td>
+            <td>{({@$salesEstimate->title}}</td>
+            <td>{({@$salesEstimate->valid_until}}</td>
+            <td>{({@$salesEstimate->inv_address}}</td>
+            <td>{({@$salesEstimate->delivery_address}}</td>
+            <td>{({@$salesEstimate->email_sent_date}}</td>
+            <td>{({@$salesEstimate->currency}}</td>
+            <td>{({@$salesEstimate->currency_rate}}</td>
+            <td>{({@$salesEstimate->comments}}</td>
+            <td>{({@$salesEstimate->private_comments}}</td>
+            <td>{({@$salesEstimate->addendum}}</td>
+            <td>{({@$salesEstimate->signature}}</td>
+            <td>{({@$salesEstimate->tin}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

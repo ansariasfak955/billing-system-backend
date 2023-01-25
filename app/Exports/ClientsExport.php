@@ -18,7 +18,6 @@ class ClientsExport implements FromView
        public function view(): View
     {
         $clients = $this->clients;
-        dd($clients);
         return view('exports.clients', compact('clients'));
     }
 }

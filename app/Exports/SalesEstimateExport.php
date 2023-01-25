@@ -18,6 +18,7 @@ class SalesEstimateExport implements FromView
        public function view(): View
     {
         $salesEstimates = $this->salesEstimates;
+        dd($salesEstimates);
         return view('exports.salesEstimate', compact('salesEstimates'));
     }
 }
