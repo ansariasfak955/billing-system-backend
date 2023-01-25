@@ -1359,6 +1359,8 @@ class TableHelper
                 $table->enum('secondary_by_default_in_purchases', ['0', '1'])->default('0');
                 $table->enum('subtractive', ['0', '1'])->default('0');
                 $table->longText('taxes')->nullable();
+                $table->enum('by_default', ['0','1'])->default('0')->nullable();
+                $table->string('tax')->nullable();
                 $table->timestamps();
             });
         }
@@ -1369,6 +1371,8 @@ class TableHelper
                 $table->string('name');
                 $table->enum('subtractive', ['0', '1'])->default('0');
                 $table->longText('taxes')->nullable();
+                $table->enum('by_default', ['0','1'])->default('0')->nullable();
+                $table->string('tax')->nullable();
                 $table->timestamps();
             });
         }
