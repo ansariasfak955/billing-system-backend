@@ -261,6 +261,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::apiResource('technical-incidents', TechnicalIncidentController::class);
             Route::post('technical-incidents/batch-delete', 'TechnicalIncidentController@batchDelete');
             Route::post('technical-incidents/duplicate_incident', 'TechnicalIncidentController@duplicate');
+            Route::post('technical-incidents-export', 'TechnicalIncidentController@technicalIncidentExport');
             Route::apiResource('technical-incident-attachments', TechnicalIncidentAttachmentController::class);
             Route::apiResource('technical-tables', TechnicalTableController::class);
             Route::post('technical-tables/batch-delete', 'TechnicalTableController@batchDelete');

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\TechnicalIncident;
 use App\Models\Client;
 use App\Models\Reference;
+use App\Exports\TechnicalIncidentExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Validator;
 use Auth;
@@ -308,5 +310,29 @@ class TechnicalIncidentController extends Controller
             'message' => 'Duplicate Technical Incident Successfullu',
             'data' => $duplicateIncidents
         ]);
+    }
+    public function technicalIncidentExport(Request $request, $company_id){
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $fileName = 'Incidents-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $incidents = TechnicalIncident::whereIn('id', $ids)->get();
+        Excel::store(new TechnicalIncidentExport($incidents), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+        ]);
+
     }
 }
