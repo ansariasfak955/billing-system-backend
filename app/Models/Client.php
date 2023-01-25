@@ -31,7 +31,15 @@ class Client extends Model
     public function client_attachments(){
         return $this->hasMany(ClientAttachment::class, 'client_id');
     }
-
+    public function category(){
+        return $this->hasOne(ClientCategory::class,'id', 'client_category');
+    }
+    public function payment_options(){
+        return $this->hasOne(PaymentOption::class,'id', 'payment_option_id');
+    }
+    public function payment_terms(){
+        return $this->hasOne(PaymentTerm::class,'id', 'payment_terms_id');
+    }
     public function getClientCategoryNameAttribute(){
         
         if(isset( $this->attributes['client_category'] )){

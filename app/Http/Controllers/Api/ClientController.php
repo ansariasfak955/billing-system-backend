@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\ClientCategory;
 use App\Models\ClientAttachment;
 use App\Models\ClientSpecialPrice;
 use App\Models\Reference;
@@ -427,10 +428,16 @@ class ClientController extends Controller
         }
         $table = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_client_categories';
+        ClientCategory::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_payment_terms';
+        PaymentTerm::setGlobalTable($table);
 
         $fileName = 'Clients-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $clients = Client::whereIn('id', $ids)->get();
+        $clients = Client::with('category','payment_options','payment_terms')->whereIn('id', $ids)->get();
         Excel::store(new ClientsExport($clients), 'public/xlsx/'.$fileName);
 
         return response()->json([
