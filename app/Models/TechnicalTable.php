@@ -26,6 +26,10 @@ class TechnicalTable extends Model
     public function items(){
         return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference']);
     }
+    public function clientAsset(){
+
+        return $this->hasOne(ClientAsset::class,'id', 'asset_id');
+    }
     
     public function item_meta(){
         return $this->hasMany(ItemMeta::class, 'parent_id');
