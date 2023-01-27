@@ -487,7 +487,7 @@ class InvoiceTableController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
         
 
-        if($invoice->status == 'unpaid' || $invoice->status == 'partially paid'){
+        if($invoice->status == 'unpaid' || $invoice->status == 'partially paid' || $invoice->status == 'paid'){
             return response()->json([
                 'status' => false,
                 'message' => "Unable to delete documents"
