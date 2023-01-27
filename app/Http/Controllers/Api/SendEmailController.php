@@ -164,7 +164,7 @@ class SendEmailController extends Controller
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
                 $products[] = $item;
             }
-        }elseif($type == 'Ordinary Invoice'){
+        }elseif($type == 'Normal Invoice'){
             $table = 'company_'.$request->company_id.'_invoice_tables';
             InvoiceTable::setGlobalTable($table);
             $invoiceData = InvoiceTable::with(['items','payment_options','delivery_options','client'])->find($request->id);
@@ -258,7 +258,7 @@ class SendEmailController extends Controller
         $template = MyTemplate::where('id', $template_id)->first(); 
         // return storage_path('fonts');
         
-        $attachment =  str_replace(' ' ,'_',$type).'_'.$invoiceData->reference_number.'_'.$invoiceData->client->legal_name.".pdf";
+        $attachment =  str_replace(' ' ,'_',$type).".pdf";
         $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
         
         \Storage::put('/public/temp/'.$attachment, $pdf->output());
