@@ -81,7 +81,8 @@ class DashboardController extends Controller
                     ], 
                     [
                         "lable" => "Unassigned Incidents", 
-                        "value" => TechnicalIncident::where('status', 'pending')->whereNull('assigned_to')->count()
+                        "value" => TechnicalIncident::where('status', 'pending')->whereNull('assigned_to')->count(),
+                        "link" => "/technical-services"
                     ], 
                     [
                         "lable" => "Estimates", 
