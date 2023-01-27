@@ -1459,7 +1459,7 @@ class TableHelper
                 $table->timestamps();
             });
 
-            $templates = ['Ordinary Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
+            $templates = ['Normal Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
             foreach($templates as $template){
                 MyTemplate::setGlobalTable('company_'.$company_id.'_my_templates');
                 $template_created = MyTemplate::create(["name" => $template." Template", "document_type" => $template, "font" => "DejaVu Sans", "color" => "#fd6c00", "is_default" => "1", "hide_company_information" => "0", "hide_assets_information" => "0", "show_signature_box" => "0" ]);
@@ -2889,7 +2889,7 @@ class TableHelper
                 /* Comments and Addendums ends here */
 
                 /* Client Assets starts here */
-                if(in_array($template, ['Ordinary Invoice', 'Refund Invoice', 'Work Delivery Note', 'Work Estimate', 'Work Order'])){
+                if(in_array($template, ['Normal Invoice', 'Refund Invoice', 'Work Delivery Note', 'Work Estimate', 'Work Order'])){
                         /* Section Title */
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
@@ -3141,7 +3141,7 @@ class TableHelper
                     /* Client Assets ends here */
                 }
 
-                if(in_array($template, ['Ordinary Invoice', 'Purchase Invoice', 'Refund Invoice'])){
+                if(in_array($template, ['Normal Invoice', 'Purchase Invoice', 'Refund Invoice'])){
                     /* Payment Terms starts here */
                     /* Payment Terms */
                     MyTemplateMeta::create([
@@ -3414,7 +3414,7 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
 
             DefaultPdfSendOption::setGlobalTable('company_'.$company_id.'_default_pdf_send_options');
 
-            $templates = ['Ordinary Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
+            $templates = ['Normal Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
 
             foreach($templates as $template){
                 DefaultPdfSendOption::create([
@@ -3743,8 +3743,8 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
            $permission->save();
         }
 
-        if (!Permission::where('name', 'Ordinary Invoice Receipts')->exists()) {
-           $permission = Permission::create(['name' => 'Ordinary Invoice Receipts']);
+        if (!Permission::where('name', 'Normal Invoice Receipts')->exists()) {
+           $permission = Permission::create(['name' => 'Normal Invoice Receipts']);
            $permission->parent_id = Permission::where('name' ,'Invoicing')->pluck('id')->first();
            $permission->is_checkbox = 0;
            $permission->save();
@@ -4754,20 +4754,20 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
             $permission->save();
         }
 
-        /* Ordinary Invoice Receipts */
+        /* Normal Invoice Receipts */
 
-        if (!Permission::where('name', 'view ordinary invoice receipts')->exists()) {
+        if (!Permission::where('name', 'view normal invoice receipts')->exists()) {
             
-            $permission = Permission::create(['name' => 'view ordinary invoice receipts']);
-            $permission->parent_id = Permission::where('name' ,'Ordinary Invoice Receipts')->pluck('id')->first();
+            $permission = Permission::create(['name' => 'view normal invoice receipts']);
+            $permission->parent_id = Permission::where('name' ,'Normal Invoice Receipts')->pluck('id')->first();
             $permission->is_checkbox = 1;
             $permission->save();
         }
 
-        if (!Permission::where('name', 'edit ordinary invoice receipts')->exists()) {
+        if (!Permission::where('name', 'edit normal invoice receipts')->exists()) {
            
-            $permission = Permission::create(['name' => 'edit ordinary invoice receipts']);
-            $permission->parent_id = Permission::where('name' ,'Ordinary Invoice Receipts')->pluck('id')->first();
+            $permission = Permission::create(['name' => 'edit normal invoice receipts']);
+            $permission->parent_id = Permission::where('name' ,'Normal Invoice Receipts')->pluck('id')->first();
             $permission->is_checkbox = 1;
             $permission->save();
         }
