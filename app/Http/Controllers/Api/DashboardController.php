@@ -46,7 +46,7 @@ class DashboardController extends Controller
             if(count($data)){
 
                 $data =  new \Illuminate\Support\Collection($data);
-                $data = $data->sortBy('created_at')->take(20)->values();
+                $data = $data->sortBy('date')->take(20)->values();
             }
 
         }else{
