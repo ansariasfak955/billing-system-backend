@@ -597,7 +597,7 @@
                     
                 </table>
             </div>
-
+            
             <div style="clear: both;"></div>
             <div style="margin-top: 20px;">       
                 <table style="border-collapse: collapse; width:100%; ">
@@ -735,7 +735,7 @@
                                         <tr>
                                             <th class="table_heading" style="padding: 5px 0; text-align: left">TOTAL</th>
                                             <td style="padding: 0; margin: 0;"></td>
-                                            <th style="text-align: right">$ {{ $total }}</th>
+                                            <th style="text-align: right">$ {{ $totals }}</th>
                                         </tr>
                                     </table>
                                 </div>
