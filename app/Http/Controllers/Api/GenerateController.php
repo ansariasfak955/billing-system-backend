@@ -48,7 +48,7 @@ class GenerateController extends Controller
                     $generateEstimate->created_at = now();
                     $generateEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateEstimate->reference.$generateEstimate->reference_number;
                     $generateEstimate->reference = $referenceType ;
-                    // $generateEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
+                    $generateEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
                     $generateEstimate->save();
                     
                     foreach($salesEstimate->items as $salesItems){
@@ -73,7 +73,7 @@ class GenerateController extends Controller
                     $generateEstimate->created_at = now();
                     $generateEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateEstimate->reference.$generateEstimate->reference_number;
                     $generateEstimate->reference = $referenceType ;
-                    // $generateEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                    $generateEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                     $generateEstimate->save();
                     
                     foreach($salesEstimate->items as $invoiceItems){
@@ -104,7 +104,7 @@ class GenerateController extends Controller
                 $generateSalesOrder->created_at = now();
                 $generateSalesOrder->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateSalesOrder->reference.$generateSalesOrder->reference_number;
                 $generateSalesOrder->reference = $referenceType ;
-                // $generateSalesOrder->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateSalesOrder->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateSalesOrder->save();
                     
                 foreach($salesOrder->items as $salesItems){
@@ -129,7 +129,7 @@ class GenerateController extends Controller
                 $generateInvoice->created_at = now();
                 $generateInvoice->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoice->reference.$generateInvoice->reference_number;
                 $generateInvoice->reference = $referenceType ;
-                // $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoice->save();
                 
                 foreach($salesOrder->items as $invoiceItems){
@@ -164,7 +164,7 @@ class GenerateController extends Controller
                 $generateInvoice->created_at = now();
                 $generateInvoice->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoice->reference.$generateInvoice->reference_number;
                 $generateInvoice->reference = $referenceType ;
-                // $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoice->save();
                 
                 foreach($salesOrder->items as $invoiceItems){
@@ -196,7 +196,7 @@ class GenerateController extends Controller
                 $generateTechnicalEstimate->created_at = now();
                 $generateTechnicalEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateTechnicalEstimate->reference.$generateTechnicalEstimate->reference_number;
                 $generateTechnicalEstimate->reference = $referenceType ;
-                // $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateTechnicalEstimate->save();
                 
                 foreach($technicalEstimate->items as $technicalItems){
@@ -221,7 +221,7 @@ class GenerateController extends Controller
                 $generateTechnicalEstimate->created_at = now();
                 $generateTechnicalEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateTechnicalEstimate->reference.$generateTechnicalEstimate->reference_number;
                 $generateTechnicalEstimate->reference = $referenceType ;
-                // $generateTechnicalEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateTechnicalEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateTechnicalEstimate->save();
                 
                 foreach($technicalEstimate->items as $invoiceItems){
@@ -252,7 +252,7 @@ class GenerateController extends Controller
                 $generateTechnicalEstimate->created_at = now();
                 $generateTechnicalEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateTechnicalEstimate->reference.$generateTechnicalEstimate->reference_number;
                 $generateTechnicalEstimate->reference = $referenceType ;
-                // $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateTechnicalEstimate->save();
                 
                 foreach($technicalWorkOrder->items as $technicalItems){
@@ -277,7 +277,7 @@ class GenerateController extends Controller
                 $generateOrdinaryInvoice->created_at = now();
                 $generateOrdinaryInvoice->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateOrdinaryInvoice->reference.$generateOrdinaryInvoice->reference_number;
                 $generateOrdinaryInvoice->reference = $referenceType ;
-                // $generateOrdinaryInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateOrdinaryInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateOrdinaryInvoice->save();
                 
                 foreach($technicalWorkOrder->items as $invoiceItems){
@@ -312,7 +312,7 @@ class GenerateController extends Controller
                 $generateInvoiceWorkDeliveryNote->created_at = now();
                 $generateInvoiceWorkDeliveryNote->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoiceWorkDeliveryNote->reference.$generateInvoiceWorkDeliveryNote->reference_number;
                 $generateInvoiceWorkDeliveryNote->reference = $referenceType ;
-                // $generateInvoiceWorkDeliveryNote->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateInvoiceWorkDeliveryNote->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoiceWorkDeliveryNote->save();
                 
                 foreach($technicalWorkDeliveryNote->items as $invoiceItems){
@@ -344,7 +344,7 @@ class GenerateController extends Controller
                 $generateInvoiceEstimate->created_at = now();
                 $generateInvoiceEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoiceEstimate->reference.$generateInvoiceEstimate->reference_number;
                 $generateInvoiceEstimate->reference = $referenceType ;
-                // $generateInvoiceEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateInvoiceEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoiceEstimate->save();
                 
                 foreach($invoiceEstimate->items as $invoiceItems){
@@ -376,7 +376,7 @@ class GenerateController extends Controller
                 $generatePurchaseEstimate->created_at = now();
                 $generatePurchaseEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generatePurchaseEstimate->reference.$generatePurchaseEstimate->reference_number;
                 $generatePurchaseEstimate->reference = $referenceType ;
-                // $generatePurchaseEstimate->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generatePurchaseEstimate->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generatePurchaseEstimate->save();
                 
                 foreach($purchaseOrderEstimate->items as $purchaseItems){
@@ -408,7 +408,7 @@ class GenerateController extends Controller
                 $generateDeliveryNote->created_at = now();
                 $generateDeliveryNote->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateDeliveryNote->reference.$generateDeliveryNote->reference_number;
                 $generateDeliveryNote->reference = $referenceType ;
-                // $generateDeliveryNote->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateDeliveryNote->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateDeliveryNote->save();
                 
                 foreach($purchaseDeliveryNote->items as $purchaseItems){
@@ -441,7 +441,7 @@ class GenerateController extends Controller
                 $generateTechnicalIncident->created_at = now();
                 $generateTechnicalIncident->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateTechnicalIncident->reference.$generateTechnicalIncident->reference_number;
                 $generateTechnicalIncident->reference = $referenceType ;
-                // $generateTechnicalIncident->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateTechnicalIncident->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateTechnicalIncident->save();
 
                 return response()->json([
@@ -458,7 +458,7 @@ class GenerateController extends Controller
                 $generateInvoice->created_at = now();
                 $generateInvoice->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoice->reference.$generateInvoice->reference_number;
                 $generateInvoice->reference = $referenceType ;
-                // $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
+                $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
                 $generateInvoice->save();
 
                 return response()->json([
