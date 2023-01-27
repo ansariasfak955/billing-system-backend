@@ -38,10 +38,10 @@ class DashboardController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
         $data  = [];
         if($request->type == 'recent'){
-            $salesEstimatesData = SalesEstimate::orderBy('created_at', 'DESC')->get()->toArray();
-            $InvoiceTableData = InvoiceTable::orderBy('created_at', 'DESC')->get()->toArray();
-            $purchaseTablesData = PurchaseTable::orderBy('created_at', 'DESC')->get()->toArray();
-            $TechnicalIncidentData = TechnicalTable::orderBy('created_at', 'DESC')->get()->toArray();
+            $salesEstimatesData = SalesEstimate::orderBy('date', 'DESC')->get()->toArray();
+            $InvoiceTableData = InvoiceTable::orderBy('date', 'DESC')->get()->toArray();
+            $purchaseTablesData = PurchaseTable::orderBy('date', 'DESC')->get()->toArray();
+            $TechnicalIncidentData = TechnicalTable::orderBy('date', 'DESC')->get()->toArray();
             $data = array_merge($salesEstimatesData, $InvoiceTableData, $purchaseTablesData, $TechnicalIncidentData);
             if(count($data)){
 
