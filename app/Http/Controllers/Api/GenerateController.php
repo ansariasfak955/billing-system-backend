@@ -64,7 +64,7 @@ class GenerateController extends Controller
                         'message' => 'Generate successfully',
                         'data' =>  SalesEstimate::with('items')->find($generateEstimate->id)
                     ]);
-                }elseif($request->to_type == 'Ordinary Invoice'){
+                }elseif($request->to_type == 'Normal Invoice'){
                     $table = 'company_'.$request->company_id.'_invoice_tables';
                     InvoiceTable::setGlobalTable($table);
 
@@ -120,7 +120,7 @@ class GenerateController extends Controller
                     'message' => 'Generate successfully',
                     'data' =>  SalesEstimate::with('items')->find($generateSalesOrder->id)
                 ]);
-            }elseif($request->to_type == 'Ordinary Invoice'){
+            }elseif($request->to_type == 'Normal Invoice'){
                 $table = 'company_'.$request->company_id.'_invoice_tables';
                 InvoiceTable::setGlobalTable($table);
 
@@ -155,7 +155,7 @@ class GenerateController extends Controller
 
             $salesOrder = SalesEstimate::with('items')->find($request->id);
             
-            if($request->to_type == 'Ordinary Invoice'){
+            if($request->to_type == 'Normal Invoice'){
                 $table = 'company_'.$request->company_id.'_invoice_tables';
                 InvoiceTable::setGlobalTable($table);
 
@@ -212,7 +212,7 @@ class GenerateController extends Controller
                     'message' => 'Generate successfully',
                     'data' =>  TechnicalTable::with('items')->find($generateTechnicalEstimate->id)
                 ]);
-            }elseif($request->to_type == 'Ordinary Invoice'){
+            }elseif($request->to_type == 'Normal Invoice'){
                 $table = 'company_'.$request->company_id.'_invoice_tables';
                 InvoiceTable::setGlobalTable($table);
 
@@ -268,7 +268,7 @@ class GenerateController extends Controller
                     'message' => 'Generate successfully',
                     'data' =>  TechnicalTable::with('items')->find($generateTechnicalEstimate->id)
                 ]);
-            }elseif($request->to_type == 'Ordinary Invoice'){
+            }elseif($request->to_type == 'Normal Invoice'){
                 $table = 'company_'.$request->company_id.'_invoice_tables';
                 InvoiceTable::setGlobalTable($table);
 
@@ -303,7 +303,7 @@ class GenerateController extends Controller
 
             $technicalWorkDeliveryNote =  TechnicalTable::with('items')->find($request->id);
             
-            if($request->to_type == 'Ordinary Invoice'){
+            if($request->to_type == 'Normal Invoice'){
                 $table = 'company_'.$request->company_id.'_invoice_tables';
                 InvoiceTable::setGlobalTable($table);
 
@@ -329,7 +329,7 @@ class GenerateController extends Controller
                     'data' =>  InvoiceTable::with('items')->find($generateInvoiceWorkDeliveryNote->id)
                 ]);
             }
-        }elseif($request->from_type == 'Ordinary Invoice'){
+        }elseif($request->from_type == 'Normal Invoice'){
 
             $table = 'company_'.$request->company_id.'_invoice_tables';
             InvoiceTable::setGlobalTable($table);
@@ -449,7 +449,7 @@ class GenerateController extends Controller
                     'message' => 'Generate successfully',
                     'data' =>  TechnicalTable::find($generateTechnicalIncident->id)
                 ]);
-            }elseif($request->to_type == 'Ordinary Invoice'){
+            }elseif($request->to_type == 'Normal Invoice'){
                 $table = 'company_'.$request->company_id.'_invoice_tables';
                 InvoiceTable::setGlobalTable($table);
 
