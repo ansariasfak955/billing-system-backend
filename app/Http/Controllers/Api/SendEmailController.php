@@ -8,6 +8,7 @@ use App\Models\MyTemplate;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Item;
+use App\Models\ClientAsset;
 use App\Models\PaymentOption;
 use App\Models\SalesEstimate;
 use App\Models\TechnicalTable;
@@ -183,7 +184,10 @@ class SendEmailController extends Controller
         }elseif($type == 'Refund Invoice'){
             $table = 'company_'.$request->company_id.'_invoice_tables';
             InvoiceTable::setGlobalTable($table);
-            $invoiceData = InvoiceTable::with('items')->find($request->id);
+            $clientAsset = 'company_'.$request->company_id.'_client_assets';
+            ClientAsset::setGlobalTable($clientAsset);
+            $invoiceData = InvoiceTable::with('items','clientAsset')->find($request->id);
+            // dd($invoiceData);
             $items =  $invoiceData->items;
             $total = InvoiceTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];

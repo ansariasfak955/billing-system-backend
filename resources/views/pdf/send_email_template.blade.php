@@ -599,7 +599,36 @@
             </div>
             
             <div style="clear: both;"></div>
-            <div style="margin-top: 20px;">       
+            <div style="margin-top: 0px;font-size: 13px; height:50px">
+                <table style="border-collapse: collapse; width:100%; padding: 10px; float: left;">
+                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} INFO</th>
+
+                    <tr>
+                        @if(@$invoiceData->clientAsset->name)
+                            <span><b>Name: </b></span>
+                            <span>{{ $invoiceData->clientAsset->name }}</span>
+                        @endif
+                        @if(@$invoiceData->clientAsset->brand)
+                            <span><b> Brand: </b></span>
+                            <span>{{ $invoiceData->clientAsset->brand }}</span>
+                        @endif
+                        @if(@$invoiceData->clientAsset->model)
+                            <span><b> Model: </b></span>
+                            <span>{{ $invoiceData->clientAsset->model }}</span><br>
+                        @endif
+                        @if(@$invoiceData->clientAsset->serial_number)
+                            <span><b> Serial Number: </b></span>
+                            <span>{{ $invoiceData->clientAsset->serial_number }}</span>
+                        @endif
+                        @if(@$invoiceData->clientAsset->identifier)
+                            <span><b> Identifier: </b></span>
+                            <span>{{ $invoiceData->clientAsset->identifier }}</span>
+                        @endif
+                    </tr>
+                    
+                </table>
+            </div>
+            <div style="margin-top: 40px;">       
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>

@@ -34,6 +34,10 @@ class InvoiceTable extends Model
 
         return $this->hasOne(Client::class,'id', 'client_id');
     }
+    public function clientAsset(){
+
+        return $this->hasOne(ClientAsset::class,'id', 'asset_id');
+    }
     public function payment_options(){
 
         return $this->hasOne(PaymentOption::class,'id', 'payment_option');
