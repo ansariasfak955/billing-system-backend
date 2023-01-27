@@ -3287,7 +3287,7 @@ class TableHelper
         /* Email send as */
         Setting::create([
             "option_name" => "email_configuration_send_as",
-            "option_value" => Company::where('id', $company_id)->pluck('name')->first(). " Email Address",
+            "option_value" => Company::where('id', $company_id)->pluck('email')->first(),
         ]);
         /* Email sender name */
         Setting::create([
@@ -3297,7 +3297,7 @@ class TableHelper
         /* Email send copy to */
         Setting::create([
             "option_name" => "email_configuration_send_copy_to",
-            "option_value" => "Without copy",
+            "option_value" => "",
         ]);
         /* Email connect */
         Setting::create([
@@ -3307,12 +3307,12 @@ class TableHelper
         /* Email reply to */
         Setting::create([
             "option_name" => "email_configuration_reply_to",
-            "option_value" => "Sending Address",
+            "option_value" => "",
         ]);
         /* Email send read receipts to */
         Setting::create([
             "option_name" => "email_configuration_send_read_receipts_to",
-            "option_value" => "Sending Address",
+            "option_value" => "",
         ]);
         /* Email client emails subject */
         Setting::create([
