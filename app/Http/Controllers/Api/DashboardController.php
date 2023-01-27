@@ -56,16 +56,19 @@ class DashboardController extends Controller
                 "data" => [
                     [
                         "lable" => "Estimates", 
-                        "value" => SalesEstimate::where('reference', 'SE')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SE')->where('status', 'pending')->get()->sum('amount').")"
+                        "value" => SalesEstimate::where('reference', 'SE')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SE')->where('status', 'pending')->get()->sum('amount').")",
+                        "link" => "/sales"
                     ], 
                     [
                         "lable" => "Orders", 
-                        "value" => SalesEstimate::where('reference', 'SO')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SO')->where('status', 'pending')->get()->sum('amount').")"
+                        "value" => SalesEstimate::where('reference', 'SO')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SO')->where('status', 'pending')->get()->sum('amount').")",
+                        "link" => "/order"
                     ], 
                     [
                         "lable" => "Delivery Notes", 
-                        "value" => SalesEstimate::where('reference', 'SDN')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SDN')->where('status', 'pending')->get()->sum('amount').")"
-                    ] 
+                        "value" => SalesEstimate::where('reference', 'SDN')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SDN')->where('status', 'pending')->get()->sum('amount').")",
+                        "link" => "/delivery"
+                        ] 
                 ] 
             ];
             $technicalServiceArr = [
@@ -73,7 +76,8 @@ class DashboardController extends Controller
                 "data" => [
                     [
                         "lable" => "My Incidents", 
-                        "value" => TechnicalIncident::where('status', 'pending')->count()
+                        "value" => TechnicalIncident::where('status', 'pending')->count(),
+                        "link" => "/technical-services"
                     ], 
                     [
                         "lable" => "Unassigned Incidents", 
@@ -81,15 +85,18 @@ class DashboardController extends Controller
                     ], 
                     [
                         "lable" => "Estimates", 
-                        "value" => TechnicalTable::where('reference', 'WE')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WE')->where('status', 'pending')->get()->sum('amount').")" 
+                        "value" => TechnicalTable::where('reference', 'WE')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WE')->where('status', 'pending')->get()->sum('amount').")",
+                        "link" => "/estimates"
                     ],
                     [
                         "lable" => "Orders", 
-                        "value" => TechnicalTable::where('reference', 'WO')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WO')->where('status', 'pending')->get()->sum('amount').")" 
+                        "value" => TechnicalTable::where('reference', 'WO')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WO')->where('status', 'pending')->get()->sum('amount').")",
+                        "link" => "/work-order"
                     ],
                     [
                         "lable" => "Delivery Notes", 
-                        "value" => TechnicalTable::where('reference', 'WDN')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WDN')->where('status', 'pending')->get()->sum('amount').")"  
+                        "value" => TechnicalTable::where('reference', 'WDN')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WDN')->where('status', 'pending')->get()->sum('amount').")",
+                        "link" => "/work-delivery"
                     ]
                 ] 
             ];
@@ -98,11 +105,13 @@ class DashboardController extends Controller
                 "data" => [
                     [
                         "lable" => "Invoices", 
-                        "value" => InvoiceTable::where('reference', 'INV')->where('status', 'unpaid')->count()." ($ ". InvoiceTable::where('reference', 'INV')->where('status', 'unpaid')->get()->sum('amount').")"
+                        "value" => InvoiceTable::where('reference', 'INV')->where('status', 'unpaid')->count()." ($ ". InvoiceTable::where('reference', 'INV')->where('status', 'unpaid')->get()->sum('amount').")",
+                        "link" => '/invoicing'
                     ], 
                     [
                         "lable" => "Refund Invoices", 
-                        "value" =>  InvoiceTable::where('reference', 'RET')->where('status', 'unpaid')->count()." ($ ". InvoiceTable::where('reference', 'RET')->where('status', 'unpaid')->get()->sum('amount').")" 
+                        "value" =>  InvoiceTable::where('reference', 'RET')->where('status', 'unpaid')->count()." ($ ". InvoiceTable::where('reference', 'RET')->where('status', 'unpaid')->get()->sum('amount').")", 
+                        "link" => "/refund-invoices"
                     ]
                 ] 
             ];
@@ -111,15 +120,18 @@ class DashboardController extends Controller
                 "data" => [
                     [
                         "lable" => "Orders", 
-                        "value" =>  PurchaseTable::where('reference', 'PO')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PO')->where('status', 'pending')->get()->sum('amount').")" 
+                        "value" =>  PurchaseTable::where('reference', 'PO')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PO')->where('status', 'pending')->get()->sum('amount').")",
+                        "link" => '/purchase-order'
                     ], 
                     [
                         "lable" => "Delivery Notes", 
-                        "value" =>  PurchaseTable::where('reference', 'PDN')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PDN')->where('status', 'pending')->get()->sum('amount').")" 
+                        "value" =>  PurchaseTable::where('reference', 'PDN')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PDN')->where('status', 'pending')->get()->sum('amount').")", 
+                        "link" => "/purchase-Delivery-Notes"
                     ], 
                     [
                         "lable" => "Invoices", 
-                        "value" =>  PurchaseTable::where('reference', 'PINV')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PINV')->where('status', 'pending')->get()->sum('amount').")"
+                        "value" =>  PurchaseTable::where('reference', 'PINV')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PINV')->where('status', 'pending')->get()->sum('amount').")",
+                        "link" => "/purchase-invoice"
                     ] 
                 ] 
             ];
