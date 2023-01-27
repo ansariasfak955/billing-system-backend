@@ -258,7 +258,7 @@ class SendEmailController extends Controller
         $template = MyTemplate::where('id', $template_id)->first(); 
         // return storage_path('fonts');
         
-        $attachment =  str_replace(' ' ,'_',$type).'_'.$invoiceData->reference_number.'_'.$invoiceData->client->legal_name.".pdf";
+        $attachment =  str_replace(' ' ,'_',$type).".pdf";
         $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
         
         \Storage::put('/public/temp/'.$attachment, $pdf->output());
