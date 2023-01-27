@@ -367,6 +367,9 @@ class ClientController extends Controller
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
 
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
