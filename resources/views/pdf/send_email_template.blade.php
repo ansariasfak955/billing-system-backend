@@ -601,7 +601,7 @@
             <div style="clear: both;"></div>
             <div style="margin-top: 0px;font-size: 13px; height:50px">
                 <table style="border-collapse: collapse; width:100%; padding: 10px; float: left;">
-                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} INFO</th>
+                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} ASSET</th>
 
                     <tr>
                         @if(@$invoiceData->clientAsset->name)
