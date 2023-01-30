@@ -3287,7 +3287,7 @@ class TableHelper
         /* Email send as */
         Setting::create([
             "option_name" => "email_configuration_send_as",
-            "option_value" => Company::where('id', $company_id)->pluck('email')->first().'Email Address'
+            "option_value" => Company::where('id', $company_id)->pluck('email')->first()
         ]);
         /* Email sender name */
         Setting::create([
