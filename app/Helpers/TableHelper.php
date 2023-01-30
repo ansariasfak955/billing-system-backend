@@ -3297,7 +3297,7 @@ class TableHelper
         /* Email send copy to */
         Setting::create([
             "option_name" => "email_configuration_send_copy_to",
-            "option_value" => "Without copy",
+            // "option_value" => "Without copy",
         ]);
         /* Email connect */
         Setting::create([
