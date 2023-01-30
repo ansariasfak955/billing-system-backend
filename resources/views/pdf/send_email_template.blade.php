@@ -665,18 +665,18 @@
                                 <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                <p style="marging: 0; padding: 0">{{ $product->name }}</p>
-                                <span>{{ $product->description }}</span>
+                                <p style="marging: 0; padding: 0">{{ @$product->name }}</p>
+                                <span>{{ @$product->description }}</span>
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                <p style="marging: 0; padding: 0">{{ $product->quantity }}</p>
+                                <p style="marging: 0; padding: 0">{{ @$product->quantity }}</p>
                             </td>
                             @if($request->format != 'without_values') 
                                 <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                    <p style="marging: 0; padding: 0">{{ $product->discount }}</p>
+                                    <p style="marging: 0; padding: 0">{{ @$product->discount }}</p>
                                 </td>
                                 <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                    <p style="marging: 0; padding: 0">{{ $product->base_price }}</p>
+                                    <p style="marging: 0; padding: 0">{{ @$product->base_price }}</p>
                                 </td>
                             @endif
                             @if($request->format != 'without_values')
