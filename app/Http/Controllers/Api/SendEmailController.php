@@ -367,7 +367,7 @@ class SendEmailController extends Controller
             'message' => 'Mail Sent!',
         ]);
     }
-    // Get Message
+    // Get Message //
     public function getMessage(Request $request){
         Setting::setGlobalTable('company_'.$request->company_id.'_settings');
 
