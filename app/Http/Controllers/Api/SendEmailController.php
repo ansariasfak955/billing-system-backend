@@ -88,9 +88,7 @@ class SendEmailController extends Controller
         }elseif($type == 'Sales Order'){
             $table = 'company_'.$request->company_id.'_sales_estimates';
             SalesEstimate::setGlobalTable($table);
-            $clientAsset = 'company_'.$request->company_id.'_client_assets';
-            ClientAsset::setGlobalTable($clientAsset);
-            $invoiceData = SalesEstimate::with(['items','payment_options','client','delivery_options','clientAsset'])->find($request->id);
+            $invoiceData = SalesEstimate::with(['items','payment_options','client','delivery_options'])->find($request->id);
             $items =  $invoiceData->items;
             $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
@@ -106,9 +104,7 @@ class SendEmailController extends Controller
         }elseif($type == 'Sales Delivery Note'){
             $table = 'company_'.$request->company_id.'_sales_estimates';
             SalesEstimate::setGlobalTable($table);
-            $clientAsset = 'company_'.$request->company_id.'_client_assets';
-            ClientAsset::setGlobalTable($clientAsset);
-            $invoiceData = SalesEstimate::with('items','clientAsset')->find($request->id);
+            $invoiceData = SalesEstimate::with('items')->find($request->id);
             $items =  $invoiceData->items;
             $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
@@ -277,6 +273,7 @@ class SendEmailController extends Controller
         
         $attachment =  str_replace(' ' ,'_',$type).".pdf";
         $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
+        // $pdf->loadView('pdf.ticket_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
         
         \Storage::put('/public/temp/'.$attachment, $pdf->output());
         if($request->send_to){
