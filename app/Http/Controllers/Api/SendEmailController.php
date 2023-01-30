@@ -14,6 +14,7 @@ use App\Models\SalesEstimate;
 use App\Models\TechnicalTable;
 use App\Models\InvoiceTable;
 use App\Models\PurchaseTable;
+use App\Models\Setting;
 use App\Models\DeliveryOption;
 use App\Models\Client;
 use App\Models\MyTemplateMeta;
@@ -364,6 +365,14 @@ class SendEmailController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Mail Sent!',
+        ]);
+    }
+    public function getMessage(Request $request){
+        Setting::setGlobalTable('company_'.$request->company_id.'_settings');
+
+        return response()->json([
+            "status" => true,
+            "settings" =>  Setting::pluck('option_value', 'option_name')
         ]);
     }
 }

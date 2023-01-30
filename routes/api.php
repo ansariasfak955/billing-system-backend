@@ -343,6 +343,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('export/{type}', 'ImportExportController@export');
             Route::post('import/{type}', 'ImportExportController@import');
             Route::post('send-email', 'SendEmailController@sendEmail');
+            Route::get('get-message', 'SendEmailController@getMessage');
             Route::post('send-attachments-email', 'SendEmailController@sendAttachmentEmail');
             Route::post('generates', 'GenerateController@generate');
 
