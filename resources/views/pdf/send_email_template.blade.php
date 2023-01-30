@@ -673,7 +673,7 @@
                             </td>
                             @if((float)$request->format != 'without_values') 
                                 <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                    <p style="marging: 0; padding: 0">{{ (float)($product->discount }}</p>
+                                    <p style="marging: 0; padding: 0">{{ (float)$product->discount }}</p>
                                 </td>
                                 <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                     <p style="marging: 0; padding: 0">{{ $product->base_price }}</p>
