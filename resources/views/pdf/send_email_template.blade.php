@@ -687,7 +687,7 @@
                                 @endif
                             @endif
                             @php
-                            $subtotal += $product->base_price;
+                            $subtotal += (float)$product->base_price;
                             @endphp
                         </tr>
                     @endforeach
@@ -695,7 +695,7 @@
             </div>
         </div>
             @php
-            $vat = $total*$product->vat/100;
+            $vat = $total*(float)$product->vat/100;
             $totals = $total+$vat;
             @endphp
 
