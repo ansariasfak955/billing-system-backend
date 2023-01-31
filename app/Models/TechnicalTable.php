@@ -112,7 +112,7 @@ class TechnicalTable extends Model
         if(isset( $this->attributes['assigned_to'] )){
             $table = $this->getTable();
             $company = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
-            return get_user_name($company, $this->attributes['assigned_to']);
+            return get_user_email($company, $this->attributes['assigned_to']);
         }
     }
 	public function getAmountAttribute(){
