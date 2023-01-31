@@ -11,8 +11,9 @@
                     <table style="width:100%; padding: 0px; float: left;">
                         <th style="text-align: left; margin-top: 15px;"> <b>Address</b> </th>
                         <tr>
+                            <span>Ruc:</span><br>
+                            <span>{{ @$company->tin }}</span><br>
                             <span>{{ $company->email}}</span><br>
-                            <span>{{ @$invoiceData->client->tin }}</span><br>
                             <span>{{@$company->address}}</span><br>
                             <span>{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span><br>
                         </tr>
@@ -101,18 +102,18 @@
                     <table style="border-collapse: collapse; width:100%; ">
                         <tr style=" border-bottom: 1px solid #000000;">
                             <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #000000; text-align: left;">Date</th>
-                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #000000; text-align: left;">CANTIDAD</th>
-                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #000000; text-align: left;">PAGADO.</th>
+                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #000000; text-align: left;">Amount</th>
+                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #000000; text-align: left;">Paid.</th>
                         </tr>
                         <tr style="border-bottom: 1px solid #000000;">
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #000000;">
                                 <p style="marging: 0; padding: 0">{{$invoiceData->date}}</p>
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #000000;">
-                                <p style="marging: 0; padding: 0">100.40</p>
+                                <p style="marging: 0; padding: 0">{{$total}}</p>
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #000000;">
-                                <p style="marging: 0; padding: 0">kuch nhi</p>
+                                <p style="marging: 0; padding: 0"></p>
                             </td>
                         </tr>
                     </table>
@@ -120,7 +121,7 @@
                 <div style="margin-top: 30px;">       
                     <table style="border-collapse: collapse; width:100%; ">
                         <tr style=" border-bottom: 1px solid #000000;">
-                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #000000; text-align: left; font-size:22px;">DATOS DEL CLIENTE:</th>
+                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #000000; text-align: left; font-size:22px;">DATA OF CLIENTE:</th>
                         </tr>
                         <tr>
                             <span>{{ @$invoiceData->client->legal_name }}</span><br>
