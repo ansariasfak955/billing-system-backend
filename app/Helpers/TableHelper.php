@@ -3277,8 +3277,8 @@ class TableHelper
         if (!Schema::hasTable('company_'.$company_id.'_settings')) {
             Schema::create('company_'.$company_id.'_settings', function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('option_name')->nullabe();
-                $table->longText('option_value')->nullabe();
+                $table->string('option_name')->nullable();
+                $table->longText('option_value')->nullable();
                 $table->timestamps();
             }); 
 
@@ -3292,27 +3292,27 @@ class TableHelper
         /* Email sender name */
         Setting::create([
             "option_name" => "email_configuration_sender_name",
-            "option_value" => Company::where('id', $company_id)->pluck('name')->first()
+            "option_value" => "",
         ]);
         /* Email send copy to */
         Setting::create([
             "option_name" => "email_configuration_send_copy_to",
-            "option_value" => Company::where('id', $company_id)->pluck('email')->first()
+            "option_value" => "",
         ]);
         /* Email connect */
         Setting::create([
             "option_name" => "email_configuration_email_connect",
-            "option_value" => Company::where('id', $company_id)->pluck('email')->first()
+            "option_value" => "",
         ]);
         /* Email reply to */
         Setting::create([
             "option_name" => "email_configuration_reply_to",
-            "option_value" => Company::where('id', $company_id)->pluck('email')->first()
+            "option_value" => "",
         ]);
         /* Email send read receipts to */
         Setting::create([
             "option_name" => "email_configuration_send_read_receipts_to",
-            "option_value" => "demo@gmail.com",
+            "option_value" => "",
         ]);
         /* Email client emails subject */
         Setting::create([

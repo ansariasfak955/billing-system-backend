@@ -15,14 +15,22 @@ class AddColumnsInIncomeTaxesTable extends Migration
     public function up()
     {
         Schema::table('income_taxes', function (Blueprint $table) {
-            $table->enum('by_default', ['0','1'])->default('0')->nullable();
-            $table->string('tax')->nullable();
+            if(!Schema::hasColumn('income_taxes', 'by_default')){
+                $table->enum('by_default', ['0','1'])->default('0')->nullable();
+            }
+            if(!Schema::hasColumn('income_taxes', 'tax')){
+                $table->string('tax')->nullable();
+            }
         });
          foreach(Company::pluck('id') as $company_id){
             
-            if (Schema::hasTable('company_'.$company_id.'_income_taxes')) {
+            if (Schema::hasTable('company_'.$company_id.'_income_taxes') && !Schema::hasColumn('company_'.$company_id.'_income_taxes','by_default')) {
                 Schema::table('company_'.$company_id.'_income_taxes', function (Blueprint $table) {
                     $table->enum('by_default', ['0','1'])->default('0')->nullable();
+                });
+            }
+            if (Schema::hasTable('company_'.$company_id.'_income_taxes') && !Schema::hasColumn('company_'.$company_id.'_income_taxes','tax')) {
+                Schema::table('company_'.$company_id.'_income_taxes', function (Blueprint $table) {
                     $table->string('tax')->nullable();
                 });
             }
