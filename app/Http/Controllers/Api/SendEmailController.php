@@ -271,7 +271,7 @@ class SendEmailController extends Controller
         $template = MyTemplate::where('id', $template_id)->first(); 
         // return storage_path('fonts');
         
-        $attachment =  str_replace(' ' ,'_',$type).".pdf";
+        $attachment =  str_replace(' ' ,'_',$type).now().".pdf";
         if($request->format == 'ticket'){
             $pdf->loadView('pdf.ticket_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
         }else{
