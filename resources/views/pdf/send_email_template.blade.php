@@ -672,9 +672,9 @@
                                 <p style="marging: 0; padding: 0">{{ $product->quantity }}</p>
                             </td>
                             @if($request->format != 'without_values') 
-                                <!-- <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                                <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                     <p style="marging: 0; padding: 0">{{ $product->discount }}</p>
-                                </td> -->
+                                </td>
                                 <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                     <p style="marging: 0; padding: 0">{{ $product->base_price }}</p>
                                 </td>
