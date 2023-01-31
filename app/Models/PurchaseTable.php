@@ -150,13 +150,13 @@ class PurchaseTable extends Model
     }
     public function getAmountVatAttribute(){
 
-        if(isset($this->items)){
-            $total =  $this->items->sum('base_price');
-            $vat =  $this->items->sum('vat');
-            if($total && $vat){
-                return $total-($vat/100*$total);
-            }
-        }
+        // if(isset($this->items)){
+        //     $total =  $this->items->sum('base_price');
+        //     $vat =  $this->items->sum('vat');
+        //     if($total && $vat){
+        //         return $total-($vat/100*$total);
+        //     }
+        // }
     }
     public function getReferenceTypeAttribute(){
         if(isset( $this->attributes['reference'] )){
