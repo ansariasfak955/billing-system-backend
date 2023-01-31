@@ -151,10 +151,10 @@ class PurchaseTable extends Model
     public function getAmountVatAttribute(){
 
         if(isset($this->items)){
-            $total =  (int)$this->items->sum('base_price');
-            $vat =  (int)$this->items->sum('vat');
+            $total =  (float)$this->items->sum('base_price');
+            $vat =  (float)$this->items->sum('vat');
             if($total && $vat){
-                return $total-($vat/100*$total);
+                return $total-((float)$vat/100*$total);
             }
         }
     }
