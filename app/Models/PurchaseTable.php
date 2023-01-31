@@ -143,16 +143,16 @@ class PurchaseTable extends Model
     }
     public function getVatAttribute(){
 
-        // if(isset($this->items)){
-        //     $vat =  $this->items->sum('vat');
-        //     return $vat;          
-        // }
+        if(isset($this->items)){
+            $vat = (float)$this->items->sum('vat');
+            return $vat;          
+        }
     }
     public function getAmountVatAttribute(){
 
         if(isset($this->items)){
-            $total =  $this->items->sum('base_price');
-            (int)$vat =  $this->items->sum('vat');
+            $total =  (float)$this->items->sum('base_price');
+            $vat =  (float)$this->items->sum('vat');
             if($total && $vat){
                 return $total-($vat/100*$total);
             }
