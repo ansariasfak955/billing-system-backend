@@ -113,7 +113,7 @@
                                 <p style="marging: 0; padding: 0">{{$total}}</p>
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #000000;">
-                                <p style="marging: 0; padding: 0"></p>
+                                <p style="marging: 0; padding: 0">no</p>
                             </td>
                         </tr>
                     </table>
