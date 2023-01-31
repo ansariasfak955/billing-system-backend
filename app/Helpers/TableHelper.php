@@ -3292,27 +3292,27 @@ class TableHelper
         /* Email sender name */
         Setting::create([
             "option_name" => "email_configuration_sender_name",
-            "option_value" => "",
+            "option_value" => Company::where('id', $company_id)->pluck('name')->first()
         ]);
         /* Email send copy to */
         Setting::create([
             "option_name" => "email_configuration_send_copy_to",
-            "option_value" => "Without copy",
+            "option_value" => Company::where('id', $company_id)->pluck('email')->first()
         ]);
         /* Email connect */
         Setting::create([
             "option_name" => "email_configuration_email_connect",
-            "option_value" => "",
+            "option_value" => Company::where('id', $company_id)->pluck('email')->first()
         ]);
         /* Email reply to */
         Setting::create([
             "option_name" => "email_configuration_reply_to",
-            "option_value" => "Sending Address",
+            "option_value" => Company::where('id', $company_id)->pluck('email')->first()
         ]);
         /* Email send read receipts to */
         Setting::create([
             "option_name" => "email_configuration_send_read_receipts_to",
-            "option_value" => "Sending Address",
+            "option_value" => "demo@gmail.com",
         ]);
         /* Email client emails subject */
         Setting::create([
