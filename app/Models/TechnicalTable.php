@@ -13,7 +13,7 @@ class TechnicalTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'technical_tables' ;
 
-    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount', 'meta_discount', 'reference_type', 'agent_name','amount_with_out_vat'];
+    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount', 'meta_discount', 'reference_type', 'agent_name','amount_with_out_vat','assign_to_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -33,6 +33,9 @@ class TechnicalTable extends Model
     
     public function item_meta(){
         return $this->hasMany(ItemMeta::class, 'parent_id');
+    }
+    public function assign(){
+        return $this->hasOne(User::class, 'id', 'assigned_to');
     }
     public function client(){
         return $this->hasOne(Client::class, 'id', 'client_id');
@@ -102,6 +105,14 @@ class TechnicalTable extends Model
             $table = $this->getTable();
             $company = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_user_name($company, $this->attributes['agent_id']);
+        }
+    }
+    public function getAssignToNameAttribute(){
+        
+        if(isset( $this->attributes['assigned_to'] )){
+            $table = $this->getTable();
+            $company = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_user_name($company, $this->attributes['assigned_to']);
         }
     }
 	public function getAmountAttribute(){

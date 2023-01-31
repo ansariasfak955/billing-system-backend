@@ -26,7 +26,10 @@
                         @if(@$invoiceData->payment_options->name)
                             <span>Payment Option: <b>{{$invoiceData->payment_options->name}}</b></span><br>
                         @endif
-                        <span>Date: <b>{{@$invoiceData->date}}</b></span>
+                        @if(@$invoiceData->assign->email)
+                            <span>Assign To: <b>{{@$invoiceData->assign->email}}</b></span><br>
+                        @endif
+                        <span>Assign Date: <b>{{@$invoiceData->date}}</b></span>
                     </div>
                 </div>
                 <div style="margin-top: 250px;">       

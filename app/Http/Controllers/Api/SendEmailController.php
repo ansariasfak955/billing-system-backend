@@ -8,6 +8,7 @@ use App\Models\MyTemplate;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Item;
+use App\Models\User;
 use App\Models\ClientAsset;
 use App\Models\PaymentOption;
 use App\Models\SalesEstimate;
@@ -140,7 +141,7 @@ class SendEmailController extends Controller
             TechnicalTable::setGlobalTable($table);
             $clientAsset = 'company_'.$request->company_id.'_client_assets';
             ClientAsset::setGlobalTable($clientAsset);
-            $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options','clientAsset'])->find($request->id);
+            $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options','clientAsset','assign'])->find($request->id);
             $items =  $invoiceData->items;
             $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
