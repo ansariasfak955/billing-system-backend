@@ -15,7 +15,7 @@
                             <span>{{ @$company->tin }}</span><br>
                             <span>{{ $company->email}}</span><br>
                             <span>{{@$company->address}}</span><br>
-                            <span>{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span><br>
+                            <span>{{@$company->pincode}} {{@$company->city}} {{@$company->country}}</span><br>
                         </tr>
                     </table>
                     <div>
