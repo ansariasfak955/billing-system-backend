@@ -11,7 +11,7 @@
                     <table style="width:100%; padding: 0px; float: left;">
                         <th style="text-align: left; margin-top: 15px;"> <b>Address</b> </th>
                         <tr>
-                            <span>Ruc:</span><br>
+                            <span>Ruc:</span>
                             <span>{{ @$company->tin }}</span><br>
                             <span>{{ $company->email}}</span><br>
                             <span>{{@$company->address}}</span><br>
