@@ -11,7 +11,7 @@
                     <table style="width:100%; padding: 0px; float: left;">
                         <th style="text-align: left; margin-top: 15px;"> <b>Address</b> </th>
                         <tr>
-                            <span>{{ $company->email}}</span>
+                            <span>{{ $company->email}}</span><br>
                             <span>{{ @$invoiceData->client->tin }}</span><br>
                             <span>{{@$company->address}}</span><br>
                             <span>{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span><br>
