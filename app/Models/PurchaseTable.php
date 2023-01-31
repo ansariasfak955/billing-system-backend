@@ -152,7 +152,7 @@ class PurchaseTable extends Model
 
         if(isset($this->items)){
             $total =  $this->items->sum('base_price');
-            $vat =  $this->items->sum('vat');
+            (int)$vat =  $this->items->sum('vat');
             if($total && $vat){
                 return $total-($vat/100*$total);
             }
