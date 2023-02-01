@@ -280,11 +280,11 @@ class SendEmailController extends Controller
         }
         
         \Storage::put('/public/temp/'.$attachment, $pdf->output());
-        if($request->send_to || $request->send_cc){
+        if($request->send_to || $request->cc){
             $subject = $request->subject;
             $body = $request->body;
             // $cc = $request->send_cc;
-            $cc = explode(',', $request->send_cc);
+            $cc = explode(',', $request->cc);
             $sendTo = explode(',', $request->send_to);
             Mail::to($sendTo)
             ->cc($cc)
