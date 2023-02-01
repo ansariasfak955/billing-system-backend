@@ -280,10 +280,13 @@ class SendEmailController extends Controller
         }
         
         \Storage::put('/public/temp/'.$attachment, $pdf->output());
-        if($request->send_to){
+        if($request->send_to || $request->send_cc){
             $subject = $request->subject;
             $body = $request->body;
-            Mail::to($request->send_to)->send(new SendMail($attachment, $subject , $body, $pdf));
+            // $cc = $request->send_cc;
+            Mail::to($request->send_to)
+            ->cc($request->send_cc)
+            ->send(new SendMail($attachment, $subject , $body, $pdf));
              //delete the file
             if(file_exists(public_path().'/storage/temp/'. $attachment)){
                 unlink(public_path().'/storage/temp/'. $attachment);
