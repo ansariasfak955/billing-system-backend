@@ -8,6 +8,7 @@ use App\Models\MyTemplate;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Item;
+use App\Models\User;
 use App\Models\ClientAsset;
 use App\Models\PaymentOption;
 use App\Models\SalesEstimate;
@@ -140,7 +141,7 @@ class SendEmailController extends Controller
             TechnicalTable::setGlobalTable($table);
             $clientAsset = 'company_'.$request->company_id.'_client_assets';
             ClientAsset::setGlobalTable($clientAsset);
-            $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options','clientAsset'])->find($request->id);
+            $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options','clientAsset','assign'])->find($request->id);
             $items =  $invoiceData->items;
             $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
@@ -271,15 +272,21 @@ class SendEmailController extends Controller
         $template = MyTemplate::where('id', $template_id)->first(); 
         // return storage_path('fonts');
         
-        $attachment =  str_replace(' ' ,'_',$type).".pdf";
-        $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
-        // $pdf->loadView('pdf.ticket_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
+        $attachment =  str_replace(' ' ,'_',$type.'_'.now()).".pdf";
+        if($request->format == 'ticket'){
+            $pdf->loadView('pdf.ticket_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
+        }else{
+            $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
+        }
         
         \Storage::put('/public/temp/'.$attachment, $pdf->output());
-        if($request->send_to){
+        if($request->send_to || $request->cc){
             $subject = $request->subject;
             $body = $request->body;
-            Mail::to($request->send_to)->send(new SendMail($attachment, $subject , $body, $pdf));
+            $cc = explode(',', $request->cc);
+            Mail::to($request->send_to)
+            ->cc($cc)
+            ->send(new SendMail($attachment, $subject , $body, $pdf));
              //delete the file
             if(file_exists(public_path().'/storage/temp/'. $attachment)){
                 unlink(public_path().'/storage/temp/'. $attachment);

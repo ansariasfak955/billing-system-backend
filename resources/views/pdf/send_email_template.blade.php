@@ -599,9 +599,10 @@
             </div>
             
             <div style="clear: both;"></div>
-            <div style="margin-top: 0px;font-size: 13px; height:50px">
+            @if($invoiceData->clientAsset)
+            <div style="margin-top: 0px;font-size: 13px; height:40px">
                 <table style="border-collapse: collapse; width:100%; padding: 10px; float: left;">
-                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} ASSET</th>
+                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} ASSET</th>
 
                     <tr>
                         @if(@$invoiceData->clientAsset->name)
@@ -628,6 +629,7 @@
                     
                 </table>
             </div>
+            @endif
             <div style="margin-top: 40px;">       
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
