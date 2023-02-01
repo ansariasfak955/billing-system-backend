@@ -600,7 +600,7 @@
             
             <div style="clear: both;"></div>
             @if($invoiceData->clientAsset)
-            <div style="margin-top: 0px;font-size: 13px; height:50px">
+            <div style="margin-top: 0px;font-size: 13px; height:40px">
                 <table style="border-collapse: collapse; width:100%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} ASSET</th>
 
