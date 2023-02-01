@@ -284,8 +284,9 @@ class SendEmailController extends Controller
             $subject = $request->subject;
             $body = $request->body;
             // $cc = $request->send_cc;
+            $cc = explode(',', $request->send_cc);
             Mail::to($request->send_to)
-            ->cc($request->send_cc)
+            ->cc($cc)
             ->send(new SendMail($attachment, $subject , $body, $pdf));
              //delete the file
             if(file_exists(public_path().'/storage/temp/'. $attachment)){
