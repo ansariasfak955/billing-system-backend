@@ -243,7 +243,7 @@ class ReportController extends Controller
                         "label" => "Pending(10)", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                        "$ " . SalesEstimate::where('reference', 'sdn')->where('status', 'pending')->get()->sum('amount'),
+                        "$ " . SalesEstimate::where('reference', 'se')->where('status', 'pending')->get()->sum('amount'),
                         ] 
                     ], 
                     [
@@ -251,7 +251,7 @@ class ReportController extends Controller
                             "label" => "Refused(2)", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                "$ " . SalesEstimate::where('reference', 'sdn')->where('status', 'refused')->get()->sum('amount'),
+                                "$ " . SalesEstimate::where('reference', 'se')->where('status', 'refused')->get()->sum('amount'),
                                 ] 
                         ], 
                     [
@@ -259,7 +259,7 @@ class ReportController extends Controller
                         "label" => "Accepted(4)", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ " . SalesEstimate::where('reference', 'sdn')->where('status', 'accepted')->get()->sum('amount'), 
+                            "$ " . SalesEstimate::where('reference', 'se')->where('status', 'accepted')->get()->sum('amount'), 
                         ] 
                     ],
                     [
@@ -267,7 +267,7 @@ class ReportController extends Controller
                         "label" => "Closed(0)", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "" . SalesEstimate::where('reference', 'sdn')->where('status', 'closed')->get()->sum('amount'),
+                            "" . SalesEstimate::where('reference', 'se')->where('status', 'closed')->get()->sum('amount'),
                         ] 
                     ],
             ], 
@@ -277,7 +277,7 @@ class ReportController extends Controller
                         "label" => "Pending (1)", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ".SalesEstimate::where('reference', 'sdn')->where('status', 'pending')->get()->sum('amount'),
+                            "$ ".SalesEstimate::where('reference', 'so')->where('status', 'pending')->get()->sum('amount'),
                         ] 
                     ], 
                     [
@@ -285,7 +285,7 @@ class ReportController extends Controller
                         "label" => "Refused (0)", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'refused')->get()->sum('amount'),
+                            "$ ". SalesEstimate::where('reference', 'so')->where('status', 'refused')->get()->sum('amount'),
                         ]  
                     ], 
                     [
@@ -293,7 +293,7 @@ class ReportController extends Controller
                         "label" => "In Progress (0)", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'in progress')->get()->sum('amount'),
+                            "$ ". SalesEstimate::where('reference', 'so')->where('status', 'in progress')->get()->sum('amount'),
                         ] 
                     ],
                     [
@@ -301,7 +301,7 @@ class ReportController extends Controller
                         "label" => "Closed (1)", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'closed')->get()->sum('amount'),
+                            "$ ". SalesEstimate::where('reference', 'so')->where('status', 'closed')->get()->sum('amount'),
                         ] 
                     ],
                          
