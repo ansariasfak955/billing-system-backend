@@ -247,10 +247,10 @@ class HistoryController extends Controller
                'message' => $validator->errors()->first() 
             ]);
         }
-        $table = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($table);
-        $table = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($table);
         $paymentOption = 'company_'.$request->company_id.'_payment_options';
         PaymentOption::setGlobalTable($paymentOption);
         $table = 'company_'.$request->company_id.'_payment_terms';
@@ -262,7 +262,7 @@ class HistoryController extends Controller
 
         $fileName = 'invoices-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $expenseHistorys = InvoiceTable::with('client','payment_options','payment_terms','delivery_options')->whereIn('id', $ids)->get();
+        $expenseHistorys = PurchaseTable::with('supplier','payment_options','payment_terms','delivery_options','category')->whereIn('id', $ids)->get();
         Excel::store(new ExpenseExport($expenseHistorys), 'public/xlsx/'.$fileName);
 
         return response()->json([
