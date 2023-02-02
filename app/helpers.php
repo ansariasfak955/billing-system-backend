@@ -369,51 +369,54 @@ function get_roles_permissions($company_id)
     foreach ($permissions_arr as $permission_key => $permission_value) {
         $permission_key_new = \App\Models\Permission::where('name', $permission_value)->with('children')->get();
         $role_has_permissions = 'company_'.$company_id.'_role_has_permissions';
-        $view = \DB::table($role_has_permissions)
-            ->where('role_id', $role_id)
-            ->where('permission_id', $permission_key_new[0]->children->where('name', "view $permission_key")->pluck('id')->first())
-            ->first();
+        if(isset($permission_key_new[0])){
+            
+            $view = \DB::table($role_has_permissions)
+                ->where('role_id', $role_id)
+                ->where('permission_id', @$permission_key_new[0]->children->where('name', "view $permission_key")->pluck('id')->first())
+                ->first();
 
-        $edit = \DB::table($role_has_permissions)
-            ->where('role_id', $role_id)
-            ->where('permission_id', $permission_key_new[0]->children->where('name', "edit $permission_key")->pluck('id')->first())
-            ->first();
+            $edit = \DB::table($role_has_permissions)
+                ->where('role_id', $role_id)
+                ->where('permission_id', @$permission_key_new[0]->children->where('name', "edit $permission_key")->pluck('id')->first())
+                ->first();
 
-        $create = \DB::table($role_has_permissions)
-            ->where('role_id', $role_id)
-            ->where('permission_id', $permission_key_new[0]->children->where('name', "create $permission_key")->pluck('id')->first())
-            ->first();
-        // to fix new client permission
-        // if($permission_key == 'clients'){
-        //     $create = \DB::table($role_has_permissions)
-        //     ->where('role_id', $role_id)
-        //     ->where('permission_id', $permission_key_new[0]->children[0]->children->where('name', "create $permission_key")->pluck('id')->first())
-        //     ->first();
-        // }
+            $create = \DB::table($role_has_permissions)
+                ->where('role_id', $role_id)
+                ->where('permission_id', @$permission_key_new[0]->children->where('name', "create $permission_key")->pluck('id')->first())
+                ->first();
+            // to fix new client permission
+            // if($permission_key == 'clients'){
+            //     $create = \DB::table($role_has_permissions)
+            //     ->where('role_id', $role_id)
+            //     ->where('permission_id', $permission_key_new[0]->children[0]->children->where('name', "create $permission_key")->pluck('id')->first())
+            //     ->first();
+            // }
 
-        $delete = \DB::table($role_has_permissions)
-            ->where('role_id', $role_id)
-            ->where('permission_id', $permission_key_new[0]->children->where('name', "delete $permission_key")->pluck('id')->first())
-            ->first();
+            $delete = \DB::table($role_has_permissions)
+                ->where('role_id', $role_id)
+                ->where('permission_id', @$permission_key_new[0]->children->where('name', "delete $permission_key")->pluck('id')->first())
+                ->first();
 
-        $new_key = str_replace(' ','_', $permission_key);
+            $new_key = str_replace(' ','_', $permission_key);
 
-        $permission_arr[$new_key] = array(
-            "$new_key" => array(
-                'view'   => array(
-                    'is_checked' => $view != NULL ? 1 : 0
-                ),
-                'edit'   => array(
-                    'is_checked' => $edit != NULL ? 1 : 0
-                ),
-                'create' => array(
-                    'is_checked' => $create != NULL ? 1 : 0
-                ),
-                'delete' => array(
-                    'is_checked' => $delete != NULL ? 1 : 0
+            $permission_arr[$new_key] = array(
+                "$new_key" => array(
+                    'view'   => array(
+                        'is_checked' => $view != NULL ? 1 : 0
+                    ),
+                    'edit'   => array(
+                        'is_checked' => $edit != NULL ? 1 : 0
+                    ),
+                    'create' => array(
+                        'is_checked' => $create != NULL ? 1 : 0
+                    ),
+                    'delete' => array(
+                        'is_checked' => $delete != NULL ? 1 : 0
+                    )
                 )
-            )
-        );
+            );
+        }
     }
     foreach ($reports_arr as $permission_key) {
 
