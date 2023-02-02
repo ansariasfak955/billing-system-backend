@@ -38,28 +38,14 @@ class DashboardController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
         $data  = [];
         if($request->type == 'recent'){
-            $order = 'asc';
-            $salesEstimatesData = SalesEstimate::with(['client' => function ($q) use ($order) {
-                $q->orderBy('legal_name', $order);
-            }])->get()->toArray();
-            $InvoiceTableData = InvoiceTable::with(['client' => function ($q) use ($order) {
-                $q->orderBy('legal_name', $order);
-            }])->get()->toArray();
-            $purchaseTablesData = PurchaseTable::with(['client' => function ($q) use ($order) {
-                $q->orderBy('legal_name', $order);
-            }])->get()->toArray();
-            $TechnicalIncidentData = TechnicalTable::with(['client' => function ($q) use ($order) {
-                $q->orderBy('legal_name', $order);
-            }])->get()->toArray();
-            // $salesEstimatesData = SalesEstimate::with('client')->orderBy('legal_name', 'asc')->get()->toArray();
-            // $InvoiceTableData = InvoiceTable::orderBy('title', 'asc')->get()->toArray();
-            // $purchaseTablesData = PurchaseTable::orderBy('title', 'asc')->get()->toArray();
-            // $TechnicalIncidentData = TechnicalTable::orderBy('title', 'asc')->get()->toArray();
+            $salesEstimatesData = SalesEstimate::orderBy('created_at', 'desc')->get()->toArray();
+            $InvoiceTableData = InvoiceTable::orderBy('created_at', 'desc')->get()->toArray();
+            $purchaseTablesData = PurchaseTable::orderBy('created_at', 'desc')->get()->toArray();
+            $TechnicalIncidentData = TechnicalTable::orderBy('created_at', 'desc')->get()->toArray();
             $data = array_merge($salesEstimatesData, $InvoiceTableData, $purchaseTablesData, $TechnicalIncidentData);
             if(count($data)){
-                // return($data);
                 $data =  new \Illuminate\Support\Collection($data);
-                $data = $data->sortBy('legal_name')->take(20)->values();
+                $data = $data->sortByDesc('created_at')->take(20)->values();
             }
 
         }else{
