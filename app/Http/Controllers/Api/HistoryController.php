@@ -13,6 +13,7 @@ use App\Models\PurchaseTable;
 use App\Models\Item;
 use App\Models\PurchaseReceipt;
 use App\Models\Supplier;
+use App\Models\Reference;
 use App\Models\ItemMeta;
 
 class HistoryController extends Controller
@@ -165,6 +166,12 @@ class HistoryController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        //set reference table
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $referenceType = Reference::where('type', 'Purchase Invoice')->get()->toArray();
+        // dd($referenceType);
         $referenceArr = ['PINV'];
         $data = [];
         foreach($referenceArr as $type){
@@ -187,7 +194,7 @@ class HistoryController extends Controller
                     $arr['title'] = $item->title;
                     $arr['created_by'] = $item->created_by;
                     $arr['status'] = $item->status;
-                    $arr['type'] = '';
+                    $arr['type'] = $item->type;
                     $arr['date'] = $item->date;
                     $arr['amount'] = $item->items->where('reference_id', $request->id)->where('reference',   $request->reference)->sum('amount');
                     $arr['activity'] = '';
