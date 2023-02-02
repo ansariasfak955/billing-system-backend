@@ -323,6 +323,7 @@ Route::group(['namespace' => 'Api'], function() {
             //history
             Route::get('history', 'HistoryController@getHistory');
             Route::get('expense-history', 'HistoryController@expenseHistory');
+            Route::post('expense-history-export', 'HistoryController@expenseHistoryExport');
             //taxes 
             Route::apiResource('cosumption-taxes', ConsumptionTaxController::class);
             Route::apiResource('income-taxes', IncomeTaxController::class);

@@ -11,10 +11,16 @@ use App\Models\SalesEstimate;
 use App\Models\TechnicalTable;
 use App\Models\PurchaseTable;
 use App\Models\Item;
+use App\Models\DeliveryOption;
+use App\Models\PaymentOption;
 use App\Models\PurchaseReceipt;
+use App\Models\PaymentTerm;
 use App\Models\Supplier;
 use App\Models\Reference;
 use App\Models\ItemMeta;
+use App\Exports\ExpenseExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 class HistoryController extends Controller
 {
@@ -230,5 +236,38 @@ class HistoryController extends Controller
             'message' => 'No data found!',
         ]);
 
+    }
+    public function expenseHistoryExport(Request $request, $company_id){
+        $validator = Validator::make($request->All(), [
+            'ids' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+               'status' => false,
+               'message' => $validator->errors()->first() 
+            ]);
+        }
+        $table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($table);
+        $paymentOption = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($paymentOption);
+        $table = 'company_'.$request->company_id.'_payment_terms';
+        PaymentTerm::setGlobalTable($table);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+        $table = 'company_'.$request->company_id.'_delivery_options';
+        DeliveryOption::setGlobalTable($table);
+
+        $fileName = 'invoices-'.time().$company_id.'.xlsx';
+        $ids = explode(',', $request->ids);
+        $expenseHistorys = InvoiceTable::with('client','payment_options','payment_terms','delivery_options')->whereIn('id', $ids)->get();
+        Excel::store(new ExpenseExport($expenseHistorys), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+         ]); 
     }
 }
