@@ -322,6 +322,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::get('related', 'RelatedController@related');
             //history
             Route::get('history', 'HistoryController@getHistory');
+            Route::get('expense-history', 'HistoryController@expenseHistory');
             //taxes 
             Route::apiResource('cosumption-taxes', ConsumptionTaxController::class);
             Route::apiResource('income-taxes', IncomeTaxController::class);
