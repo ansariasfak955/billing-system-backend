@@ -411,7 +411,8 @@
                         <td class="header_border" style="width:250px"  @if($company_name_show || $company_country_show) @endif>
                             <span style="margin-left: 20px;">Company Name:</span>
                             <span>{{  @$company->commercial_name }}</span> <br>
-                            <span style="margin-left: 20px;">Address:</span><br>
+                            <span style="margin-left: 20px;">Address:</span>
+                            <span style="margin-left: 20px;">{{@$company->address}}</span><br>
                             <span style="margin-left: 20px;">{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span>
                         </td>
                         </span>
