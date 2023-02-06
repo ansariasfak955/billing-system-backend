@@ -764,7 +764,7 @@
                                         @if($request->format != 'before_tax') 
                                             <tr style="border-bottom: 1px solid gray;">
                                                 <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $total }}</td>
-                                                <td style="padding: 5px 0; text-align: center"><span> {{$product->vat}}</span></td>
+                                                <td style="padding: 5px 0; text-align: center"><span>IVA {{$product->vat}}%</span></td>
                                                 <td style="padding: 5px 0; text-align: right">{{ $vat }}</td>
                                             </tr>
                                         @endif
