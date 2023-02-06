@@ -47,7 +47,7 @@ class DashboardController extends Controller
                 $data =  new \Illuminate\Support\Collection($data);
                 // $data = $data->sortByDesc('created_at')->take(20)->values();
                 $data = $data->sortBy(function($value, $key) {
-                    return (string) $value;
+                    return $value;
                   }, SORT_NUMERIC)->take(20)->values();
             }
 
