@@ -36,10 +36,10 @@ class PurchaseTable extends Model
 
         return $this->hasOne(Supplier::class,'id', 'supplier_id');
     }
-    public function client(){
+    // public function client(){
 
-        return $this->hasOne(Supplier::class,'id', 'supplier_id');
-    }
+    //     return $this->hasOne(Supplier::class,'id', 'supplier_id');
+    // }
     public function category(){
         return $this->hasOne(ClientCategory::class,'id', 'client_category');
     }

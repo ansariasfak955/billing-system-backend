@@ -232,7 +232,7 @@ class SendEmailController extends Controller
         }elseif($type == 'Purchase Delivery Note'){
             $table = 'company_'.$request->company_id.'_purchase_tables';
             PurchaseTable::setGlobalTable($table);
-            $invoiceData = PurchaseTable::with('items')->find($request->id);
+            $invoiceData = PurchaseTable::with('items','supplier')->find($request->id);
             $items =  $invoiceData->items;
             $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
@@ -248,7 +248,7 @@ class SendEmailController extends Controller
         }elseif($type == 'Purchase Invoice'){
             $table = 'company_'.$request->company_id.'_purchase_tables';
             PurchaseTable::setGlobalTable($table);
-            $invoiceData = PurchaseTable::with('items')->find($request->id);
+            $invoiceData = PurchaseTable::with('items','supplier')->find($request->id);
             $items =  $invoiceData->items;
             $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];

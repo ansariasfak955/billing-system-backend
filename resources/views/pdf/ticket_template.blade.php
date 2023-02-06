@@ -121,6 +121,7 @@
                         </tr>
                     </table>
                 </div>
+                @if($invoiceData->client)
                 <div style="margin-top: 30px;">       
                     <table style="border-collapse: collapse; width:100%; ">
                         <tr style=" border-bottom: 1px solid #000000;">
@@ -134,5 +135,20 @@
                         </tr>
                     </table>
                 </div>
+                @elseif($invoiceData->supplier)
+                <div style="margin-top: 30px;">       
+                    <table style="border-collapse: collapse; width:100%; ">
+                        <tr style=" border-bottom: 1px solid #000000;">
+                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #000000; text-align: left; font-size:22px;">DATA OF SUPPLIER</th>
+                        </tr>
+                        <tr>
+                            <span>{{ @$invoiceData->supplier->legal_name }} ({{@$invoiceData->supplier->name}})</span><br>
+                            <span>{{ @$invoiceData->supplier->tin }}</span><br>
+                            <span>{{ @$invoiceData->supplier->address }}</span><br>
+                            <span>{{ @$invoiceData->supplier->zip_code }} {{ @$invoiceData->supplier->city }} {{ @$invoiceData->supplier->state }} {{ @$invoiceData->supplier->country }}</span><br>
+                        </tr>
+                    </table>
+                </div>
+                @endif
         </div> 
-</div<
+</div>
