@@ -127,9 +127,10 @@
                             <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #000000; text-align: left; font-size:22px;">DATA OF CLIENTE:</th>
                         </tr>
                         <tr>
-                            <span>{{ @$invoiceData->client->legal_name }}</span><br>
+                            <span>{{ @$invoiceData->client->legal_name }} ({{@$invoiceData->client->name}})</span><br>
                             <span>{{ @$invoiceData->client->tin }}</span><br>
-                            <span>{{ @$invoiceData->client->country }}</span><br>
+                            <span>{{ @$invoiceData->client->address }}</span><br>
+                            <span>{{ @$invoiceData->client->zip_code }} {{ @$invoiceData->client->city }} {{ @$invoiceData->client->state }} {{ @$invoiceData->client->country }}</span><br>
                         </tr>
                     </table>
                 </div>

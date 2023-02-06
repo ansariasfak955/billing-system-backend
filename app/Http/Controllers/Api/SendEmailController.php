@@ -9,6 +9,7 @@ use App\Models\Company;
 use App\Models\Product;
 use App\Models\Item;
 use App\Models\User;
+use App\Models\Supplier;
 use App\Models\ClientAsset;
 use App\Models\PaymentOption;
 use App\Models\SalesEstimate;
@@ -58,6 +59,8 @@ class SendEmailController extends Controller
         $pdf = App::make('dompdf.wrapper');
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
+        $table = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($table);
         $productTable = 'company_'.$request->company_id.'_products';
         Product::setGlobalTable($productTable);
         $serviceTable = 'company_'.$request->company_id.'_services';
@@ -213,7 +216,7 @@ class SendEmailController extends Controller
         }elseif($type == 'Purchase Order'){
             $table = 'company_'.$request->company_id.'_purchase_tables';
             PurchaseTable::setGlobalTable($table);
-            $invoiceData = PurchaseTable::with('items')->find($request->id);
+            $invoiceData = PurchaseTable::with('items','supplier')->find($request->id);
             $items =  $invoiceData->items;
             $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
             $products = [];
