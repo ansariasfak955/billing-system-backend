@@ -48,7 +48,7 @@ class DashboardController extends Controller
                 // $data = $data->sortByDesc('created_at')->take(20)->values();
                 $data = $data->sortBy(function($value, $key) {
                     return $value;
-                  }, SORT_NUMERIC)->take(20)->values();
+                  }, SORT_NUMERIC | SORT_STRING)->take(20)->values();
             }
 
         }else{
