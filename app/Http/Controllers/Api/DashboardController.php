@@ -45,7 +45,10 @@ class DashboardController extends Controller
             $data = array_merge($salesEstimatesData, $InvoiceTableData, $purchaseTablesData, $TechnicalIncidentData);
             if(count($data)){
                 $data =  new \Illuminate\Support\Collection($data);
-                $data = $data->sortByDesc('created_at')->take(20)->values();
+                // $data = $data->sortByDesc('created_at')->take(20)->values();
+                $data = $data->sortBy(function($value, $key) {
+                    return (string) $value;
+                  }, SORT_NUMERIC)->take(20)->values();
             }
 
         }else{
