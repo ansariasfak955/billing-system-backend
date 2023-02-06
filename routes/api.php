@@ -362,6 +362,12 @@ Route::group(['namespace' => 'Api'], function() {
 
             // Other configuration
             Route::apiResource('other-configuration', OtherConfigurationController::class);
+            Route::get('technical-module', function(){
+                return response()->json([
+                    'success' => true,
+                    'enable_technical_module' => \Auth::user()->enable_technical_module,
+                ]);
+            });
         });
 
         /* Activity Type */
