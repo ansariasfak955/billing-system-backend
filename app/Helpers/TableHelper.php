@@ -690,6 +690,22 @@ class TableHelper
                 $table->timestamps();
             });
         } 
+
+                /* Creating supplier bank account */
+                if (!Schema::hasTable('company_'.$company_id.'_supplier_bank_accounts')) {
+                    Schema::create('company_'.$company_id.'_supplier_bank_accounts', function (Blueprint $table) {
+                        $table->id();
+                        $table->string('supplier_id')->nullable();
+                        $table->string('format')->default('other');
+                        $table->string('bank_account');
+                        $table->string('bic_swift')->nullable();
+                        $table->string('bank_account_name')->nullable();
+                        $table->string('is_default')->default('0');
+                        $table->longText('description')->nullable();
+                        $table->timestamps();
+                    });
+                } 
+
         /* Creating dynamic client assets attachment table */
         if (!Schema::hasTable('company_'.$company_id.'_client_asset_attachments')) {
             Schema::create('company_'.$company_id.'_client_asset_attachments', function (Blueprint $table) {
