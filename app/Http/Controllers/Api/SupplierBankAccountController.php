@@ -47,11 +47,17 @@ class SupplierBankAccountController extends Controller
                 'message' => $validator->errors()->first(),
             ]);
         }
+
         $table = 'company_'.$request->company_id.'_supplier_bank_accounts';
         SupplierBankAccount::setGlobalTable($table);
 
+        if(!$request->format || $request->format == ''){
+            $request['format'] = 'other';
+        }
+        
         $supplierBank = SupplierBankAccount::create($request->all());
-
+        $supplierBank->is_default = $request->is_default[0] ?? '0';
+        $supplierBank->save();
         return response()->json([
             "status" => true,
             "supplier_bank" => $supplierBank,
