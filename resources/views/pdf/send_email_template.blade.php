@@ -557,6 +557,7 @@
                         <tr><td style="padding: 0; margin: 0;">Billing: <b>{{$client_supplier_billing}}</b></td></tr>
                     @endif
 
+                    @if($invoiceData->client)
                     <tr><td style="padding: 0; margin: 0;">
                     @if(@$client_supplier_zip_code_show == 1) 
                         @if($invoiceData->client->zip_code)
@@ -600,7 +601,51 @@
                     @endif
                         </td>
                     </tr>
-                    
+                    @elseif($invoiceData->supplier)
+                    <tr><td style="padding: 0; margin: 0;">
+                    @if(@$client_supplier_zip_code_show == 1) 
+                        @if($invoiceData->supplier->zip_code)
+                            Zip Code: <b>{{ $invoiceData->supplier->zip_code }}</b>
+                        @endif
+                    @endif
+                        </td>
+                    </tr>
+                
+                    <tr>
+                    {{$client_supplier_city_show}}
+                    <td style="padding: 0; margin: 0;">
+                    @if(@$client_supplier_city_show == 1)
+                        {{-- <b>{{$client_supplier_city_show}}</b>
+                    @else --}}
+                        @if($invoiceData->supplier->city)
+                            City: <b>{{ $invoiceData->supplier->city }}</b>
+                        @endif
+                    @endif
+                        </td>
+                    </tr>
+
+                    <tr><td style="padding: 0; margin: 0;">
+                    @if(@$client_supplier_state_show == 1) 
+                        {{-- <b>{{$client_supplier_state_show}}</b>
+                    @else --}}
+                        @if($invoiceData->supplier->state)
+                            State: <b>{{ $invoiceData->supplier->state }}</b>
+                        @endif
+                    @endif
+                        </td>
+                    </tr>
+
+                    <tr><td style="padding: 0; margin: 0;">
+                    @if(@$client_supplier_country_show == 1)
+                        {{-- <b>{{$client_supplier_country_show}}</b>
+                    @else --}}
+                        @if($invoiceData->supplier->country)
+                            Country: <b>{{ $invoiceData->supplier->country }}</b>
+                        @endif
+                    @endif
+                        </td>
+                    </tr>
+                    @endif
                     
                 </table>
             </div>
