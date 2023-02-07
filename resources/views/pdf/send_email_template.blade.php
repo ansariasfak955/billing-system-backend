@@ -520,14 +520,14 @@
                 </table>
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
                     @if($invoiceData->client)
-                        <th style="color: orange; border-bottom: 1px solid gray;text-align: left; height:16px">Client Of Data
+                        <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">Client Of Data
                         @if(@$client_supplier_section_show == 1)
                             {{($client_supplier_section) ? $client_supplier_section : ""}}
                         @endif
 
                         </th>
                     @elseif($invoiceData->supplier)
-                    <th style="color: orange; border-bottom: 1px solid gray;text-align: left; height:16px">Supplier Of Data
+                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">Supplier Of Data
                         @if(@$client_supplier_section_show == 1)
                             {{($client_supplier_section) ? $client_supplier_section : ""}}
                         @endif
