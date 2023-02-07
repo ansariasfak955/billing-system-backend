@@ -47,7 +47,7 @@ class DashboardController extends Controller
                 $data =  new \Illuminate\Support\Collection($data);
                 $orderCol = explode(',', $request->order);
                 $column = $orderCol[0]?? 'created_at'; 
-                $type  = ($orderCol[1] =='ASC' ?  false : true);
+                $type  = (@$orderCol[1] =='ASC' ?  false : true);
                 $data = $data->sortBy($column, SORT_NATURAL, $type)->take(20)->values();
             }
 
