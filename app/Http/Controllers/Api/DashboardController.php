@@ -45,8 +45,9 @@ class DashboardController extends Controller
             $data = array_merge($salesEstimatesData, $InvoiceTableData, $purchaseTablesData, $TechnicalIncidentData);
             if(count($data)){
                 $data =  new \Illuminate\Support\Collection($data);
-                $column = $request->column ?? 'created_at';
-                $type  = ($request->order =='ASC' ?  false : true);
+                $orderCol = explode(',', $request->order);
+                $column = $orderCol[0]?? 'created_at'; 
+                $type  = ($orderCol[1] =='ASC' ?  false : true);
                 $data = $data->sortBy($column, SORT_NATURAL, $type)->take(20)->values();
             }
 
