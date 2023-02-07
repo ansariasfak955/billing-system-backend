@@ -20,7 +20,7 @@ class SupplierBankAccountController extends Controller
         
         $table = 'company_'.$request->company_id.'_supplier_bank_accounts';
         SupplierBankAccount::setGlobalTable($table);
-        $query = SupplierBankAccount::query();
+        $query = SupplierBankAccount::where('supplier_id', $request->supplier_id);
         
         $query = $query->get();
         if (!count($query)) {
