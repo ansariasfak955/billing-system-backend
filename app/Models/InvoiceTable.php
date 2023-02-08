@@ -139,12 +139,6 @@ class InvoiceTable extends Model
             return date( 'Y-m-d', strtotime($this->attributes['sent_date']) );
         }
     }
-    public function getSentEmailDateAttribute(){
-
-        if( isset( $this->attributes['sent_email_date'] ) ){
-            return date( 'Y-m-d', strtotime($this->attributes['sent_email_date']) );
-        }
-    }
     public function getReferenceTypeAttribute(){
         if(isset( $this->attributes['reference'] )){
             $table = $this->getTable();
