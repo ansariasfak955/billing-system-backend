@@ -181,7 +181,8 @@ class AuthController extends Controller
 
     // -------------- forget password -------------------//
     public function forgetPassword(Request $request) {
-        $user = User::where('email', $request->email);
+
+        $user = Company::where('email', $request->email)->first();
         if ($user == NULL) {
             return response()->json([
                 'status' => false,
@@ -189,12 +190,12 @@ class AuthController extends Controller
             ]);
         }
 
-        // if($user->is_ban == 1){
-        //     return response()->json([
-        //         'status' => false,
-        //         'message' => "Your account has been suspended.Please contact admin",
-        //     ]);
-        // }
+        if($user->is_ban == 1){
+            return response()->json([
+                'status' => false,
+                'message' => "Your account has been suspended.Please contact admin",
+            ]);
+        }
         
         $token = \Str::random(64);
 
