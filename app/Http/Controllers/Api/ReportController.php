@@ -240,7 +240,7 @@ class ReportController extends Controller
                 "estimates_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending(10)", 
+                        "label" => "Pending(". SalesEstimate::where('reference', 'se')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                         "$ " . SalesEstimate::where('reference', 'se')->where('status', 'pending')->get()->sum('amount'),
@@ -248,7 +248,7 @@ class ReportController extends Controller
                     ], 
                     [
                             "type" => "bar", 
-                            "label" => "Refused(2)", 
+                            "label" => "Refused(". SalesEstimate::where('reference', 'se')->where('status', 'refused')->count().")", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
                                 "$ " . SalesEstimate::where('reference', 'se')->where('status', 'refused')->get()->sum('amount'),
@@ -256,7 +256,7 @@ class ReportController extends Controller
                         ], 
                     [
                         "type" => "bar", 
-                        "label" => "Accepted(4)", 
+                        "label" => "Accepted(". SalesEstimate::where('reference', 'se')->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                             "$ " . SalesEstimate::where('reference', 'se')->where('status', 'accepted')->get()->sum('amount'), 
@@ -264,7 +264,7 @@ class ReportController extends Controller
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed(0)", 
+                        "label" => "Closed(". SalesEstimate::where('reference', 'se')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                             "" . SalesEstimate::where('reference', 'se')->where('status', 'closed')->get()->sum('amount'),
@@ -274,7 +274,7 @@ class ReportController extends Controller
                 "orders_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending (1)", 
+                        "label" => "Pending (". SalesEstimate::where('reference', 'so')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                             "$ ".SalesEstimate::where('reference', 'so')->where('status', 'pending')->get()->sum('amount'),
@@ -282,7 +282,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Refused (0)", 
+                        "label" => "Refused (". SalesEstimate::where('reference', 'so')->where('status', 'refused')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
                             "$ ". SalesEstimate::where('reference', 'so')->where('status', 'refused')->get()->sum('amount'),
@@ -290,7 +290,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (0)", 
+                        "label" => "In Progress (". SalesEstimate::where('reference', 'so')->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                             "$ ". SalesEstimate::where('reference', 'so')->where('status', 'in progress')->get()->sum('amount'),
@@ -298,7 +298,7 @@ class ReportController extends Controller
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed (1)", 
+                        "label" => "Closed (". SalesEstimate::where('reference', 'so')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                             "$ ". SalesEstimate::where('reference', 'so')->where('status', 'closed')->get()->sum('amount'),
@@ -309,7 +309,7 @@ class ReportController extends Controller
                 "delivery_notes_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending Invoice (0)", 
+                        "label" => "Pending Invoice (". SalesEstimate::where('reference', 'sdn')->where('status', 'pending invoice')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                             "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'pending invoice')->get()->sum('amount'),
@@ -317,7 +317,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (0)", 
+                        "label" => "In Progress (". SalesEstimate::where('reference', 'sdn')->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
                             "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'in progress')->get()->sum('amount'),
@@ -325,7 +325,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Closed (0)", 
+                        "label" => "Closed (". SalesEstimate::where('reference', 'sdn')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                             "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'closed')->get()->sum('amount'),
@@ -333,7 +333,7 @@ class ReportController extends Controller
                         ],
                     [
                         "type" => "bar", 
-                        "label" => "Invoiced (0)", 
+                        "label" => "Invoiced (". SalesEstimate::where('reference', 'sdn')->where('status', 'invoiced')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                             "$ ". SalesEstimate::where('reference', 'sdn')->where('status', 'invoiced')->get()->sum('amount'),
