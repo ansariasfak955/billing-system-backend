@@ -178,13 +178,13 @@ class HistoryController extends Controller
 
         $referenceType = Reference::where('type', 'Purchase Invoice')->get()->toArray();
         // dd($referenceType);
-        $referenceArr = ['PINV'];
+        $referenceArr = ['PO','PDN','PINV'];
         $data = [];
         foreach($referenceArr as $type){
             $arr = [];
             $items = [];
 
-            if($type == 'PINV'){
+            if($type == 'PO' || $type == 'PDN' || $type == 'PINV'){
                 
                 $items = PurchaseTable::with(['items'])->WhereHas('items', function ($query) use ($request) {
                     $query->where('reference_id', $request->id)->where('reference',   $request->reference);
