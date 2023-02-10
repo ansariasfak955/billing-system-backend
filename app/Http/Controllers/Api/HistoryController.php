@@ -64,29 +64,29 @@ class HistoryController extends Controller
         $itemMetaTable = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($itemMetaTable);
 
-        $referenceArr = ['SE', 'SO', 'SDN', 'WE', 'WO', 'WDN', 'INV', 'RET', 'PO', 'PDN', 'PINV'];
+        $referenceArr = ['SE','WE','INV','PO'];
         $data = [];
         foreach($referenceArr as $type){
             $arr = [];
             $items = [];
 
-            if($type == 'SE' || $type == 'SO' || $type == 'SDN'){
+            if($type == 'SE'){
 
                 $items = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($request) {
                     $query->where('reference_id', $request->id)->where('reference',   $request->reference);
                 })->get();
 
-            }elseif($type == 'WE' || $type == 'WO' || $type == 'WDN'){
+            }elseif($type == 'WE'){
                 $items = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($request) {
                     $query->where('reference_id', $request->id)->where('reference',   $request->reference);
                 })->get();
             } 
-            elseif($type == 'WE' || $type == 'WO' || $type == 'WDN'){
+            elseif($type == 'INV'){
                 $items = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($request) {
                     $query->where('reference_id', $request->id)->where('reference',   $request->reference);
                 })->get();
             }
-            elseif($type == 'PO' || $type == 'PDN' || $type == 'PINV'){
+            elseif($type == 'PO'){
                 
                 $items = PurchaseTable::with(['items'])->WhereHas('items', function ($query) use ($request) {
                     $query->where('reference_id', $request->id)->where('reference',   $request->reference);
@@ -102,7 +102,7 @@ class HistoryController extends Controller
                     $arr['title'] = $item->title;
                     $arr['created_by'] = $item->created_by;
                     $arr['status'] = $item->status;
-                    $arr['type'] = '';
+                    $arr['type'] = $item->reference_type;
                     $arr['date'] = $item->date;
                     $arr['amount'] = $item->items->where('reference_id', $request->id)->where('reference',   $request->reference)->sum('amount');
                     $arr['activity'] = '';
@@ -178,13 +178,13 @@ class HistoryController extends Controller
 
         $referenceType = Reference::where('type', 'Purchase Invoice')->get()->toArray();
         // dd($referenceType);
-        $referenceArr = ['PO','PDN','PINV'];
+        $referenceArr = ['PO'];
         $data = [];
         foreach($referenceArr as $type){
             $arr = [];
             $items = [];
 
-            if($type == 'PO' || $type == 'PDN' || $type == 'PINV'){
+            if($type == 'PO'){
                 
                 $items = PurchaseTable::with(['items'])->WhereHas('items', function ($query) use ($request) {
                     $query->where('reference_id', $request->id)->where('reference',   $request->reference);
@@ -200,7 +200,7 @@ class HistoryController extends Controller
                     $arr['title'] = $item->title;
                     $arr['created_by'] = $item->created_by;
                     $arr['status'] = $item->status;
-                    $arr['type'] = $item->type;
+                    $arr['type'] = $item->reference_type;
                     $arr['date'] = $item->date;
                     $arr['amount'] = $item->items->where('reference_id', $request->id)->where('reference',   $request->reference)->sum('amount');
                     $arr['activity'] = '';
