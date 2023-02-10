@@ -126,13 +126,13 @@ class PurchaseTable extends Model
     public function getEmailSentDateAttribute(){
 
         if( isset( $this->attributes['email_sent_date'] ) ){
-            return date('F m, Y', strtotime($this->attributes['email_sent_date']));
+            return date('Y-m-d', strtotime($this->attributes['email_sent_date']));
         }
     }
     public function getSentDateAttribute(){
 
         if( isset( $this->attributes['sent_date'] ) ){
-            return date('F m, Y', strtotime($this->attributes['sent_date']));
+            return date('Y-m-d', strtotime($this->attributes['sent_date']));
         }
     }
     public function getSubTotalAttribute(){
