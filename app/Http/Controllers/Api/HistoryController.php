@@ -60,6 +60,9 @@ class HistoryController extends Controller
 
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
+        
+        $table = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($table);
 
         $itemMetaTable = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($itemMetaTable);
