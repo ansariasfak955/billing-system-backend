@@ -17,16 +17,18 @@ class SendEmailForgetPassword implements ShouldQueue
 
     public $token;
     public $email;
+    public $company_name;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($token, $email)
+    public function __construct($token, $email, $company_name = null)
     {
         $this->token = $token;
         $this->email = $email;
+        $this->company_name = $company_name;
     }
 
     /**
@@ -36,6 +38,6 @@ class SendEmailForgetPassword implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->email)->send(new ForgetPassword($this->token));
+        Mail::to($this->email)->send(new ForgetPassword($this->token, $this->company_name));
     }
 }
