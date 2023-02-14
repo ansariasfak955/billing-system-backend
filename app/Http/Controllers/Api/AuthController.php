@@ -213,7 +213,7 @@ class AuthController extends Controller
         
         $token = \Str::random(64);
 
-        $user = \DB::table('company_'.$company->id.'_password_resets')->insert([
+        $user = \DB::table('password_resets')->insert([
             'email' => $request->email,
             'token' => $token,
             'created_at' => date("Y-m-d H:i:s"),
