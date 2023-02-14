@@ -181,15 +181,29 @@ class AuthController extends Controller
 
     // -------------- forget password -------------------//
     public function forgetPassword(Request $request) {
+        $request->validate([
+            'email' => 'required|email',
+            'company_name' => 'required',
+        ]);
 
-        $user = Company::where('email', $request->email)->first();
-        if ($user == NULL) {
+        $company = Company::where('name', $request->company_name)->first();
+        if ($company == NULL) {
             return response()->json([
                 'status' => false,
-                'message' => "This email doesn't exist in our system"
+                'message' => "This company doesn't exist in our system"
             ]);
         }
 
+        $table = 'company_'.$company->id.'_users';
+        User::setGlobalTable($table);
+
+        $user = User::where('email', $request->email)->first();
+        if ($user == NULL) {
+            return response()->json([
+                'status' => false,
+                'message' => "This user doesn't exist in our system"
+            ]);
+        }
         if($user->is_ban == 1){
             return response()->json([
                 'status' => false,
@@ -199,7 +213,7 @@ class AuthController extends Controller
         
         $token = \Str::random(64);
 
-        $user = \DB::table('password_resets')->insert([
+        $user = \DB::table('company_'.$company->id.'_password_resets')->insert([
             'email' => $request->email,
             'token' => $token,
             'created_at' => date("Y-m-d H:i:s"),
