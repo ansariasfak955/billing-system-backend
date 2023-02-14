@@ -221,7 +221,7 @@ class AuthController extends Controller
         ]);
 
         /* send emails on forgot password */
-        SendEmailForgetPassword::dispatchNow($token, $request->email);
+        SendEmailForgetPassword::dispatchNow($token, $request->email, $request->company_name);
         
         return response()->json([
             'status' => true,
