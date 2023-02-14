@@ -9,6 +9,7 @@ use App\Models\Reference;
 use App\Models\PaymentTerm;
 use App\Models\ConsumptionTax;
 use App\Models\MyTemplateMeta;
+use App\Models\ExpenseCategory;
 use App\Models\DefaultPdfSendOption;
 use App\Models\OtherConfiguration;
 use App\Models\Setting;
@@ -3389,6 +3390,20 @@ Best regards and thank you for placing your trust in @MYCOMPANY@.
                     ]);
                 }
         } 
+
+         // add by default exoense caregory
+         if (Schema::hasTable('company_'.$company_id.'_expense_categories')) {
+            ExpenseCategory::setGlobalTable('company_'.$company_id.'_expense_categories');
+            $categories = ['expense','investment'];
+            foreach($categories as $category){
+                if (!ExpenseCategory::where('type', $category)->exists()) {
+                    ExpenseCategory::create([
+                        'name' => ucwords($category),
+                        'type' => $category,
+                    ]);
+                }
+            }
+        }
 
         // add by default base tariff
         if (Schema::hasTable('company_'.$company_id.'_rates')) {

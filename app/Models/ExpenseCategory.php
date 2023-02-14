@@ -9,7 +9,7 @@ class ExpenseCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name','type'];
 
     protected static $globalTable = 'expense_categories' ;
 
