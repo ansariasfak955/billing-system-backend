@@ -13,6 +13,8 @@ use App\Models\SalesEstimate;
 use App\Models\PurchaseTable;
 use App\Models\TechnicalTable;
 use App\Models\InvoiceReceipt;
+use App\Models\Company;
+use App\Models\Service;
 use App\Models\PurchaseReceipt;
 use App\Models\Supplier;
 use App\Models\ConsumptionTax;
@@ -226,8 +228,13 @@ class ReportController extends Controller
         SalesEstimate::setGlobalTable($salesTables);
 
         $clientsTables = 'company_'.$request->company_id.'_clients';
-        // return $clientsTables; die;
-        Client::setGlobalTable($clientsTables); 
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
 
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
@@ -342,12 +349,66 @@ class ReportController extends Controller
                 ]
             ];
 
-        }elseif( $request->type == "agent" ){
+        }elseif( $request->type == "clients" ){
+            // $agent_ids  = SalesEstimate::pluck('agent_id')->toArray();
+            // $client_ids  = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
+            $clients = Client::get();
+            $data = [];
+            $data['clients'] = [];
+            foreach($clients as $client){
+                $data['clients'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $client->legal_name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            "$". SalesEstimate::where('id', $client->id)->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            return response()->json([
+                "status" => true,
+                "data" => $data
+            ]);
+
+        }elseif($request->type == "agents"){
+            // $clients = SalesEstimate::get();
             $agent_ids  = SalesEstimate::pluck('agent_id')->toArray();
             $client_ids  = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
+            $data = [];
+            $data['agents'] = [];
+            foreach($client_ids as $client){
+                $data['agents'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $client,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            // "$". SalesEstimate::where('client_id', $client->client_id)->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            return response()->json([
+                "status" => true,
+                "data" => $data
+            ]);
+        }elseif($request->type == "items"){
+            $productTables = Product::get();
+            $data = [];
+            $data['products'] = [];
+            foreach($productTables as $productTable){
+                $data['products'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $productTable->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            SalesEstimate::with('items')->where('id', $productTable->id)->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            return response()->json([
+                "status" => true,
+                "data" => $data
+            ]);
 
-        }else{
-            $client_ids  = Client::pluck('id')->toArray();
         }
         // foreach($client_ids as $client_id){
         //     $purchaseDatas = SalesEstimate::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
