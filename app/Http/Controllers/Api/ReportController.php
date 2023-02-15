@@ -371,18 +371,18 @@ class ReportController extends Controller
             ]);
 
         }elseif($request->type == "agents"){
-            // $clients = SalesEstimate::get();
-            $agent_ids  = SalesEstimate::pluck('agent_id')->toArray();
-            $client_ids  = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
+            $clients = SalesEstimate::get();
+            // $agent_ids  = SalesEstimate::pluck('agent_id')->toArray();
+            // $client_ids  = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
             $data = [];
             $data['agents'] = [];
-            foreach($client_ids as $client){
+            foreach($clients as $client){
                 $data['agents'][] = [
                         "type" => "bar",
-                        "label" => "" .  $client,
+                        "label" => "" .  $client->agent_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            // "$". SalesEstimate::where('client_id', $client->client_id)->get()->sum('amount'),
+                            "$". SalesEstimate::where('client_id', $client->client_id)->get()->sum('amount'),
                             ]
                         ];
             }
