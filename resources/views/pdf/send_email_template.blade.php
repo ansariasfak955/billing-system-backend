@@ -412,8 +412,11 @@
                             <span style="margin-left: 20px;">Company Name:</span>
                             <span>{{  @$company->commercial_name }}</span> <br>
                             @if(@$company->address)
-                                <span style="margin-left: 20px;">Address:</span>
+                            <div style="margin-left: 20px;">
+                                
+                                <span >Address:</span>
                                 <span>{{@$company->address}}</span><br>
+                            </div>
                             @endif
                             <span style="margin-left: 20px;">{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span>
                         </td>
