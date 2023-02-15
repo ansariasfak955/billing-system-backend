@@ -17,11 +17,10 @@ class Company extends Model
         parent::boot();
         if(\Auth::check()){
             if (!\Auth::user()->hasRole(['admin']) ) {
-                //to fix error with other user added
                 if(!request()->company_id){
 
                     static::addGlobalScope('where', function (Builder $builder) {
-                        $builder->where('user_id', \Auth::id());
+                        $builder->where('id', \Auth::user()->company_id);
                     });
                 }
             }

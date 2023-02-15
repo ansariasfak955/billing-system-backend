@@ -281,12 +281,19 @@ class SendEmailController extends Controller
         }else{
             $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
         }
-        
         \Storage::put('/public/temp/'.$attachment, $pdf->output());
         if($request->send_to || $request->cc){
             $subject = $request->subject;
-            $body = $request->body;
+            //replacing the variables with the actual vlaues to send in email
+            $clientName = (@$invoiceData->client_name ? @$invoiceData->client_name : '--');
+            $body = str_replace('@CLIENTNAME@',$clientName, $request->body);
+            $body = str_replace('@DOCUMENTTYPE@',$type, $body);
+            $body = str_replace('@MYCOMPANY@',@$company->name, $body);
+            $body = str_replace('@USERNAME@',\Auth::user()->name, $body);
             $cc = explode(',', $request->cc);
+            if(empty($cc)){
+                $cc = '';
+            }
             Mail::to($request->send_to)
             ->cc($cc)
             ->send(new SendMail($attachment, $subject , $body, $pdf));
