@@ -39,8 +39,8 @@ class Item extends Model
     public function getAmountAttribute(){
         if(isset($this->attributes['base_price'])){
 
-            if(isset($this->attributes['tax'])){
-                $tax = 0;
+            if(isset($this->attributes['vat'])){
+                $tax = (int)$this->attributes['vat'];
             }
             if(isset($this->attributes['quantity'])){
                 $quantity = $this->attributes['quantity'];
@@ -52,8 +52,12 @@ class Item extends Model
             $discount = (float)$this->attributes['discount'];
             if($basePrice){
 
-                $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity + $tax;
-                return (float)$amount;
+                $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity;
+                $taxAmount = 0;
+                if($tax){
+                    $taxAmount = ($tax / 100) * $amount;
+                }
+                return round($amount+$taxAmount, 2);
             }
             return 0;
         }

@@ -20,7 +20,7 @@ class Company extends Model
                 if(!request()->company_id){
 
                     static::addGlobalScope('where', function (Builder $builder) {
-                        $builder->where('id', \Auth::user()->company_id);
+                        $builder->where('user_id', \Auth::id());
                     });
                 }
             }
