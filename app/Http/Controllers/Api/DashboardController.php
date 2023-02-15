@@ -48,7 +48,11 @@ class DashboardController extends Controller
                 $orderCol = explode(',', $request->order);
                 $column = $orderCol[0]?? 'created_at'; 
                 $type  = (@$orderCol[1] =='ASC' ?  false : true);
-                $data = $data->sortBy($column, SORT_NATURAL, $type)->take(20)->values();
+                if(!$request->order){
+                    $data = $data->sortByDesc('created_at')->take(20)->values();
+                }else{
+                    $data = $data->sortBy($column, SORT_NATURAL, $type)->take(20)->values();
+                }
             }
 
         }else{
