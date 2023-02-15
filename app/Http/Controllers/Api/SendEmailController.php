@@ -290,9 +290,9 @@ class SendEmailController extends Controller
             $body = str_replace('@DOCUMENTTYPE@',$type, $body);
             $body = str_replace('@MYCOMPANY@',@$company->name, $body);
             $body = str_replace('@USERNAME@',\Auth::user()->name, $body);
-            $cc = explode(',', $request->cc);
-            if(empty($cc)){
-                $cc = '';
+            $cc = null;
+            if($request->cc){
+                $cc = explode(',', $request->cc);
             }
             Mail::to($request->send_to)
             ->cc($cc)
