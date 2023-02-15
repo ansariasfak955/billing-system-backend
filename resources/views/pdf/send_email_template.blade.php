@@ -404,14 +404,14 @@
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         @if($company_logo_show)
-                            <img src="{{ $company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; object-fit: cover;">
+                            <img src="{{ @$company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; object-fit: cover;">
                         @endif
                         </td>
                         <span class="section">
                         <td class="header_border" style="width:250px"  @if($company_name_show || $company_country_show) @endif>
                             <span style="margin-left: 20px;">Company Name:</span>
                             <span>{{  @$company->commercial_name }}</span> <br>
-                            @if($company->address)
+                            @if(@$company->address)
                                 <span style="margin-left: 20px;">Address:</span>
                                 <span>{{@$company->address}}</span><br>
                             @endif

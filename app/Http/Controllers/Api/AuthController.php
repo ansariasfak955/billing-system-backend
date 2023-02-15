@@ -235,6 +235,7 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'company_name' => 'required',
         ]);
        
         $updatePassword = \DB::table('password_resets')->where([
@@ -247,8 +248,16 @@ class AuthController extends Controller
                 'message' => 'Invalid token!',
             ]);
         }
-
+         $company = Company::where('name', $request->company_name)->first();
+        if ($company == NULL) {
+            return response()->json([
+                'status' => false,
+                'message' => "This company doesn't exist in our system"
+            ]);
+        }
         if($updatePassword->type == "user"){
+            $table = 'company_'.$company->id.'_users';
+            User::setGlobalTable($table);
            User::where('email', $request->email)->update(['password' => bcrypt($request->password)]);
            \DB::table('password_resets')->where(['email'=> $request->email])->delete();
             PasswordChangeSuccess::dispatchNow(User::where('email', $request->email)->first());
