@@ -418,7 +418,10 @@
                                 <span>{{@$company->address}}</span><br>
                             </div>
                             @endif
-                            <span style="margin-left: 20px;">{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span>
+                            <div style="margin-left: 20px;">
+                            <span>{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span><br>
+                            </div>
+        
                         </td>
                         </span>
                         <span class="sectionLeft">
@@ -454,7 +457,7 @@
         </div>
 
         @if(@$document_type_show == 1)
-            <div style="text-align: center; margin-top: 50px;">
+            <div style="text-align: center; margin-top: 70px;">
                 <h2>{{ ($request->format == 'pro_forma') ? 'PRO FORMA' : $template->name }}</h2>
                 @if($document_title_show && $document_title_text)
                     {{ $document_title_text }}
