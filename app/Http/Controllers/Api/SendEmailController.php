@@ -77,7 +77,7 @@ class SendEmailController extends Controller
             SalesEstimate::setGlobalTable($table);
             $invoiceData = SalesEstimate::with(['items','payment_options','client'])->find($request->id);
             $items =  $invoiceData->items;
-            $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -94,7 +94,7 @@ class SendEmailController extends Controller
             SalesEstimate::setGlobalTable($table);
             $invoiceData = SalesEstimate::with(['items','payment_options','client','delivery_options'])->find($request->id);
             $items =  $invoiceData->items;
-            $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -110,7 +110,7 @@ class SendEmailController extends Controller
             SalesEstimate::setGlobalTable($table);
             $invoiceData = SalesEstimate::with('items')->find($request->id);
             $items =  $invoiceData->items;
-            $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -128,7 +128,7 @@ class SendEmailController extends Controller
             ClientAsset::setGlobalTable($clientAsset);
             $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options','clientAsset'])->find($request->id);
             $items =  $invoiceData->items;
-            $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -146,7 +146,7 @@ class SendEmailController extends Controller
             ClientAsset::setGlobalTable($clientAsset);
             $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options','clientAsset','assign'])->find($request->id);
             $items =  $invoiceData->items;
-            $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -165,7 +165,7 @@ class SendEmailController extends Controller
             ClientAsset::setGlobalTable($clientAsset);
             $invoiceData = TechnicalTable::with(['items','payment_options','client','delivery_options','clientAsset'])->find($request->id);
             $items =  $invoiceData->items;
-            $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -183,7 +183,7 @@ class SendEmailController extends Controller
             ClientAsset::setGlobalTable($clientAsset);
             $invoiceData = InvoiceTable::with(['items','payment_options','delivery_options','client','clientAsset'])->find($request->id);
             $items =  $invoiceData->items;
-            $total = InvoiceTable::with(['items','payment_options','client'])->where('id',$request->id)->get()->sum('amount');
+            $total = InvoiceTable::with(['items','payment_options','client'])->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -202,7 +202,7 @@ class SendEmailController extends Controller
             $invoiceData = InvoiceTable::with('items','clientAsset')->find($request->id);
             // dd($invoiceData);
             $items =  $invoiceData->items;
-            $total = InvoiceTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = InvoiceTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -218,7 +218,7 @@ class SendEmailController extends Controller
             PurchaseTable::setGlobalTable($table);
             $invoiceData = PurchaseTable::with('items','supplier')->find($request->id);
             $items =  $invoiceData->items;
-            $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -234,7 +234,7 @@ class SendEmailController extends Controller
             PurchaseTable::setGlobalTable($table);
             $invoiceData = PurchaseTable::with('items','supplier')->find($request->id);
             $items =  $invoiceData->items;
-            $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -250,7 +250,7 @@ class SendEmailController extends Controller
             PurchaseTable::setGlobalTable($table);
             $invoiceData = PurchaseTable::with('items','supplier')->find($request->id);
             $items =  $invoiceData->items;
-            $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount');
+            $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
                 if($item->reference == 'PRO'){
@@ -291,7 +291,7 @@ class SendEmailController extends Controller
             $body = str_replace('@DOCUMENTTYPE@',$type, $body);
             $body = str_replace('@MYLOGO@',$img, $body);
             $body = str_replace('@USEREMAIL@',$company->email, $body);
-            $body = str_replace('@USERPHONE@',$company->phone_1, $body);
+            $body = str_replace('@USERPHONE@',$company->phone, $body);
             $body = str_replace('@DOCUMENTTITLE@',$invoiceData->title, $body);
             $body = str_replace('@DOCUMENTREFERENCE@', @$invoiceData->reference.''.@$invoiceData->reference_number, $body);
             $body = str_replace('@MYCOMPANY@',@$company->name, $body);
