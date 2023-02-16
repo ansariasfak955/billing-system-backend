@@ -288,6 +288,7 @@ class SendEmailController extends Controller
             $clientName = (@$invoiceData->client_name ? @$invoiceData->client_name : '--');
             $body = str_replace('@CLIENTNAME@',$clientName, $request->body);
             $body = str_replace('@DOCUMENTTYPE@',$type, $body);
+            $body = str_replace('@MYLOGO@',$company->logo, $body);
             $body = str_replace('@MYCOMPANY@',@$company->name, $body);
             $body = str_replace('@USERNAME@',\Auth::user()->name, $body);
             $cc = null;
