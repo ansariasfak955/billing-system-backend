@@ -285,10 +285,14 @@ class SendEmailController extends Controller
         if($request->send_to || $request->cc){
             $subject = $request->subject;
             //replacing the variables with the actual vlaues to send in email
+            $img = '<img src="{{ @$company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; object-fit: cover;">';
             $clientName = (@$invoiceData->client_name ? @$invoiceData->client_name : '--');
             $body = str_replace('@CLIENTNAME@',$clientName, $request->body);
             $body = str_replace('@DOCUMENTTYPE@',$type, $body);
-            $body = str_replace('@MYLOGO@',$company->logo, $body);
+            $body = str_replace('@MYLOGO@',$img, $body);
+            $body = str_replace('@USEREMAIL@',$company->email, $body);
+            $body = str_replace('@USERPHONE@',$company->phone, $body);
+            $body = str_replace('@DOCUMENTREFERENCE@', @$invoiceData->reference.''.@$invoiceData->reference_number, $body);
             $body = str_replace('@MYCOMPANY@',@$company->name, $body);
             $body = str_replace('@USERNAME@',\Auth::user()->name, $body);
             $cc = null;
