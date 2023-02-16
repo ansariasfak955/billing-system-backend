@@ -316,17 +316,17 @@ class ClientController extends Controller
         $refernce_ids = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
         $refernce_id = Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
 
+        $invoiceReceiptAmount = InvoiceReceipt::where('invoice_id', $request->invoice_id)->where('paid','1')->sum('amount');
         $invoiceBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
         $invoiceRefundBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get()->sum('amount');
         $invoiceTotalBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->get()->sum('amount');
         $deposit = Deposit::where('client_id', $request->client_id)->where('type','deposit')->sum('amount');
         $invoiceWithdraw = Deposit::where('client_id', $request->client_id)->where('type','withdraw')->sum('amount');
-        // dd($invoiceWithdraw);
         $data = [
-                "unpaid_invoices" => "$ ". number_format($invoiceBalance, 2), 
+                "unpaid_invoices" => "$ ". number_format($invoiceBalance - $invoiceReceiptAmount, 2), 
                 "unpaid_refunds" => "$ ". number_format($invoiceRefundBalance, 2), 
                 "available_balance" => "$ ". number_format($deposit - $invoiceWithdraw, 2),  
-                "total_balance" => "$ ". number_format(($invoiceTotalBalance - $deposit) + $invoiceWithdraw , 2)
+                "total_balance" => "$ ". number_format((($invoiceTotalBalance - $deposit) + $invoiceWithdraw) -  $invoiceReceiptAmount, 2)
             ];
         
 
@@ -342,7 +342,7 @@ class ClientController extends Controller
 
         $table = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($table);
-        
+
         $table = 'company_'.$request->company_id.'_invoice_receipts';
         InvoiceReceipt::setGlobalTable($table);
 
