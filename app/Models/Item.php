@@ -61,9 +61,9 @@ class Item extends Model
                 if($tax){
                     $taxAmount = ($tax / 100) * $amount;
                 }
-                if($incTax){
-                    $incTaxAmount = ($incTax / 100) * $amount;
-                }
+                // if($incTax){
+                //     $incTaxAmount = ($incTax / 100) * $amount;
+                // }
                 return round($taxAmount+$incTaxAmount, 2);
             }
             return 0;
