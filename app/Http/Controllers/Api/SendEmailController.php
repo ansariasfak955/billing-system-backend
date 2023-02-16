@@ -292,6 +292,7 @@ class SendEmailController extends Controller
             $body = str_replace('@MYLOGO@',$img, $body);
             $body = str_replace('@USEREMAIL@',$company->email, $body);
             $body = str_replace('@USERPHONE@',$company->phone_1, $body);
+            $body = str_replace('@DOCUMENTTITLE@',$invoiceData->title, $body);
             $body = str_replace('@DOCUMENTREFERENCE@', @$invoiceData->reference.''.@$invoiceData->reference_number, $body);
             $body = str_replace('@MYCOMPANY@',@$company->name, $body);
             $body = str_replace('@USERNAME@',\Auth::user()->name, $body);
