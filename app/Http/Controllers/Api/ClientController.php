@@ -350,7 +350,7 @@ class ClientController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         //get dynamic reference
-        $refernce_ids = Reference::where('type', 'Ordinary Invoice')->pluck('prefix')->toArray();
+        $refernce_ids = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
 
         $unpaidInvoice = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get();
 
