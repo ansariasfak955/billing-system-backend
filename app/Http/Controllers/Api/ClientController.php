@@ -312,8 +312,8 @@ class ClientController extends Controller
         // set reference table
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        //get dynamic reference
-        $refernce_ids = Reference::where('type', 'Ordinary Invoice')->pluck('prefix')->toArray();
+        //get dynamic reference 
+        $refernce_ids = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
         $refernce_id = Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
 
         $invoiceBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
