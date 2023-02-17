@@ -15,6 +15,7 @@ use App\Models\TechnicalTable;
 use App\Models\InvoiceReceipt;
 use App\Models\Company;
 use App\Models\User;
+use App\Models\Reference;
 use App\Models\Service;
 use App\Models\PurchaseReceipt;
 use App\Models\Supplier;
@@ -245,6 +246,12 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
+
         $data = [];
         if( $request->type == "overview" ){
             $data = [
@@ -354,20 +361,64 @@ class ReportController extends Controller
             ];
 
         }elseif( $request->type == "clients" ){
-            // $agent_ids  = SalesEstimate::pluck('agent_id')->toArray();
-            // $client_ids  = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
+            $refernce_ids = Reference::where('type', 'Sales Estimate')->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
             $data['clients'] = [];
             foreach($clients as $client){
-                $data['clients'][] = [
-                        "type" => "bar",
-                        "label" => "" .  $client->legal_name,
-                        "backgroundColor" => "#26C184",
+                // $data['clients'][] = [
+                //         "type" => "bar",
+                //         "label" => "" .  $client->legal_name,
+                //         "backgroundColor" => "#26C184",
+                //         "data" => [
+                //             "$". SalesEstimate::where('reference',$refernce_ids)->where('client_id', $client->client_id)->get()->sum('amount'),
+                //             ]
+                //         ];
+                $data = [
+                    "clients" => [
+                        [
+                            "type" => "bar", 
+                            "label" => "" . $client->name, 
+                            "backgroundColor" => "#26C184", 
+                            "data" => [
+                            " " . SalesEstimate::where('reference', 'SE')->get()->sum('amount'),
+                            ] 
+                        ], 
+                    ], "agent_history" => [
+                        [
+                            "type" => "bar", 
+                            "label" => "Pending(".SalesEstimate::where('reference', 'so')->where('status', 'pending')->count().")",
+                            "backgroundColor" => "#26C184", 
+                            "data" => [
+                                " ".SalesEstimate::where('reference', 'so')->where('status', 'pending')->get()->sum('amount'),
+                            ] 
+                        ],
+                        [
+                            "type" => "bar", 
+                            "label" => "Refused(". SalesEstimate::where('reference', 'se')->where('status', 'refused')->count().")", 
+                            "backgroundColor" => "#FB6363", 
+                            "data" => [
+                                " " . SalesEstimate::where('reference', 'se')->where('status', 'refused')->get()->sum('amount'),
+                                ] 
+                        ], 
+                    [
+                        "type" => "bar", 
+                        "label" => "Accepted(". SalesEstimate::where('reference', 'se')->where('status', 'accepted')->count().")", 
+                        "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$". SalesEstimate::where('reference','SE')->where('client_id', $client->client_id)->get()->sum('amount'),
-                            ]
-                        ];
+                            " " . SalesEstimate::where('reference', 'se')->where('status', 'accepted')->get()->sum('amount'),
+                        ] 
+                    ],
+                    [
+                        "type" => "bar", 
+                        "label" => "Closed(". SalesEstimate::where('reference', 'se')->where('status', 'closed')->count().")", 
+                        "backgroundColor" => "#26C184", 
+                        "data" => [
+                            "" . SalesEstimate::where('reference', 'se')->where('status', 'closed')->get()->sum('amount'),
+                        ] 
+                    ],
+                    ],
+                ];
             }
             return response()->json([
                 "status" => true,
@@ -392,7 +443,7 @@ class ReportController extends Controller
                     ], "agent_history" => [
                         [
                             "type" => "bar", 
-                            "label" => " ".SalesEstimate::where('reference', 'so')->where('status', 'pending')->count(),
+                            "label" => "Pending(".SalesEstimate::where('reference', 'so')->where('status', 'pending')->count().")",
                             "backgroundColor" => "#26C184", 
                             "data" => [
                                 " ".SalesEstimate::where('reference', 'so')->where('status', 'pending')->get()->sum('amount'),
@@ -400,7 +451,7 @@ class ReportController extends Controller
                         ],
                         [
                             "type" => "bar", 
-                            "label" => "". SalesEstimate::where('reference', 'se')->where('status', 'refused')->count(), 
+                            "label" => "Refused(". SalesEstimate::where('reference', 'se')->where('status', 'refused')->count().")", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
                                 " " . SalesEstimate::where('reference', 'se')->where('status', 'refused')->get()->sum('amount'),
@@ -408,7 +459,7 @@ class ReportController extends Controller
                         ], 
                     [
                         "type" => "bar", 
-                        "label" => "". SalesEstimate::where('reference', 'se')->where('status', 'accepted')->count(), 
+                        "label" => "Accepted(". SalesEstimate::where('reference', 'se')->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                             " " . SalesEstimate::where('reference', 'se')->where('status', 'accepted')->get()->sum('amount'),
@@ -416,7 +467,7 @@ class ReportController extends Controller
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "". SalesEstimate::where('reference', 'se')->where('status', 'closed')->count(), 
+                        "label" => "Closed(". SalesEstimate::where('reference', 'se')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                             "" . SalesEstimate::where('reference', 'se')->where('status', 'closed')->get()->sum('amount'),

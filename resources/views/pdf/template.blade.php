@@ -412,11 +412,19 @@
                             <img src="{{ $company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; object-fit: cover;">
                         @endif
                         </td>
-                        <td class="header_border" @if($company_name_show || $company_country_show) @endif>
-                            <span>Company Name:</span>
-                            <span style="margin-left: 30px;">{{  @$company->commercial_name }}</span> <br>
-                            <span>Address:</span><br>
-                            <span style="margin-left: 30px;">{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span>
+                        <td class="header_border" style="width:250px" @if($company_name_show || $company_country_show) @endif>
+                            <span style="margin-left: 20px;">Company Name:</span>
+                            <span>{{  @$company->commercial_name }}</span> <br>
+                            @if(@$company->address)
+                            <div style="margin-left: 20px;">
+                                
+                                <span >Address:</span>
+                                <span>{{@$company->address}}</span><br>
+                            </div>
+                            @endif
+                            <div style="margin-left: 20px;">
+                            <span>{{@$company->pincode}} {{@$company->city}} {{@$company->country}} {{@$company->tin}}</span><br>
+                            </div>
                         </td>
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
                             @if(@$company_email_show['show'] ==1)

@@ -22,6 +22,7 @@ use App\Models\Client;
 use App\Models\MyTemplateMeta;
 use App\Models\Reference;
 use App\Models\Service;
+use Illuminate\Support\Facades\URL;
 //attachment tables
 // use App\Models\ClientAssetAttachmentController;
 // use App\Models\ClientAttachment;
@@ -285,11 +286,16 @@ class SendEmailController extends Controller
         if($request->send_to || $request->cc){
             $subject = $request->subject;
             //replacing the variables with the actual vlaues to send in email
+            $url = URL::current();
+            // $documentURl = '<a href="url(/api/473/preview-template?id=7&type=Normal Invoice&download=1)">Link</a>';
+            $documentURl = "<a href='$url.'/'.'api'.'/'.$request->company_id.'/'.$template_id.'/'.$type>Link</a>";
             $img = '<img src="{{ @$company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; margin-left:190px;">';
             $clientName = (@$invoiceData->client_name ? @$invoiceData->client_name : '--');
             $body = str_replace('@CLIENTNAME@',$clientName, $request->body);
+            $body = str_replace('@CLIENTCOMMERCIALNAME@',$invoiceData->client->name, $body);
             $body = str_replace('@DOCUMENTTYPE@',$type, $body);
             $body = str_replace('@MYLOGO@',$img, $body);
+            $body = str_replace('@DOCUMENTURL@',$documentURl, $body);
             $body = str_replace('@USEREMAIL@',$company->email, $body);
             $body = str_replace('@USERPHONE@',$company->phone, $body);
             $body = str_replace('@DOCUMENTTITLE@',$invoiceData->title, $body);

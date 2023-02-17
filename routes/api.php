@@ -180,6 +180,7 @@ Route::group(['namespace' => 'Api'], function() {
 
     Route::get('subscriptions', 'SubscriptionController@index');
     Route::get('{company_id}/template-preview/{template_id}', 'MyTemplateController@getTemplatePreview');
+    Route::get('{company_id}/preview-template/{template_id}', 'SendEmailController@sendEmail');
    
     
     Route::group(['middleware' => ['auth:api']], function(){
