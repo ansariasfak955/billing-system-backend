@@ -61,7 +61,7 @@ class SalesEstimate extends Model
     public function delivery_options(){
         return $this->hasOne(DeliveryOption::class,'id', 'delivery_option');
     }
-	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'reference_type','agent_name','amount_with_out_vat'];
+	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'reference_type','agent_name','amount_with_out_vat','tax_amount'];
 
     public function getSignatureAttribute()
     {
@@ -102,7 +102,12 @@ class SalesEstimate extends Model
     }
     public function getAmountWithOutVatAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('amount_with_out_vat');
+          return number_format($this->items->sum('amount_with_out_vat'),2);
+        }
+      }
+      public function getTaxAmountAttribute(){
+        if(isset($this->items)){
+          return number_format($this->items->sum('taxAmount'),2);
         }
       }
 	public function getCreatedByNameAttribute(){

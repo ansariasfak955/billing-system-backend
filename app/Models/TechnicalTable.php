@@ -13,7 +13,7 @@ class TechnicalTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'technical_tables' ;
 
-    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount', 'meta_discount', 'reference_type', 'agent_name','amount_with_out_vat','assign_to_name'];
+    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount', 'meta_discount', 'reference_type', 'agent_name','amount_with_out_vat','assign_to_name','tax_amount'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -87,7 +87,12 @@ class TechnicalTable extends Model
     }
     public function getAmountWithOutVatAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('amount_with_out_vat');
+          return number_format($this->items->sum('amount_with_out_vat'),2);
+        }
+      }
+      public function getTaxAmountAttribute(){
+        if(isset($this->items)){
+          return number_format($this->items->sum('taxAmount'),2);
         }
       }
 

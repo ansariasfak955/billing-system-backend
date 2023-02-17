@@ -824,19 +824,19 @@
                                         <tr style="border-bottom: 1px solid gray;">
                                             <th class="table_heading" style="padding: 5px 0; text-align: left;">BASE</th>
                                             <th></th>
-                                            <th class="table_heading" style="padding: 5px 0; text-align: right;">$ {{ $total }}</th>
+                                            <th class="table_heading" style="padding: 5px 0; text-align: right;">$ {{ number_format($total,2) }}</th>
                                         </tr>
                                         @if($request->format != 'before_tax') 
                                             <tr style="border-bottom: 1px solid gray;">
-                                                <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $total }}</td>
+                                                <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ number_format($total,2) }}</td>
                                                 <td style="padding: 5px 0; text-align: center"><span>IVA {{@$product->vat}}%</span></td>
-                                                <td style="padding: 5px 0; text-align: right">{{ $vat }}</td>
+                                                <td style="padding: 5px 0; text-align: right">{{ $invoiceData->taxAmount }}</td>
                                             </tr>
                                         @endif
                                         <tr>
                                             <th class="table_heading" style="padding: 5px 0; text-align: left">TOTAL</th>
                                             <td style="padding: 0; margin: 0;"></td>
-                                            <th style="text-align: right">$ {{ $totals }}</th>
+                                            <th style="text-align: right">$ {{ $invoiceData->amount }}</th>
                                         </tr>
                                     </table>
                                 </div>
