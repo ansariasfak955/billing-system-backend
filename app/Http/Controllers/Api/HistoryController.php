@@ -265,7 +265,7 @@ class HistoryController extends Controller
 
         $fileName = 'invoices-'.time().$company_id.'.xlsx';
         $ids = explode(',', $request->ids);
-        $expenseHistorys = PurchaseTable::with('supplier','payment_options','payment_terms','delivery_options','category')->whereIn('id', $ids)->get();
+        $expenseHistorys = PurchaseTable::with('items','supplier','payment_options','payment_terms','delivery_options','category')->whereIn('id', $ids)->get();
         Excel::store(new ExpenseExport($expenseHistorys), 'public/xlsx/'.$fileName);
 
         return response()->json([

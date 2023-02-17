@@ -18,6 +18,7 @@ class ExpenseExport implements FromView
     public function view(): View
     {
         $expenseHistorys = $this->expenseHistorys;
+        // dd($expenseHistorys);
         return view('exports.expenseInvestmntHistory', compact('expenseHistorys'));
     }
 }

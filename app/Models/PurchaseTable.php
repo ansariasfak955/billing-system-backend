@@ -13,7 +13,7 @@ class PurchaseTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name','amount_with_out_vat'];
+    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name','amount_with_out_vat','total_quantity'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -68,7 +68,12 @@ class PurchaseTable extends Model
     }
     public function getAmountWithOutVatAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('amount_with_out_vat');
+          return number_format($this->items->sum('amount_with_out_vat'),2);
+        }
+      }
+      public function getTotalQuantityAttribute(){
+        if(isset($this->items)){
+          return $this->items->sum('quantity');
         }
       }
 	public function getPaymentTermNameAttribute(){
@@ -175,7 +180,7 @@ class PurchaseTable extends Model
     }
     public function getAmountIncomeTaxAttribute(){
 
-        return 0;
+        return number_format(0,2);
     }
     public function modelFilter()
     {

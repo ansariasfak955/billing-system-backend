@@ -65,7 +65,7 @@
             <td>{{@$expenseHistory->private_comments}}</td>
             <td>{{@$expenseHistory->addendum}}</td>
             <td>{{@$expenseHistory->signature}}</td>
-            <td>{{@$expenseHistory->quantity}}</td>
+            <td>{{@$expenseHistory->total_quantity}}</td>
         </tr>
         @endforeach
     </tbody>
