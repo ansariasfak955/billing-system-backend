@@ -102,7 +102,7 @@ class SalesEstimate extends Model
     }
     public function getAmountWithOutVatAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('base_price');
+          return $this->items->sum('amount_with_out_vat');
         }
       }
 	public function getCreatedByNameAttribute(){
