@@ -34,7 +34,7 @@ class Item extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
-    public $appends = ['amount', 'taxAmount','otherTaxAmount'];
+    public $appends = ['amount', 'taxAmount','otherTaxAmount','amount_with_out_vat'];
     public function getTaxAmountAttribute(){
         if(isset($this->attributes['base_price'])){
             $tax = 0;
@@ -137,4 +137,25 @@ class Item extends Model
             return 0;
         }
     }
+    public function getAmountWithOutVatAttribute(){
+        if(isset($this->attributes['base_price'])){
+            if(isset($this->attributes['tax'])){
+                $incTax = (int)$this->attributes['tax'];
+            }
+            if(isset($this->attributes['quantity'])){
+                $quantity = $this->attributes['quantity'];
+            }else{
+                $quantity = 1;
+            }
+
+            $basePrice = (float)$this->attributes['base_price'];
+            $discount = (float)$this->attributes['discount'];
+            if($basePrice){
+
+                $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity;
+                return round($amount, 2);
+            }
+            return 0;
+        }
+      }
 }
