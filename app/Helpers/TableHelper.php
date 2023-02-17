@@ -192,6 +192,7 @@ class TableHelper
                 $table->id();
                 $table->string('name')->nullable();
                 $table->string('rate')->nullable();
+                $table->string('type')->nullable();
                 $table->string('description')->nullable();
                 $table->timestamps();
             });
