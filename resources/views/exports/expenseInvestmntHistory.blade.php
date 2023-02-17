@@ -63,7 +63,7 @@
             <td>{{@$expenseHistory->currency_rate}}</td>
             <td>{{@$expenseHistory->comments}}</td>
             <td>{{@$expenseHistory->private_comments}}</td>
-            <td>{{@$expenseHistory->addendum}}</td>
+            <td>{{@$expenseHistory->addendum}}</td> 
             <td>{{@$expenseHistory->signature}}</td>
             <td>{{@$expenseHistory->total_quantity}}</td>
         </tr>
