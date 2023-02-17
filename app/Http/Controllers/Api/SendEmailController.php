@@ -286,9 +286,8 @@ class SendEmailController extends Controller
         if($request->send_to || $request->cc){
             $subject = $request->subject;
             //replacing the variables with the actual vlaues to send in email
-            $url = URL::current();
-            // $documentURl = '<a href="url(/api/473/preview-template?id=7&type=Normal Invoice&download=1)">Link</a>';
-            $documentURl = "<a href='$url.'/'.'api'.'/'.$request->company_id.'/'.$template_id.'/'.$type>Link</a>";
+            $url = url('/').'/api/'.$request->company_id.'/preview-template?id='.$request->id.'&template_id='.$template_id.'&type='.$type.'&download=1';
+            $documentURl = "<a href='$url'>$url</a>";
             $img = '<img src="{{ @$company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; margin-left:190px;">';
             $clientName = (@$invoiceData->client_name ? @$invoiceData->client_name : '--');
             $body = str_replace('@CLIENTNAME@',$clientName, $request->body);
