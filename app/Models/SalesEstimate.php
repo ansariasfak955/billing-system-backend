@@ -116,7 +116,7 @@ class SalesEstimate extends Model
 
 	public function getAmountAttribute(){
       if(isset($this->items)){
-		return number_format((float)($this->items->sum('amount')), 2);
+		return $this->items->sum('amount');
         // return number_format((float)($amount+$taxAmount+$incTaxAmount), 2);
 	  }
     }
