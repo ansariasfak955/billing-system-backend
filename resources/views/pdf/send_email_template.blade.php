@@ -717,55 +717,57 @@
                     @php
                     $subtotal = 0;
                     @endphp
-                    @foreach($products as $product)
-                        <tr>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                <p style="marging: 0; padding: 0">{{ $product->reference }}</p>
-                                
-                                {{-- @if(strpos($product->image,"via.placeholder") !== false)
-                                    @php
-                                    $image = 'https://dummyimage.com/67x69/dfdfdf/000000.png&text=Not+Found';
-                                    @endphp
-                                @else
-                                    @php
-                                    $image = $product->image;
-                                    @endphp
-                                @endif
+                    @if(count(@$products))
+                        @foreach($products as $product)
+                            <tr>
+                                <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                                    <p style="marging: 0; padding: 0">{{ $product->reference }}</p>
+                                    
+                                    {{-- @if(strpos($product->image,"via.placeholder") !== false)
+                                        @php
+                                        $image = 'https://dummyimage.com/67x69/dfdfdf/000000.png&text=Not+Found';
+                                        @endphp
+                                    @else
+                                        @php
+                                        $image = $product->image;
+                                        @endphp
+                                    @endif
 
-                                <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
-                            </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                <p style="marging: 0; padding: 0">{{ $product->name }}</p>
-                                <span>{{ $product->description }}</span>
-                            </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                <p style="marging: 0; padding: 0">{{ $product->quantity }}</p>
-                            </td>
-                            @if($request->format != 'without_values') 
-                                <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                    <p style="marging: 0; padding: 0">{{ $product->discount }}</p>
+                                    <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
                                 </td>
                                 <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                    <p style="marging: 0; padding: 0">{{ $product->base_price }}</p>
+                                    <p style="marging: 0; padding: 0">{{ $product->name }}</p>
+                                    <span>{{ $product->description }}</span>
                                 </td>
-                            @endif
-                            @if($request->format != 'without_values')
-                                @if($request->format != 'without_totals')
+                                <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                                    <p style="marging: 0; padding: 0">{{ $product->quantity }}</p>
+                                </td>
+                                @if($request->format != 'without_values') 
                                     <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                        <p style="marging: 0; padding: 0">{{ $product->subtotal }}</p>
+                                        <p style="marging: 0; padding: 0">{{ @$product->discount }}</p>
+                                    </td>
+                                    <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                                        <p style="marging: 0; padding: 0">{{ @$product->base_price }}</p>
                                     </td>
                                 @endif
-                            @endif
-                            @php
-                            $subtotal += (float)$product->base_price;
-                            @endphp
-                        </tr>
-                    @endforeach
+                                @if($request->format != 'without_values')
+                                    @if($request->format != 'without_totals')
+                                        <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                                            <p style="marging: 0; padding: 0">{{ @$product->subtotal }}</p>
+                                        </td>
+                                    @endif
+                                @endif
+                                @php
+                                $subtotal += (float)$product->base_price;
+                                @endphp
+                            </tr>
+                        @endforeach
+                    @endif
                 </table>
             </div>
         </div>
             @php
-            $vat = $total*(float)$product->vat/100;
+            $vat = $total*(float)@$product->vat/100;
             $totals = $total+$vat;
             @endphp
 
@@ -827,7 +829,7 @@
                                         @if($request->format != 'before_tax') 
                                             <tr style="border-bottom: 1px solid gray;">
                                                 <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $total }}</td>
-                                                <td style="padding: 5px 0; text-align: center"><span>IVA {{$product->vat}}%</span></td>
+                                                <td style="padding: 5px 0; text-align: center"><span>IVA {{@$product->vat}}%</span></td>
                                                 <td style="padding: 5px 0; text-align: right">{{ $vat }}</td>
                                             </tr>
                                         @endif
