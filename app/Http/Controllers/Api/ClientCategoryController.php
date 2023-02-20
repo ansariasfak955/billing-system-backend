@@ -117,6 +117,7 @@ class ClientCategoryController extends Controller
         $client_category = ClientCategory::where('id', $request->client_category)->first();
         
         $client_category->update($request->except('company_id'));
+        $client_category->type = $request->type??$client_category->type;
         $client_category->save();
 
         return response()->json([
