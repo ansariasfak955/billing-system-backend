@@ -68,6 +68,8 @@ class ClientCategoryController extends Controller
         ClientCategory::setGlobalTable($table);
 
         $client_category = ClientCategory::create($request->except('company_id'));
+        $client_category->type = $request->type;
+        $client_category->save();
 
         return response()->json([
             "status" => true,
