@@ -290,7 +290,7 @@ class SendEmailController extends Controller
             $documentURl = "<a href='$url'>$url</a>";
             $img = "<img src='$company->logo' style='width: 100px; height: 80px; margin-left:190px';>";
             $clientName = (@$invoiceData->client_name ? @$invoiceData->client_name : '--');
-            if(@$invoiceData->supplier->name){
+            if(@!$invoiceData->supplier->name){
                 $body = str_replace('@CLIENTCOMMERCIALNAME@',$invoiceData->supplier->name, @$body);
             }else{
                 $body = str_replace('@CLIENTCOMMERCIALNAME@',$invoiceData->client->name, @$body);
