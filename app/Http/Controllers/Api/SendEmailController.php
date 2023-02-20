@@ -293,19 +293,19 @@ class SendEmailController extends Controller
             if(@$invoiceData->supplier){
                 $body = str_replace('@CLIENTCOMMERCIALNAME@',$invoiceData->supplier->name, $request->$body);
             }else{
-                $body = str_replace('@CLIENTCOMMERCIALNAME@',$invoiceData->client->name, $request->$body);
+                $body = str_replace('@CLIENTCOMMERCIALNAME@',$invoiceData->client->name, $body);
+                $body = str_replace('@CLIENTNAME@',$clientName, $request->body);
+                $body = str_replace('@DOCUMENTTYPE@',$type, $body);
+                $body = str_replace('@MYLOGO@',$img, $body);
+                $body = str_replace('@DOCUMENTURL@',$documentURl, $body);
+                $body = str_replace('@USERPOSITION@',\Auth::user()->position, $body);
+                $body = str_replace('@USEREMAIL@',$company->email, $body);
+                $body = str_replace('@USERPHONE@',$company->phone, $body);
+                $body = str_replace('@DOCUMENTTITLE@',$invoiceData->title, $body);
+                $body = str_replace('@DOCUMENTREFERENCE@', @$invoiceData->reference.''.@$invoiceData->reference_number, $body);
+                $body = str_replace('@MYCOMPANY@',@$company->name, $body);
+                $body = str_replace('@USERNAME@',\Auth::user()->name, $body);
             }
-            $body = str_replace('@CLIENTNAME@',$clientName, $request->body);
-            $body = str_replace('@DOCUMENTTYPE@',$type, $body);
-            $body = str_replace('@MYLOGO@',$img, $body);
-            $body = str_replace('@DOCUMENTURL@',$documentURl, $body);
-            $body = str_replace('@USERPOSITION@',\Auth::user()->position, $body);
-            $body = str_replace('@USEREMAIL@',$company->email, $body);
-            $body = str_replace('@USERPHONE@',$company->phone, $body);
-            $body = str_replace('@DOCUMENTTITLE@',$invoiceData->title, $body);
-            $body = str_replace('@DOCUMENTREFERENCE@', @$invoiceData->reference.''.@$invoiceData->reference_number, $body);
-            $body = str_replace('@MYCOMPANY@',@$company->name, $body);
-            $body = str_replace('@USERNAME@',\Auth::user()->name, $body);
             $cc = null;
             if($request->cc){
                 $cc = explode(',', $request->cc);
