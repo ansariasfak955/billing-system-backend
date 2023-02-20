@@ -315,8 +315,10 @@ class ClientController extends Controller
         //get dynamic reference 
         $refernce_ids = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
         $refernce_id = Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
-
-        $invoiceReceiptAmount = InvoiceReceipt::where('invoice_id', $request->invoice_id)->where('paid','1')->sum('amount');
+        $client_id = $request->client_id;
+        $invoiceReceiptAmount = InvoiceReceipt::whereHas('invoice', function($q) use ($client_id){
+            $q->where('client_id', $client_id);
+        })->where('paid','1')->sum('amount');
         $invoiceBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
         $invoiceRefundBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get()->sum('amount');
         $invoiceTotalBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->get()->sum('amount');
