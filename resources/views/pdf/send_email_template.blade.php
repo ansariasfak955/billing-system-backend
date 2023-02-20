@@ -808,7 +808,7 @@
                         <tr>
                         @if($request->format != 'before_tax') 
                             @if($request->format != 'pro_forma') 
-                                 @if(($request->disable_signed)? '1':'0')       
+                                 @if(($request->disable_signed)? '0':'1')       
                                     <td style="margin: 0;">
                                         <div style="border: 1px solid gray; padding: 10px;">
                                             <!-- <img width="100" height="80" object-fit="cover"
