@@ -127,7 +127,6 @@ class InvoiceTable extends Model
         if($amount){
             return round($amount, 2);
         }
-        return 0 ; 
 	  }
 
     }
