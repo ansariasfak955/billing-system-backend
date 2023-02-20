@@ -87,12 +87,12 @@ class TechnicalTable extends Model
     }
     public function getAmountWithOutVatAttribute(){
         if(isset($this->items)){
-          return number_format($this->items->sum('amount_with_out_vat'),2);
+          return $this->items->sum('amount_with_out_vat');
         }
       }
       public function getTaxAmountAttribute(){
         if(isset($this->items)){
-          return number_format($this->items->sum('taxAmount'),2);
+          return $this->items->sum('taxAmount');
         }
       }
 
@@ -123,7 +123,7 @@ class TechnicalTable extends Model
 	public function getAmountAttribute(){
         
       if(isset($this->items)){
-		return number_format($this->items->sum('amount'),2);
+		return $this->items->sum('amount');
 	  }
     }
     public function getDateAttribute(){
