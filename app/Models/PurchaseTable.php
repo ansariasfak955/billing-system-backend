@@ -68,7 +68,7 @@ class PurchaseTable extends Model
     }
     public function getAmountWithOutVatAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('amount_with_out_vat');
+          return number_format($this->items->sum('amount_with_out_vat'),2);
         }
       }
       public function getTaxAmountAttribute(){
@@ -117,7 +117,7 @@ class PurchaseTable extends Model
     }
 	public function getAmountAttribute(){
       if(isset($this->items)){
-		return $this->items->sum('amount');
+		return number_format($this->items->sum('amount'),2);
 	  }
     }
     
@@ -148,7 +148,7 @@ class PurchaseTable extends Model
     public function getSubTotalAttribute(){
 
         if(isset($this->items)){
-            return $this->items->sum('base_price');
+            return number_format($this->items->sum('base_price'),2);
         }
     }
     public function getVatAttribute(){
