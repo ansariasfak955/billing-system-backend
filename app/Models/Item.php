@@ -64,7 +64,7 @@ class Item extends Model
                 // if($incTax){
                 //     $incTaxAmount = ($incTax / 100) * $amount;
                 // }
-                return number_format($taxAmount+$incTaxAmount, 2);
+                return round($taxAmount+$incTaxAmount, 2);
             }
             return 0;
         }
@@ -98,7 +98,7 @@ class Item extends Model
                 if($incTax){
                     $incTaxAmount = ($incTax / 100) * $amount;
                 }
-                return number_format($taxAmount+$incTaxAmount, 2);
+                return round($taxAmount+$incTaxAmount, 2);
             }
             return 0;
         }
@@ -132,7 +132,7 @@ class Item extends Model
                 if($incTax){
                     $incTaxAmount = ($incTax / 100) * $amount;
                 }
-                return number_format($amount+$taxAmount+$incTaxAmount, 2);
+                return round($amount+$taxAmount+$incTaxAmount, 2);
             }
             return 0;
         }
@@ -153,7 +153,7 @@ class Item extends Model
             if($basePrice){
 
                 $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity;
-                return number_format($amount, 2);
+                return round($amount, 2);
             }
             return 0;
         }
