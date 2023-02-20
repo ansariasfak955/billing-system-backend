@@ -753,7 +753,7 @@
                                 @if($request->format != 'without_values')
                                     @if($request->format != 'without_totals')
                                         <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                            <p style="marging: 0; padding: 0">{{ @$product->subtotal }}</p>
+                                            <p style="marging: 0; padding: 0">{{ @$product->amount_with_out_vat }}</p>
                                         </td>
                                     @endif
                                 @endif

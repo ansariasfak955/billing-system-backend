@@ -61,7 +61,7 @@ class SalesEstimate extends Model
     public function delivery_options(){
         return $this->hasOne(DeliveryOption::class,'id', 'delivery_option');
     }
-	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'reference_type','agent_name','amount_with_out_vat','tax_amount'];
+	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount','reference_type','agent_name','amount_with_out_vat','tax_amount'];
 
     public function getSignatureAttribute()
     {
@@ -83,7 +83,6 @@ class SalesEstimate extends Model
 			return $this->item_meta->pluck('discount')->first();
 		}
     }
-
 	public function getClientNameAttribute(){
         
         if(isset( $this->attributes['client_id'] )){

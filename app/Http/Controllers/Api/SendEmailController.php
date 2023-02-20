@@ -278,9 +278,9 @@ class SendEmailController extends Controller
         
         $attachment =  str_replace(' ' ,'_',$type.'_'.now()).".pdf";
         if($request->format == 'ticket'){
-            $pdf->loadView('pdf.ticket_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
+            $pdf->loadView('pdf.ticket_template', compact('company', 'products', 'template','invoiceData', 'total','request','subtotal'));
         }else{
-            $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request'));
+            $pdf->loadView('pdf.send_email_template', compact('company', 'products', 'template','invoiceData', 'total','request','subtotal'));
         }
         \Storage::put('/public/temp/'.$attachment, $pdf->output());
         if($request->send_to || $request->cc){
