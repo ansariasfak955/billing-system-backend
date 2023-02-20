@@ -290,10 +290,10 @@ class SendEmailController extends Controller
             $documentURl = "<a href='$url'>$url</a>";
             $img = "<img src='$company->logo' style='width: 100px; height: 80px; margin-left:190px';>";
             $clientName = (@$invoiceData->client_name ? @$invoiceData->client_name : '--');
-            if(@!$invoiceData->client->name){
-                $body = str_replace('@CLIENTCOMMERCIALNAME@',$invoiceData->client->name, @$body);
-            }else{
+            $clientLegalName = (@$invoiceData->client_legal_name ? @$invoiceData->client_legal_name : '--');
+
                 $body = str_replace('@CLIENTNAME@',$clientName, $request->body);
+                $body = str_replace('@CLIENTCOMMERCIALNAME@',$clientLegalName, $request->body);
                 $body = str_replace('@DOCUMENTTYPE@',$type, @$body);
                 $body = str_replace('@MYLOGO@',$img, $body);
                 $body = str_replace('@DOCUMENTURL@',$documentURl, @$body);
@@ -304,7 +304,6 @@ class SendEmailController extends Controller
                 $body = str_replace('@DOCUMENTREFERENCE@', @$invoiceData->reference.''.@$invoiceData->reference_number, @$body);
                 $body = str_replace('@MYCOMPANY@',@$company->name, $body);
                 $body = str_replace('@USERNAME@',\Auth::user()->name, @$body);
-            }
             $cc = null;
             if($request->cc){
                 $cc = explode(',', $request->cc);
