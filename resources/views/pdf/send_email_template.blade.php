@@ -808,14 +808,16 @@
                         <tr>
                         @if($request->format != 'before_tax') 
                             @if($request->format != 'pro_forma') 
-                                <td style="margin: 0;">
-                                    <div style="border: 1px solid gray; padding: 10px;">
-                                        <!-- <img width="100" height="80" object-fit="cover"
-                                            src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" /> -->
-                                        <p style="font-weight: bold; position: relative; bottom: 0;">Name:</p>
-                                        <p style="font-weight: bold; position: relative; bottom: 0;">Ced/Ruc:</p>
-                                    </div>
-                                </td>
+                                 @if($request->format != 'disable_signed')       
+                                    <td style="margin: 0;">
+                                        <div style="border: 1px solid gray; padding: 10px;">
+                                            <!-- <img width="100" height="80" object-fit="cover"
+                                                src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" /> -->
+                                            <p style="font-weight: bold; position: relative; bottom: 0;">Name:</p>
+                                            <p style="font-weight: bold; position: relative; bottom: 0;">Ced/Ruc:</p>
+                                        </div>
+                                    </td>
+                                @endif
                             @endif
                         @endif
                             <td style="padding: 0; margin: 0; padding-left: 120px;">

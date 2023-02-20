@@ -295,6 +295,7 @@ class SendEmailController extends Controller
             $body = str_replace('@DOCUMENTTYPE@',$type, $body);
             $body = str_replace('@MYLOGO@',$img, $body);
             $body = str_replace('@DOCUMENTURL@',$documentURl, $body);
+            $body = str_replace('@USERPOSITION@',\Auth::user()->position, $body);
             $body = str_replace('@USEREMAIL@',$company->email, $body);
             $body = str_replace('@USERPHONE@',$company->phone, $body);
             $body = str_replace('@DOCUMENTTITLE@',$invoiceData->title, $body);
