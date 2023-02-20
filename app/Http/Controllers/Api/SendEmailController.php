@@ -288,7 +288,7 @@ class SendEmailController extends Controller
             //replacing the variables with the actual vlaues to send in email
             $url = url('/').'/api/'.$request->company_id.'/preview-template?id='.$request->id.'&template_id='.$template_id.'&type='.$type.'&download=1';
             $documentURl = "<a href='$url'>$url</a>";
-            $img = '<img src="{{ @$company->logo }}" alt="" srcset="" style="width: 100px; height: 80px; margin-left:190px;">';
+            $img = "<img src='$company->logo' style='width: 100px; height: 80px; margin-left:190px';>";
             $clientName = (@$invoiceData->client_name ? @$invoiceData->client_name : '--');
             $body = str_replace('@CLIENTNAME@',$clientName, $request->body);
             $body = str_replace('@CLIENTCOMMERCIALNAME@',$invoiceData->client->name, $body);
