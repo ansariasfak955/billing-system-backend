@@ -64,7 +64,7 @@ class Item extends Model
                 // if($incTax){
                 //     $incTaxAmount = ($incTax / 100) * $amount;
                 // }
-                return number_format((float)$taxAmount+$incTaxAmount, 2);
+                return round($taxAmount+$incTaxAmount, 2);
             }
             return 0;
         }
@@ -98,7 +98,7 @@ class Item extends Model
                 if($incTax){
                     $incTaxAmount = ($incTax / 100) * $amount;
                 }
-                return number_format((float)$taxAmount+$incTaxAmount, 2);
+                return round($taxAmount+$incTaxAmount, 2);
             }
             return 0;
         }
@@ -132,16 +132,13 @@ class Item extends Model
                 if($incTax){
                     $incTaxAmount = ($incTax / 100) * $amount;
                 }
-                return number_format((float)$amount+$taxAmount+$incTaxAmount, 2);
+                return round($amount+$taxAmount+$incTaxAmount, 2);
             }
             return 0;
         }
     }
     public function getAmountWithOutVatAttribute(){
         if(isset($this->attributes['base_price'])){
-            if(isset($this->attributes['tax'])){
-                $incTax = (int)$this->attributes['tax'];
-            }
             if(isset($this->attributes['quantity'])){
                 $quantity = $this->attributes['quantity'];
             }else{
@@ -149,11 +146,10 @@ class Item extends Model
             }
 
             $basePrice = (float)$this->attributes['base_price'];
-            $discount = (float)$this->attributes['discount'];
             if($basePrice){
 
-                $amount = ($basePrice - ($basePrice * $discount / 100)) * $quantity;
-                return number_format((float)$amount, 2);
+                $amount = $basePrice * $quantity;
+                return round($amount, 2);
             }
             return 0;
         }
