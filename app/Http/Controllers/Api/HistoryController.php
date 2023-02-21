@@ -222,9 +222,9 @@ class HistoryController extends Controller
                         $unitPrice = $totalPrice/$quantity;
                     }
                     $arr['amount'] = number_format($amount,2);
-                    $arr['unit_price'] = $unitPrice;
+                    $arr['unit_price'] = number_format($unitPrice,2);
                     $arr['quantity'] = $quantity;
-                    $arr['product_total'] = $totalPrice;
+                    $arr['product_total'] = number_format($totalPrice,2);
 
                     $data[] = $arr;
                }
@@ -327,14 +327,14 @@ class HistoryController extends Controller
                     $arr['addendum'] = $item->addendum;
                     $arr['signature'] = $item->signature;
                     $arr['total_quantity'] = $item->total_quantity;
-                    $arr['amount'] = $item->items->where('reference_id', $request->id)->where('reference',   $request->reference)->sum('amount');
+                    $arr['amount'] = $item->items->where('reference_id', $request->ids)->where('reference',   $request->reference)->sum('amount');
                     $arr['activity'] = '';
 
-                    $totalPrice = $item->items->where('reference_id', $request->id)->where('reference',   $request->reference)->sum('subtotal');
+                    $totalPrice = $item->items->where('reference_id', $request->ids)->where('reference',   $request->reference)->sum('subtotal');
 
                     $unitPrice = 0;
 
-                    $quantity = $item->items->where('reference_id', $request->id)->where('reference',   $request->reference)->sum('quantity');
+                    $quantity = $item->items->where('reference_id', $request->ids)->where('reference',   $request->reference)->sum('quantity');
 
                     if($totalPrice && $quantity){
 
