@@ -189,19 +189,21 @@ class InvoiceReceiptController extends Controller
                 $invoice->save();
             }
         }
+        
         $invoiceReceipt->save();
-
-        $receipt = InvoiceReceipt::create([
-            'invoice_id' => $invoiceReceipt->invoice_id,
-            'concept' => $request->concept,
-            'payment_option' => $request->payment_option,
-            'bank_account' => $request->bank_account,
-            'payment_date' => $request->payment_date,
-            'amount' => $request->amount,
-            'expiration_date' => $request->expiration_date,
-            'paid' =>$request->paid ?? 0,
-            'paid_by' => $request->paid_by
-        ]);
+        if($request->amount){
+            $receipt = InvoiceReceipt::create([
+                'invoice_id' => $invoiceReceipt->invoice_id,
+                'concept' => $request->concept,
+                'payment_option' => $request->payment_option,
+                'bank_account' => $request->bank_account,
+                'payment_date' => $request->payment_date,
+                'amount' => $request->amount,
+                'expiration_date' => $request->expiration_date,
+                'paid' =>$request->paid ?? 0,
+                'paid_by' => $request->paid_by
+            ]);
+        }
 
         return response()->json([
             "status" => true,
