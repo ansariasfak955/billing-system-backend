@@ -38,38 +38,38 @@
     <tbody>
         @foreach($expenseHistorys as $expenseHistory)
         <tr>
-            <td>{{@$expenseHistory->reference.''.@$expenseHistory->reference_number}}</td>
-            <td>{{@$expenseHistory->date}}</td>
-            <td>{{@$expenseHistory->title}}</td>
-            <td>{{@$expenseHistory->supplier->legal_name}}</td>
-            <td>{{@$expenseHistory->supplier->tin}}</td>
+            <td>{{@$expenseHistory['reference']}}</td>
+            <td>{{@$expenseHistory['date']}}</td>
+            <td>{{@$expenseHistory['title']}}</td>
+            <td>{{@$expenseHistory['supplier']}}</td>
+            <td>{{@$expenseHistory['supplier_tin']}}</td>
             <td></td>
-            <td>{{@$expenseHistory->supplier->email}}</td>
-            <td>{{@$expenseHistory->supplier->phone_1}}</td>
-            <td>{{@$expenseHistory->supplier->phone_2}}</td>
-            <td>{{@$expenseHistory->status}}</td>
+            <td>{{@$expenseHistory['supplier_email']}}</td>
+            <td>{{@$expenseHistory['supplier_phone_1']}}</td>
+            <td>{{@$expenseHistory['supplier_phone_2']}}</td>
+            <td>{{@$expenseHistory['status']}}</td>
             <td></td>
-            <td>{{@$expenseHistory->bank_account}}</td>
-            <td>{{@$expenseHistory->created_by_name}}</td>
-            <td>{{@$expenseHistory->agent_name}}</td>
-            <td>{{@$expenseHistory->amount_income_tax}}</td>
-            <td>{{@$expenseHistory->amount_with_out_vat}}</td>
-            <td>{{@$expenseHistory->amount - @$expenseHistory->amount_with_out_vat}}</td>
-            <td>{{@$expenseHistory->amount}}</td>
-            <td>{{@$expenseHistory->supplier->address}}</td>
-            <td>{{@$expenseHistory->supplier->city}}</td>
-            <td>{{@$expenseHistory->supplier->state}}</td>
-            <td>{{@$expenseHistory->supplier->zip_code}}</td>
-            <td>{{@$expenseHistory->supplier->country}}</td>
-            <td>{{@$expenseHistory->currency}}</td>
-            <td>{{@$expenseHistory->currency_rate}}</td>
-            <td>{{@$expenseHistory->comments}}</td>
-            <td>{{@$expenseHistory->private_comments}}</td>
-            <td>{{@$expenseHistory->addendum}}</td> 
-            <td>{{@$expenseHistory->signature}}</td>
-            <td>{{@$expenseHistory->amount}}</td>
-            <td>{{@$expenseHistory->total_quantity}}</td>
-            <td>{{@$expenseHistory->amount}}</td>
+            <td>{{@$expenseHistory['bank_account']}}</td>
+            <td>{{@$expenseHistory['created_by_name']}}</td>
+            <td>{{@$expenseHistory['agent_name']}}</td>
+            <td>{{@$expenseHistory['income_tax']}}</td>
+            <td>{{@$expenseHistory['total']}}</td>
+            <td>{{@$expenseHistory['total_tax']}}</td>
+            <td>{{@$expenseHistory['amount']}}</td>
+            <td>{{@$expenseHistory['supplier_address']}}</td>
+            <td>{{@$expenseHistory['supplier_city']}}</td>
+            <td>{{@$expenseHistory['supplier_state']}}</td>
+            <td>{{@$expenseHistory['supplier_zip_code']}}</td>
+            <td>{{@$expenseHistory['supplier_country']}}</td>
+            <td>{{@$expenseHistory['currency']}}</td>
+            <td>{{@$expenseHistory['currency_rate']}}</td>
+            <td>{{@$expenseHistory['comments']}}</td>
+            <td>{{@$expenseHistory['private_comments']}}</td>
+            <td>{{@$expenseHistory['addendum']}}</td> 
+            <td>{{@$expenseHistory['signature']}}</td>
+            <td>{{@$expenseHistory['unit_price']}}</td>
+            <td>{{@$expenseHistory['total_quantity']}}</td>
+            <td>{{@$expenseHistory['product_total']}}</td>
         </tr>
         @endforeach
     </tbody>
