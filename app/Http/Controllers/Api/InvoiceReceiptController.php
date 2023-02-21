@@ -191,7 +191,8 @@ class InvoiceReceiptController extends Controller
         }
         
         $invoiceReceipt->save();
-        if($request->amount){
+        $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
+        if($invoice->amount_due){
             $receipt = InvoiceReceipt::create([
                 'invoice_id' => $invoiceReceipt->invoice_id,
                 'concept' => $request->concept,
@@ -203,6 +204,9 @@ class InvoiceReceiptController extends Controller
                 'paid' =>$request->paid ?? 0,
                 'paid_by' => $request->paid_by
             ]);
+        }else{
+            $invoice->status =  'paid';
+            $invoice->save();
         }
 
         return response()->json([
