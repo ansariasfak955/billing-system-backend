@@ -246,9 +246,8 @@ class HistoryController extends Controller
     }
     public function expenseHistoryExport(Request $request, $company_id){
         $validator = Validator::make($request->All(), [
-            // 'id' => 'required',
-            // 'reference' => 'required',
             'ids' => 'required',
+            'reference' => 'required',
         ]);
         if($validator->fails()){
             return response()->json([
@@ -274,7 +273,7 @@ class HistoryController extends Controller
         DeliveryOption::setGlobalTable($table);
 
         $fileName = 'invoices-'.time().$company_id.'.xlsx';
-        $ids = explode(',', $request->ids);
+        // $ids = explode(',', $request->ids);
         
         // $expenseHistorys = PurchaseTable::with('items','supplier','payment_options','payment_terms','delivery_options','category')->whereIn('id', $ids)->get();
         
@@ -285,8 +284,10 @@ class HistoryController extends Controller
             $items = [];
 
             if($type == 'PO'){
-              
-                $items = PurchaseTable::with(['items','supplier','payment_options','payment_terms','delivery_options','category'])->whereIn('id', $ids)->get();
+                
+                $items = PurchaseTable::with(['items','supplier','payment_options','payment_terms','delivery_options','category'])->WhereHas('items', function ($query) use ($request) {
+                    $query->where('reference_id', $request->ids)->where('reference',   $request->reference);
+                })->get();
             }
             if(count($items)){
 
