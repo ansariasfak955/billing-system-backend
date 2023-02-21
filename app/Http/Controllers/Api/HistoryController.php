@@ -327,9 +327,8 @@ class HistoryController extends Controller
                     $arr['addendum'] = $item->addendum;
                     $arr['signature'] = $item->signature;
                     $arr['total_quantity'] = $item->total_quantity;
+                    $arr['amount'] = $item->items->where('reference_id', $request->id)->where('reference',   $request->reference)->sum('amount');
                     $arr['activity'] = '';
-
-                    $amount = $item->items->where('reference_id', $request->id)->where('reference',   $request->reference)->sum('amount');
 
                     $totalPrice = $item->items->where('reference_id', $request->id)->where('reference',   $request->reference)->sum('subtotal');
 
@@ -341,7 +340,7 @@ class HistoryController extends Controller
 
                         $unitPrice = $totalPrice/$quantity;
                     }
-                    $arr['amount'] = number_format($amount,2);
+        
                     $arr['unit_price'] = $unitPrice;
                     $arr['quantity'] = $quantity;
                     $arr['product_total'] = $totalPrice;
