@@ -205,6 +205,7 @@ class InvoiceReceiptController extends Controller
                 'paid_by' => $request->paid_by
             ]);
         }else{
+            $receipt = $invoiceReceipt;
             $invoice->status =  'paid';
             $invoice->save();
         }
