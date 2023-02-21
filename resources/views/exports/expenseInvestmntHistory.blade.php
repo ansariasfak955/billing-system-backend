@@ -36,7 +36,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($items as $expenseHistory)
+        @foreach($expenseHistorys as $expenseHistory)
         <tr>
             <td>{{@$expenseHistory->reference.''.@$expenseHistory->reference_number}}</td>
             <td>{{@$expenseHistory->date}}</td>

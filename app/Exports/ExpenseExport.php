@@ -11,14 +11,14 @@ class ExpenseExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    private $items;
-    public function __construct($items){
-        $this->items = $items;
+    private $expenseHistorys;
+    public function __construct($expenseHistorys){
+        $this->expenseHistorys = $expenseHistorys;
     }
     public function view(): View
     {
-        $items = $this->items;
-        // dd($items);
-        return view('exports.expenseInvestmntHistory', compact('items'));
+        $expenseHistorys = $this->expenseHistorys;
+        // dd($expenseHistorys);
+        return view('exports.expenseInvestmntHistory', compact('expenseHistorys'));
     }
 }
