@@ -149,7 +149,7 @@ class Item extends Model
             if($basePrice){
 
                 $amount = $basePrice * $quantity;
-                return round($amount, 2);
+                return round($amount,2);
             }
             return 0;
         }

@@ -30,23 +30,25 @@
             <th>Private Comments</th>
             <th>Addendum</th>
             <th>Signed</th>
+            <th>Unit Price</th>
             <th>Quantity</th>
+            <th>Product Total</th>
         </tr>
     </thead>
     <tbody>
-        @foreach($expenseHistorys as $expenseHistory)
+        @foreach($items as $expenseHistory)
         <tr>
             <td>{{@$expenseHistory->reference.''.@$expenseHistory->reference_number}}</td>
             <td>{{@$expenseHistory->date}}</td>
             <td>{{@$expenseHistory->title}}</td>
             <td>{{@$expenseHistory->supplier->legal_name}}</td>
             <td>{{@$expenseHistory->supplier->tin}}</td>
-            <td>{{@$expenseHistory->category->name}}</td>
+            <td></td>
             <td>{{@$expenseHistory->supplier->email}}</td>
             <td>{{@$expenseHistory->supplier->phone_1}}</td>
             <td>{{@$expenseHistory->supplier->phone_2}}</td>
             <td>{{@$expenseHistory->status}}</td>
-            <td>{{@$expenseHistory->payment_options->name}}</td>
+            <td></td>
             <td>{{@$expenseHistory->bank_account}}</td>
             <td>{{@$expenseHistory->created_by_name}}</td>
             <td>{{@$expenseHistory->agent_name}}</td>
@@ -65,7 +67,9 @@
             <td>{{@$expenseHistory->private_comments}}</td>
             <td>{{@$expenseHistory->addendum}}</td> 
             <td>{{@$expenseHistory->signature}}</td>
+            <td>{{@$expenseHistory->amount}}</td>
             <td>{{@$expenseHistory->total_quantity}}</td>
+            <td>{{@$expenseHistory->amount}}</td>
         </tr>
         @endforeach
     </tbody>
