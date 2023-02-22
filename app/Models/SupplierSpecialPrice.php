@@ -16,6 +16,7 @@ class SupplierSpecialPrice extends Model
         "purchase_margin",
         "sales_margin",
         "discount",
+        "type",
         "special_price",
         'product_type'
     ];
@@ -30,7 +31,7 @@ class SupplierSpecialPrice extends Model
         self::$globalTable = $table;
     }
 
-    protected $appends = ['product_name'];
+    protected $appends = ['product_name','supplier_name'];
 
     public function getProductNameAttribute()
     {
@@ -41,6 +42,14 @@ class SupplierSpecialPrice extends Model
             return get_service_name($company_id, $this->attributes['product_id']);
         }else{
             return get_product_name($company_id, $this->attributes['product_id']);
+        }
+    }
+    public function getSupplierNameAttribute(){
+        
+        if(isset( $this->attributes['supplier_id'] )){
+            $table = $this->getTable();
+            $company = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_supplier_name($company, $this->attributes['supplier_id']);
         }
     }
 }

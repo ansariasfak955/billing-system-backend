@@ -101,13 +101,18 @@ class Product extends Model
         if(isset($this->attributes['price'])){
 
             $basePrice = $this->attributes['price'];
-
-            // dd(request()->client_id);
             if(request()->client_id){
                 $table = $this->getTable();
                 $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
                 $discount = get_product_special_price($company_id,request()->client_id,$this->attributes['id']);
-                // $client = ClientSpecialPrice::where('client_id',request()->client_id);
+                if($discount){
+                    $discountAmount = ($discount / 100) * $basePrice;
+                    return $basePrice - $discountAmount;
+                }
+            }elseif(request()->supplier_id){
+                $table = $this->getTable();
+                $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+                $discount = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
                 if($discount){
                     $discountAmount = ($discount / 100) * $basePrice;
                     return $basePrice - $discountAmount;

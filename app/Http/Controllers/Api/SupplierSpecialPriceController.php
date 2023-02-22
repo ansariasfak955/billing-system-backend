@@ -30,29 +30,30 @@ class SupplierSpecialPriceController extends Controller
         $table = 'company_'.$request->company_id.'_supplier_special_prices';
         SupplierSpecialPrice::setGlobalTable($table);
 
-        if($request->supplier_id == NULL){
-            if(SupplierSpecialPrice::count() == 0){
-                return response()->json([
-                    "status" => false,
-                    "message" =>  "No data found"
-                ]);
-            }
-            return response()->json([
-                "status" => true,
-                "supplier_special_prices" =>  SupplierSpecialPrice::get()
-            ]);
+        $query = SupplierSpecialPrice::query();
+        if($request->client_id ){
+            $query->where('supplier_id' , $request->client_id);
+        }
+        if($request->product_id ){
+            $query->where('product_id' , $request->product_id);
         }
 
-        if(SupplierSpecialPrice::where('supplier_id', $request->supplier_id)->count() == 0){
-            return response()->json([
-                "status" => false,
-                "message" =>  "No data found"
-            ]);
+        if($request->type ){
+            $query->where('type' , $request->type);
         }
         
+        $data =  $query->get();
+
+        if( count($data) ){
+
+            return response()->json([
+                "status" => true,
+                "supplier_special_prices" =>   $data
+            ]);
+        }
         return response()->json([
-            "status" => true,
-            "supplier_special_prices" =>  SupplierSpecialPrice::where('supplier_id', $request->supplier_id)->get()
+            "status" => false,
+            "message" =>  'No data found!'
         ]);
     }
 
@@ -69,7 +70,7 @@ class SupplierSpecialPriceController extends Controller
             'product_id' => 'required',
             'product_type' => 'required',
         ], [
-            'supplier_id.required' => 'Please select client ',
+            'supplier_id.required' => 'Please select supplier ',
             'product_id.required' => 'Please select product ',
         ]);
 

@@ -506,6 +506,8 @@ class TableHelper
                 $table->float('discount')->nullable();
                 $table->float('special_price')->nullable();
                 $table->string('product_type')->nullable();
+                // add new column type
+                $table->string('type',20)->nullable();
                 $table->timestamps();
             });
         }
