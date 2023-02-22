@@ -178,20 +178,22 @@ class InvoiceReceiptController extends Controller
         //     "status" => true,
         //     "invoice" => InvoiceReceipt::with('invoice','items')->where('id', $request->invoice_receipt)->first()
         // ]);
-        $status = 'paid';
-        $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
-        $amountToSub = 0;
-        if($invoice->amount_due == $request->amount){
-            $amountToSub = $request->amount;
-            $status = 'partially paid';
-        }
+        // $status = 'paid';
+        // $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
+        // $amountToSub = 0;
+        // if($invoice->amount_due == $request->amount){
+        //     $amountToSub = $request->amount;
+        //     $status = 'partially paid';
+        // }
         $amount = $invoiceReceipt->amount;
-        $invoiceReceipt->amount = $amount-$amountToSub;
+        // $invoiceReceipt->amount = $amount-$amountToSub;
+        $invoiceReceipt->amount = $amount-($request->amount ?? 0);
         if($request->paid){
-            $invoiceReceipt->paid = '1';
+            // $invoiceReceipt->paid = '1';
+            $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
             if($invoice){
 
-                $invoice->status =  $status;
+                $invoice->status =  'partially paid';
                 $invoice->save();
             }
         }
