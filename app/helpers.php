@@ -74,6 +74,12 @@ function get_product_category_name($company_id,$product_category_id)
     \App\Models\Supplier::setGlobalTable($table);
     return \App\Models\Supplier::where('id', $product_category_id)->pluck('name')->first();
 }
+function get_product_special_price($company_id,$client_id,$product_id)
+{
+    $table = 'company_'.$company_id.'_client_special_prices';
+    \App\Models\ClientSpecialPrice::setGlobalTable($table);
+    return \App\Models\ClientSpecialPrice::where('client_id', $client_id)->where('product_id',$product_id)->pluck('discount')->first();
+}
 
 function get_asset_name($company_id,$asset_id)
 {

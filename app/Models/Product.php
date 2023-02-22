@@ -22,7 +22,7 @@ class Product extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
-    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount', 'sales_stock_value', 'purchase_stock_value','product_category_name'];
+    protected $appends = ['stock', 'virtual_stock', 'minimum_stock', 'amount', 'sales_stock_value', 'purchase_stock_value','product_category_name','price'];
 
     public function getAmountAttribute(){
         if(isset($this->attributes['price'])){
@@ -96,6 +96,27 @@ class Product extends Model
             }
             return '';
         }
+    }
+    public function getPriceAttribute(){
+        if(isset($this->attributes['price'])){
+
+            $basePrice = $this->attributes['price'];
+
+            // dd(request()->client_id);
+            if(request()->client_id){
+                $table = $this->getTable();
+                $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+                $discount = get_product_special_price($company_id,request()->client_id,$this->attributes['id']);
+                // $client = ClientSpecialPrice::where('client_id',request()->client_id);
+                if($discount){
+                    $discountAmount = ($discount / 100) * $basePrice;
+                    return $basePrice - $discountAmount;
+                }
+            }
+            
+            
+        }
+        return $basePrice ;
     }
 
     public function getSalesStockValueAttribute(){
