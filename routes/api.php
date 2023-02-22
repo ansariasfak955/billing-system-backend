@@ -336,6 +336,8 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('invoices', 'ReportController@invoicing');
                 Route::get('technical', 'ReportController@technicalService');
                 Route::get('sales', 'ReportController@sales');
+                Route::get('sales-client-history', 'ReportController@salesClientHistory');
+                Route::get('sales-agents-history', 'ReportController@salesAgentsHistory');
                 Route::get('overview', 'ReportController@overview');
                 Route::get('purchases', 'ReportController@purchases');
                 Route::get('cash-flow', 'ReportController@cashFlow');
