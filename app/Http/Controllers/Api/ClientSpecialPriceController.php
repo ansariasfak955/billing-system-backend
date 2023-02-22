@@ -29,6 +29,9 @@ class ClientSpecialPriceController extends Controller
         if($request->client_id ){
             $query->where('client_id' , $request->client_id);
         }
+        if($request->product_id ){
+            $query->where('product_id' , $request->product_id);
+        }
 
         if($request->type ){
             $query->where('type' , $request->type);
