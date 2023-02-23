@@ -131,7 +131,8 @@ class TechnicalTable extends Model
 	public function getAmountAttribute(){
         
       if(isset($this->items)){
-		return $this->items->sum('amount');
+		$amount =  $this->items->sum('amount') ?? 0;
+        return sprintf("%.2f",$amount);
 	  }
     }
     public function getDateAttribute(){
