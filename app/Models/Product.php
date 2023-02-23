@@ -105,8 +105,8 @@ class Product extends Model
 
     public function getMinimumStockAttribute()
     {
-        if(isset($this->attributes['id'])){
-            $table = $this->getTable();
+         if(isset($this->attributes['id'])){
+            $table = $this->getTabl();
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             $product_stock = get_product_stock($company_id, $this->attributes['id']);
             if ($product_stock != NULL) {
