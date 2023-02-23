@@ -115,14 +115,14 @@ class TableHelper
                 $table->id();
                 $table->string('client_id');
                 $table->string('product_id')->nullable();
-                $table->float('purchase_price')->nullable();
-                $table->float('sales_price')->nullable();
                 $table->string('purchase_margin')->nullable();
                 $table->string('sales_margin')->nullable();
-                $table->float('discount')->nullable();
-                $table->float('special_price')->nullable();
                 $table->string('type',20)->nullable();
                 $table->string('product_type')->nullable();
+                $table->decimal('purchase_price', 10, 2)->nullable();
+                $table->decimal('sales_price', 10, 2)->nullable();
+                $table->decimal('discount', 10, 2)->nullable();
+                $table->decimal('special_price', 10, 2)->nullable();
                 $table->timestamps();
             });
         }
@@ -499,13 +499,13 @@ class TableHelper
                 $table->id();
                 $table->string('supplier_id');
                 $table->string('product_id')->nullable();
-                $table->float('purchase_price')->nullable();
-                $table->float('sales_price')->nullable();
                 $table->string('purchase_margin')->nullable();
                 $table->string('sales_margin')->nullable();
-                $table->float('discount')->nullable();
-                $table->float('special_price')->nullable();
                 $table->string('product_type')->nullable();
+                $table->decimal('purchase_price', 10, 2)->nullable();
+                $table->decimal('sales_price', 10, 2)->nullable();
+                $table->decimal('discount', 10, 2)->nullable();
+                $table->decimal('special_price', 10, 2)->nullable();
                 // add new column type
                 $table->string('type',20)->nullable();
                 $table->timestamps();
