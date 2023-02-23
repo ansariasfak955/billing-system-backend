@@ -250,7 +250,8 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        // dd($referenceType);
 
         $data = [];
         if( $request->type == "overview" ){
@@ -361,7 +362,6 @@ class ReportController extends Controller
             ];
 
         }elseif( $request->type == "clients" ){
-            // $refernce_ids = Reference::where('type', 'Sales Estimate')->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
             $data['clients'] = [];
@@ -371,7 +371,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::where('reference','SE')->where('client_id', $request->client_id)->get()->sum('amount'),
+                            "$". SalesEstimate::where('reference',$referenceType)->where('client_id', $request->client_id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -392,7 +392,7 @@ class ReportController extends Controller
                             "label" => "" . $agentName->name, 
                             "backgroundColor" => "#26C184", 
                             "data" => [
-                            " " . SalesEstimate::where('reference', 'SE')->get()->sum('amount'),
+                            " " . SalesEstimate::where('reference', $referenceType)->get()->sum('amount'),
                             ] 
                         ], 
                     ]
@@ -464,6 +464,11 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+
         if($request->type == "clientHistory" ){
             $clients = Client::get();
             $data = [];
@@ -474,38 +479,38 @@ class ReportController extends Controller
                         [
                             "label" => "" . $client->legal_name, 
                             "data" => [
-                            " " . SalesEstimate::where('reference', 'SE')->where('client_id', $request->client_id)->get()->sum('amount'),
+                            " " . SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->get()->sum('amount'),
                             ] 
                         ],
                         [
-                            "label" => "total(".SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)
+                            "label" => "total(".SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)
                             ->where('status', 'pending')->where('status', 'refused')->where('status', 'accepted')->where('status', 'closed')
                             ->count().")", 
                         ],
                         [
  
-                            "label" => "Pending(".SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'pending')->count().")",
+                            "label" => "Pending(".SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'pending')->count().")",
                             "data" => [
-                                " ".SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'pending')->get()->sum('amount'),
+                                " ".SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'pending')->get()->sum('amount'),
                             ] 
                         ],
                         [
  
-                            "label" => "Refused(". SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'refused')->count().")",  
+                            "label" => "Refused(". SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'refused')->count().")",  
                             "data" => [
-                                " " . SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'refused')->get()->sum('amount'),
+                                " " . SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'refused')->get()->sum('amount'),
                                 ] 
                         ], 
                     [ 
-                        "label" => "Accepted(". SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'accepted')->count().")", 
+                        "label" => "Accepted(". SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'accepted')->count().")", 
                         "data" => [
-                            " " . SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'accepted')->get()->sum('amount'),
+                            " " . SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'accepted')->get()->sum('amount'),
                         ] 
                     ],
                     [ 
-                        "label" => "Closed(". SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'closed')->count().")", 
+                        "label" => "Closed(". SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'closed')->count().")", 
                         "data" => [
-                            "" . SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'closed')->get()->sum('amount'),
+                            "" . SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'closed')->get()->sum('amount'),
                         ] 
                     ],
                     ],
@@ -539,6 +544,11 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+
         if($request->type == "agentsHistory" ){
             $agentNames = User::get();
             $data = [];
@@ -551,26 +561,26 @@ class ReportController extends Controller
                         ],
                         [
                             "total_amount" => [
-                            " " . SalesEstimate::where('reference', 'SE')->get()->sum('amount_with_out_vat'),
+                            " " . SalesEstimate::where('reference', $referenceType)->get()->sum('amount_with_out_vat'),
                             ] 
                         ],
                         [
-                            "label" => "total(".SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)
+                            "label" => "total(".SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)
                             ->where('status', 'pending')->where('status', 'refused')->where('status', 'accepted')->where('status', 'closed')
                             ->count().")", 
                         ],
                         [
-                            "label" => "Pending(".SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'pending')->count().")",
+                            "label" => "Pending(".SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'pending')->count().")",
                         ],
                         [
-                            "label" => "Refused(". SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'refused')->count().")",  
+                            "label" => "Refused(". SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'refused')->count().")",  
 
                         ], 
                         [ 
-                            "label" => "Accepted(". SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'accepted')->count().")", 
+                            "label" => "Accepted(". SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'accepted')->count().")", 
                         ],
                         [ 
-                            "label" => "Closed(". SalesEstimate::where('reference', 'se')->where('client_id', $request->client_id)->where('status', 'closed')->count().")", 
+                            "label" => "Closed(". SalesEstimate::where('reference', $referenceType)->where('client_id', $request->client_id)->where('status', 'closed')->count().")", 
                         ],
                     ]
                 ];
