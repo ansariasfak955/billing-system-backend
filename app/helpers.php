@@ -84,7 +84,7 @@ function get_product_supplier_special_price($company_id,$supplier_id,$product_id
 {
     $table = 'company_'.$company_id.'_supplier_special_prices';
     \App\Models\SupplierSpecialPrice::setGlobalTable($table);
-    return \App\Models\SupplierSpecialPrice::where('supplier_id', $supplier_id)->where('product_id',$product_id)->pluck('discount')->first();
+    return \App\Models\SupplierSpecialPrice::where('supplier_id', $supplier_id)->where('product_id',$product_id)->pluck('special_price')->first();
 }
 
 function get_asset_name($company_id,$asset_id)
