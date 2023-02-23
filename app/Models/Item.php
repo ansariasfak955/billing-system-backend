@@ -132,7 +132,7 @@ class Item extends Model
                 if($incTax){
                     $incTaxAmount = ($incTax / 100) * $amount;
                 }
-                return round($amount+$taxAmount+$incTaxAmount, 2);
+                return sprintf("%.2f",$amount+$taxAmount+$incTaxAmount);
             }
             return 0;
         }
