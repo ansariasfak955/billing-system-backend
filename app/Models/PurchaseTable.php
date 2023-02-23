@@ -118,7 +118,7 @@ class PurchaseTable extends Model
 	public function getAmountAttribute(){
       if(isset($this->items)){
 		$amount = $this->items->sum('amount') ?? 0;
-        return round($amount,2);
+        return sprintf("%.2f",$amount);
 	  }
     }
     

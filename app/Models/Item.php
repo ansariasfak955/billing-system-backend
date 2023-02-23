@@ -64,7 +64,7 @@ class Item extends Model
                 // if($incTax){
                 //     $incTaxAmount = ($incTax / 100) * $amount;
                 // }
-                return round($taxAmount+$incTaxAmount, 2);
+                return sprintf("%.2f",$taxAmount+$incTaxAmount);
             }
             return 0;
         }
@@ -98,7 +98,7 @@ class Item extends Model
                 if($incTax){
                     $incTaxAmount = ($incTax / 100) * $amount;
                 }
-                return round($taxAmount+$incTaxAmount, 2);
+                return sprintf("%.2f",$taxAmount+$incTaxAmount);
             }
             return 0;
         }
@@ -149,7 +149,7 @@ class Item extends Model
             if($basePrice){
 
                 $amount = $basePrice * $quantity;
-                return round($amount,2);
+                return sprintf("%.2f",$amount);
             }
             return 0;
         }

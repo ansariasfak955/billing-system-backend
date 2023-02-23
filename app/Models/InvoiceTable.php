@@ -103,12 +103,14 @@ class InvoiceTable extends Model
     }
 	public function getAmountAttribute(){
       if(isset($this->items)){
-		return $this->items->sum('amount');
+		$amount = $this->items->sum('amount') ?? 0;
+        return sprintf("%.2f",$amount);
 	  }
     }
     public function getAmountWithOutVatAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('amount_with_out_vat');
+          $amount =  $this->items->sum('amount_with_out_vat') ?? 0;
+          return sprintf("%.2f",$amount);
         }
       }
       public function getTaxAmountAttribute(){
