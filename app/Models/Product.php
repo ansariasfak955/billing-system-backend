@@ -30,27 +30,32 @@ class Product extends Model
             $basePrice = $this->attributes['price'];
             $discount = isset($this->attributes['discount'])
             ? $this->attributes['discount'] : 0;
+            //get the discounted amount
             $amount = ($basePrice - ($basePrice * $discount / 100)) ;
-            return $amount;
+
             if(request()->client_id){
                 $table = $this->getTable();
                 $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
                 $discount = get_product_special_price($company_id,request()->client_id,$this->attributes['id']);
                 if($discount){
-                    $discountAmount = ($discount / 100) * $basePrice;
-                    return $basePrice - $discountAmount;
+                    $discountAmount = ($discount / 100) * $amount;
+                    return $amount - $discountAmount;
                 }
             }elseif(request()->supplier_id){
                 $table = $this->getTable();
                 $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
                 $specialPrice = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
                 // if($specialPrice){
-                    // $discountAmount = $basePrice - $specialPrice;
+                    // $discountAmount = $amount - $specialPrice;
                     return $specialPrice;
                 // }
             }
+
+            return $amount;
+            
+            
         }
-        return $basePrice ;
+
     }
 
     public function product_attachments(){
@@ -105,7 +110,7 @@ class Product extends Model
 
     public function getMinimumStockAttribute()
     {
-         if(isset($this->attributes['id'])){
+        if(isset($this->attributes['id'])){
             $table = $this->getTable();
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             $product_stock = get_product_stock($company_id, $this->attributes['id']);
