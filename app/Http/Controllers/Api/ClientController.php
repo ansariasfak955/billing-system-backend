@@ -335,10 +335,10 @@ class ClientController extends Controller
         $deposit = Deposit::where('client_id', $request->client_id)->where('type','deposit')->sum('amount');
         $invoiceWithdraw = Deposit::where('client_id', $request->client_id)->where('type','withdraw')->sum('amount');
         $data = [
-                "unpaid_invoices" => "$ ". number_format($invoiceBalance - $invoiceReceiptAmount, 2), 
+                "unpaid_invoices" => "$ ". number_format($invoiceBalance, 2), 
                 "unpaid_refunds" => "$ ". number_format($invoiceRefundBalance, 2), 
                 "available_balance" => "$ ". number_format($deposit - $invoiceWithdraw, 2),  
-                "total_balance" => "$ ". number_format((($invoiceTotalBalance - $deposit) + $invoiceWithdraw) -  $invoiceReceiptAmount, 2)
+                "total_balance" => "$ ". number_format(($invoiceTotalBalance - $deposit) + $invoiceWithdraw, 2)
             ];
         
 
