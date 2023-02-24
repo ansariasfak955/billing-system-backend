@@ -389,15 +389,15 @@
         @endif
     @endforeach
 
-    <!-- @if(strpos($template->watermark,"via.placeholder") !== false)
+    @if(strpos($template->watermark,"via.placeholder") !== false)
         @php
-        $watermark_image = 'default_watermark.png';
+        $watermark_image = '';
         @endphp
     @else
         @php
         $watermark_image = $template->watermark;
         @endphp
-    @endif -->
+    @endif
 
     <style>
         th, td {
@@ -406,7 +406,7 @@
     </style>
 
     <div style="position:relative; font-size: 12px; font-family:{{$font}};">
-        <img src="{{ $template->watermark }}" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px">
+        <img src="{{ $watermark_image }}" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px">
         <div style="margin-top: 0px;height: 45px;">
         @if($company_company_info_show != 1)
             <div style="margin-top: 0px;">
