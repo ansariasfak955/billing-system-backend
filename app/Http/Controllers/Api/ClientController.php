@@ -319,8 +319,8 @@ class ClientController extends Controller
         $invoiceReceiptAmount = InvoiceReceipt::whereHas('invoice', function($q) use ($client_id){
             $q->where('client_id', $client_id);
         })->where('paid','1')->sum('amount');
-        $invoiceBalance = InvoiceTable::with('items')->where('status','unpaid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
-        $invoiceRefundBalance = InvoiceTable::with('items')->where('status','unpaid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get()->sum('amount');
+        $invoiceBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
+        $invoiceRefundBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get()->sum('amount');
         $invoiceTotalBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->get()->sum('amount');
         $deposit = Deposit::where('client_id', $request->client_id)->where('type','deposit')->sum('amount');
         $invoiceWithdraw = Deposit::where('client_id', $request->client_id)->where('type','withdraw')->sum('amount');
