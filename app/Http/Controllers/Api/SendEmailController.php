@@ -81,7 +81,7 @@ class SendEmailController extends Controller
             $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
                 }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
@@ -98,7 +98,7 @@ class SendEmailController extends Controller
             $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
                 }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
@@ -114,7 +114,7 @@ class SendEmailController extends Controller
             $total = SalesEstimate::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
                 }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
@@ -132,9 +132,9 @@ class SendEmailController extends Controller
             $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
-                }elseif($item->reference == 'SER'){
+                }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
@@ -150,9 +150,9 @@ class SendEmailController extends Controller
             $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
-                }elseif($item->reference == 'SER'){
+                }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
@@ -169,9 +169,9 @@ class SendEmailController extends Controller
             $total = TechnicalTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
-                }elseif($item->reference == 'SER'){
+                }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
@@ -187,9 +187,9 @@ class SendEmailController extends Controller
             $total = InvoiceTable::with(['items','payment_options','client'])->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
-                }elseif($item->reference == 'SER'){
+                }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
@@ -206,9 +206,9 @@ class SendEmailController extends Controller
             $total = InvoiceTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
-                }elseif($item->reference == 'SER'){
+                }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
@@ -222,9 +222,9 @@ class SendEmailController extends Controller
             $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
-                }elseif($item->reference == 'SER'){
+                }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
@@ -238,9 +238,9 @@ class SendEmailController extends Controller
             $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
-                }elseif($item->reference == 'SER'){
+                }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
@@ -254,9 +254,9 @@ class SendEmailController extends Controller
             $total = PurchaseTable::with('items')->where('id',$request->id)->get()->sum('amount_with_out_vat');
             $products = [];
             foreach($items as $item){
-                if($item->reference == 'PRO'){
+                if($item->reference != 'PRO'){
                     $parent = Product::find($item->reference_id);
-                }elseif($item->reference == 'SER'){
+                }elseif($item->reference != 'SER'){
                     $parent = Service::find($item->reference_id);
                 }
                 $item->reference  = $item->reference. @$parent->reference_number ?? '-';
