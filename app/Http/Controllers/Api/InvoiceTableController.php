@@ -359,6 +359,10 @@ class InvoiceTableController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
         //change format of date
         if($request->date){
 
@@ -451,6 +455,7 @@ class InvoiceTableController extends Controller
                ]);
            }
         }
+        InvoiceReceipt::where('invoice_id',$invoice->id)->update(['paid'=>'1']);
         $invoice->save();
 
         return response()->json([
