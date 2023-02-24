@@ -707,7 +707,7 @@
             <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
                 <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                     <tr>
-                    @if(@$hide_signed_box_show == 1)
+                    @if(@$hide_signed_box_show == 0)
                         <td style="margin: 0;">
                             <div style="border: 1px solid gray; padding: 10px;">
                                 <img width="100" height="80" object-fit="cover"
