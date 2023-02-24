@@ -381,7 +381,7 @@
 
     @if(strpos($template->watermark,"via.placeholder") !== false)
         @php
-        $watermark_image = 'default_watermark.png';
+        $watermark_image = '';
         @endphp
     @else
         @php
@@ -396,7 +396,7 @@
     </style>
 
     <div style="position:relative; ">
-        <!-- <img src="{{ $watermark_image }}" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px"> -->
+        <img src="{{ $watermark_image }}" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px">
         <div style="margin-top: 0px;height: 45px;">
         @if($company_company_info_show != 1)
             <div style="margin-top: 0px;">
