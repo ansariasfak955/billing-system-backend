@@ -2105,6 +2105,28 @@ class TableHelper
                     "category" => "Document Information",
                     "type" => "document_delivery",
                 ]);
+                /* Signed */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_hide_signed_box_heading",
+                    "option_value" => "Hide Signed Box",
+                    "category" => "Document Information",
+                    "type" => "hide_signed_box",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_signed_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "hide_signed_box",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_signed_text",
+                    "option_value" => "",
+                    "category" => "Document Information",
+                    "type" => "hide_signed_box",
+                ]);
                 /* document information ends here*/
 
                 /* Section Title: */
