@@ -390,10 +390,10 @@
     @endforeach
 
     @if(strpos($template->watermark,"via.placeholder") !== false)
-        @php
-        <!-- $watermark_image = 'default_watermark.png'; -->
+        <!-- @php
+        $watermark_image = 'default_watermark.png';
         @endphp
-    @else
+    @else -->
         @php
         $watermark_image = $template->watermark;
         @endphp
