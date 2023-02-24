@@ -217,6 +217,9 @@ class InvoiceTableController extends Controller
                 }
                 $insertedInvoice = InvoiceTable::with(['items', 'item_meta'])->find($invoice->id);
                 $status = ($request->status == 'paid') ? '1' : '0';
+                if($request->set_as_paid){
+                    $status = '1';
+                }
                 if($request->payment_term){
 
                     $table = 'company_'.$request->company_id.'_payment_terms';
