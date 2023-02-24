@@ -319,7 +319,6 @@ class ClientController extends Controller
         $invoiceReceiptAmount = InvoiceReceipt::whereHas('invoice', function($q) use ($client_id){
             $q->where('client_id', $client_id);
         })->where('paid','1')->sum('amount');
-        $invoicePaidBalance = InvoiceTable::with('items')->where('status','paid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
         $invoiceBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
         $invoiceRefundBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get()->sum('amount');
         $invoiceTotalBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->get()->sum('amount');
