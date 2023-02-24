@@ -455,15 +455,14 @@
             </div>
         @endif
         </div>
-
-        @if(@$document_type_show == 1)
-            <div style="text-align: center; margin-top: 70px;">
-                <h2>{{ ($request->format == 'pro_forma') ? 'PRO FORMA' : $template->name }}</h2>
-                @if($document_title_show && $document_title_text)
-                    {{ $document_title_text }}
-                @endif
-            </div>
-        @endif
+        <div style="text-align: center; margin-top: 70px;">
+            @if(@$document_type_show == 1)
+                    <h2>{{ ($request->format == 'pro_forma') ? 'PRO FORMA' : $template->name }}</h2>
+                    @if($document_title_show && $document_title_text)
+                        {{ $document_title_text }}
+                    @endif
+            @endif
+        </div>
         <div style="height:400px">
             <div style="margin-top: 0px;font-size: 13px">
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
