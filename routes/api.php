@@ -363,6 +363,10 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('expense-investment-export', 'CatalogExportController@expenseInvestmentsExport');
             Route::post('client-assets-export', 'CatalogExportController@clientAssetExport');
 
+            // Report Export
+            Route::post('client-sales-export', 'ReportExportController@clientSalesExport');
+            Route::post('agents-sales-export', 'ReportExportController@salesAgentsExport');
+
             // supplier bank account
             Route::apiResource('supplier-bank-account', SupplierBankAccountController::class);
 
