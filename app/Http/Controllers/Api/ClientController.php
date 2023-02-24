@@ -319,13 +319,14 @@ class ClientController extends Controller
         $invoiceReceiptAmount = InvoiceReceipt::whereHas('invoice', function($q) use ($client_id){
             $q->where('client_id', $client_id);
         })->where('paid','1')->sum('amount');
+        $invoicePaidBalance = InvoiceTable::with('items')->where('status','paid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
         $invoiceBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get()->sum('amount');
         $invoiceRefundBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get()->sum('amount');
         $invoiceTotalBalance = InvoiceTable::with('items')->where('client_id', $request->client_id)->get()->sum('amount');
         $deposit = Deposit::where('client_id', $request->client_id)->where('type','deposit')->sum('amount');
         $invoiceWithdraw = Deposit::where('client_id', $request->client_id)->where('type','withdraw')->sum('amount');
         $data = [
-                "unpaid_invoices" => "$ ". number_format($invoiceBalance - $invoiceReceiptAmount, 2), 
+                "unpaid_invoices" => "$ ". number_format(($invoiceBalance - $invoiceReceiptAmount) - $invoicePaidBalance, 2), 
                 "unpaid_refunds" => "$ ". number_format($invoiceRefundBalance, 2), 
                 "available_balance" => "$ ". number_format($deposit - $invoiceWithdraw, 2),  
                 "total_balance" => "$ ". number_format((($invoiceTotalBalance - $deposit) + $invoiceWithdraw) -  $invoiceReceiptAmount, 2)
