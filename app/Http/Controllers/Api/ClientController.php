@@ -357,7 +357,12 @@ class ClientController extends Controller
         //get dynamic reference
         $refernce_ids = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
 
-        $unpaidInvoice = InvoiceTable::where('status','paid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get();
+        // $unpaidInvoice = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get();
+        if($request->client_id){
+            $unpaidInvoice = InvoiceTable::where('status','Unpaid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get();
+        }else{
+            $unpaidInvoice = InvoiceTable::where('status','Partially Paid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get();
+        }
 
         return response()->json([
             "status" => true,
@@ -384,7 +389,12 @@ class ClientController extends Controller
         //get dynamic reference
         $refernce_id = Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
 
-        $unpaidRefund = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get();
+        // $unpaidRefund = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get();
+        if($request->client_id){
+            $unpaidRefund = InvoiceTable::where('status','Unpaid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_id)->get();
+        }else{
+            $unpaidRefund = InvoiceTable::where('status','Partially Paid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get();
+        }
 
         return response()->json([
             "status" => true,
