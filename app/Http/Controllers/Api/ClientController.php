@@ -357,7 +357,7 @@ class ClientController extends Controller
         //get dynamic reference
         $refernce_ids = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
 
-        $unpaidInvoice = InvoiceTable::where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get();
+        $unpaidInvoice = InvoiceTable::where('status','paid')->where('client_id', $request->client_id)->whereIn('reference', $refernce_ids)->get();
 
         return response()->json([
             "status" => true,
