@@ -1852,6 +1852,28 @@ class TableHelper
                     "category" => "Document Information",
                     "type" => "reference",
                 ]);
+                /* Signed */
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_signed_heading",
+                    "option_value" => "Signed",
+                    "category" => "Document Information",
+                    "type" => "signed",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_signed_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "signed",
+                ]);
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_signed_text",
+                    "option_value" => "",
+                    "category" => "Document Information",
+                    "type" => "signed",
+                ]);
 
                 /* Generated From */
                 MyTemplateMeta::create([
