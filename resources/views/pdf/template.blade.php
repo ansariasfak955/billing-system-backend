@@ -213,6 +213,11 @@
             $document_type_show = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Document Information' && $meta->type == 'document_type' && $meta->option_name == 'text')
+            @php
+            $document_type_text = $meta->option_value;
+            @endphp
+        @endif
 
         @if($meta->category == 'Document Information' && $meta->type == 'document_title' && $meta->option_name == 'show')
             @php
@@ -460,7 +465,7 @@
 
         @if(@$document_type_show == 1)
             <div style="text-align: center; margin-top: 70px;">
-                <h2>{{ $template->name }}</h2>
+                <h2>{{ $document_type_text ? $document_type_text : $template->name }}</h2>
                 @if($document_title_show && $document_title_text)
                     {{ $document_title_text }}
                 @endif
