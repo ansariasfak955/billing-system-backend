@@ -213,9 +213,9 @@
             $document_type_show = $meta->option_value;
             @endphp
         @endif
-        @if($meta->category == 'Document Information' && $meta->type == 'document_type' && $meta->option_name == 'text')
+        @if($meta->category == 'Document Information' && $meta->type == 'hide_signed_box' && $meta->option_name == 'show')
             @php
-            $document_type_text = $meta->option_value;
+            $hide_signed_box_show = $meta->option_value;
             @endphp
         @endif
 
@@ -707,6 +707,7 @@
             <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
                 <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                     <tr>
+                    @if(@$hide_signed_box_show == 1)
                         <td style="margin: 0;">
                             <div style="border: 1px solid gray; padding: 10px;">
                                 <img width="100" height="80" object-fit="cover"
@@ -715,6 +716,8 @@
                                 <p style="font-weight: bold; position: relative; bottom: 0;">Ced/Ruc:</p>
                             </div>
                         </td>
+                     @endif
+                        
                         <td style="padding: 0; margin: 0; padding-left: 120px;">
                             <div>
                                 <table style="border-collapse: collapse; width: 100%; ">
