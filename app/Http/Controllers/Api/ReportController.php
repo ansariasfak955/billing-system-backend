@@ -371,7 +371,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::where('reference',$referenceType)->where('client_id', $request->client_id)->get()->sum('amount'),
+                            "$". SalesEstimate::where('reference',$referenceType)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -664,8 +664,6 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        if($request->type){
-
             $referenceType = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             // $clients = SalesEstimate::where('reference', $referenceType)->get();
             $clients = SalesEstimate::with(['items'])->where('reference', $referenceType)->WhereHas('items', function ($query) use ($request) {
@@ -685,8 +683,7 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
-            
-        }
+
         return response()->json([
             "status" => true,
             "data" =>  $data
