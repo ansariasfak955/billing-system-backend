@@ -68,21 +68,23 @@ class ReportExportController extends Controller
 
         $fileName = 'CLIENTSALESREPORT-'.time().$company_id.'.xlsx';
 
-            $referenceType = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
-            $clients = SalesEstimate::where('reference', $referenceType)->get();
-            $arr = [];
-            $data = [];
+        $clients = Client::get();
 
-            foreach($clients as $client){
-                $arr['name'] = $client->client_name;
-                $arr['pending'] = $client->where('reference', $referenceType)->where('status','pending')->count();
-                $arr['refused'] = $client->where('reference', $referenceType)->where('status','refused')->count();
-                $arr['accepted'] = $client->where('reference', $referenceType)->where('status','accepted')->count();
-                $arr['closed'] = $client->where('reference', $referenceType)->where('status','closed')->count();
-                $arr['amount'] = $client->amount;
+        $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+        $arr = [];
+        $data = [];
 
-                $clientSalesExports[] = $arr;
-            }
+        foreach($clients as $client){
+            $arr['name'] = $client->legal_name;
+            $arr['pending'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','pending')->count();
+            $arr['refused'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','refused')->count();
+            $arr['accepted'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
+            $arr['closed'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','closed')->count();
+            $arr['total'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->count();
+            $arr['amount'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount');
+
+            $clientSalesExports[] = $arr;
+        }
             Excel::store(new SalesClientExport($clientSalesExports), 'public/xlsx/'.$fileName);
 
             
@@ -128,22 +130,21 @@ class ReportExportController extends Controller
 
         $fileName = 'CLIENTSALESREPORT-'.time().$company_id.'.xlsx';
 
-            $referenceType = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
-            $clients = SalesEstimate::where('reference', $referenceType)->get();
-            $arr = [];
-            $data = [];
+        $referenceType = Reference::where('type',$request->type)->pluck('prefix')->toArray();
+        $clients = SalesEstimate::where('reference', $referenceType)->get();
+        $arr = [];
+        $data = [];
 
-            foreach($clients as $client){
-                $arr['legal_name'] = $client->agent_name;
-                $arr['pending'] = $client->where('reference', $referenceType)->where('status','pending')->count();
-                $arr['refused'] = $client->where('reference', $referenceType)->where('status','refused')->count();
-                $arr['accepted'] = $client->where('reference', $referenceType)->where('status','accepted')->count();
-                $arr['closed'] = $client->where('reference', $referenceType)->where('status','closed')->count();
-                $arr['total'] = $client->where('reference', $referenceType)->where('status','closed')->count();
-                $arr['amount'] = $client->amount;
+            $arr['legal_name'] = \Auth::user()->name;
+            $arr['pending'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','pending')->count();
+            $arr['refused'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','refused')->count();
+            $arr['accepted'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','accepted')->count();
+            $arr['closed'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','closed')->count();
+            $arr['total'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())->count();
+            $arr['amount'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount');
 
-                $agentsSalesExports[] = $arr;
-            }
+            $agentsSalesExports[] = $arr;
+            
             Excel::store(new SalesAgentsExport($agentsSalesExports), 'public/xlsx/'.$fileName);
 
             
