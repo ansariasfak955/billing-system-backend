@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\MyTemplateMeta;
 use Validator;
 use App;
+use Storage;
 
 class MyTemplateController extends Controller
 {
@@ -209,6 +210,29 @@ class MyTemplateController extends Controller
                 'message' => "Template deleted successfully!"
             ]);
         }
+    }
+    public function deleteMytemplateLogo(Request $request)
+    {
+        // echo "hii";die;
+        MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
+        MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
+
+        $avatar = MyTemplate::find($request->id);
+
+            $avatar->update($request->except('watermark'));
+            $watermarkName = NULL;
+            if($request->watermark != NULL){
+                $watermarkName = time().'.'.$request->watermark->extension();  
+                $request->watermark->move(storage_path('app/public/templates/watermark'), $watermarkName);
+            }
+            $avatar->watermark = $watermarkName;
+            $avatar->save();
+            return response()->json([
+                'status' => true,
+                'message' => "Template logo update successfully!",
+                'data' => $avatar
+            ]);
+            
     }
     public function bulkDelete(Request $request){
         $validator = Validator::make($request->all(),[
