@@ -215,6 +215,9 @@ class PurchaseTableController extends Controller
                }
                 $insertedInvoice = PurchaseTable::with(['items', 'item_meta'])->find($purchase_table->id);
                 $status = ($request->status == 'paid') ? '1' : '0';
+                if($request->set_as_paid){
+                    $status = '1';
+                }
                 //receipts
                 if($request->payment_term){
 
@@ -342,6 +345,8 @@ class PurchaseTableController extends Controller
         }
         $table = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($table);
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($invoiceReceiptTable);
 
         // $purchase_table = PurchaseTable::where('id', $request->purchase_table)->first();
         $purchase_table = PurchaseTable::with(['items' , 'item_meta'])->where('id', $request->purchase_table)->first();
@@ -443,6 +448,7 @@ class PurchaseTableController extends Controller
                ]);
            }
         }
+        PurchaseReceipt::where('purchase_id',$purchase_table->id)->update(['paid'=>'1']);
         $purchase_table->save();
 
         return response()->json([
