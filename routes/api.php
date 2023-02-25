@@ -200,6 +200,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::get('get-master-role-permissions', 'RoleController@getMasterRolePermissions');
             Route::apiResource('custom_states', CustomStateController::class);
             Route::apiResource('my_templates', MyTemplateController::class);
+            Route::post('my_templates-logo', 'MyTemplateController@deleteMytemplateLogo');
             Route::post('my_templates-bulk-delete', 'MyTemplateController@bulkDelete');
             Route::get('my_templates-duplicate/{id}', 'MyTemplateController@duplicateTemplate');
             Route::get('template-fields', 'MyTemplateController@getTemplateFields');
