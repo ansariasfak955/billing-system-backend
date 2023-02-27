@@ -18,6 +18,7 @@ class SalesClientExport implements FromView
        public function view(): View
     {
         $clientSalesExports = $this->clientSalesExports;
+        // dd($clientSalesExports);
         return view('exports.reports.clientSales', compact('clientSalesExports'));
     }
 }

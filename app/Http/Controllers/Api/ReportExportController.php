@@ -77,6 +77,12 @@ class ReportExportController extends Controller
 
             foreach($clients as $client){
                 $arr['name'] = $client->legal_name;
+                $arr['currency'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('currency')->first();
+                $arr['after_tax'] = '';
+                $arr['according_to'] = $client->reference_type;
+                $arr['start_date'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('date')->first();
+                $arr['end_date'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('date')->first();
+                $arr['document_type'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('date')->first();
                 $arr['pending'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','pending')->count();
                 $arr['refused'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','refused')->count();
                 $arr['accepted'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','accepted')->count();

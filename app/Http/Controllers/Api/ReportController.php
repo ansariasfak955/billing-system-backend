@@ -383,9 +383,9 @@ class ReportController extends Controller
         }elseif($request->type == "agents"){
             $clients = Client::get();
             $data = [];
-            $data['clients'] = [];
+            $data['agents'] = [];
             foreach($clients as $client){
-                $data['clients'][] = [
+                $data['agents'][] = [
                         "type" => "bar",
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
@@ -599,6 +599,7 @@ class ReportController extends Controller
                 $arr['total'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
                     $query->where('reference_id', $product->id)->where('type', $referenceType);
                 })->count();
+                $arr['units'] = '';
                 $arr['amount'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
                     $query->where('reference_id', $product->id)->where('type', $referenceType);
                 })->get()->sum('amount');

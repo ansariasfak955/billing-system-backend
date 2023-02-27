@@ -28,15 +28,33 @@
 </table>
 <table>
     <thead>
-        <th>Reference</th>
-        <th>RUC</th>
-        <th>Name</th>
-        <th>Client Category</th>
-        <th>Pending</th>
-        <th>Refused</th>
-        <th>Accepted</th>
-        <th>Closed</th>
-        <th>Total</th>
-        <th>Amount</th>
+        <tr>
+            <th>Reference</th>
+            <th>RUC</th>
+            <th>Name</th>
+            <th>Client Category</th>
+            <th>Pending</th>
+            <th>Refused</th>
+            <th>Accepted</th>
+            <th>Closed</th>
+            <th>Total</th>
+            <th>Amount</th>
+        </tr>
     </thead>
+    <tbody>
+        @foreach($clientSalesExports as $clientSalesExport)
+        <tr>
+            <td></td>
+            <td></td>
+            <td>{{$clientSalesExport['name']}}</td>
+            <td></td>
+            <td>{{$clientSalesExport['pending']}}</td>
+            <td>{{$clientSalesExport['refused']}}</td>
+            <td>{{$clientSalesExport['accepted']}}</td>
+            <td>{{$clientSalesExport['closed']}}</td>
+            <td>{{$clientSalesExport['total']}}</td>
+            <td>{{$clientSalesExport['amount']}}</td>
+        </tr>
+        @endforeach
+    </tbody>
 </table>
