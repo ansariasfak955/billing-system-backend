@@ -1117,6 +1117,15 @@ class ReportController extends Controller
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
 
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
         $supplierTables = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($supplierTables); 
 
@@ -1213,11 +1222,85 @@ class ReportController extends Controller
                     ]  
                 ]
             ];
+        }elseif($request->type == 'paymentOption'){
+            $paymentOptions = PaymentOption::get();
+            // dd($products);
+                $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+               
+                $data = [];
+                $data['invoice_items'] = [];
+                foreach($paymentOptions as $paymentOption){
+                    $data['invoice_items'][] = [
+                            "type" => "bar",
+                            "label" => "" .  $paymentOption->name,
+                            "backgroundColor" => "#26C184",
+                            "data" => [
+                                    InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption,$referenceType) {
+                                    $query->where('payment_option', $paymentOption->id)->where('reference', $referenceType);
+                                    })->get()->sum('amount'),
+                                ]
+                            ];
+                }
+                return response()->json([
+                    "status" => true,
+                    "data" =>  $data
+                ]);
         }
         return response()->json([
             "status" => true,
             "data" =>  $data
         ]);
+    }
+    public function paymentOptionHistory(Request $request){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        $paymentOptions = PaymentOption::get();
+       
+        $arr = [];
+        $data = [];
+
+        foreach($paymentOptions as $paymentOption){
+            $arr['name'] = $paymentOption->name;
+            $arr['deposit'] = '';
+            $arr['withdrawals'] = InvoiceReceipt::WhereHas('payment_options', function ($query) use ($paymentOption,$referenceType) {
+                $query->where('payment_option', $paymentOption->id)->where('type', $referenceType);
+            })->where('paid','1')->sum('amount');
+            $arr['balance'] = '';
+            
+
+            $data[] = $arr;
+        }
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+
     }
     public function cashFlowHistory(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';

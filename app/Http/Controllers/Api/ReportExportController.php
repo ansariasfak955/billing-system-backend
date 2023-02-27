@@ -31,6 +31,7 @@ use App\Exports\ReportExport\InvoiceClientExport;
 use App\Exports\ReportExport\InvoiceAgentExport;
 use App\Exports\ReportExport\InvoiceItemExport;
 use App\Exports\ReportExport\CashFlowExport;
+use App\Exports\ReportExport\PaymentOptionExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -494,6 +495,60 @@ class ReportExportController extends Controller
                 'url' => url('/storage/xlsx/'.$fileName),
              ]);
 
+
+    }
+    public function paymentOptionExport(Request $request, $company_id){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        $paymentOptions = PaymentOption::get();
+        $fileName = 'PAYMENTOPTIONCASHFLOWREPORT-'.time().$company_id.'.xlsx';
+       
+        $arr = [];
+        $data = [];
+
+        foreach($paymentOptions as $paymentOption){
+            $arr['name'] = $paymentOption->name;
+            $arr['deposit'] = '';
+            $arr['withdrawals'] = InvoiceReceipt::WhereHas('payment_options', function ($query) use ($paymentOption,$referenceType) {
+                $query->where('payment_option', $paymentOption->id)->where('type', $referenceType);
+            })->where('paid','1')->sum('amount');
+            $arr['balance'] = '';
+            
+
+            $paymentOptionExports[] = $arr;
+        }
+        Excel::store(new PaymentOptionExport($paymentOptionExports), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+         ]);
 
     }
 }
