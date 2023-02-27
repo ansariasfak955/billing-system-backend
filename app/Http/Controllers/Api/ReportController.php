@@ -740,7 +740,6 @@ class ReportController extends Controller
         $services = Service::get();
         // dd($products);
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
-            // $clients = SalesEstimate::where('reference', $referenceType)->get();
            
             $arr = [];
             $data = [];
@@ -1105,6 +1104,277 @@ class ReportController extends Controller
                 "status" => true,
                 "data" =>  $data
             ]);
+    }
+    public function incidentByClient(Request $request){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type == 'incident_by_client'){
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $clients = Client::get();
+            $data = [];
+            $data['clients'] = [];
+            foreach($clients as $client){
+                $data['clients'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $client->legal_name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            "$". TechnicalTable::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            return response()->json([
+                "status" => true,
+                "data" => $data
+            ]);
+        }elseif($request->type == 'by_client_history'){
+                    
+            $clients = Client::get();
+
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+
+            foreach($clients as $client){
+                $arr['name'] = $client->legal_name;
+                $arr['pending'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','pending')->count();
+                $arr['refused'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','refused')->count();
+                $arr['accepted'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
+                $arr['closed'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','closed')->count();
+                $arr['total'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->count();
+                $arr['amount'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount');
+
+                $data[] = $arr;
+            }
+            
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
+        }
+            
+    }
+    public function incidentByAgent(Request $request){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type == 'incident_by_agent'){
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $clients = Client::get();
+            $data = [];
+            $data['clients'] = [];
+            foreach($clients as $client){
+                $data['clients'][] = [
+                        "type" => "bar",
+                        "label" => "" . \Auth::user()->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            "$". TechnicalTable::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            return response()->json([
+                "status" => true,
+                "data" => $data
+            ]);
+        }elseif($request->type == 'by_agent_history'){
+
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+
+            $arr['name'] = \Auth::user()->name;
+            $arr['pending'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','pending')->count();
+            $arr['refused'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','refused')->count();
+            $arr['accepted'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','accepted')->count();
+            $arr['closed'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','closed')->count();
+            $arr['total'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->count();
+            $arr['amount'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount');
+
+                $data[] = $arr;
+            
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
+        }
+            
+    }
+    public function incidentByItem(Request $request){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type == 'incident_by_item'){
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $productTables = Product::get();
+            $services = Service::get();
+            $data = [];
+            $data['invoice_items'] = [];
+            foreach($productTables as $productTable){
+                $data['invoice_items'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $productTable->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                                TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($productTable,$referenceType) {
+                                $query->where('reference_id', $productTable->id)->where('type', $referenceType);
+                                })->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            foreach($services as $service){
+                $data['products'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $service->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                                TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                                $query->where('reference_id', $service->id)->where('type', $referenceType);
+                                })->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            return response()->json([
+                "status" => true,
+                "data" => $data
+            ]);
+        }elseif($request->type == 'by_item_history'){
+
+            $products = Product::get();
+            $services = Service::get();
+            // dd($products);
+                $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+               
+                $arr = [];
+                $data = [];
+    
+                foreach($products as $product){
+                    $arr['name'] = $product->name;
+                    $arr['reference'] = $product->reference.''.$product->reference_number;
+                    $arr['pending'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->where('status','pending')->count();
+                    $arr['accepted'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->where('status','accepted')->count();
+                    $arr['closed'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->where('status','closed')->count();
+                    $arr['refused'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->where('status','refused')->count();
+                    $arr['total'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->count();
+                    $arr['units'] = '';
+                    $arr['amount'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->get()->sum('amount');
+                    
+    
+                    $data[] = $arr;
+                }
+                foreach($services as $service){
+                    $arr['name'] = $service->name;
+                    $arr['reference'] = $service->reference.''.$service->reference_number;
+                    $arr['pending'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->where('status','pending')->count();
+                    $arr['accepted'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->where('status','accepted')->count();
+                    $arr['closed'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->where('status','closed')->count();
+                    $arr['refused'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->where('status','refused')->count();
+                    $arr['total'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->count();
+                    $arr['amount'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->get()->sum('amount');
+    
+                    $data[] = $arr;
+                }
+    
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
+        }
+            
     }
     public function incidentByAgentHistory(Request $request){
         $salesTables = 'company_'.$request->company_id.'_sales_estimates';

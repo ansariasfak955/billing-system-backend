@@ -353,6 +353,9 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('cashFlow-payment-option-history', 'ReportController@paymentOptionHistory');
                 Route::get('incident-by-client-history', 'ReportController@incidentByClientHistory');
                 Route::get('incident-by-agent-history', 'ReportController@incidentByAgentHistory');
+                Route::get('incident-by-client', 'ReportController@incidentByClient');
+                Route::get('incident-by-agent', 'ReportController@incidentByAgent');
+                Route::get('incident-by-item', 'ReportController@incidentByItem');
             });
             Route::get('get-columns/{type}', 'ImportExportController@getColumns');
             Route::post('export/{type}', 'ImportExportController@export');
