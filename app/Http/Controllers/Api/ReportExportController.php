@@ -22,6 +22,7 @@ use App\Models\Supplier;
 use App\Models\ConsumptionTax;
 use App\Models\Product;
 use App\Models\TechnicalIncident;
+use App\Models\Deposit;
 use Illuminate\Http\Request;
 use App\Exports\ReportExport\SalesClientExport;
 use App\Exports\ReportExport\SalesAgentsExport;
@@ -29,6 +30,7 @@ use App\Exports\ReportExport\SalesItemsExport;
 use App\Exports\ReportExport\InvoiceClientExport;
 use App\Exports\ReportExport\InvoiceAgentExport;
 use App\Exports\ReportExport\InvoiceItemExport;
+use App\Exports\ReportExport\CashFlowExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -408,6 +410,90 @@ class ReportExportController extends Controller
                 'status' => true,
                 'url' => url('/storage/xlsx/'.$fileName),
              ]);
+
+    }
+    public function cashFlowExport(Request $request,$company_id){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        
+            $invoiceDatas = InvoiceTable::with('payment_options')->get();
+            $purchaseDatas = PurchaseTable::with('payment_options')->get();
+            // dd($purchaseDatas);
+
+            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $fileName = 'CASHFLOWREPORT-'.time().$company_id.'.xlsx';
+            $arr = [];
+            $data = [];
+
+            foreach($invoiceDatas as $invoiceData){
+                $arr['date'] = $invoiceData->date;
+                $arr['type'] = $invoiceData->reference_type;
+                $arr['reference'] = $invoiceData->reference.''.$invoiceData->reference_number;
+                $arr['client'] = $invoiceData->client_name;
+                $arr['employee'] = \Auth::user()->name;
+                $arr['payment_option'] = $invoiceData->payment_options->name;
+                $arr['amount'] = $invoiceData->amount_paid;
+                // $arr['amount'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
+                //     $q->where('type', $referenceType);
+                // })->where('paid','1')->sum('amount');
+                // $arr['paid'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
+                //     $q->where('type', $referenceType);
+                // })->where('paid','0')->sum('amount');
+
+                $cashFlowExports[] = $arr;
+            }
+            foreach($purchaseDatas as $purchaseData){
+                $arr['date'] = $purchaseData->date;
+                $arr['type'] = $purchaseData->reference_type;
+                $arr['reference'] = $purchaseData->reference.''.$purchaseData->reference_number;
+                $arr['client'] = $purchaseData->client_name;
+                $arr['employee'] = \Auth::user()->name;
+                // $arr['payment_option'] = $purchaseData->payment_options->name;
+                $arr['amount'] = $purchaseData->amount_paid;
+                // $arr['amount'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
+                //     $q->where('type', $referenceType);
+                // })->where('paid','1')->sum('amount');
+                // $arr['paid'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
+                //     $q->where('type', $referenceType);
+                // })->where('paid','0')->sum('amount');
+
+                $cashFlowExports[] = $arr;
+            }
+            
+            Excel::store(new CashFlowExport($cashFlowExports), 'public/xlsx/'.$fileName);
+
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+
 
     }
 }

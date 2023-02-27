@@ -343,6 +343,7 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('overview', 'ReportController@overview');
                 Route::get('purchases', 'ReportController@purchases');
                 Route::get('cash-flow', 'ReportController@cashFlow');
+                Route::get('cash-flow-history', 'ReportController@cashFlowHistory');
                 Route::get('stock-valuation', 'ReportController@stockValuation');
                 Route::get('tax-summary', 'ReportController@taxSummary');
                 //invoice history
@@ -375,6 +376,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('invoiced-client-export', 'ReportExportController@invoiceClientExport');
             Route::post('invoiced-agents-export', 'ReportExportController@invoiceAgentsExport');
             Route::post('invoiced-items-export', 'ReportExportController@invoiceItemsExport');
+            Route::post('cash-flow-export', 'ReportExportController@cashFlowExport');
 
             // supplier bank account
             Route::apiResource('supplier-bank-account', SupplierBankAccountController::class);
