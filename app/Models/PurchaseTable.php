@@ -13,7 +13,7 @@ class PurchaseTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name','amount_with_out_vat','total_quantity','tax_amount'];
+    protected $appends = ['client_name', 'created_by_name', 'amount','amount_paid','amount_due', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name','amount_with_out_vat','total_quantity','tax_amount'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -71,6 +71,30 @@ class PurchaseTable extends Model
           return $this->items->sum('amount_with_out_vat');
         }
       }
+      public function getAmountPaidAttribute(){
+        if(isset($this->receipts)){
+          $amount =  $this->receipts->where('paid', '1')->sum('amount');
+          if($amount){
+              return round($amount, 2);
+          }
+          return 0 ; 
+        }
+      }
+      public function getAmountDueAttribute(){
+        if(isset($this->attributes['status'])){
+            if($this->attributes['status'] == 'paid'){
+                return 0;
+            }
+        }
+      if(isset($this->receipts)){
+		$amount =  $this->receipts->where('paid', '0')->sum('amount');
+        if($amount){
+            return round($amount, 2);
+        }
+        return 0 ; 
+	  }
+
+    }
       public function getTaxAmountAttribute(){
         if(isset($this->items)){
           return $this->items->sum('taxAmount');

@@ -356,6 +356,8 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('incident-by-client', 'ReportController@incidentByClient');
                 Route::get('incident-by-agent', 'ReportController@incidentByAgent');
                 Route::get('incident-by-item', 'ReportController@incidentByItem');
+                Route::get('purchase-supplier-history', 'ReportController@purchaseSupplierHistory');
+                Route::get('purchase-item-history', 'ReportController@purchaseItemHistory');
             });
             Route::get('get-columns/{type}', 'ImportExportController@getColumns');
             Route::post('export/{type}', 'ImportExportController@export');
@@ -389,6 +391,8 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('inc-by-client-export', 'ReportExportController@incidentByClient');
             Route::post('inc-by-agent-export', 'ReportExportController@incidentByAgent');
             Route::post('inc-by-ietm-export', 'ReportExportController@incidentByItem');
+            Route::post('purchase-supplier-export', 'ReportExportController@purchaseSupplierHistoryExport');
+            Route::post('purchase-item-export', 'ReportExportController@purchaseItemHistoryExport');
 
             // supplier bank account
             Route::apiResource('supplier-bank-account', SupplierBankAccountController::class);
