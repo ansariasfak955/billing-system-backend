@@ -2,7 +2,7 @@
 
 namespace App\Exports\ReportExport;
 
-use App\Models\TechnicalIncident;
+use App\Models\TechnicalTable;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 
@@ -11,14 +11,14 @@ class IncidentByAgentExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $invoiceClientsExports;
-    public function __construct($invoiceClientsExports){
-        $this->invoiceClientsExports = $invoiceClientsExports;
+    protected $incidentByAgentExports;
+    public function __construct($incidentByAgentExports){
+        $this->incidentByAgentExports = $incidentByAgentExports;
     }
        public function view(): View
     {
-        $invoiceClientsExports = $this->invoiceClientsExports;
-        // dd($invoiceClientsExports);
-        return view('exports.reports.incidentByAgent', compact('invoiceClientsExports'));
+        $incidentByAgentExports = $this->incidentByAgentExports;
+        // dd($incidentByAgentExports);
+        return view('exports.reports.incByAgent', compact('incidentByAgentExports'));
     }
 }

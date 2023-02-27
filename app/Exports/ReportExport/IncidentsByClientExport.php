@@ -2,11 +2,11 @@
 
 namespace App\Exports\ReportExport;
 
-use App\Models\TechnicalTable;
+use App\Models\TechnicalIncident;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 
-class IncidentByClientExport implements FromView
+class IncidentsByClientExport implements FromView
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -19,6 +19,6 @@ class IncidentByClientExport implements FromView
     {
         $incidentByClientExports = $this->incidentByClientExports;
         // dd($incidentByClientExports);
-        return view('exports.reports.incByClient', compact('incidentByClientExports'));
+        return view('exports.reports.incidentsByClient', compact('incidentByClientExports'));
     }
 }

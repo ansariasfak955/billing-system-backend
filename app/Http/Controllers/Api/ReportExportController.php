@@ -32,8 +32,11 @@ use App\Exports\ReportExport\InvoiceAgentExport;
 use App\Exports\ReportExport\InvoiceItemExport;
 use App\Exports\ReportExport\CashFlowExport;
 use App\Exports\ReportExport\PaymentOptionExport;
+use App\Exports\ReportExport\IncidentsByClientExport;
+use App\Exports\ReportExport\IncidentsByAgentExport;
 use App\Exports\ReportExport\IncidentByClientExport;
 use App\Exports\ReportExport\IncidentByAgentExport;
+use App\Exports\ReportExport\IncidentByItemExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -553,7 +556,7 @@ class ReportExportController extends Controller
          ]);
 
     }
-    public function incidentByClientExport(Request $request, $company_id){
+    public function incidentsByClientExport(Request $request, $company_id){
         $salesTables = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($salesTables);
 
@@ -598,14 +601,14 @@ class ReportExportController extends Controller
                 $incidentByClientExports[] = $arr;
             }
             
-            Excel::store(new IncidentByClientExport($incidentByClientExports), 'public/xlsx/'.$fileName);
+            Excel::store(new IncidentsByClientExport($incidentByClientExports), 'public/xlsx/'.$fileName);
 
             return response()->json([
                 'status' => true,
                 'url' => url('/storage/xlsx/'.$fileName),
              ]);
     }
-    public function incidentByAgentExport(Request $request, $company_id){
+    public function incidentsByAgentExport(Request $request, $company_id){
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables);
 
@@ -642,13 +645,216 @@ class ReportExportController extends Controller
                 $arr['total'] = TechnicalIncident::where('assigned_to',\Auth::id())->count();
                 $arr['amount'] = TechnicalIncident::where('assigned_to',\Auth::id())->get()->sum('amount');
 
-                $invoiceAgentsExports[] = $arr;
+                $incidentsAgentsExports[] = $arr;
             
-                Excel::store(new IncidentByAgentExport($invoiceAgentsExports), 'public/xlsx/'.$fileName);
+                Excel::store(new IncidentsByAgentExport($incidentsAgentsExports), 'public/xlsx/'.$fileName);
 
                 return response()->json([
                     'status' => true,
                     'url' => url('/storage/xlsx/'.$fileName),
                  ]);
+    }
+    public function incidentByClient(Request $request, $company_id){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+            $fileName = 'CLIENTTECHNICALSERVICEREPORT-'.time().$company_id.'.xlsx';
+                    
+            $clients = Client::get();
+
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+
+            foreach($clients as $client){
+                $arr['name'] = $client->legal_name;
+                $arr['pending'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','pending')->count();
+                $arr['refused'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','refused')->count();
+                $arr['accepted'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
+                $arr['closed'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','closed')->count();
+                $arr['total'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->count();
+                $arr['amount'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount');
+
+                $incidentByClientExports[] = $arr;
+            }
+            
+            Excel::store(new IncidentByClientExport($incidentByClientExports), 'public/xlsx/'.$fileName);
+
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+            
+    }
+    public function incidentByAgent(Request $request, $company_id){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        $fileName = 'EMPLOYEETECHNICALSERVICEREPORT-'.time().$company_id.'.xlsx';
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+
+            $arr['name'] = \Auth::user()->name;
+            $arr['pending'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','pending')->count();
+            $arr['refused'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','refused')->count();
+            $arr['accepted'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','accepted')->count();
+            $arr['closed'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','closed')->count();
+            $arr['total'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->count();
+            $arr['amount'] = TechnicalTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount');
+
+                $incidentByAgentExports[] = $arr;
+            
+                Excel::store(new IncidentByAgentExport($incidentByAgentExports), 'public/xlsx/'.$fileName);
+
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
+            
+    }
+    public function incidentByItem(Request $request, $company_id){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $fileName = 'CATALOGTECHNICALSERVICEREPORT-'.time().$company_id.'.xlsx';
+        
+            $products = Product::get();
+            $services = Service::get();
+            // dd($products);
+                $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+               
+                $arr = [];
+                $data = [];
+    
+                foreach($products as $product){
+                    $arr['name'] = $product->name;
+                    $arr['reference'] = $product->reference.''.$product->reference_number;
+                    $arr['pending'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->where('status','pending')->count();
+                    $arr['accepted'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->where('status','accepted')->count();
+                    $arr['closed'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->where('status','closed')->count();
+                    $arr['refused'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->where('status','refused')->count();
+                    $arr['total'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->count();
+                    $arr['units'] = '';
+                    $arr['amount'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    })->get()->sum('amount_with_out_vat');
+                    
+    
+                    $incidentByItemExports[] = $arr;
+                }
+                foreach($services as $service){
+                    $arr['name'] = $service->name;
+                    $arr['reference'] = $service->reference.''.$service->reference_number;
+                    $arr['pending'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->where('status','pending')->count();
+                    $arr['accepted'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->where('status','accepted')->count();
+                    $arr['closed'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->where('status','closed')->count();
+                    $arr['refused'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->where('status','refused')->count();
+                    $arr['total'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->count();
+                    $arr['units'] = '';
+                    $arr['amount'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    })->get()->sum('amount_with_out_vat');
+    
+                    $incidentByItemExports[] = $arr;
+                }
+    
+                Excel::store(new IncidentByItemExport($incidentByItemExports), 'public/xlsx/'.$fileName);
+
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
+            
     }
 }

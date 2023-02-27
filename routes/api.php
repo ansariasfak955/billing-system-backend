@@ -384,8 +384,11 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('invoiced-items-export', 'ReportExportController@invoiceItemsExport');
             Route::post('cash-flow-export', 'ReportExportController@cashFlowExport');
             Route::post('payment-option-export', 'ReportExportController@paymentOptionExport');
-            Route::post('incident-by-client-export', 'ReportExportController@incidentByClientExport');
-            Route::post('incident-by-agent-export', 'ReportExportController@incidentByAgentExport');
+            Route::post('incidents-by-client-export', 'ReportExportController@incidentsByClientExport');
+            Route::post('incidents-by-agent-export', 'ReportExportController@incidentsByAgentExport');
+            Route::post('inc-by-client-export', 'ReportExportController@incidentByClient');
+            Route::post('inc-by-agent-export', 'ReportExportController@incidentByAgent');
+            Route::post('inc-by-ietm-export', 'ReportExportController@incidentByItem');
 
             // supplier bank account
             Route::apiResource('supplier-bank-account', SupplierBankAccountController::class);
