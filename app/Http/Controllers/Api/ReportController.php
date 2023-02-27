@@ -695,7 +695,7 @@ class ReportController extends Controller
             $arr = [];
             $data = [];
 
-                $arr['legal_name'] = \Auth::user()->name;
+                $arr['name'] = \Auth::user()->name;
                 $arr['pending'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','pending')->count();
                 $arr['refused'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','refused')->count();
                 $arr['accepted'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','accepted')->count();
@@ -966,7 +966,7 @@ class ReportController extends Controller
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 500
+                            "$ ". TechnicalIncident::where('reference', 'inc')->where('status', 'pending')->count()
                         ] 
                     ], 
                     [
@@ -974,7 +974,7 @@ class ReportController extends Controller
                             "label" => "Refused", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                "$ ". 500
+                                "$ ". TechnicalIncident::where('reference', 'inc')->where('status', 'refused')->count()
                             ]
                     ], 
                     [
@@ -982,7 +982,7 @@ class ReportController extends Controller
                         "label" => "Resolved", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 500
+                            "$ ". TechnicalIncident::where('reference', 'inc')->where('status', 'resolved')->count()
                         ]
                     ],
                     [
@@ -990,7 +990,7 @@ class ReportController extends Controller
                         "label" => "Closed", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 500
+                            "$ ". TechnicalIncident::where('reference', 'inc')->where('status', 'closed')->count()
                         ]
                     ],
                 ],
@@ -1055,7 +1055,106 @@ class ReportController extends Controller
             "data" =>  $data
         ]);
     }
+    public function incidentByClientHistory(Request $request){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
 
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_users';
+        User::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type == 'incident_by_client')
+        
+            $clients = Client::get();
+
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+
+            foreach($clients as $client){
+                $arr['name'] = $client->legal_name;
+                $arr['pending'] = TechnicalIncident::where('client_id',$client->id)->where('status','pending')->count();
+                $arr['refused'] = TechnicalIncident::where('client_id',$client->id)->where('status','refused')->count();
+                $arr['accepted'] = TechnicalIncident::where('client_id',$client->id)->where('status','accepted')->count();
+                $arr['closed'] = TechnicalIncident::where('client_id',$client->id)->where('status','closed')->count();
+                $arr['total'] = TechnicalIncident::where('client_id',$client->id)->count();
+
+                $data[] = $arr;
+            }
+            
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
+    }
+    public function incidentByAgentHistory(Request $request){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_users';
+        User::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        if($request->type == 'incident_by_agent')
+        
+            $clients = Client::get();
+
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+
+                $arr['name'] = \Auth::user()->name;;
+                $arr['pending'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','pending')->count();
+                $arr['refused'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','refused')->count();
+                $arr['accepted'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','accepted')->count();
+                $arr['closed'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','closed')->count();
+                $arr['total'] = TechnicalIncident::where('assigned_to',\Auth::id())->count();
+
+                $data[] = $arr;
+            
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
+    }
     public function purchases( Request $request ){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
