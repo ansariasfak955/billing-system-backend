@@ -153,26 +153,31 @@ class ReportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
         $productTables = 'company_'.$request->company_id.'_products';
         Product::setGlobalTable($productTables);
 
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         
-        if($request->type == "agent"){
-            // $agent_ids  = InvoiceTable::pluck('agent_id')->groupBy('agent_id')->toArray();        
-            // $clients = Client::whereIn('id', $agent_ids)->get();
+        if($request->type == "clients"){
             $clients = Client::get();
             $data = [];
             $data['sales_invoicing'] = [];
             foreach($clients as $client){
                 $data['sales_invoicing'][] = [
                         "type" => "bar",
-                        "label" => "" .  $client->email,
+                        "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            Client::where('id', $client->id)->get()->sum('amount'),
+                            "$". InvoiceTable::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -180,17 +185,17 @@ class ReportController extends Controller
                 "status" => true,
                 "data" => $data
             ]);
-        }else if($request->type == "product"){
-            $productTables = Product::get();
+        }else if($request->type == "agents"){
+            $clients = Client::get();
             $data = [];
-            $data['products'] = [];
-            foreach($productTables as $productTable){
-                $data['products'][] = [
+            $data['invoice_agents'] = [];
+            foreach($clients as $client){
+                $data['invoice_agents'][] = [
                         "type" => "bar",
-                        "label" => "" .  $productTable->name,
+                        "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            Product::where('id', $productTable->id)->get()->sum('amount'),
+                            "$". InvoiceTable::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -199,30 +204,188 @@ class ReportController extends Controller
                 "data" => $data
             ]);
 
-        }else{
-            $items = Item::get();
+        }else if($request->type == "items"){
+            $productTables = Product::get();
+            $services = Service::get();
             $data = [];
-            $data['Items'] = [];
-            foreach($items as $item){
-                $data ['Items'] [] = [
-                    "type" => "bar", 
-                    "label" => "" . $item->name,
-                    "backgroundColor" => "#26C184", 
-                    "data" => [
-                        " " . Item::where('id', $item->id)->get()->sum('amount'),
-                    ]
-                ];
+            $data['invoice_items'] = [];
+            foreach($productTables as $productTable){
+                $data['invoice_items'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $productTable->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                                InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($productTable,$referenceType) {
+                                $query->where('reference_id', $productTable->id)->where('type', $referenceType);
+                                })->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            foreach($services as $service){
+                $data['invoice_items'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $service->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                                InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                                $query->where('reference_id', $service->id)->where('type', $referenceType);
+                                })->get()->sum('amount'),
+                            ]
+                        ];
             }
             
             return response()->json([
                 "status" => true,
                 "data" =>  $data
             ]);
-        }
+        }   
+    }
+
+    public function invoiceClientHistory(Request $request){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
         
-       
+            $clients = Client::get();
+
+            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+
+            foreach($clients as $client){
+                $arr['name'] = $client->legal_name;
+                $arr['invoiced'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount');
+                $arr['paid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_paid');
+                $arr['Unpaid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_due');
+
+                $data[] = $arr;
+            }
+            
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
+    }
+    public function invoiceAgentsHistory(Request $request){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
         
-        
+            $clients = Client::get();
+
+            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+            // $arr['legal_name'] = \Auth::user()->name;
+            //     $arr['pending'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())
+
+                $arr['name'] = \Auth::user()->name;
+                $arr['invoiced'] = InvoiceTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount');
+                $arr['paid'] = InvoiceTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount_paid');
+                $arr['Unpaid'] = InvoiceTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount_due');
+
+                $data[] = $arr;
+            
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
+    }
+    public function invoiceItemsHistory(Request $request){
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_users';
+        User::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $products = Product::get();
+        $services = Service::get();
+        // dd($products);
+            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            // $clients = SalesEstimate::where('reference', $referenceType)->get();
+           
+            $arr = [];
+            $data = [];
+
+            foreach($products as $product){
+                $arr['name'] = $product->name;
+                $arr['reference'] = $product->reference.''.$product->reference_number;
+                $arr['units'] = '';
+                $arr['amount'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                })->get()->sum('amount_with_out_vat');
+                
+
+                $data[] = $arr;
+            }
+            foreach($services as $service){
+                $arr['name'] = $service->name;
+                $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['units'] = '';
+                $arr['amount'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                })->get()->sum('amount_with_out_vat');
+
+                $data[] = $arr;
+            }
+
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+
     }
 
     public function sales( Request $request ){
@@ -403,9 +566,9 @@ class ReportController extends Controller
             $productTables = Product::get();
             $services = Service::get();
             $data = [];
-            $data['products'] = [];
+            $data['invoice_items'] = [];
             foreach($productTables as $productTable){
-                $data['products'][] = [
+                $data['invoice_items'][] = [
                         "type" => "bar",
                         "label" => "" .  $productTable->name,
                         "backgroundColor" => "#26C184",

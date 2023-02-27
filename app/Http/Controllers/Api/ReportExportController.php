@@ -26,6 +26,9 @@ use Illuminate\Http\Request;
 use App\Exports\ReportExport\SalesClientExport;
 use App\Exports\ReportExport\SalesAgentsExport;
 use App\Exports\ReportExport\SalesItemsExport;
+use App\Exports\ReportExport\InvoiceClientExport;
+use App\Exports\ReportExport\InvoiceAgentExport;
+use App\Exports\ReportExport\InvoiceItemExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -251,6 +254,160 @@ class ReportExportController extends Controller
                 'status' => true,
                 'url' => url('/storage/xlsx/'.$fileName),
              ]); 
+
+    }
+    public function invoiceClientExport(Request $request, $company_id){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        
+            $clients = Client::get();
+
+            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+
+            $fileName = 'INVOICECLIENTREPORT-'.time().$company_id.'.xlsx';
+
+            $arr = [];
+            $data = [];
+
+            foreach($clients as $client){
+                $arr['name'] = $client->legal_name;
+                $arr['invoiced'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount');
+                $arr['paid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_paid');
+                $arr['Unpaid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_due');
+
+                $invoiceClientsExports[] = $arr;
+            }
+            
+            Excel::store(new InvoiceClientExport($invoiceClientsExports), 'public/xlsx/'.$fileName);
+
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+    }
+    public function invoiceAgentsExport(Request $request, $company_id){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        
+            $clients = Client::get();
+
+            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $fileName = 'INVOICEAGENTSREPORT-'.time().$company_id.'.xlsx';
+                $arr = [];
+                $data = [];
+
+                $arr['name'] = \Auth::user()->name;
+                $arr['invoiced'] = InvoiceTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount');
+                $arr['paid'] = InvoiceTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount_paid');
+                $arr['Unpaid'] = InvoiceTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount_due');
+
+                $invoiceAgentsExports[] = $arr;
+            
+                Excel::store(new InvoiceAgentExport($invoiceAgentsExports), 'public/xlsx/'.$fileName);
+
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
+    }
+    public function invoiceItemsExport(Request $request, $company_id){
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_users';
+        User::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $products = Product::get();
+        $services = Service::get();
+        // dd($products);
+            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            // $clients = SalesEstimate::where('reference', $referenceType)->get();
+            $fileName = 'INVOICEITEMSREPORT-'.time().$company_id.'.xlsx';
+            $arr = [];
+            $data = [];
+
+            foreach($products as $product){
+                $arr['name'] = $product->name;
+                $arr['reference'] = $product->reference.''.$product->reference_number;
+                $arr['units'] = '';
+                $arr['amount'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                })->get()->sum('amount_with_out_vat');
+                
+
+                $invoiceItemsExports[] = $arr;
+            }
+            foreach($services as $service){
+                $arr['name'] = $service->name;
+                $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['units'] = '';
+                $arr['amount'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                })->get()->sum('amount_with_out_vat');
+
+                $invoiceItemsExports[] = $arr;
+            }
+
+            Excel::store(new InvoiceItemExport($invoiceItemsExports), 'public/xlsx/'.$fileName);
+
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
 
     }
 }
