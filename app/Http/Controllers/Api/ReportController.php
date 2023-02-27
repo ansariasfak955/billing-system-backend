@@ -371,7 +371,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::where('reference',$referenceType)->get()->sum('amount'),
+                            "$". SalesEstimate::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -381,23 +381,19 @@ class ReportController extends Controller
             ]);
 
         }elseif($request->type == "agents"){
-            $agentNames = User::get();
+            $clients = Client::get();
             $data = [];
-            $data['agents'] = [];
-            foreach($agentNames as $agentName){
-            $data = [
-                    "agents" => [
-                        [
-                            "type" => "bar", 
-                            "label" => "" . $agentName->name, 
-                            "backgroundColor" => "#26C184", 
-                            "data" => [
-                            " " . SalesEstimate::where('reference', $referenceType)->get()->sum('amount'),
-                            ] 
-                        ], 
-                    ]
-                ];
-        }
+            $data['clients'] = [];
+            foreach($clients as $client){
+                $data['clients'][] = [
+                        "type" => "bar",
+                        "label" => "" .  \Auth::user()->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            "$". SalesEstimate::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
+                            ]
+                        ];
+            }
             return response()->json([
                 "status" => true,
                 "data" => $data
@@ -405,6 +401,7 @@ class ReportController extends Controller
         }elseif($request->type == "items"){
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $productTables = Product::get();
+            $services = Service::get();
             $data = [];
             $data['products'] = [];
             foreach($productTables as $productTable){
@@ -413,7 +410,21 @@ class ReportController extends Controller
                         "label" => "" .  $productTable->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            SalesEstimate::where('reference', $referenceType)->get()->sum('amount'),
+                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($productTable,$referenceType) {
+                                $query->where('reference_id', $productTable->id)->where('type', $referenceType);
+                                })->get()->sum('amount'),
+                            ]
+                        ];
+            }
+            foreach($services as $service){
+                $data['products'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $service->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                                $query->where('reference_id', $service->id)->where('type', $referenceType);
+                                })->get()->sum('amount'),
                             ]
                         ];
             }
@@ -562,6 +573,7 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
 
         $products = Product::get();
+        $services = Service::get();
         // dd($products);
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             // $clients = SalesEstimate::where('reference', $referenceType)->get();
@@ -594,17 +606,30 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
-            // foreach($products as $product){
-            //     $arr['name'] = $client->agent_name;
-            //     $arr['pending'] = $client->where('reference', $referenceType)->where('status','pending')->count();
-            //     $arr['refused'] = $client->where('reference', $referenceType)->where('status','refused')->count();
-            //     $arr['accepted'] = $client->where('reference', $referenceType)->where('status','accepted')->count();
-            //     $arr['closed'] = $client->where('reference', $referenceType)->where('status','closed')->count();
-            //     $arr['total'] = $client->where('reference', $referenceType)->sum('status');
-            //     $arr['amount'] = $client->amount;
+            foreach($services as $service){
+                $arr['name'] = $service->name;
+                $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['pending'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                })->where('status','pending')->count();
+                $arr['accepted'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                })->where('status','accepted')->count();
+                $arr['closed'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                })->where('status','closed')->count();
+                $arr['refused'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                })->where('status','refused')->count();
+                $arr['total'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                })->count();
+                $arr['amount'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                })->get()->sum('amount');
 
-            //     $data[] = $arr;
-            // }
+                $data[] = $arr;
+            }
 
         return response()->json([
             "status" => true,
