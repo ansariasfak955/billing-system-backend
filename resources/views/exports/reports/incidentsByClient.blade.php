@@ -28,9 +28,17 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($incidentByClientExports as $incidentByClientExport)
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{$incidentByClientExport['reference']}}</td>
+            <td>{{$incidentByClientExport['ruc']}}</td>
+            <td>{{$incidentByClientExport['name']}}</td>
+            <td>{{$incidentByClientExport['pending']}}</td>
+            <td>{{$incidentByClientExport['refused']}}</td>
+            <td>{{$incidentByClientExport['accepted']}}</td>
+            <td>{{$incidentByClientExport['closed']}}</td>
+            <td>{{$incidentByClientExport['total']}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

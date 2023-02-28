@@ -602,7 +602,9 @@ class ReportExportController extends Controller
             $data = [];
 
             foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
+                $arr['reference'] = $client->reference.''.$client->reference_number;
+                $arr['ruc'] = $client->tin;
+                $arr['name'] = $client->legal_name.' ('.$client->name.')';
                 $arr['pending'] = TechnicalIncident::where('client_id',$client->id)->where('reference', $referenceType)->where('status','pending')->count();
                 $arr['refused'] = TechnicalIncident::where('client_id',$client->id)->where('reference', $referenceType)->where('status','refused')->count();
                 $arr['accepted'] = TechnicalIncident::where('client_id',$client->id)->where('reference', $referenceType)->where('status','accepted')->count();
@@ -620,8 +622,14 @@ class ReportExportController extends Controller
              ]);
     }
     public function incidentsByAgentExport(Request $request, $company_id){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
 
         $table = 'company_'.$request->company_id.'_services';
         Service::setGlobalTable($table);
@@ -632,8 +640,8 @@ class ReportExportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
+        $table = 'company_'.$request->company_id.'_users';
+        User::setGlobalTable($table);
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);

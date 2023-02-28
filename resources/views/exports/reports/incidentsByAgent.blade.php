@@ -22,9 +22,16 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($incidentsAgentsExports as $incidentsAgentsExport)
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{$incidentsAgentsExport['name']}}</td>
+            <td>{{$incidentsAgentsExport['pending']}}</td>
+            <td>{{$incidentsAgentsExport['refused']}}</td>
+            <td>{{$incidentsAgentsExport['accepted']}}</td>
+            <td>{{$incidentsAgentsExport['closed']}}</td>
+            <td>{{$incidentsAgentsExport['total']}}</td>
+            <td>{{$incidentsAgentsExport['amount']}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>
