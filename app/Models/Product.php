@@ -155,8 +155,8 @@ class Product extends Model
 
     public function getPurchaseStockValueAttribute(){
 
-        if($this->stock && isset($this->attributes['special_price'])){
-            return (float)$this->stock*(float)$this->attributes['special_price'];
+        if($this->stock && isset($this->attributes['purchase_price'])){
+            return (float)$this->stock*(float)$this->attributes['purchase_price'];
         }
     }
     public function getTableColumns() {

@@ -358,6 +358,7 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('incident-by-item', 'ReportController@incidentByItem');
                 Route::get('purchase-supplier-history', 'ReportController@purchaseSupplierHistory');
                 Route::get('purchase-item-history', 'ReportController@purchaseItemHistory');
+                Route::get('stock-valuation-history', 'ReportController@stockValuationHistory');
             });
             Route::get('get-columns/{type}', 'ImportExportController@getColumns');
             Route::post('export/{type}', 'ImportExportController@export');

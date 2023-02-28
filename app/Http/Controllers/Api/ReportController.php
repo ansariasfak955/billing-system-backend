@@ -24,6 +24,7 @@ use App\Models\Product;
 use App\Models\TechnicalIncident;
 use App\Models\Deposit;
 use App\Models\ExpenseAndInvestment;
+use App\Models\SupplierSpecialPrice;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -540,7 +541,7 @@ class ReportController extends Controller
             ];
 
         }elseif( $request->type == "clients" ){
-            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
             $data['clients'] = [];
@@ -550,7 +551,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
+                            "$". SalesEstimate::where('client_id',$client->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -560,7 +561,7 @@ class ReportController extends Controller
             ]);
 
         }elseif($request->type == "agents"){
-            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
             $data['agents'] = [];
@@ -570,7 +571,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::where('reference',$referenceType)->get()->sum('amount'),
+                            "$". SalesEstimate::get()->sum('amount'),
                             ]
                         ];
             }
@@ -579,7 +580,7 @@ class ReportController extends Controller
                 "data" => $data
             ]);
         }elseif($request->type == "items"){
-            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $productTables = Product::get();
             $services = Service::get();
             $data = [];
@@ -590,8 +591,8 @@ class ReportController extends Controller
                         "label" => "" .  $productTable->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($productTable,$referenceType) {
-                                $query->where('reference_id', $productTable->id)->where('type', $referenceType);
+                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($productTable) {
+                                $query->where('reference_id', $productTable->id);
                                 })->get()->sum('amount'),
                             ]
                         ];
@@ -1467,7 +1468,7 @@ class ReportController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
 
         if($request->type == "supplier"){
-            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $suppliers = Supplier::get();
             $data = [];
             $data['purchase_supplier'] = [];
@@ -1477,7 +1478,7 @@ class ReportController extends Controller
                         "label" => "" .  $supplier->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". PurchaseTable::where('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum('amount'),
+                            "$". PurchaseTable::where('supplier_id',$supplier->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -1488,7 +1489,7 @@ class ReportController extends Controller
             ]);
 
         }elseif($request->type == 'items'){
-            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $productTables = Product::get();
             $expenses = ExpenseAndInvestment::get();
             $services = Service::get();
@@ -1503,7 +1504,7 @@ class ReportController extends Controller
                             // PurchaseTable::with(['items'])->WhereHas('items', function ($query) use ($productTable,$referenceType) {
                             //     $query->where('reference_id', $productTable->id)->where('type', $referenceType);
                             //     })->get()->sum('amount'),
-                            Item::where('reference_id', $productTable->id)->where('type', $referenceType)->get()->sum('amount'),
+                            Item::where('reference_id', $productTable->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -1516,7 +1517,7 @@ class ReportController extends Controller
                             // PurchaseTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
                             //     $query->where('reference_id', $service->id)->where('type', $referenceType);
                             //     })->get()->sum('amount'),
-                            Item::where('reference_id', $productTable->id)->where('type', $referenceType)->get()->sum('amount'),
+                            Item::where('reference_id', $productTable->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -1529,7 +1530,7 @@ class ReportController extends Controller
                             // PurchaseTable::with(['items'])->WhereHas('items', function ($query) use ($expense,$referenceType) {
                             //     $query->where('reference_id', $expense->id)->where('type', $referenceType);
                             //     })->get()->sum('amount'),
-                            Item::where('reference_id', $productTable->id)->where('type', $referenceType)->get()->sum('amount'),
+                            Item::where('reference_id', $productTable->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -1847,9 +1848,9 @@ class ReportController extends Controller
         foreach($paymentOptions as $paymentOption){
             $arr['name'] = $paymentOption->name;
             $arr['deposit'] = '';
-            $arr['withdrawals'] = InvoiceReceipt::WhereHas('payment_options', function ($query) use ($paymentOption,$referenceType) {
+            $arr['withdrawals'] = InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption,$referenceType) {
                 $query->where('payment_option', $paymentOption->id)->where('type', $referenceType);
-            })->where('paid','1')->sum('amount');
+            })->get()->sum('amount');
             $arr['balance'] = '';
             
 
@@ -1905,7 +1906,7 @@ class ReportController extends Controller
                 $arr['type'] = $invoiceData->reference_type;
                 $arr['reference'] = $invoiceData->reference.''.$invoiceData->reference_number;
                 $arr['client'] = $invoiceData->client_name;
-                $arr['employee'] = \Auth::user()->name;
+                // $arr['employee'] = \Auth::user()->name;
                 $arr['payment_option'] = $invoiceData->payment_options->name;
                 $arr['amount'] = $invoiceData->amount_paid;
                 // $arr['amount'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
@@ -1921,8 +1922,8 @@ class ReportController extends Controller
                 $arr['date'] = $purchaseData->date;
                 $arr['type'] = $purchaseData->reference_type;
                 $arr['reference'] = $purchaseData->reference.''.$purchaseData->reference_number;
-                $arr['client'] = $purchaseData->client_name;
-                $arr['employee'] = \Auth::user()->name;
+                $arr['supplier'] = $purchaseData->supplier_name;
+                // $arr['employee'] = \Auth::user()->name;
                 // $arr['payment_option'] = $purchaseData->payment_options->name;
                 $arr['amount'] = $purchaseData->amount_paid;
                 // $arr['amount'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
@@ -1951,6 +1952,12 @@ class ReportController extends Controller
 
         $supplierTables = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($supplierTables); 
+
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_supplier_special_prices';
+        SupplierSpecialPrice::setGlobalTable($table);
 
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
@@ -1983,6 +1990,49 @@ class ReportController extends Controller
             "data" =>  $data
         ]);
     }
+    // public function stockValuationHistory(Request $request){
+    //     $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+    //     PurchaseTable::setGlobalTable($purchaseTables); 
+
+    //     $productTable = 'company_'.$request->company_id.'_products';
+    //     Product::setGlobalTable($productTable); 
+
+    //     $supplierTables = 'company_'.$request->company_id.'_suppliers';
+    //     Supplier::setGlobalTable($supplierTables); 
+
+    //     $table = 'company_'.$request->company_id.'_purchase_receipts';
+    //     PurchaseReceipt::setGlobalTable($table);
+
+    //     $table = 'company_'.$request->company_id.'_supplier_special_prices';
+    //     SupplierSpecialPrice::setGlobalTable($table);
+
+    //     $itemTable = 'company_'.$request->company_id.'_items';
+    //     Item::setGlobalTable($itemTable);
+
+    //     $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+    //     ItemMeta::setGlobalTable($item_meta_table);
+        
+    //     $SupplierSpecialPrices = SupplierSpecialPrice::get();
+
+    //     $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+           
+    //     $arr = [];
+    //     $data = [];
+
+    //     foreach($SupplierSpecialPrices as $SupplierSpecialPrice){
+    //         $arr['name'] = $SupplierSpecialPrice->product_name;
+    //         $arr['stock'] = '';
+    //         $arr['sales_stock_value'] = $SupplierSpecialPrice->product_name;
+    //         $arr['purchase_stock_value'] = $SupplierSpecialPrice->product_name;
+
+    //         $data[] = $arr;
+    //     }
+    //     return response()->json([
+    //         "status" => true,
+    //         "data" => $data
+    //     ]);
+        
+    // }
     public function taxSummary(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
