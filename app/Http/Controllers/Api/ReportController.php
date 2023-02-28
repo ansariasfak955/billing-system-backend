@@ -527,6 +527,7 @@ class ReportController extends Controller
             ];
 
         }elseif( $request->type == "clients" ){
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
             $data['clients'] = [];
@@ -546,6 +547,7 @@ class ReportController extends Controller
             ]);
 
         }elseif($request->type == "agents"){
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
             $data['agents'] = [];
