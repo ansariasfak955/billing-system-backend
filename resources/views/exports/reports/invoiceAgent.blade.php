@@ -32,9 +32,14 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($invoiceAgentsExports as $invoiceAgentsExport)
         <tr>
-            <td></td>
+            <td>{{$invoiceAgentsExport['name']}}</td>
+            <td>{{$invoiceAgentsExport['invoiced']}}</td>
+            <td>{{$invoiceAgentsExport['paid']}}</td>
+            <td>{{$invoiceAgentsExport['Unpaid']}}</td>
             <td></td>
         </tr>
+        @endforeach
     </tbody>
 </table>

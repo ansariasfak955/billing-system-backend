@@ -309,6 +309,9 @@ class ReportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($invoiceTable);
 
@@ -317,7 +320,6 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        
             // $clients = Client::get();
 
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
@@ -339,9 +341,6 @@ class ReportController extends Controller
             ]);
     }
     public function invoiceItemsHistory(Request $request){
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables);
 
@@ -354,8 +353,11 @@ class ReportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
-        $table = 'company_'.$request->company_id.'_users';
-        User::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);

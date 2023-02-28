@@ -18,7 +18,7 @@ class InvoiceClientExport implements FromView
        public function view(): View
     {
         $invoiceClientsExports = $this->invoiceClientsExports;
-        dd($invoiceClientsExports);
+        // dd($invoiceClientsExports);
         return view('exports.reports.invoiceClient', compact('invoiceClientsExports'));
     }
 }

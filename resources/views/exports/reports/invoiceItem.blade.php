@@ -29,9 +29,13 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($invoiceItemsExports as $invoiceItemsExport)
         <tr>
+            <td>{{$invoiceItemsExport['reference']}}</td>
+            <td>{{$invoiceItemsExport['name']}}</td>
             <td></td>
-            <td></td>
+            <td>{{$invoiceItemsExport['amount']}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>
