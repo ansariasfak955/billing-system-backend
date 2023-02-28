@@ -557,7 +557,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
+                            "$". SalesEstimate::where('reference',$referenceType)->get()->sum('amount'),
                             ]
                         ];
             }

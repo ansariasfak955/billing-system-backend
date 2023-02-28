@@ -768,6 +768,7 @@ class TableHelper
                 $table->string('name');
                 $table->float('price')->nullable();
                 $table->longText('description')->nullable();
+                $table->string('type')->nullable();
                 $table->timestamps();
             });
         }
