@@ -280,6 +280,9 @@ class ReportExportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($invoiceTable);
 
@@ -288,12 +291,11 @@ class ReportExportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        
+
+        $fileName = 'INVOICECLIENTREPORT-'.time().$company_id.'.xlsx';
             $clients = Client::get();
 
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
-
-            $fileName = 'INVOICECLIENTREPORT-'.time().$company_id.'.xlsx';
 
             $arr = [];
             $data = [];
