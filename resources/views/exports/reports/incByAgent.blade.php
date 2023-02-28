@@ -39,9 +39,16 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($incidentByAgentExports as $incidentByAgentExport)
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{$incidentByAgentExport['name']}}</td>
+            <td>{{$incidentByAgentExport['pending']}}</td>
+            <td>{{$incidentByAgentExport['refused']}}</td>
+            <td>{{$incidentByAgentExport['accepted']}}</td>
+            <td>{{$incidentByAgentExport['closed']}}</td>
+            <td>{{$incidentByAgentExport['total']}}</td>
+            <td>{{$incidentByAgentExport['amount']}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

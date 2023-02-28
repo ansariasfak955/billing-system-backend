@@ -38,9 +38,18 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($incidentByItemExports as $incidentByItemExport)
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{$incidentByItemExport['reference']}}</td>
+            <td>{{$incidentByItemExport['name']}}</td>
+            <td>{{$incidentByItemExport['pending']}}</td>
+            <td>{{$incidentByItemExport['refused']}}</td>
+            <td>{{$incidentByItemExport['accepted']}}</td>
+            <td>{{$incidentByItemExport['closed']}}</td>
+            <td>{{$incidentByItemExport['total']}}</td>
+            <td>{{$incidentByItemExport['units']}}</td>
+            <td>{{$incidentByItemExport['amount']}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>
