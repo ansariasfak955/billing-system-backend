@@ -33,9 +33,14 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($purchaseItemExports as $purchaseItemExport)
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{$purchaseItemExport['reference']}}</td>
+            <td>{{$purchaseItemExport['name']}}</td>
+            <td>{{$purchaseItemExport['category']}}</td>
+            <td>{{$purchaseItemExport['units']}}</td>
+            <td>{{$purchaseItemExport['amount']}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

@@ -2,7 +2,9 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            @foreach($purchaseSupplierExports as $purchaseSupplierExport)
+                <td>{{$purchaseSupplierExport['currency']}}</td>
+            @endforeach
         </tr>
         <tr>
             <th>After tax:</th>
@@ -10,7 +12,9 @@
         </tr>
         <tr>
             <th>According to:</th>
-            <td>data</td>
+            @foreach($purchaseSupplierExports as $purchaseSupplierExport)
+                <td>{{$purchaseSupplierExport['according']}}</td>
+            @endforeach
         </tr>
         <tr>
             <th>Start Date:</th>
@@ -18,10 +22,6 @@
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
-        </tr>
-        <tr>
-            <th>Selected Agent:</th>
             <td>data</td>
         </tr>
     </thead>
@@ -39,9 +39,16 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($purchaseSupplierExports as $purchaseSupplierExport)
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{$purchaseSupplierExport['reference']}}</td>
+            <td>{{$purchaseSupplierExport['ruc']}}</td>
+            <td>{{$purchaseSupplierExport['name']}}</td>
+            <td>{{$purchaseSupplierExport['category']}}</td>
+            <td>{{$purchaseSupplierExport['invoiced']}}</td>
+            <td>{{$purchaseSupplierExport['paid']}}</td>
+            <td>{{$purchaseSupplierExport['unpaid']}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

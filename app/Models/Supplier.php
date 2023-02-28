@@ -12,7 +12,7 @@ class Supplier extends Model
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected static $globalTable = 'suppliers' ;
 
-    public $appends = ['supplier_category_name','payment_terms_name','payment_option_name'];
+    public $appends = ['supplier_category_name','payment_terms_name','payment_option_name','reference_type'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -35,6 +35,13 @@ class Supplier extends Model
             $table = $this->getTable();
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_category_name($company_id, $this->attributes['supplier_category']);
+        }
+    }
+    public function getReferenceTypeAttribute(){
+        if(isset( $this->attributes['reference'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_reference_type($company_id, $this->attributes['reference']);
         }
     }
     public function getPaymentTermsNameAttribute(){

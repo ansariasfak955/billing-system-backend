@@ -918,7 +918,12 @@ class ReportExportController extends Controller
             $data = [];
 
             foreach($suppliers as $supplier){
-                $arr['name'] = $supplier->legal_name;
+                $arr['reference'] = $supplier->reference.''.$supplier->reference_number;
+                $arr['ruc'] = $supplier->tin;
+                $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
+                $arr['according'] = $supplier->reference_type;
+                $arr['currency'] = $supplier->currency;
+                $arr['category'] = $supplier->supplier_category_name;
                 $arr['invoiced'] = PurchaseReceipt::whereHas('invoice', function($q) use ($supplier,$referenceType){
                     $q->where('supplier_id', $supplier->id)->where('reference', $referenceType);
                 })->where('paid','0')->sum('amount');
@@ -983,6 +988,7 @@ class ReportExportController extends Controller
             foreach($products as $product){
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
+                $arr['category'] = $product->product_category_name;
                 $arr['units'] = '';
                 $arr['amount'] = PurchaseTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
                     $query->where('reference_id', $product->id)->where('type', $referenceType);
@@ -994,6 +1000,7 @@ class ReportExportController extends Controller
             foreach($services as $service){
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['category'] = $service->product_category_name;
                 $arr['units'] = '';
                 $arr['amount'] = PurchaseTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
                     $query->where('reference_id', $service->id)->where('type', $referenceType);
