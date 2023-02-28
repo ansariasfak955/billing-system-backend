@@ -231,7 +231,7 @@ class ReportExportController extends Controller
                 })->count();
                 $arr['amount'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
                     $query->where('reference_id', $product->id)->where('type', $referenceType);
-                })->get()->sum('amount');
+                })->get()->sum('amount_with_out_vat');
                 
 
                 $itemsSalesExports[] = $arr;
@@ -256,7 +256,7 @@ class ReportExportController extends Controller
                 })->count();
                 $arr['amount'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
                     $query->where('reference_id', $service->id)->where('type', $referenceType);
-                })->get()->sum('amount');
+                })->get()->sum('amount_with_out_vat');
 
                 $itemsSalesExports[] = $arr;
             }
