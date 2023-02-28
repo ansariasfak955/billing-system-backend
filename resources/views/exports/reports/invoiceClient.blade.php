@@ -35,9 +35,16 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($invoiceClientsExports as $invoiceClientsExport)
         <tr>
+            <td>{{$invoiceClientsExport['reference']}}</td>
+            <td>{{$invoiceClientsExport['ruc']}}</td>
+            <td>{{$invoiceClientsExport['name']}}</td>
             <td></td>
-            <td></td>
+            <td>{{$invoiceClientsExport['invoiced']}}</td>
+            <td>{{$invoiceClientsExport['paid']}}</td>
+            <td>{{$invoiceClientsExport['Unpaid']}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

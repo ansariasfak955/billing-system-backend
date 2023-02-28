@@ -318,7 +318,7 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $clients = Client::get();
+            // $clients = Client::get();
 
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];

@@ -299,7 +299,9 @@ class ReportExportController extends Controller
             $data = [];
 
             foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
+                $arr['name'] = $client->legal_name.'('.$client->name.')';
+                $arr['reference'] = $client->reference.''.$client->reference_number;
+                $arr['ruc'] = $client->tin;
                 $arr['invoiced'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount');
                 $arr['paid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_paid');
                 $arr['Unpaid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_due');
