@@ -1785,7 +1785,7 @@ class ReportController extends Controller
         }elseif($request->type == 'paymentOption'){
             $paymentOptions = PaymentOption::get();
             // dd($products);
-                $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+                // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
                
                 $data = [];
                 $data['invoice_items'] = [];
@@ -1795,8 +1795,8 @@ class ReportController extends Controller
                             "label" => "" .  $paymentOption->name,
                             "backgroundColor" => "#26C184",
                             "data" => [
-                                    InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption,$referenceType) {
-                                    $query->where('payment_option', $paymentOption->id)->where('reference', $referenceType);
+                                    InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                                    $query->where('payment_option', $paymentOption->id);
                                     })->get()->sum('amount'),
                                 ]
                             ];
@@ -1805,6 +1805,24 @@ class ReportController extends Controller
                     "status" => true,
                     "data" =>  $data
                 ]);
+        }elseif($request->type =='agents'){
+            // $clients = Client::get();
+            // $data = [];
+            $data['agents'] = [];
+            // foreach($clients as $client){
+                $data['agents'][] = [
+                        "type" => "bar",
+                        "label" => "" .  \Auth::user()->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            "$". InvoiceTable::get()->sum('amount'),
+                            ]
+                        ];
+            // }
+            return response()->json([
+                "status" => true,
+                "data" => $data
+            ]);
         }
         return response()->json([
             "status" => true,
@@ -1848,14 +1866,66 @@ class ReportController extends Controller
         foreach($paymentOptions as $paymentOption){
             $arr['name'] = $paymentOption->name;
             $arr['deposit'] = '';
-            $arr['withdrawals'] = InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption,$referenceType) {
-                $query->where('payment_option', $paymentOption->id)->where('type', $referenceType);
-            })->get()->sum('amount');
+            $arr['withdrawals'] = InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                $query->where('payment_option', $paymentOption->id);
+                })->get()->sum('amount');
             $arr['balance'] = '';
             
 
             $data[] = $arr;
         }
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+
+    }
+    public function cashFlowAgentHistory(Request $request){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        $paymentOptions = PaymentOption::get();
+       
+        $arr = [];
+        $data = [];
+
+        // foreach($paymentOptions as $paymentOption){
+            $arr['name'] = \Auth::user()->name;
+            $arr['deposit'] = Deposit::where('type','deposit')->sum('amount');
+            // $arr['withdrawals'] = InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption) {
+            //     $query->where('payment_option', $paymentOption->id);
+            //     })->get()->sum('amount');
+            $arr['withdrawals'] = InvoiceTable::get()->sum('amount');
+            $arr['balance'] = Deposit::where('type','withdraw')->sum('amount');
+            
+
+            $data[] = $arr;
+        // }
         return response()->json([
             "status" => true,
             "data" =>  $data

@@ -40,6 +40,7 @@ use App\Exports\ReportExport\IncidentByAgentExport;
 use App\Exports\ReportExport\IncidentByItemExport;
 use App\Exports\ReportExport\PurchaseSupplierExport;
 use App\Exports\ReportExport\PurchaseItemExport;
+use App\Exports\ReportExport\CashFlowByAgentExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -596,17 +597,17 @@ class ReportExportController extends Controller
         
             $clients = Client::get();
             $fileName = 'CLIENTINCIDENTSTECHNICALSERVICEREPORT-'.time().$company_id.'.xlsx';
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
             foreach($clients as $client){
                 $arr['name'] = $client->legal_name;
-                $arr['pending'] = TechnicalIncident::where('client_id',$client->id)->where('status','pending')->count();
-                $arr['refused'] = TechnicalIncident::where('client_id',$client->id)->where('status','refused')->count();
-                $arr['accepted'] = TechnicalIncident::where('client_id',$client->id)->where('status','accepted')->count();
-                $arr['closed'] = TechnicalIncident::where('client_id',$client->id)->where('status','closed')->count();
-                $arr['total'] = TechnicalIncident::where('client_id',$client->id)->count();
+                $arr['pending'] = TechnicalIncident::where('client_id',$client->id)->where('reference', $referenceType)->where('status','pending')->count();
+                $arr['refused'] = TechnicalIncident::where('client_id',$client->id)->where('reference', $referenceType)->where('status','refused')->count();
+                $arr['accepted'] = TechnicalIncident::where('client_id',$client->id)->where('reference', $referenceType)->where('status','accepted')->count();
+                $arr['closed'] = TechnicalIncident::where('client_id',$client->id)->where('reference', $referenceType)->where('status','closed')->count();
+                $arr['total'] = TechnicalIncident::where('client_id',$client->id)->where('reference', $referenceType)->count();
 
                 $incidentByClientExports[] = $arr;
             }
@@ -642,18 +643,18 @@ class ReportExportController extends Controller
         
             $clients = Client::get();
 
-            // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $fileName = 'EMPLOYEEINCIDENTSTECHNICALSERVICEREPORT-'.time().$company_id.'.xlsx';
                 $arr = [];
                 $data = [];
 
                 $arr['name'] = \Auth::user()->name;
-                $arr['pending'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','pending')->count();
-                $arr['refused'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','refused')->count();
-                $arr['accepted'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','accepted')->count();
-                $arr['closed'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','closed')->count();
-                $arr['total'] = TechnicalIncident::where('assigned_to',\Auth::id())->count();
-                $arr['amount'] = TechnicalIncident::where('assigned_to',\Auth::id())->get()->sum('amount');
+                $arr['pending'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->where('status','pending')->count();
+                $arr['refused'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->where('status','refused')->count();
+                $arr['accepted'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->where('status','accepted')->count();
+                $arr['closed'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->where('status','closed')->count();
+                $arr['total'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->count();
+                $arr['amount'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->get()->sum('amount');
 
                 $incidentsAgentsExports[] = $arr;
             
@@ -1004,5 +1005,60 @@ class ReportExportController extends Controller
                 'status' => true,
                 'url' => url('/storage/xlsx/'.$fileName),
              ]);
+    }
+    public function cashFlowAgentHistory(Request $request, $company_id){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $fileName = 'EMPLOYEECASHFLOWREPORT-'.time().$company_id.'.xlsx';
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        $paymentOptions = PaymentOption::get();
+       
+        $arr = [];
+        $data = [];
+
+        // foreach($paymentOptions as $paymentOption){
+            $arr['name'] = \Auth::user()->name;
+            $arr['deposit'] = Deposit::where('type','deposit')->sum('amount');
+            // $arr['withdrawals'] = InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption) {
+            //     $query->where('payment_option', $paymentOption->id);
+            //     })->get()->sum('amount');
+            $arr['withdrawals'] = InvoiceTable::get()->sum('amount');
+            $arr['balance'] = Deposit::where('type','withdraw')->sum('amount');
+            
+
+            $cashflowAgentExports[] = $arr;
+        // }
+        Excel::store(new CashFlowByAgentExport($cashflowAgentExports), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+         ]);
+
     }
 }

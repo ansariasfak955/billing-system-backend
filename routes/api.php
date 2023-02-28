@@ -351,6 +351,7 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('invoice-agents-history', 'ReportController@invoiceAgentsHistory');
                 Route::get('invoice-items-history', 'ReportController@invoiceItemsHistory');
                 Route::get('cashFlow-payment-option-history', 'ReportController@paymentOptionHistory');
+                Route::get('cashFlow-By-Agent-history', 'ReportController@cashFlowAgentHistory');
                 Route::get('incident-by-client-history', 'ReportController@incidentByClientHistory');
                 Route::get('incident-by-agent-history', 'ReportController@incidentByAgentHistory');
                 Route::get('incident-by-client', 'ReportController@incidentByClient');
@@ -386,6 +387,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('invoiced-agents-export', 'ReportExportController@invoiceAgentsExport');
             Route::post('invoiced-items-export', 'ReportExportController@invoiceItemsExport');
             Route::post('cash-flow-export', 'ReportExportController@cashFlowExport');
+            Route::post('cash-flow-agent-export', 'ReportExportController@cashFlowAgentHistory');
             Route::post('payment-option-export', 'ReportExportController@paymentOptionExport');
             Route::post('incidents-by-client-export', 'ReportExportController@incidentsByClientExport');
             Route::post('incidents-by-agent-export', 'ReportExportController@incidentsByAgentExport');
@@ -394,6 +396,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('inc-by-ietm-export', 'ReportExportController@incidentByItem');
             Route::post('purchase-supplier-export', 'ReportExportController@purchaseSupplierHistoryExport');
             Route::post('purchase-item-export', 'ReportExportController@purchaseItemHistoryExport');
+
 
             // supplier bank account
             Route::apiResource('supplier-bank-account', SupplierBankAccountController::class);
