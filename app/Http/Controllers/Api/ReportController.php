@@ -189,19 +189,19 @@ class ReportController extends Controller
                 "data" => $data
             ]);
         }else if($request->type == "agents"){
-            $clients = Client::get();
+            // $clients = Client::get();
             $data = [];
             $data['invoice_agents'] = [];
-            foreach($clients as $client){
+            // foreach($clients as $client){
                 $data['invoice_agents'][] = [
                         "type" => "bar",
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". InvoiceTable::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
+                            "$". InvoiceTable::where('reference',$referenceType)->get()->sum('amount'),
                             ]
                         ];
-            }
+            // }
             return response()->json([
                 "status" => true,
                 "data" => $data
