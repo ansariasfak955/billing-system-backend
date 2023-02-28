@@ -256,6 +256,9 @@ class ReportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
         InvoiceTable::setGlobalTable($invoiceTable);
 
@@ -273,10 +276,18 @@ class ReportController extends Controller
 
             foreach($clients as $client){
                 $arr['name'] = $client->legal_name;
-                $arr['invoiced'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount');
-                $arr['paid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_paid');
-                $arr['Unpaid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_due');
-
+                // $arr['invoiced'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount');
+                // $arr['paid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_paid');
+                // $arr['Unpaid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_due');
+                $arr['invoiced'] = InvoiceReceipt::whereHas('invoice', function($q) use ($client,$referenceType){
+                    $q->where('invoice_id', $client->id)->where('reference', $referenceType);
+                })->where('paid','0')->sum('amount');
+                $arr['paid'] = InvoiceReceipt::whereHas('invoice', function($q) use ($client,$referenceType){
+                    $q->where('invoice_id', $client->id)->where('reference', $referenceType);
+                })->where('paid','1')->sum('amount');
+                $arr['unpaid'] = InvoiceReceipt::whereHas('invoice', function($q) use ($client,$referenceType){
+                    $q->where('invoice_id', $client->id)->where('reference', $referenceType);
+                })->where('paid','0')->sum('amount');
                 $data[] = $arr;
             }
             
