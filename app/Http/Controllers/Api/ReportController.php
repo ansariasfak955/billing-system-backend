@@ -1727,7 +1727,7 @@ class ReportController extends Controller
                         "label" => "Account Deposits", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". Deposit::where('type','deposit')->where('paid','1')->sum('amount')
+                            "$ ". Deposit::where('type','deposit')->where('paid_by','1')->sum('amount')
                         ]  
                     ]
                 ], 
