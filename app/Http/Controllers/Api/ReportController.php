@@ -1761,7 +1761,7 @@ class ReportController extends Controller
                         "label" => "Account Withdrawals", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". Deposit::where('type','withdraw')->where('paid','1')->sum('amount')
+                            "$ ". Deposit::where('type','withdraw')->where('paid_by','1')->sum('amount')
                         ] 
                     ]  
                 ]
