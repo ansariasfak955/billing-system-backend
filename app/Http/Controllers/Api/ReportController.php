@@ -562,10 +562,10 @@ class ReportController extends Controller
 
         }elseif($request->type == "agents"){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $clients = Client::get();
+            // $clients = Client::get();
             $data = [];
             $data['agents'] = [];
-            foreach($clients as $client){
+            // foreach($clients as $client){
                 $data['agents'][] = [
                         "type" => "bar",
                         "label" => "" .  \Auth::user()->name,
@@ -574,7 +574,7 @@ class ReportController extends Controller
                             "$". SalesEstimate::get()->sum('amount'),
                             ]
                         ];
-            }
+            // }
             return response()->json([
                 "status" => true,
                 "data" => $data
@@ -1224,19 +1224,19 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         if($request->type == 'incident_by_agent'){
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $clients = Client::get();
+            // $clients = Client::get();
             $data = [];
             $data['clients'] = [];
-            foreach($clients as $client){
+            // foreach($clients as $client){
                 $data['clients'][] = [
                         "type" => "bar",
                         "label" => "" . \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". TechnicalTable::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
+                            "$". TechnicalTable::where('reference',$referenceType)->get()->sum('amount'),
                             ]
                         ];
-            }
+            // }
             return response()->json([
                 "status" => true,
                 "data" => $data

@@ -709,7 +709,9 @@ class ReportExportController extends Controller
             $data = [];
 
             foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
+                $arr['reference'] = $client->reference.''.$client->reference_number;
+                $arr['ruc'] = $client->tin;
+                $arr['name'] = $client->legal_name.' ('.$client->name.')';
                 $arr['pending'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','pending')->count();
                 $arr['refused'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','refused')->count();
                 $arr['accepted'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
