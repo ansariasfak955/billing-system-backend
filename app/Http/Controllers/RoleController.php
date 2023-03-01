@@ -129,29 +129,29 @@ class RoleController extends Controller
             $_role = Role::where('id', $role->id)->first();
             $_role->givePermissionTo($permission);
         }
-        // foreach(Company::pluck('id') as $company_id){
+        foreach(Company::pluck('id') as $company_id){
             
-        //     $role = Role::where('id', $role->id)->first();
-        //     $selected_permissions = Role::findByName($role->name)->permissions->pluck('id')->toArray();
-        //     $revoke_permissions = array_diff($selected_permissions, $request->permissions);
-        //     $revoke_arr = array_values($revoke_permissions);
-        //     // Revoking permissions
-        //     foreach ($revoke_arr as $key => $rev_permission_id) {
-        //         $rev_permission = Permission::where('id', $rev_permission_id)->first();
-        //         $role->revokePermissionTo($rev_permission);
-        //     }
+            $role = Role::where('id', $role->id)->first();
+            $selected_permissions = Role::findByName($role->name)->permissions->pluck('id')->toArray();
+            $revoke_permissions = array_diff($selected_permissions, $request->permissions);
+            $revoke_arr = array_values($revoke_permissions);
+            // Revoking permissions
+            foreach ($revoke_arr as $key => $rev_permission_id) {
+                $rev_permission = Permission::where('id', $rev_permission_id)->first();
+                $role->revokePermissionTo($rev_permission);
+            }
             
-        //     $role->update($request->all());
-        //     $role->save();
+            $role->update($request->all());
+            $role->save();
     
-        //     // Give permissions
-        //     foreach($request->permissions as $permission_index => $permission_id){
-        //         $permission = Permission::where('id', $permission_id)->first();
-        //         $_role = Role::where('id', $role->id)->first();
-        //         $_role->givePermissionTo($permission);
-        //     }
+            // Give permissions
+            foreach($request->permissions as $permission_index => $permission_id){
+                $permission = Permission::where('id', $permission_id)->first();
+                $_role = Role::where('id', $role->id)->first();
+                $_role->givePermissionTo($permission);
+            }
 
-        // }
+        }
 
         return redirect()->route('roles.index')->withSuccess('Role Updated Successfully!'); 
     }
