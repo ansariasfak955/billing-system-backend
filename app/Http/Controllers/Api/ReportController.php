@@ -1979,7 +1979,7 @@ class ReportController extends Controller
                 $arr['reference'] = $invoiceData->reference.''.$invoiceData->reference_number;
                 $arr['client'] = $invoiceData->client_name;
                 $arr['employee'] = \Auth::user()->name;
-                $arr['payment_option'] = $invoiceData->payment_options->name;
+                // $arr['payment_option'] = $invoiceData->payment_options->name;
                 $arr['amount'] = $invoiceData->amount_paid;
                 // $arr['amount'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
                 //     $q->where('type', $referenceType);
