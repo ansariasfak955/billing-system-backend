@@ -2086,7 +2086,7 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
         
-        $supplierSpecialPrices = SupplierSpecialPrice::with('product')->get();
+        $supplierSpecialPrices = SupplierSpecialPrice::get();
         // dd($supplierSpecialPrices);
 
         $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
