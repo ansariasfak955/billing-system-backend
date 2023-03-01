@@ -541,7 +541,7 @@ class ReportController extends Controller
             ];
 
         }elseif( $request->type == "clients" ){
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
             $data['clients'] = [];
@@ -551,7 +551,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::where('client_id',$client->id)->get()->sum('amount'),
+                            "$". SalesEstimate::where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -561,7 +561,7 @@ class ReportController extends Controller
             ]);
 
         }elseif($request->type == "agents"){
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             // $clients = Client::get();
             $data = [];
             $data['agents'] = [];
@@ -571,7 +571,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::get()->sum('amount'),
+                            "$". SalesEstimate::where('reference',$referenceType)->get()->sum('amount'),
                             ]
                         ];
             // }
@@ -580,7 +580,7 @@ class ReportController extends Controller
                 "data" => $data
             ]);
         }elseif($request->type == "items"){
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $productTables = Product::get();
             $services = Service::get();
             $data = [];
@@ -591,8 +591,8 @@ class ReportController extends Controller
                         "label" => "" .  $productTable->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($productTable) {
-                                $query->where('reference_id', $productTable->id);
+                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($productTable,$referenceType) {
+                                $query->where('reference_id', $productTable->id)->where('type',$referenceType);
                                 })->get()->sum('amount'),
                             ]
                         ];
@@ -1978,7 +1978,7 @@ class ReportController extends Controller
                 $arr['type'] = $invoiceData->reference_type;
                 $arr['reference'] = $invoiceData->reference.''.$invoiceData->reference_number;
                 $arr['client'] = $invoiceData->client_name;
-                // $arr['employee'] = \Auth::user()->name;
+                $arr['employee'] = \Auth::user()->name;
                 $arr['payment_option'] = $invoiceData->payment_options->name;
                 $arr['amount'] = $invoiceData->amount_paid;
                 // $arr['amount'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
@@ -1995,7 +1995,7 @@ class ReportController extends Controller
                 $arr['type'] = $purchaseData->reference_type;
                 $arr['reference'] = $purchaseData->reference.''.$purchaseData->reference_number;
                 $arr['supplier'] = $purchaseData->supplier_name;
-                // $arr['employee'] = \Auth::user()->name;
+                $arr['employee'] = \Auth::user()->name;
                 // $arr['payment_option'] = $purchaseData->payment_options->name;
                 $arr['amount'] = $purchaseData->amount_paid;
                 // $arr['amount'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){

@@ -1027,7 +1027,7 @@ class ReportExportController extends Controller
                 'url' => url('/storage/xlsx/'.$fileName),
              ]);
     }
-    public function cashFlowAgentHistory(Request $request, $company_id){
+    public function cashFlowAgentHistoryExport(Request $request, $company_id){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
 
@@ -1068,7 +1068,7 @@ class ReportExportController extends Controller
             // $arr['withdrawals'] = InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption) {
             //     $query->where('payment_option', $paymentOption->id);
             //     })->get()->sum('amount');
-            $arr['withdrawals'] = InvoiceTable::get()->sum('amount');
+            $arr['withdrawals'] = InvoiceTable::where('reference',$referenceType)->get()->sum('amount');
             $arr['balance'] = Deposit::where('type','withdraw')->sum('amount');
             
 

@@ -387,7 +387,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('invoiced-agents-export', 'ReportExportController@invoiceAgentsExport');
             Route::post('invoiced-items-export', 'ReportExportController@invoiceItemsExport');
             Route::post('cash-flow-export', 'ReportExportController@cashFlowExport');
-            Route::post('cash-flow-agent-export', 'ReportExportController@cashFlowAgentHistory');
+            Route::post('cash-flow-agent-export', 'ReportExportController@cashFlowAgentHistoryExport');
             Route::post('payment-option-export', 'ReportExportController@paymentOptionExport');
             Route::post('incidents-by-client-export', 'ReportExportController@incidentsByClientExport');
             Route::post('incidents-by-agent-export', 'ReportExportController@incidentsByAgentExport');
