@@ -1979,8 +1979,9 @@ class ReportController extends Controller
                 $arr['reference'] = $invoiceData->reference.''.$invoiceData->reference_number;
                 $arr['client'] = $invoiceData->client_name;
                 $arr['employee'] = \Auth::user()->name;
-                // $arr['payment_option'] = $invoiceData->payment_options->name;
+                $arr['payment_option'] = 'Bank Transfer';
                 $arr['amount'] = $invoiceData->amount_paid;
+                $arr['paid'] = 'yes';
                 // $arr['amount'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
                 //     $q->where('type', $referenceType);
                 // })->where('paid','1')->sum('amount');
@@ -1996,8 +1997,9 @@ class ReportController extends Controller
                 $arr['reference'] = $purchaseData->reference.''.$purchaseData->reference_number;
                 $arr['supplier'] = $purchaseData->supplier_name;
                 $arr['employee'] = \Auth::user()->name;
-                // $arr['payment_option'] = $purchaseData->payment_options->name;
                 $arr['amount'] = $purchaseData->amount_paid;
+                $arr['payment_option'] = 'Bank Transfer';
+                $arr['paid'] = 'yes';
                 // $arr['amount'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
                 //     $q->where('type', $referenceType);
                 // })->where('paid','1')->sum('amount');
