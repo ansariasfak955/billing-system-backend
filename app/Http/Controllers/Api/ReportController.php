@@ -541,7 +541,7 @@ class ReportController extends Controller
             ];
 
         }elseif( $request->type == "clients" ){
-            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
             $data['clients'] = [];
@@ -551,7 +551,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount'),
+                            "$". SalesEstimate::where('client_id',$client->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -561,7 +561,7 @@ class ReportController extends Controller
             ]);
 
         }elseif($request->type == "agents"){
-            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             // $clients = Client::get();
             $data = [];
             $data['agents'] = [];
@@ -571,7 +571,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". SalesEstimate::where('reference',$referenceType)->get()->sum('amount'),
+                            "$". SalesEstimate::get()->sum('amount'),
                             ]
                         ];
             // }
@@ -580,7 +580,7 @@ class ReportController extends Controller
                 "data" => $data
             ]);
         }elseif($request->type == "items"){
-            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $productTables = Product::get();
             $services = Service::get();
             $data = [];
@@ -591,8 +591,8 @@ class ReportController extends Controller
                         "label" => "" .  $productTable->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($productTable,$referenceType) {
-                                $query->where('reference_id', $productTable->id)->where('type',$referenceType);
+                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($productTable) {
+                                $query->where('reference_id', $productTable->id);
                                 })->get()->sum('amount'),
                             ]
                         ];
@@ -603,8 +603,8 @@ class ReportController extends Controller
                         "label" => "" .  $service->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                                $query->where('reference_id', $service->id)->where('type', $referenceType);
+                                SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service) {
+                                $query->where('reference_id', $service->id);
                                 })->get()->sum('amount'),
                             ]
                         ];
