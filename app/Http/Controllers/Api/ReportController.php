@@ -2064,49 +2064,51 @@ class ReportController extends Controller
             "data" =>  $data
         ]);
     }
-    // public function stockValuationHistory(Request $request){
-    //     $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
-    //     PurchaseTable::setGlobalTable($purchaseTables); 
+    public function stockValuationHistory(Request $request){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
 
-    //     $productTable = 'company_'.$request->company_id.'_products';
-    //     Product::setGlobalTable($productTable); 
+        $productTable = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTable); 
 
-    //     $supplierTables = 'company_'.$request->company_id.'_suppliers';
-    //     Supplier::setGlobalTable($supplierTables); 
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
 
-    //     $table = 'company_'.$request->company_id.'_purchase_receipts';
-    //     PurchaseReceipt::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
 
-    //     $table = 'company_'.$request->company_id.'_supplier_special_prices';
-    //     SupplierSpecialPrice::setGlobalTable($table);
+        $table = 'company_'.$request->company_id.'_supplier_special_prices';
+        SupplierSpecialPrice::setGlobalTable($table);
 
-    //     $itemTable = 'company_'.$request->company_id.'_items';
-    //     Item::setGlobalTable($itemTable);
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
 
-    //     $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-    //     ItemMeta::setGlobalTable($item_meta_table);
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
         
-    //     $SupplierSpecialPrices = SupplierSpecialPrice::get();
+        $supplierSpecialPrices = SupplierSpecialPrice::with('product')->get();
+        // dd($supplierSpecialPrices);
 
-    //     $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+        $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
            
-    //     $arr = [];
-    //     $data = [];
+        $arr = [];
+        $data = [];
 
-    //     foreach($SupplierSpecialPrices as $SupplierSpecialPrice){
-    //         $arr['name'] = $SupplierSpecialPrice->product_name;
-    //         $arr['stock'] = '';
-    //         $arr['sales_stock_value'] = $SupplierSpecialPrice->product_name;
-    //         $arr['purchase_stock_value'] = $SupplierSpecialPrice->product_name;
+        foreach($supplierSpecialPrices as $supplierSpecialPrice){
+            $arr['reference'] = 'PRO00001';
+            $arr['name'] = $supplierSpecialPrice->product_name;
+            $arr['stock'] = '3.00';
+            $arr['sales_stock_value'] = '300.00';
+            $arr['purchase_stock_value'] = '300.00';
 
-    //         $data[] = $arr;
-    //     }
-    //     return response()->json([
-    //         "status" => true,
-    //         "data" => $data
-    //     ]);
+            $data[] = $arr;
+        }
+        return response()->json([
+            "status" => true,
+            "data" => $data
+        ]);
         
-    // }
+    }
     public function taxSummary(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
