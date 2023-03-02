@@ -168,19 +168,19 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         
         if($request->type == "clients"){
             $clients = Client::get();
             $data = [];
-            $data['sales_invoicing'] = [];
+            $data['invoice_client'] = [];
             foreach($clients as $client){
-                $data['sales_invoicing'][] = [
+                $data['invoice_client'][] = [
                         "type" => "bar",
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". InvoiceTable::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
+                            "$". InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -198,7 +198,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". InvoiceTable::where('reference',$referenceType)->get()->sum('amount'),
+                            "$". InvoiceTable::filter($request->all())->get()->sum('amount'),
                             ]
                         ];
             // }
@@ -218,8 +218,8 @@ class ReportController extends Controller
                         "label" => "" .  $productTable->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($productTable,$referenceType) {
-                                $query->where('reference_id', $productTable->id)->where('type', $referenceType);
+                                InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($productTable) {
+                                $query->where('reference_id', $productTable->id);
                                 })->get()->sum('amount'),
                             ]
                         ];
