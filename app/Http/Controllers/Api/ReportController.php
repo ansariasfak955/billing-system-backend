@@ -544,9 +544,9 @@ class ReportController extends Controller
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
-            $data['clients'] = [];
+            $data['sales_clients'] = [];
             foreach($clients as $client){
-                $data['clients'][] = [
+                $data['sales_clients'][] = [
                         "type" => "bar",
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
@@ -564,9 +564,9 @@ class ReportController extends Controller
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             // $clients = Client::get();
             $data = [];
-            $data['agents'] = [];
+            $data['sales_agents'] = [];
             // foreach($clients as $client){
-                $data['agents'][] = [
+                $data['sales_agents'][] = [
                         "type" => "bar",
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
@@ -584,9 +584,9 @@ class ReportController extends Controller
             $productTables = Product::get();
             $services = Service::get();
             $data = [];
-            $data['invoice_items'] = [];
+            $data['sales_items'] = [];
             foreach($productTables as $productTable){
-                $data['invoice_items'][] = [
+                $data['sales_items'][] = [
                         "type" => "bar",
                         "label" => "" .  $productTable->name,
                         "backgroundColor" => "#26C184",
@@ -598,7 +598,7 @@ class ReportController extends Controller
                         ];
             }
             foreach($services as $service){
-                $data['invoice_items'][] = [
+                $data['sales_items'][] = [
                         "type" => "bar",
                         "label" => "" .  $service->name,
                         "backgroundColor" => "#26C184",
