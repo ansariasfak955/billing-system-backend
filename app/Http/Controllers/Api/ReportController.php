@@ -559,8 +559,9 @@ class ReportController extends Controller
                 "status" => true,
                 "data" => $data
             ]);
-
+            
         }elseif($request->type == "agents"){
+            //sales agents list
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             // $clients = Client::get();
             $data = [];
