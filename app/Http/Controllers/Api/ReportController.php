@@ -772,7 +772,9 @@ class ReportController extends Controller
                 $arr['total'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
                     $query->where('reference_id', $product->id);
                 })->count();
-                $arr['units'] = '';
+                $arr['units'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id);
+                })->count();
                 $arr['amount'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
                     $query->where('reference_id', $product->id);
                 })->get()->sum('amount_with_out_vat');
@@ -796,6 +798,9 @@ class ReportController extends Controller
                     $query->where('reference_id', $service->id);
                 })->where('status','refused')->count();
                 $arr['total'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id);
+                })->count();
+                $arr['units'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
                     $query->where('reference_id', $service->id);
                 })->count();
                 $arr['amount'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
