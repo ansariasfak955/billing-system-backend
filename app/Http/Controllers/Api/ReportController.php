@@ -269,9 +269,9 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $clients = Client::get();
+            $clients = Client::filter($request->all())->get();
 
-            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
@@ -296,6 +296,7 @@ class ReportController extends Controller
                 "status" => true,
                 "data" =>  $data
             ]);
+            
     }
     public function invoiceAgentsHistory(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
@@ -322,17 +323,13 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
             // $clients = Client::get();
-
-            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
-            // $arr['legal_name'] = \Auth::user()->name;
-            //     $arr['pending'] = SalesEstimate::where('reference', $referenceType)->where('agent_id',\Auth::id())
 
                 $arr['name'] = \Auth::user()->name;
-                $arr['invoiced'] = InvoiceTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount');
-                $arr['paid'] = InvoiceTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount_paid');
-                $arr['Unpaid'] = InvoiceTable::where('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum('amount_due');
+                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+                $arr['paid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount_paid');
+                $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount_due');
 
                 $data[] = $arr;
             
@@ -369,8 +366,6 @@ class ReportController extends Controller
         $products = Product::get();
         $services = Service::get();
         // dd($products);
-            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
-            // $clients = SalesEstimate::where('reference', $referenceType)->get();
            
             $arr = [];
             $data = [];
@@ -378,9 +373,11 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
-                $arr['units'] = '';
-                $arr['amount'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id);
+                })->count();
+                $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id);
                 })->get()->sum('amount_with_out_vat');
                 
 
@@ -389,9 +386,11 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['units'] = '';
-                $arr['amount'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id);
+                })->count();
+                $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id);
                 })->get()->sum('amount_with_out_vat');
 
                 $data[] = $arr;
