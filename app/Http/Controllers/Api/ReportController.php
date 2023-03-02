@@ -1154,9 +1154,9 @@ class ReportController extends Controller
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $clients = Client::get();
             $data = [];
-            $data['clients'] = [];
+            $data['incident_clients'] = [];
             foreach($clients as $client){
-                $data['clients'][] = [
+                $data['incident_clients'][] = [
                         "type" => "bar",
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
@@ -1227,9 +1227,9 @@ class ReportController extends Controller
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             // $clients = Client::get();
             $data = [];
-            $data['clients'] = [];
+            $data['incident_agent'] = [];
             // foreach($clients as $client){
-                $data['clients'][] = [
+                $data['incident_agent'][] = [
                         "type" => "bar",
                         "label" => "" . \Auth::user()->name,
                         "backgroundColor" => "#26C184",
@@ -1311,7 +1311,7 @@ class ReportController extends Controller
                         ];
             }
             foreach($services as $service){
-                $data['products'][] = [
+                $data['invoice_items'][] = [
                         "type" => "bar",
                         "label" => "" .  $service->name,
                         "backgroundColor" => "#26C184",
