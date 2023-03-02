@@ -1096,7 +1096,6 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        if($request->type == 'incident_by_client')
         
             $clients = Client::get();
 
@@ -1420,7 +1419,6 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        if($request->type == 'incident_by_agent'){
         
             $clients = Client::get();
 
@@ -1441,7 +1439,6 @@ class ReportController extends Controller
                 "status" => true,
                 "data" =>  $data
             ]);
-        }
     }
     public function purchases( Request $request ){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';

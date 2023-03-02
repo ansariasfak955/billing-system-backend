@@ -27,13 +27,14 @@ class ReferenceController extends Controller
         $table = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($table);
         $query =  Reference::query();
-
-        if($request->type ){
-            $query->where('type' , $request->type);
+       
+        if($request->type){
+            $type = explode(',',$request->type);
+            $query->where('type' , $type[0])->orWhere('type', $type[1]);
         }
         
         $data =  $query->get();
-
+        
         if($data->count() == 0){
             return response()->json([
                 "status" => false,
