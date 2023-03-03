@@ -1157,7 +1157,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". TechnicalTable::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
+                             TechnicalTable::where('reference',$referenceType)->where('client_id',$client->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -1230,7 +1230,7 @@ class ReportController extends Controller
                         "label" => "" . \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". TechnicalTable::where('reference',$referenceType)->get()->sum('amount'),
+                             TechnicalTable::where('reference',$referenceType)->get()->sum('amount'),
                             ]
                         ];
             // }
