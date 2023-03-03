@@ -2406,8 +2406,8 @@ class ReportController extends Controller
                     "label" => "" .  $service->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service,$referenceType) {
-                            $query->where('reference_id', $service->id)->where('type', $referenceType);
+                            InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                            $query->where('reference_id', $service->id);
                             })->get()->sum('amount'),
                         ]
                     ];
