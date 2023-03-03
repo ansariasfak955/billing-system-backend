@@ -2108,6 +2108,360 @@ class ReportController extends Controller
         ]);
         
     }
+    public function ofEvolution(Request $request){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $data = [];
+        if($request->type == "ofProfit"){
+        $data = [
+            "Of_profit" => [
+                [
+                    "type" => "bar", 
+                    "label" => "Sales", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "$500"
+                ], 
+                [
+                        "type" => "bar", 
+                        "label" => "Expenses", 
+                        "backgroundColor" => "#FB6363", 
+                        "data" => [
+                            "$500"
+                        ] 
+                    ], 
+                [
+                    "type" => "bar", 
+                    "label" => "Profit", 
+                    "backgroundColor" => "#FE9140", 
+                    "data" => [
+                        "$500"
+                    ] 
+                ] 
+            ],
+            ]
+        ];
+    }elseif($request->type == "ofProfitList"){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        
+            // $invoiceDatas = InvoiceTable::with('payment_options')->get();
+            // $purchaseDatas = PurchaseTable::with('payment_options')->get();
+            // dd($purchaseDatas);
+            $arr = [];
+            $data = [];
+
+            // foreach($invoiceDatas as $invoiceData){
+                $arr['2023/Q1'] = '2023/Q1';
+                $arr['sales'] = '200.00';
+                $arr['expense'] = '200.00';
+                $arr['profit'] = '200.00';
+
+                $data[] = $arr;
+            // }
+    }elseif($request->type == "invoicing_by_client"){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+            
+        $clients = Client::get();
+        $data = [];
+        $data['invoice_client'] = [];
+        foreach($clients as $client){
+            $data['invoice_client'][] = [
+                    "type" => "bar",
+                    "label" => "" .  $client->legal_name.' ('.$client->name.')',
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                         InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
+                        ]
+                    ];
+        }
+
+
+    }elseif($request->type == "invoicing_by_client_list"){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        
+            $clients = Client::get();
+
+            // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+
+            foreach($clients as $client){
+                $arr['name'] = $client->legal_name.' ('.$client->name.')';
+                $arr['2023/Q1'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                $arr['2023/Q2'] = '0.00';
+                $arr['2023/Q3'] = '0.00';
+                $arr['2023/Q4'] = '0.00';
+                $arr['tottal'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                $data[] = $arr;
+            }
+    }elseif($request->type == "invoicing_by_agent"){
+            $data = [];
+            $data['invoice_agents'] = [];
+            $data['invoice_agents'][] = [
+                    "type" => "bar",
+                    "label" => "" .  \Auth::user()->name,
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                         InvoiceTable::filter($request->all())->get()->sum('amount'),
+                        ]
+                    ];
+    }elseif($request->type == "invoicing_by_agent_list"){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+            // $clients = Client::get();
+                $arr = [];
+                $data = [];
+
+                $arr['name'] = \Auth::user()->name;
+                $arr['2023/Q1'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+                $arr['2023/Q2'] = '0.00';
+                $arr['2023/Q3'] = '0.00';
+                $arr['2023/Q4'] = '0.00';
+                $arr['total'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+
+                $data[] = $arr;
+    }elseif($request->type == "invoicing_by_item"){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $productTables = Product::get();
+        $services = Service::get();
+        $data = [];
+        $data['invoice_items'] = [];
+        foreach($productTables as $productTable){
+            $data['invoice_items'][] = [
+                    "type" => "bar",
+                    "label" => "" .  $productTable->name,
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                            InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($productTable) {
+                            $query->where('reference_id', $productTable->id);
+                            })->get()->sum('amount'),
+                        ]
+                    ];
+        }
+        foreach($services as $service){
+            $data['invoice_items'][] = [
+                    "type" => "bar",
+                    "label" => "" .  $service->name,
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                            InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service,$referenceType) {
+                            $query->where('reference_id', $service->id)->where('type', $referenceType);
+                            })->get()->sum('amount'),
+                        ]
+                    ];
+        }
+    }elseif($request->type == "invoicing_by_item_list"){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $products = Product::get();
+        $services = Service::get();
+        // dd($products);
+           
+            $arr = [];
+            $data = [];
+
+            foreach($products as $product){
+                $arr['name'] = $product->name;
+                $arr['reference'] = $product->reference.''.$product->reference_number;
+                $arr['2023/Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id);
+                })->get()->sum('amount_with_out_vat');
+                $arr['2023/Q2'] = '0.00';
+                $arr['2023/Q3'] = '0.00';
+                $arr['2023/Q4'] = '0.00';
+                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id);
+                })->get()->sum('amount_with_out_vat');
+                
+
+                $data[] = $arr;
+            }
+            foreach($services as $service){
+                $arr['name'] = $service->name;
+                $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['2023/Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id);
+                })->get()->sum('amount_with_out_vat');
+                $arr['2023/Q2'] = '0.00';
+                $arr['2023/Q3'] = '0.00';
+                $arr['2023/Q4'] = '0.00';
+                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id);
+                })->get()->sum('amount_with_out_vat');
+
+                $data[] = $arr;
+            }
+    }
+        
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
+
+    }
     public function taxSummary(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
