@@ -2454,6 +2454,240 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
+    }elseif($request->type == "purchase_by_provider"){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+        
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $productTables = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTables);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_expense_and_investments';
+        ExpenseAndInvestment::setGlobalTable($table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $suppliers = Supplier::get();
+            $data = [];
+            $data['purchase_supplier'] = [];
+            foreach($suppliers as $supplier){
+                $data['purchase_supplier'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $supplier->legal_name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                             PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum('amount'),
+                            ]
+                        ];
+            }
+    }elseif($request->type == "purchase_by_provider_list"){
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+        
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        
+            $suppliers = Supplier::get();
+
+            // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+
+            foreach($suppliers as $supplier){
+                $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
+                $arr['2023/Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum('amount');
+                $arr['2023/Q2'] = '0.00';
+                $arr['2023/Q3'] = '0.00';
+                $arr['2023/Q4'] = '0.00';
+                $arr['total'] = PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum('amount');
+                $data[] = $arr;
+            }
+    }elseif($request->type == "purchase_by_item"){
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+        
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $table = 'company_'.$request->company_id.'_expense_and_investments';
+        ExpenseAndInvestment::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+         $productTables = Product::get();
+         $expenses = ExpenseAndInvestment::get();
+         $services = Service::get();
+         $data = [];
+         $data['purchase_items'] = [];
+         foreach($productTables as $productTable){
+             $data['purchase_items'][] = [
+                     "type" => "bar",
+                     "label" => "" .  $productTable->name,
+                     "backgroundColor" => "#26C184",
+                     "data" => [
+                         PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($productTable) {
+                             $query->where('reference_id', $productTable->id);
+                             })->get()->sum('amount'),
+                         // Item::where('reference_id', $productTable->id)->get()->sum('amount'),
+                         ]
+                     ];
+         }
+         foreach($services as $service){
+             $data['purchase_items'][] = [
+                     "type" => "bar",
+                     "label" => "" .  $service->name,
+                     "backgroundColor" => "#26C184",
+                     "data" => [
+                         PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($service) {
+                             $query->where('reference_id', $service->id);
+                             })->get()->sum('amount'),
+                         // Item::where('reference_id', $productTable->id)->get()->sum('amount'),
+                         ]
+                     ];
+         }
+         foreach($expenses as $expense){
+             $data['purchase_items'][] = [
+                     "type" => "bar",
+                     "label" => "" .  $expense->name,
+                     "backgroundColor" => "#26C184",
+                     "data" => [
+                         PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($expense) {
+                             $query->where('reference_id', $expense->id);
+                             })->get()->sum('amount'),
+                         // Item::where('reference_id', $productTable->id)->get()->sum('amount'),
+                         ]
+                     ];
+         }
+         return response()->json([
+             "status" => true,
+             "data" =>  $data
+         ]);
+    }elseif($request->type == "purchase_by_item_list"){
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+        
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $table = 'company_'.$request->company_id.'_expense_and_investments';
+        ExpenseAndInvestment::setGlobalTable($table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        
+        // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        $products = Product::get();
+        $expenses = ExpenseAndInvestment::get();
+        $services = Service::get();
+           
+            $arr = [];
+            $data = [];
+
+            foreach($products as $product){
+                $arr['name'] = $product->name;
+                $arr['reference'] = $product->reference.''.$product->reference_number;
+                $arr['units'] = '';
+                $arr['amount'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id);
+                })->get()->sum('amount_with_out_vat');
+                
+
+                $data[] = $arr;
+            }
+            foreach($services as $service){
+                $arr['name'] = $service->name;
+                $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['units'] = '';
+                $arr['amount'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id);
+                })->get()->sum('amount_with_out_vat');
+                
+
+                $data[] = $arr;
+            }
+            foreach($expenses as $expense){
+                $arr['name'] = $expense->name;
+                $arr['reference'] = $expense->reference.''.$expense->reference_number;
+                $arr['units'] = '';
+                $arr['amount'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($expense) {
+                    $query->where('reference_id', $expense->id);
+                })->get()->sum('amount_with_out_vat');
+                
+
+                $data[] = $arr;
+            }
+
     }
         
         return response()->json([
