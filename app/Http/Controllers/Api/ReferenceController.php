@@ -30,7 +30,7 @@ class ReferenceController extends Controller
        
         if($request->type){
             $type = explode(',',$request->type);
-            $query->where('type' , $type[0])->orWhere('type', $type[1]);
+            $query->whereIn('type' , $type);
         }
         
         $data =  $query->get();
