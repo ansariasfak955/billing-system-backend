@@ -2204,7 +2204,7 @@ class ReportController extends Controller
             $data = [];
 
             // foreach($invoiceDatas as $invoiceData){
-                $arr['2023Q1'] = '2023Q1';
+                $arr['period'] = '2023Q1';
                 $arr['sales'] = '200.00';
                 $arr['expense'] = '200.00';
                 $arr['profit'] = '200.00';
