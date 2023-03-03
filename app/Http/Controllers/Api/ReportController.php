@@ -269,7 +269,7 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $clients = Client::filter($request->all())->get();
+            $clients = Client::get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
@@ -746,8 +746,8 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $products = Product::filter($request->all())->get();
-        $services = Service::filter($request->all())->get();
+        $products = Product::get();
+        $services = Service::get();
         // dd($products);
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
            
@@ -1097,7 +1097,7 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $clients = Client::filter($request->all())->get();
+            $clients = Client::get();
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
@@ -1290,8 +1290,8 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         if($request->type == 'incident_by_item'){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $productTables = Product::filter($request->all())->get();
-            $services = Service::filter($request->all())->get();
+            $productTables = Product::get();
+            $services = Service::get();
             $data = [];
             $data['invoice_items'] = [];
             foreach($productTables as $productTable){
@@ -1567,7 +1567,7 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $suppliers = Supplier::filter($request->all())->get();
+            $suppliers = Supplier::get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
@@ -1629,9 +1629,9 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         
         // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-        $products = Product::filter($request->all())->get();
-        $expenses = ExpenseAndInvestment::filter($request->all())->get();
-        $services = Service::filter($request->all())->get();
+        $products = Product::et();
+        $expenses = ExpenseAndInvestment::et();
+        $services = Service::et();
            
             $arr = [];
             $data = [];
