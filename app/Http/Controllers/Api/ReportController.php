@@ -180,7 +180,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
+                             InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -198,7 +198,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". InvoiceTable::filter($request->all())->get()->sum('amount'),
+                             InvoiceTable::filter($request->all())->get()->sum('amount'),
                             ]
                         ];
             // }
@@ -873,7 +873,7 @@ class ReportController extends Controller
                         "label" => "Pending (". TechnicalTable::where('reference', 'we')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'we')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'we')->where('status', 'pending')->get()->sum('amount')
                         ]
                     ], 
                     [
@@ -881,7 +881,7 @@ class ReportController extends Controller
                             "label" => "Refused (". TechnicalTable::where('reference', 'we')->where('status', 'refused')->count().")",
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                "$".TechnicalTable::where('reference', 'we')->where('status', 'refused')->get()->sum('amount')
+                                TechnicalTable::where('reference', 'we')->where('status', 'refused')->get()->sum('amount')
                             ] 
                         ], 
                     [
@@ -889,7 +889,7 @@ class ReportController extends Controller
                         "label" => "Accepted (". TechnicalTable::where('reference', 'we')->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'we')->where('status', 'accepted')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'we')->where('status', 'accepted')->get()->sum('amount')
                         ]
                     ],
                     [
@@ -897,7 +897,7 @@ class ReportController extends Controller
                         "label" => "Closed (". TechnicalTable::where('reference', 'we')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'we')->where('status', 'closed')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'we')->where('status', 'closed')->get()->sum('amount')
                         ]
                     ],
                 ], 
@@ -907,7 +907,7 @@ class ReportController extends Controller
                         "label" => "Pending (". TechnicalTable::where('reference', 'wo')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'wo')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'wo')->where('status', 'pending')->get()->sum('amount')
                         ] 
                     ], 
                     [
@@ -915,7 +915,7 @@ class ReportController extends Controller
                         "label" => "Refused (". TechnicalTable::where('reference', 'wo')->where('status', 'refused')->count().")",  
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'wo')->where('status', 'refused')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'wo')->where('status', 'refused')->get()->sum('amount')
                         ]  
                     ], 
                     [
@@ -923,7 +923,7 @@ class ReportController extends Controller
                         "label" => "In Progress (". TechnicalTable::where('reference', 'wo')->where('status', 'in_progress')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'wo')->where('status', 'in_progress')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'wo')->where('status', 'in_progress')->get()->sum('amount')
                         ] 
                     ],
                     [
@@ -931,7 +931,7 @@ class ReportController extends Controller
                         "label" => "Closed (". TechnicalTable::where('reference', 'wo')->where('status', 'closed')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'wo')->where('status', 'closed')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'wo')->where('status', 'closed')->get()->sum('amount')
                         ] 
                     ],
                          
@@ -942,7 +942,7 @@ class ReportController extends Controller
                         "label" => "Pending Invoice (". TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
                         ] 
                     ], 
                     [
@@ -950,7 +950,7 @@ class ReportController extends Controller
                         "label" => "In Progress (". TechnicalTable::where('reference', 'wdn')->where('status', 'in_progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
                         ] 
                     ], 
                     [
@@ -958,7 +958,7 @@ class ReportController extends Controller
                         "label" => "Closed (". TechnicalTable::where('reference', 'wdn')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'wdn')->where('status', 'closed')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'wdn')->where('status', 'closed')->get()->sum('amount')
                         ] 
                     ],
                     [
@@ -966,7 +966,7 @@ class ReportController extends Controller
                         "label" => "Invoiced  (". TechnicalTable::where('reference', 'invoiced')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$".TechnicalTable::where('reference', 'wdn')->where('status', 'invoiced')->get()->sum('amount')
+                            TechnicalTable::where('reference', 'wdn')->where('status', 'invoiced')->get()->sum('amount')
                         ] 
                     ]  
                 ]
@@ -980,7 +980,7 @@ class ReportController extends Controller
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". TechnicalIncident::where('reference', 'inc')->where('status', 'pending')->count()
+                             TechnicalIncident::where('reference', 'inc')->where('status', 'pending')->count()
                         ] 
                     ], 
                     [
@@ -988,7 +988,7 @@ class ReportController extends Controller
                             "label" => "Refused", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                "$ ". TechnicalIncident::where('reference', 'inc')->where('status', 'refused')->count()
+                                 TechnicalIncident::where('reference', 'inc')->where('status', 'refused')->count()
                             ]
                     ], 
                     [
@@ -996,7 +996,7 @@ class ReportController extends Controller
                         "label" => "Resolved", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". TechnicalIncident::where('reference', 'inc')->where('status', 'resolved')->count()
+                             TechnicalIncident::where('reference', 'inc')->where('status', 'resolved')->count()
                         ]
                     ],
                     [
@@ -1004,7 +1004,7 @@ class ReportController extends Controller
                         "label" => "Closed", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". TechnicalIncident::where('reference', 'inc')->where('status', 'closed')->count()
+                             TechnicalIncident::where('reference', 'inc')->where('status', 'closed')->count()
                         ]
                     ],
                 ],
@@ -1476,7 +1476,7 @@ class ReportController extends Controller
                         "label" => "" .  $supplier->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". PurchaseTable::where('supplier_id',$supplier->id)->get()->sum('amount'),
+                             PurchaseTable::where('supplier_id',$supplier->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -1707,7 +1707,7 @@ class ReportController extends Controller
                         "label" => "Deposits", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                        " " . InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                             InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
                         ] 
                     ], 
                     [
@@ -1715,7 +1715,7 @@ class ReportController extends Controller
                             "label" => "Withdrawals", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                " " . InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
+                                InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
                             ] 
                         ], 
                     [
@@ -1723,7 +1723,7 @@ class ReportController extends Controller
                         "label" => "Balance", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                        " " . InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount') - InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
+                             InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount') - InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
                         ] 
                     ] 
                 ], 
@@ -1733,7 +1733,7 @@ class ReportController extends Controller
                         "label" => "Invoices", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ " . InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                            InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
                         ] 
                     ], 
                     [
@@ -1741,7 +1741,7 @@ class ReportController extends Controller
                         "label" => "Account Deposits", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". Deposit::where('type','deposit')->where('paid_by','1')->sum('amount')
+                             Deposit::where('type','deposit')->where('paid_by','1')->sum('amount')
                         ]  
                     ]
                 ], 
@@ -1751,7 +1751,7 @@ class ReportController extends Controller
                         "label" => "Refunds", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
+                             InvoiceReceipt::where('type', 'RET')->where('paid', '1')->sum('amount')
                         ] 
                     ], 
                     [
@@ -1813,7 +1813,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            "$". InvoiceTable::get()->sum('amount'),
+                                 InvoiceTable::get()->sum('amount'),
                             ]
                         ];
             // }
