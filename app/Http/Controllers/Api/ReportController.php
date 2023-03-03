@@ -2146,24 +2146,24 @@ class ReportController extends Controller
                     "backgroundColor" => "#26C184", 
                     "data" => [
                         "$500"
-                ], 
+                    ]
+                ],
                 [
-                        "type" => "bar", 
-                        "label" => "Expenses", 
-                        "backgroundColor" => "#FB6363", 
-                        "data" => [
-                            "$500"
-                        ] 
-                    ], 
+                    "type" => "bar", 
+                    "label" => "Expenses", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "$500"
+                    ]
+                ],
                 [
                     "type" => "bar", 
                     "label" => "Profit", 
-                    "backgroundColor" => "#FE9140", 
+                    "backgroundColor" => "#26C184", 
                     "data" => [
                         "$500"
-                    ] 
-                ] 
-            ],
+                    ]
+                ]
             ]
         ];
     }elseif($request->type == "ofProfitList"){
@@ -2204,7 +2204,7 @@ class ReportController extends Controller
             $data = [];
 
             // foreach($invoiceDatas as $invoiceData){
-                $arr['2023/Q1'] = '2023/Q1';
+                $arr['2023Q1'] = '2023Q1';
                 $arr['sales'] = '200.00';
                 $arr['expense'] = '200.00';
                 $arr['profit'] = '200.00';
@@ -2284,14 +2284,35 @@ class ReportController extends Controller
 
             foreach($clients as $client){
                 $arr['name'] = $client->legal_name.' ('.$client->name.')';
-                $arr['2023/Q1'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
-                $arr['2023/Q2'] = '0.00';
-                $arr['2023/Q3'] = '0.00';
-                $arr['2023/Q4'] = '0.00';
+                $arr['2023Q1'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                $arr['2023Q2'] = '0.00';
+                $arr['2023Q3'] = '0.00';
+                $arr['2023Q4'] = '0.00';
                 $arr['tottal'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
                 $data[] = $arr;
             }
     }elseif($request->type == "invoicing_by_agent"){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
             $data = [];
             $data['invoice_agents'] = [];
             $data['invoice_agents'][] = [
@@ -2331,10 +2352,10 @@ class ReportController extends Controller
                 $data = [];
 
                 $arr['name'] = \Auth::user()->name;
-                $arr['2023/Q1'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
-                $arr['2023/Q2'] = '0.00';
-                $arr['2023/Q3'] = '0.00';
-                $arr['2023/Q4'] = '0.00';
+                $arr['2023Q1'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+                $arr['2023Q2'] = '0.00';
+                $arr['2023Q3'] = '0.00';
+                $arr['2023Q4'] = '0.00';
                 $arr['total'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
 
                 $data[] = $arr;
@@ -2426,12 +2447,12 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
-                $arr['2023/Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                $arr['2023Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
                     $query->where('reference_id', $product->id);
                 })->get()->sum('amount_with_out_vat');
-                $arr['2023/Q2'] = '0.00';
-                $arr['2023/Q3'] = '0.00';
-                $arr['2023/Q4'] = '0.00';
+                $arr['2023Q2'] = '0.00';
+                $arr['2023Q3'] = '0.00';
+                $arr['2023Q4'] = '0.00';
                 $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
                     $query->where('reference_id', $product->id);
                 })->get()->sum('amount_with_out_vat');
@@ -2442,12 +2463,12 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['2023/Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                $arr['2023Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
                     $query->where('reference_id', $service->id);
                 })->get()->sum('amount_with_out_vat');
-                $arr['2023/Q2'] = '0.00';
-                $arr['2023/Q3'] = '0.00';
-                $arr['2023/Q4'] = '0.00';
+                $arr['2023Q2'] = '0.00';
+                $arr['2023Q3'] = '0.00';
+                $arr['2023Q4'] = '0.00';
                 $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
                     $query->where('reference_id', $service->id);
                 })->get()->sum('amount_with_out_vat');
@@ -2529,10 +2550,10 @@ class ReportController extends Controller
 
             foreach($suppliers as $supplier){
                 $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
-                $arr['2023/Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum('amount');
-                $arr['2023/Q2'] = '0.00';
-                $arr['2023/Q3'] = '0.00';
-                $arr['2023/Q4'] = '0.00';
+                $arr['2023Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum('amount');
+                $arr['2023Q2'] = '0.00';
+                $arr['2023Q3'] = '0.00';
+                $arr['2023Q4'] = '0.00';
                 $arr['total'] = PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum('amount');
                 $data[] = $arr;
             }
@@ -2657,8 +2678,13 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
-                $arr['units'] = '';
-                $arr['amount'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($product) {
+                $arr['2023Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id);
+                })->get()->sum('amount_with_out_vat');
+                $arr['2023Q2'] = '0.00';
+                $arr['2023Q3'] = '0.00';
+                $arr['2023Q4'] = '0.00';
+                $arr['total'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($product) {
                     $query->where('reference_id', $product->id);
                 })->get()->sum('amount_with_out_vat');
                 
@@ -2668,19 +2694,28 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['units'] = '';
-                $arr['amount'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($service) {
+                $arr['2023Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($service) {
                     $query->where('reference_id', $service->id);
                 })->get()->sum('amount_with_out_vat');
-                
+                $arr['2023Q2'] = '0.00';
+                $arr['2023Q3'] = '0.00';
+                $arr['2023Q4'] = '0.00';
+                $arr['total'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id);
+                })->get()->sum('amount_with_out_vat');
 
                 $data[] = $arr;
             }
             foreach($expenses as $expense){
                 $arr['name'] = $expense->name;
                 $arr['reference'] = $expense->reference.''.$expense->reference_number;
-                $arr['units'] = '';
-                $arr['amount'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($expense) {
+                $arr['2023Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($expense) {
+                    $query->where('reference_id', $expense->id);
+                })->get()->sum('amount_with_out_vat');
+                $arr['2023Q2'] = '0.00';
+                $arr['2023Q3'] = '0.00';
+                $arr['2023Q4'] = '0.00';
+                $arr['total'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($expense) {
                     $query->where('reference_id', $expense->id);
                 })->get()->sum('amount_with_out_vat');
                 
