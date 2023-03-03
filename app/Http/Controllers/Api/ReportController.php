@@ -1629,9 +1629,9 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         
         // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-        $products = Product::et();
-        $expenses = ExpenseAndInvestment::et();
-        $services = Service::et();
+        $products = Product::get();
+        $expenses = ExpenseAndInvestment::get();
+        $services = Service::get();
            
             $arr = [];
             $data = [];
