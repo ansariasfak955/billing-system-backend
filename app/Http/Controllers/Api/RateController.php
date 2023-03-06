@@ -158,7 +158,6 @@ class RateController extends Controller
         $updateRate = $rate->update($request->except('company_id', '_method'));
         ProductRate::where('name', $rate_name)->update([
             'name' => $request->name,
-            'purchase_price' => $request->purchase_price
         ]);
         ServiceRate::where('name', $rate_name)->update([
             'name' => $request->name
