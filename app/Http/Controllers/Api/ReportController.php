@@ -277,7 +277,7 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
             $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
-            $clients = InvoiceTable::filter($request->all())->whereIn('id',$client_ids)->get();
+            $clients = Client::filter($request->all())->whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
@@ -664,7 +664,7 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         
         $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
-        $clients = SalesEstimate::whereIn('id',$client_ids)->get();
+        $clients = Client::whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
@@ -1108,7 +1108,7 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         
             $client_ids = TechnicalIncident::with('client')->pluck('client_id')->toArray();
-            $clients = TechnicalIncident::whereIn('id',$client_ids)->get();
+            $clients = Client::whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
@@ -1160,7 +1160,7 @@ class ReportController extends Controller
         if($request->type == 'incident_by_client'){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $client_ids = TechnicalTable::with('client')->pluck('client_id')->toArray();
-            $clients = TechnicalTable::whereIn('id',$client_ids)->get();
+            $clients = Client::whereIn('id',$client_ids)->get();
             $data = [];
             $data['incident_clients'] = [];
             foreach($clients as $client){
@@ -1180,7 +1180,7 @@ class ReportController extends Controller
         }elseif($request->type == 'by_client_history'){
                     
             $client_ids = TechnicalTable::with('client')->pluck('client_id')->toArray();
-            $clients = TechnicalTable::whereIn('id',$client_ids)->get();
+            $clients = Client::whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
@@ -1481,7 +1481,7 @@ class ReportController extends Controller
         if($request->type == "supplier"){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $supplier_ids = PurchaseTable::with('supplier')->pluck('supplier_id')->toArray();
-            $suppliers = PurchaseTable::whereIn('id',$supplier_ids)->get();
+            $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
             $data = [];
             $data['purchase_supplier'] = [];
             foreach($suppliers as $supplier){
@@ -1582,7 +1582,7 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         
         $supplier_ids = PurchaseTable::with('supplier')->pluck('supplier_id')->toArray();
-        $suppliers = PurchaseTable::whereIn('id',$supplier_ids)->get();
+        $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
