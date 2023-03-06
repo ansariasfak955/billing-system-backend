@@ -1100,8 +1100,8 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
-            $clients = SalesEstimate::whereIn('id',$client_ids)->get();
+            $client_ids = TechnicalIncident::with('client')->pluck('client_id')->toArray();
+            $clients = TechnicalIncident::whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
