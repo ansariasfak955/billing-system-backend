@@ -361,8 +361,11 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-        $products = Product::get();
-        $services = Service::get();
+        $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
+        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
         // dd($products);
            
             $arr = [];
@@ -372,10 +375,10 @@ class ReportController extends Controller
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->count();
                 $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->get()->sum('amount_with_out_vat');
                 
 
@@ -385,10 +388,10 @@ class ReportController extends Controller
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->count();
                 $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->get()->sum('amount_with_out_vat');
 
                 $data[] = $arr;
