@@ -132,8 +132,8 @@ class RoleController extends Controller
             $_role = Role::where('id', $role->id)->first();
             $_role->givePermissionTo($permission);
         }
-        
-        //update the permission in the compmay as well
+
+        //update the permission in the company as well
         foreach(Company::pluck('id') as $company_id){
             //check if company has all the tables
             if (Schema::hasTable('company_'.$company_id.'_roles') && Schema::hasTable('company_'.$company_id.'_permissions') && Schema::hasTable('company_'.$company_id.'_role_has_permissions')) {
