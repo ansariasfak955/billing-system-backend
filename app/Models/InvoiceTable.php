@@ -14,7 +14,7 @@ class InvoiceTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount','amount_paid', 'amount_due', 'reference_type', 'payment_term_name', 'agent_name','amount_with_out_vat','tax_amount','client_legal_name'];
+    protected $appends = ['client_name', 'created_by_name', 'product_name','payment_option_name','amount', 'meta_discount','amount_paid', 'amount_due', 'reference_type', 'payment_term_name', 'agent_name','amount_with_out_vat','tax_amount','client_legal_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -159,6 +159,20 @@ class InvoiceTable extends Model
             $table = $this->getTable();
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_reference_type($company_id, $this->attributes['reference']);
+        }
+    }
+    public function getProductNameAttribute(){
+        if(isset( $this->attributes['name'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_product_name($company_id, $this->attributes['name']);
+        }
+    }
+    public function getPaymentOptionNameAttribute(){
+        if(isset($this->attributes['payment_option'])){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_payment_option_name($company_id, $this->attributes['payment_option']);
         }
     }
     public function modelFilter()

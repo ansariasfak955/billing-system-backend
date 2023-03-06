@@ -34,11 +34,18 @@ class Item extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
-    public $appends = ['amount', 'taxAmount','otherTaxAmount','amount_with_out_vat'];
+    public $appends = ['amount', 'taxAmount','otherTaxAmount','amount_with_out_vat','product_name'];
 
     public function invoice(){
 
         return $this->hasMany(InvoiceTable::class, 'parent_id');
+    }
+    public function getProductNameAttribute(){
+        if(isset( $this->attributes['reference_id'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_product_name($company_id, $this->attributes['reference_id']);
+        }
     }
 
     public function getTaxAmountAttribute(){

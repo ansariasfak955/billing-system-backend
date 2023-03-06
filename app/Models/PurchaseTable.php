@@ -13,7 +13,7 @@ class PurchaseTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
-    protected $appends = ['client_name', 'created_by_name', 'amount','amount_paid','amount_due', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name','amount_with_out_vat','total_quantity','tax_amount'];
+    protected $appends = ['client_name', 'created_by_name', 'amount','amount_paid','payment_option_name','amount_due', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name','amount_with_out_vat','total_quantity','tax_amount'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -80,6 +80,13 @@ class PurchaseTable extends Model
           return 0 ; 
         }
       }
+      public function getPaymentOptionNameAttribute(){
+        if(isset($this->attributes['payment_option'])){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_payment_option_name($company_id, $this->attributes['payment_option']);
+        }
+    }
       public function getAmountDueAttribute(){
         if(isset($this->attributes['status'])){
             if($this->attributes['status'] == 'paid'){

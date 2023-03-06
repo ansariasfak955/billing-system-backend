@@ -209,34 +209,39 @@ class ReportController extends Controller
             ]);
 
         }else if($request->type == "items"){
-            $productTables = Product::get();
+            // $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
+            // $invoice_ids = Item::where('type',$referenceType)->pluck('parent_id')->toArray();
+            // $products = Item::whereIn('id',$invoice_ids)->get();
+            // dd($invoice_ids);
+            $products = Product::get();
             $services = Service::get();
             $data = [];
             $data['invoice_items'] = [];
-            foreach($productTables as $productTable){
+            foreach($products as $product){
                 $data['invoice_items'][] = [
                         "type" => "bar",
-                        "label" => "" .  $productTable->name,
+                        "label" => "" .  $product->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($productTable) {
-                                $query->where('reference_id', $productTable->id);
+                                InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                                $query->where('reference_id', $product->id);
                                 })->get()->sum('amount'),
+                                // Item::where('parent_id',$product->id)->get()->sum('amount'),
                             ]
                         ];
             }
-            foreach($services as $service){
-                $data['invoice_items'][] = [
-                        "type" => "bar",
-                        "label" => "" .  $service->name,
-                        "backgroundColor" => "#26C184",
-                        "data" => [
-                                InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service,$referenceType) {
-                                $query->where('reference_id', $service->id)->where('type', $referenceType);
-                                })->get()->sum('amount'),
-                            ]
-                        ];
-            }
+            // foreach($services as $service){
+            //     $data['invoice_items'][] = [
+            //             "type" => "bar",
+            //             "label" => "" .  $service->name,
+            //             "backgroundColor" => "#26C184",
+            //             "data" => [
+            //                     InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service,$referenceType) {
+            //                     $query->where('reference_id', $service->id)->where('type', $referenceType);
+            //                     })->get()->sum('amount'),
+            //                 ]
+            //             ];
+            // }
             
             return response()->json([
                 "status" => true,
@@ -1971,23 +1976,24 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        
-            $invoiceDatas = InvoiceTable::with('payment_options')->get();
-            $purchaseDatas = PurchaseTable::with('payment_options')->get();
-            // dd($purchaseDatas);
+        $paymentOptions = InvoiceTable::whereHas('payment_options')->pluck('payment_option')->toArray();
+        $paymentOption = InvoiceTable::whereIn('id',$paymentOptions)->get();
+
+        $purchasePaymentOption_ids = PurchaseTable::whereHas('payment_options')->pluck('payment_option')->toArray();
+        $paymentOptions = PurchaseTable::whereIn('id',$purchasePaymentOption_ids)->get();
 
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
-            foreach($invoiceDatas as $invoiceData){
+            foreach($paymentOption as $invoiceData){
                 $arr['date'] = $invoiceData->date;
                 $arr['type'] = $invoiceData->reference_type;
                 $arr['reference'] = $invoiceData->reference.''.$invoiceData->reference_number;
                 $arr['client'] = $invoiceData->client_name;
                 $arr['employee'] = \Auth::user()->name;
-                $arr['payment_option'] = 'Bank Transfer';
-                $arr['amount'] = $invoiceData->amount_paid;
+                $arr['payment_option'] = $invoiceData->payment_option_name;
+                $arr['amount'] = $invoiceData->amount;
                 $arr['paid'] = 'yes';
                 // $arr['amount'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
                 //     $q->where('type', $referenceType);
@@ -1998,14 +2004,14 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
-            foreach($purchaseDatas as $purchaseData){
+            foreach($paymentOptions as $purchaseData){
                 $arr['date'] = $purchaseData->date;
                 $arr['type'] = $purchaseData->reference_type;
                 $arr['reference'] = $purchaseData->reference.''.$purchaseData->reference_number;
                 $arr['supplier'] = $purchaseData->supplier_name;
                 $arr['employee'] = \Auth::user()->name;
-                $arr['amount'] = $purchaseData->amount_paid;
-                $arr['payment_option'] = 'Bank Transfer';
+                $arr['amount'] = $purchaseData->amount;
+                $arr['payment_option'] = $purchaseData->payment_option_name;
                 $arr['paid'] = 'yes';
                 // $arr['amount'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
                 //     $q->where('type', $referenceType);
