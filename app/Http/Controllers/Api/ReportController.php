@@ -172,13 +172,13 @@ class ReportController extends Controller
         
         if($request->type == "clients"){
             $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
-            $clients = InvoiceTable::whereIn('id',$client_ids)->get();
+            $clients = Client::whereIn('id',$client_ids)->get();
             $data = [];
             $data['invoice_client'] = [];
             foreach($clients as $client){
                 $data['invoice_client'][] = [
                         "type" => "bar",
-                        "label" => "" .  $client->client_name,
+                        "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
                              InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
@@ -210,8 +210,10 @@ class ReportController extends Controller
 
         }else if($request->type == "items"){
             $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
-            $invoice_ids = Item::where('type',$referenceType)->pluck('reference_id')->toArray();
-            $products = Item::whereIn('id',$invoice_ids)->get();
+            $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
             // dd($invoice_ids);
             // $products = Product::get();
             // $services = Service::get();
@@ -220,28 +222,28 @@ class ReportController extends Controller
             foreach($products as $product){
                 $data['invoice_items'][] = [
                         "type" => "bar",
-                        "label" => "" .  $product->product_name,
+                        "label" => "" .  $product->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
                                 InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                                $query->where('reference_id', $product->id);
+                                $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                                 })->get()->sum('amount'),
                                 // Item::where('parent_id',$product->id)->get()->sum('amount'),
                             ]
                         ];
             }
-            // foreach($products as $service){
-            //     $data['invoice_items'][] = [
-            //             "type" => "bar",
-            //             "label" => "" .  $service->product_name,
-            //             "backgroundColor" => "#26C184",
-            //             "data" => [
-            //                     InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-            //                     $query->where('reference_id', $service->id);
-            //                     })->get()->sum('amount'),
-            //                 ]
-            //             ];
-            // }
+            foreach($services as $service){
+                $data['invoice_items'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $service->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                                InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                                $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                                })->get()->sum('amount'),
+                            ]
+                        ];
+            }
             
             return response()->json([
                 "status" => true,
@@ -1997,7 +1999,7 @@ class ReportController extends Controller
                 $arr['employee'] = \Auth::user()->name;
                 $arr['payment_option'] = $invoiceData->payment_option_name;
                 $arr['amount'] = $invoiceData->amount;
-                $arr['paid'] = 'yes';
+                $arr['paid'] = $invoiceData->set_as_paid;
                 // $arr['amount'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
                 //     $q->where('type', $referenceType);
                 // })->where('paid','1')->sum('amount');
