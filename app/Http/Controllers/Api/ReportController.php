@@ -171,13 +171,14 @@ class ReportController extends Controller
         // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         
         if($request->type == "clients"){
-            $clients = Client::get();
+            $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
+            $clients = InvoiceTable::whereIn('id',$client_ids)->get();
             $data = [];
             $data['invoice_client'] = [];
             foreach($clients as $client){
                 $data['invoice_client'][] = [
                         "type" => "bar",
-                        "label" => "" .  $client->legal_name,
+                        "label" => "" .  $client->client_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
                              InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
@@ -268,18 +269,18 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        
-            $clients = Client::get();
+            $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
+            $clients = InvoiceTable::filter($request->all())->whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
             foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
-                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
-                $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount_paid');
-                $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount_due');
+                $arr['name'] = $client->client_name;
+                $arr['invoiced'] = $client->amount;
+                $arr['paid'] = $client->amount_paid;
+                $arr['Unpaid'] = $client->amount_due;
                 // $arr['invoiced'] = InvoiceReceipt::whereHas('invoice', function($q) use ($client,$referenceType){
                 //     $q->where('invoice_id', $client->id)->where('reference', $referenceType);
                 // })->sum('amount');
@@ -383,18 +384,18 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
-            foreach($services as $service){
-                $arr['name'] = $service->name;
-                $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
-                })->count();
-                $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
-                })->get()->sum('amount_with_out_vat');
+            // foreach($services as $service){
+            //     $arr['name'] = $service->name;
+            //     $arr['reference'] = $service->reference.''.$service->reference_number;
+            //     $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+            //         $query->where('reference_id', $product->id);
+            //     })->count();
+            //     $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+            //         $query->where('reference_id', $service->id);
+            //     })->get()->sum('amount_with_out_vat');
 
-                $data[] = $arr;
-            }
+            //     $data[] = $arr;
+            // }
 
         return response()->json([
             "status" => true,
@@ -541,7 +542,8 @@ class ReportController extends Controller
 
         }elseif( $request->type == "clients" ){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $clients = Client::get();
+            $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
+            $clients = SalesEstimate::whereIn('id',$client_ids)->get();
             $data = [];
             $data['sales_clients'] = [];
             foreach($clients as $client){
@@ -654,7 +656,8 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $clients = Client::get();
+        $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
+        $clients = SalesEstimate::whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
@@ -1097,7 +1100,8 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $clients = Client::get();
+            $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
+            $clients = SalesEstimate::whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
@@ -1148,7 +1152,8 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         if($request->type == 'incident_by_client'){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $clients = Client::filter($request->all())->get();
+            $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
+            $clients = SalesEstimate::whereIn('id',$client_ids)->get();
             $data = [];
             $data['incident_clients'] = [];
             foreach($clients as $client){
@@ -1167,7 +1172,8 @@ class ReportController extends Controller
             ]);
         }elseif($request->type == 'by_client_history'){
                     
-            $clients = Client::get();
+            $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
+            $clients = SalesEstimate::whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
@@ -1467,7 +1473,8 @@ class ReportController extends Controller
 
         if($request->type == "supplier"){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $suppliers = Supplier::get();
+            $supplier_ids = PurchaseTable::with('supplier')->pluck('supplier_id')->toArray();
+            $suppliers = PurchaseTable::whereIn('id',$supplier_ids)->get();
             $data = [];
             $data['purchase_supplier'] = [];
             foreach($suppliers as $supplier){
@@ -1567,17 +1574,18 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $suppliers = Supplier::get();
+        $supplier_ids = PurchaseTable::with('supplier')->pluck('supplier_id')->toArray();
+        $suppliers = PurchaseTable::whereIn('id',$supplier_ids)->get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
             foreach($suppliers as $supplier){
-                $arr['name'] = $supplier->legal_name;
-                $arr['invoiced'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount');
-                $arr['paid'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount_paid');
-                $arr['Unpaid'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount_due');
+                $arr['name'] = $supplier->supplier_name;
+                $arr['invoiced'] = $supplier->amount;
+                $arr['paid'] = $supplier->amount_paid;
+                $arr['Unpaid'] = $supplier->amount_due;
                 // $arr['invoiced'] = PurchaseReceipt::filter($request->all())->whereHas('invoice', function($q) use ($supplier){
                 //     $q->where('supplier_id', $supplier->id);
                 // })->where('paid','0')->sum('amount');

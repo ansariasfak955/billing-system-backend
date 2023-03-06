@@ -35,6 +35,12 @@ class Item extends Model
         self::$globalTable = $table;
     }
     public $appends = ['amount', 'taxAmount','otherTaxAmount','amount_with_out_vat'];
+
+    public function invoice(){
+
+        return $this->hasMany(InvoiceTable::class, 'parent_id');
+    }
+
     public function getTaxAmountAttribute(){
         if(isset($this->attributes['base_price'])){
             $tax = 0;
