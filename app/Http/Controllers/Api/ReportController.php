@@ -669,7 +669,7 @@ class ReportController extends Controller
             $data = [];
 
             foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
+                $arr['name'] = $client->client_name;
                 $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','pending')->count();
                 $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','refused')->count();
                 $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','accepted')->count();
