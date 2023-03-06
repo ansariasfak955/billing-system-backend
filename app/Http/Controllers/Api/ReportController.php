@@ -554,7 +554,7 @@ class ReportController extends Controller
             foreach($clients as $client){
                 $data['sales_clients'][] = [
                         "type" => "bar",
-                        "label" => "" .  $client->legal_name,
+                        "label" => "" .  $client->client_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
                              SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
@@ -1157,14 +1157,14 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         if($request->type == 'incident_by_client'){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
-            $clients = SalesEstimate::whereIn('id',$client_ids)->get();
+            $client_ids = TechnicalTable::with('client')->pluck('client_id')->toArray();
+            $clients = TechnicalTable::whereIn('id',$client_ids)->get();
             $data = [];
             $data['incident_clients'] = [];
             foreach($clients as $client){
                 $data['incident_clients'][] = [
                         "type" => "bar",
-                        "label" => "" .  $client->legal_name,
+                        "label" => "" .  $client->client_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
                              TechnicalTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
@@ -1177,15 +1177,15 @@ class ReportController extends Controller
             ]);
         }elseif($request->type == 'by_client_history'){
                     
-            $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
-            $clients = SalesEstimate::whereIn('id',$client_ids)->get();
+            $client_ids = TechnicalTable::with('client')->pluck('client_id')->toArray();
+            $clients = TechnicalTable::whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
             foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
+                $arr['name'] = $client->client_name;
                 $arr['pending'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','pending')->count();
                 $arr['refused'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','refused')->count();
                 $arr['accepted'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','accepted')->count();
