@@ -157,7 +157,7 @@ class RateController extends Controller
         
         $updateRate = $rate->update($request->except('company_id', '_method'));
         ProductRate::where('name', $rate_name)->update([
-            'name' => $request->name,
+            'name' => $request->name
         ]);
         ServiceRate::where('name', $rate_name)->update([
             'name' => $request->name
@@ -166,7 +166,7 @@ class RateController extends Controller
 
         return response()->json([
             "status" => true,
-            "rate" => $updateRate
+            "rate" => $rate
         ]);
     }
 
