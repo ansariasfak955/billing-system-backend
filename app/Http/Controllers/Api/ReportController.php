@@ -2010,7 +2010,7 @@ class ReportController extends Controller
                 $arr['employee'] = \Auth::user()->name;
                 $arr['amount'] = $purchaseData->amount;
                 $arr['payment_option'] = $purchaseData->payment_option_name;
-                $arr['paid'] = 'yes';
+                $arr['paid'] = $purchaseData->set_as_paid;
                 // $arr['amount'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
                 //     $q->where('type', $referenceType);
                 // })->where('paid','1')->sum('amount');
