@@ -1976,13 +1976,16 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        $paymentOptions = InvoiceTable::whereHas('payment_options')->pluck('payment_option')->toArray();
-        $paymentOption = InvoiceTable::whereIn('id',$paymentOptions)->get();
 
-        $purchasePaymentOption_ids = PurchaseTable::whereHas('payment_options')->pluck('payment_option')->toArray();
-        $paymentOptions = PurchaseTable::whereIn('id',$purchasePaymentOption_ids)->get();
+        // $paymentOptions = InvoiceTable::whereHas('payment_options')->pluck('payment_option')->toArray();
+        // $paymentOption = InvoiceTable::whereIn('id',$paymentOptions)->get();
 
-            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+        // $purchasePaymentOption_ids = PurchaseTable::whereHas('payment_options')->pluck('payment_option')->toArray();
+        // $purchasePaymentOptions = PurchaseTable::whereIn('id',$purchasePaymentOption_ids)->get();
+            $paymentOption = InvoiceTable::get();
+            $purchasePaymentOptions = PurchaseTable::where('reference','PINV')->get();
+
+
             $arr = [];
             $data = [];
 
@@ -2004,7 +2007,7 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
-            foreach($paymentOptions as $purchaseData){
+            foreach($purchasePaymentOptions as $purchaseData){
                 $arr['date'] = $purchaseData->date;
                 $arr['type'] = $purchaseData->reference_type;
                 $arr['reference'] = $purchaseData->reference.''.$purchaseData->reference_number;
