@@ -166,7 +166,7 @@ class RateController extends Controller
 
         return response()->json([
             "status" => true,
-            "rate" => $rate
+            "rate" => $updateRate
         ]);
     }
 
