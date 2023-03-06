@@ -214,7 +214,7 @@ class ReportController extends Controller
             $products = Item::whereIn('id',$invoice_ids)->get();
             // dd($invoice_ids);
             // $products = Product::get();
-            $services = Service::get();
+            // $services = Service::get();
             $data = [];
             $data['invoice_items'] = [];
             foreach($products as $product){
@@ -230,14 +230,14 @@ class ReportController extends Controller
                             ]
                         ];
             }
-            // foreach($services as $service){
+            // foreach($products as $service){
             //     $data['invoice_items'][] = [
             //             "type" => "bar",
-            //             "label" => "" .  $service->name,
+            //             "label" => "" .  $service->product_name,
             //             "backgroundColor" => "#26C184",
             //             "data" => [
-            //                     InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service,$referenceType) {
-            //                     $query->where('reference_id', $service->id)->where('type', $referenceType);
+            //                     InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+            //                     $query->where('reference_id', $service->id);
             //                     })->get()->sum('amount'),
             //                 ]
             //             ];
