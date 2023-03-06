@@ -209,18 +209,18 @@ class ReportController extends Controller
             ]);
 
         }else if($request->type == "items"){
-            // $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
-            // $invoice_ids = Item::where('type',$referenceType)->pluck('parent_id')->toArray();
-            // $products = Item::whereIn('id',$invoice_ids)->get();
+            $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
+            $invoice_ids = Item::where('type',$referenceType)->pluck('reference_id')->toArray();
+            $products = Item::whereIn('id',$invoice_ids)->get();
             // dd($invoice_ids);
-            $products = Product::get();
+            // $products = Product::get();
             $services = Service::get();
             $data = [];
             $data['invoice_items'] = [];
             foreach($products as $product){
                 $data['invoice_items'][] = [
                         "type" => "bar",
-                        "label" => "" .  $product->name,
+                        "label" => "" .  $product->product_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
                                 InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
