@@ -135,7 +135,7 @@ class ProductRateController extends Controller
         }
         $rate = ProductRate::where('id', $request->product_rate)->first();
         
-        $updateRate = $rate->update($request->except('company_id', '_method'));
+         $rate->update($request->except('company_id', '_method'));
         // dd($updateRate);
 
         return response()->json([
