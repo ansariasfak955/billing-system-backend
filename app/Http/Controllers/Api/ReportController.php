@@ -277,26 +277,16 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
             $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
-            $clients = Client::filter($request->all())->whereIn('id',$client_ids)->get();
-
+            $clients = Client::whereIn('id',$client_ids)->get();
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
             foreach($clients as $client){
-                $arr['name'] = $client->client_name;
-                $arr['invoiced'] = $client->amount;
-                $arr['paid'] = $client->amount_paid;
-                $arr['Unpaid'] = $client->amount_due;
-                // $arr['invoiced'] = InvoiceReceipt::whereHas('invoice', function($q) use ($client,$referenceType){
-                //     $q->where('invoice_id', $client->id)->where('reference', $referenceType);
-                // })->sum('amount');
-                // $arr['paid'] = InvoiceReceipt::whereHas('invoice', function($q) use ($client,$referenceType){
-                //     $q->where('invoice_id', $client->id)->where('reference', $referenceType);
-                // })->where('paid','1')->sum('amount');
-                // $arr['unpaid'] = InvoiceReceipt::whereHas('invoice', function($q) use ($client,$referenceType){
-                //     $q->where('invoice_id', $client->id)->where('reference', $referenceType);
-                // })->where('paid','0')->sum('amount');
+                $arr['name'] = $client->legal_name;
+                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount_paid');
+                $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount_due');
                 $data[] = $arr;
             }
             
