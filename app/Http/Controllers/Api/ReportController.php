@@ -368,7 +368,7 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-
+        
         $products = Product::get();
         $services = Service::get();
         // dd($products);
@@ -389,18 +389,18 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
-            // foreach($services as $service){
-            //     $arr['name'] = $service->name;
-            //     $arr['reference'] = $service->reference.''.$service->reference_number;
-            //     $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-            //         $query->where('reference_id', $product->id);
-            //     })->count();
-            //     $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-            //         $query->where('reference_id', $service->id);
-            //     })->get()->sum('amount_with_out_vat');
+            foreach($services as $service){
+                $arr['name'] = $service->name;
+                $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id);
+                })->count();
+                $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id);
+                })->get()->sum('amount_with_out_vat');
 
-            //     $data[] = $arr;
-            // }
+                $data[] = $arr;
+            }
 
         return response()->json([
             "status" => true,
