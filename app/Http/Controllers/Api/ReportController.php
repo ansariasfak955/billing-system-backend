@@ -1148,7 +1148,7 @@ class ReportController extends Controller
             foreach($clients as $client){
                 $data['incident_clients'][] = [
                         "type" => "bar",
-                        "label" => "" .  $client->client_name,
+                        "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
                              TechnicalTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
@@ -1169,7 +1169,7 @@ class ReportController extends Controller
             $data = [];
 
             foreach($clients as $client){
-                $arr['name'] = $client->client_name;
+                $arr['name'] = $client->legal_name;
                 $arr['pending'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','pending')->count();
                 $arr['refused'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','refused')->count();
                 $arr['accepted'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','accepted')->count();
@@ -1215,8 +1215,6 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         if($request->type == 'incident_by_agent'){
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            // $clients = Client::get();
             $data = [];
             $data['incident_agent'] = [];
             // foreach($clients as $client){
@@ -1284,19 +1282,22 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         if($request->type == 'incident_by_item'){
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $productTables = Product::get();
-            $services = Service::get();
+
+            $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
+
             $data = [];
             $data['invoice_items'] = [];
-            foreach($productTables as $productTable){
+            foreach($products as $product){
                 $data['invoice_items'][] = [
                         "type" => "bar",
-                        "label" => "" .  $productTable->name,
+                        "label" => "" .  $product->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($productTable) {
-                                $query->where('reference_id', $productTable->id);
+                                TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                                $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                                 })->get()->sum('amount'),
                             ]
                         ];
@@ -1308,7 +1309,7 @@ class ReportController extends Controller
                         "backgroundColor" => "#26C184",
                         "data" => [
                                 TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                                $query->where('reference_id', $service->id);
+                                $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                                 })->get()->sum('amount'),
                             ]
                         ];
@@ -1319,10 +1320,10 @@ class ReportController extends Controller
             ]);
         }elseif($request->type == 'by_item_history'){
 
-            $products = Product::filter($request->all())->get();
-            $services = Service::filter($request->all())->get();
-            // dd($products);
-                // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
                
                 $arr = [];
                 $data = [];
@@ -1331,25 +1332,25 @@ class ReportController extends Controller
                     $arr['name'] = $product->name;
                     $arr['reference'] = $product->reference.''.$product->reference_number;
                     $arr['pending'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                     })->where('status','pending')->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                     })->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                     })->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                     })->where('status','refused')->count();
                     $arr['total'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                     })->count();
                     $arr['units'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                     })->count();
                     $arr['amount'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                     })->get()->sum('amount');
                     
     
@@ -1359,22 +1360,22 @@ class ReportController extends Controller
                     $arr['name'] = $service->name;
                     $arr['reference'] = $service->reference.''.$service->reference_number;
                     $arr['pending'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                     })->where('status','pending')->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                     })->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                     })->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                     })->where('status','refused')->count();
                     $arr['total'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                     })->count();
                     $arr['amount'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                     })->get()->sum('amount');
     
                     $data[] = $arr;
@@ -1421,7 +1422,7 @@ class ReportController extends Controller
             $arr = [];
             $data = [];
 
-                $arr['name'] = \Auth::user()->name;;
+                $arr['name'] = \Auth::user()->name;
                 $arr['pending'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Pending')->count();
                 $arr['refused'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Refused')->count();
                 $arr['resolved'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Resolved')->count();
