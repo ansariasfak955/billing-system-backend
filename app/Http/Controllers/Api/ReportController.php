@@ -1649,8 +1649,8 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['units'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id)->whereIn('reference',['SER']);
+                $arr['units'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->count();
                 $arr['amount'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
                     $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
