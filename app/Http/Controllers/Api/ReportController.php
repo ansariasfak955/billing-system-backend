@@ -1422,10 +1422,10 @@ class ReportController extends Controller
             $data = [];
 
                 $arr['name'] = \Auth::user()->name;;
-                $arr['pending'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','pending')->count();
-                $arr['refused'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','refused')->count();
-                $arr['accepted'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','accepted')->count();
-                $arr['closed'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','closed')->count();
+                $arr['pending'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Pending')->count();
+                $arr['refused'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Refused')->count();
+                $arr['resolved'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Resolved')->count();
+                $arr['closed'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Closed')->count();
                 $arr['total'] = TechnicalIncident::where('assigned_to',\Auth::id())->count();
 
                 $data[] = $arr;
