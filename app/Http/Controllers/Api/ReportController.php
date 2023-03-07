@@ -1452,6 +1452,9 @@ class ReportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
         $table = 'company_'.$request->company_id.'_expense_and_investments';
         ExpenseAndInvestment::setGlobalTable($table);
 
@@ -1462,7 +1465,7 @@ class ReportController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
 
         if($request->type == "supplier"){
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+
             $supplier_ids = PurchaseTable::with('supplier')->pluck('supplier_id')->toArray();
             $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
             $data = [];
@@ -1473,7 +1476,7 @@ class ReportController extends Controller
                         "label" => "" .  $supplier->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount'),
+                             PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->where('reference','PINV')->get()->sum('amount'),
                             ]
                         ];
             }
