@@ -1488,9 +1488,9 @@ class ReportController extends Controller
 
         }elseif($request->type == 'items'){
             $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
-            $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-            $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-            $expenseInvestmentIds = Item::whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
+            $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
             $products = Product::whereIn('id',$itemProductIds)->get();
             $services = Service::whereIn('id',$itemServiceIds)->get();
             $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
@@ -1570,7 +1570,8 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-        $supplier_ids = PurchaseTable::with('supplier')->pluck('supplier_id')->toArray();
+        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        $supplier_ids = PurchaseTable::with('supplier')->whereIn('reference',$referenceType)->pluck('supplier_id')->toArray();
         $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
@@ -1578,19 +1579,10 @@ class ReportController extends Controller
             $data = [];
 
             foreach($suppliers as $supplier){
-                $arr['name'] = $supplier->supplier_name;
-                $arr['invoiced'] = $supplier->amount;
-                $arr['paid'] = $supplier->amount_paid;
-                $arr['Unpaid'] = $supplier->amount_due;
-                // $arr['invoiced'] = PurchaseReceipt::filter($request->all())->whereHas('invoice', function($q) use ($supplier){
-                //     $q->where('supplier_id', $supplier->id);
-                // })->where('paid','0')->sum('amount');
-                // $arr['paid'] = PurchaseReceipt::filter($request->all())->whereHas('invoice', function($q) use ($supplier){
-                //     $q->where('supplier_id', $supplier->id);
-                // })->where('paid','1')->sum('amount');
-                // $arr['unpaid'] = PurchaseReceipt::filter($request->all())->whereHas('invoice', function($q) use ($supplier){
-                //     $q->where('supplier_id', $supplier->id);
-                // })->where('paid','0')->sum('amount');
+                $arr['name'] = $supplier->legal_name;
+                $arr['invoiced'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount');
+                $arr['paid'] =  PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount_paid');
+                $arr['Unpaid'] =  PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount_due');
 
                 $data[] = $arr;
             }
