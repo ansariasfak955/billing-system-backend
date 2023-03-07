@@ -397,6 +397,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('inc-by-ietm-export', 'ReportExportController@incidentByItem');
             Route::post('purchase-supplier-export', 'ReportExportController@purchaseSupplierHistoryExport');
             Route::post('purchase-item-export', 'ReportExportController@purchaseItemHistoryExport');
+            Route::post('stock-valuation-export', 'ReportExportController@stockValuationExport');
 
 
             // supplier bank account

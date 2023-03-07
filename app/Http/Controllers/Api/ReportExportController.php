@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Models\Reference;
 use App\Models\Service;
 use App\Models\PurchaseReceipt;
+use App\Models\SupplierSpecialPrice;
 use App\Models\ExpenseAndInvestment;
 use App\Models\Supplier;
 use App\Models\ConsumptionTax;
@@ -41,6 +42,7 @@ use App\Exports\ReportExport\IncidentByItemExport;
 use App\Exports\ReportExport\PurchaseSupplierExport;
 use App\Exports\ReportExport\PurchaseItemExport;
 use App\Exports\ReportExport\CashFlowByAgentExport;
+use App\Exports\ReportExport\StockValuationExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -550,11 +552,17 @@ class ReportExportController extends Controller
 
         foreach($paymentOptions as $paymentOption){
             $arr['name'] = $paymentOption->name;
-            $arr['deposit'] = '';
-            $arr['withdrawals'] = InvoiceReceipt::WhereHas('payment_options', function ($query) use ($paymentOption,$referenceType) {
-                $query->where('payment_option', $paymentOption->id)->where('type', $referenceType);
-            })->where('paid','1')->sum('amount');
-            $arr['balance'] = '';
+            $arr['deposit'] = Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                $query->where('payment_option', $paymentOption->id)->where('type','deposit');
+                })->get()->sum('amount');
+            $arr['withdrawals'] = Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                    $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
+                    })->get()->sum('amount');
+            $arr['balance'] = Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                $query->where('payment_option', $paymentOption->id)->where('type','deposit');
+                })->get()->sum('amount') - Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
+                })->get()->sum('amount');
             
 
             $paymentOptionExports[] = $arr;
@@ -983,7 +991,7 @@ class ReportExportController extends Controller
         $services = Service::get();
            
             $arr = [];
-            $data = [];
+            $purchaseItemExports = [];
 
             foreach($products as $product){
                 $arr['name'] = $product->name;
@@ -1060,20 +1068,15 @@ class ReportExportController extends Controller
         $paymentOptions = PaymentOption::get();
        
         $arr = [];
-        $data = [];
+        $cashflowAgentExports = [];
 
-        // foreach($paymentOptions as $paymentOption){
             $arr['name'] = \Auth::user()->name;
-            $arr['deposit'] = Deposit::where('type','deposit')->sum('amount');
-            // $arr['withdrawals'] = InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption) {
-            //     $query->where('payment_option', $paymentOption->id);
-            //     })->get()->sum('amount');
-            $arr['withdrawals'] = InvoiceTable::where('reference',$referenceType)->get()->sum('amount');
-            $arr['balance'] = Deposit::where('type','withdraw')->sum('amount');
-            
+            $arr['deposit'] = Deposit::where('type','deposit')->where('paid_by','1')->sum('amount');
+            $arr['withdrawals'] = Deposit::where('type','withdraw')->where('paid_by','1')->sum('amount');
+            $arr['balance'] = Deposit::where('type','deposit')->where('paid_by','1')->sum('amount') - Deposit::where('type','withdraw')->where('paid_by','1')->sum('amount');
 
             $cashflowAgentExports[] = $arr;
-        // }
+
         Excel::store(new CashFlowByAgentExport($cashflowAgentExports), 'public/xlsx/'.$fileName);
 
         return response()->json([
@@ -1081,5 +1084,50 @@ class ReportExportController extends Controller
             'url' => url('/storage/xlsx/'.$fileName),
          ]);
 
+    }
+    public function stockValuationExport(Request $request, $company_id){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $productTable = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTable); 
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_supplier_special_prices';
+        SupplierSpecialPrice::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+        
+        $fileName = 'STOCKVALUATIONREPORT-'.time().$company_id.'.xlsx';
+        $supplierSpecialPrices = SupplierSpecialPrice::get();
+           
+        $arr = [];
+        $stockValuationExports = [];
+
+        foreach($supplierSpecialPrices as $supplierSpecialPrice){
+            $arr['reference'] = 'PRO00001';
+            $arr['name'] = $supplierSpecialPrice->product_name;
+            $arr['stock'] = '3.00';
+            $arr['sales_stock_value'] = '300.00';
+            $arr['purchase_stock_value'] = '300.00';
+
+            $stockValuationExports[] = $arr;
+        }
+        Excel::store(new StockValuationExport($stockValuationExports), 'public/xlsx/'.$fileName);
+
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+         ]);
+        
     }
 }

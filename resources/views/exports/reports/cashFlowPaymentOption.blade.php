@@ -28,9 +28,13 @@
         </tr>
     </thead>
     <tbody>
+    @foreach($paymentOptionExports as $paymentOptionExport)
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{$paymentOptionExport['name']}}</td>
+            <td>{{$paymentOptionExport['deposit']}}</td>
+            <td>{{$paymentOptionExport['withdrawals']}}</td>
+            <td>{{$paymentOptionExport['balance']}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>
