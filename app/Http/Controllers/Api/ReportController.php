@@ -2537,7 +2537,9 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            $suppliers = Supplier::get();
+        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        $supplier_ids = PurchaseTable::with('supplier')->whereIn('reference',$referenceType)->pluck('supplier_id')->toArray();
+        $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
@@ -2545,11 +2547,11 @@ class ReportController extends Controller
 
             foreach($suppliers as $supplier){
                 $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
-                $arr['Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum('amount');
+                $arr['Q1'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount');
                 $arr['Q2'] = '0.00';
                 $arr['Q3'] = '0.00';
                 $arr['Q4'] = '0.00';
-                $arr['total'] = PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum('amount');
+                $arr['total'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount');
                 $data[] = $arr;
             }
     }elseif($request->type == "purchase_by_item"){
@@ -2662,10 +2664,13 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-        // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-        $products = Product::get();
-        $expenses = ExpenseAndInvestment::get();
-        $services = Service::get();
+        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
            
             $arr = [];
             $data = [];
@@ -2673,14 +2678,14 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
-                $arr['Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                $arr['Q1'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->get()->sum('amount_with_out_vat');
                 $arr['Q2'] = '0.00';
                 $arr['Q3'] = '0.00';
                 $arr['Q4'] = '0.00';
-                $arr['total'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                $arr['total'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->get()->sum('amount_with_out_vat');
                 
 
@@ -2689,14 +2694,14 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                $arr['Q1'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->get()->sum('amount_with_out_vat');
                 $arr['Q2'] = '0.00';
                 $arr['Q3'] = '0.00';
                 $arr['Q4'] = '0.00';
-                $arr['total'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                $arr['total'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->get()->sum('amount_with_out_vat');
 
                 $data[] = $arr;
@@ -2704,14 +2709,14 @@ class ReportController extends Controller
             foreach($expenses as $expense){
                 $arr['name'] = $expense->name;
                 $arr['reference'] = $expense->reference.''.$expense->reference_number;
-                $arr['Q1'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($expense) {
-                    $query->where('reference_id', $expense->id);
+                $arr['Q1'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($expense) {
+                    $query->where('reference_id', $expense->id)->whereIn('reference',['EAI']);
                 })->get()->sum('amount_with_out_vat');
                 $arr['Q2'] = '0.00';
                 $arr['Q3'] = '0.00';
                 $arr['Q4'] = '0.00';
-                $arr['total'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($expense) {
-                    $query->where('reference_id', $expense->id);
+                $arr['total'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($expense) {
+                    $query->where('reference_id', $expense->id)->whereIn('reference',['EAI']);
                 })->get()->sum('amount_with_out_vat');
                 
 

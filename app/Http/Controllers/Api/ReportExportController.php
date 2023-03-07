@@ -43,6 +43,12 @@ use App\Exports\ReportExport\PurchaseSupplierExport;
 use App\Exports\ReportExport\PurchaseItemExport;
 use App\Exports\ReportExport\CashFlowByAgentExport;
 use App\Exports\ReportExport\StockValuationExport;
+use App\Exports\ReportExport\OfProfitExport;
+use App\Exports\ReportExport\InvoiceByClientEvoluationExport;
+use App\Exports\ReportExport\InvoiceByAgentEvoluationExport;
+use App\Exports\ReportExport\InvoiceByItemEvoluationExport;
+use App\Exports\ReportExport\PurchaseByProviderExport;
+use App\Exports\ReportExport\PurchasesByItemExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -1129,5 +1135,390 @@ class ReportExportController extends Controller
             'url' => url('/storage/xlsx/'.$fileName),
          ]);
         
+    }
+    public function ofEvolution(Request $request,$company_id){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $table = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        if($request->type == 'ofProfit'){
+
+        $fileName = 'PROFITEVOLUTIONREPORT-'.time().$company_id.'.xlsx';
+            // $invoiceDatas = InvoiceTable::with('payment_options')->get();
+            // $purchaseDatas = PurchaseTable::with('payment_options')->get();
+            // dd($purchaseDatas);
+            $arr = [];
+            $ofProfits = [];
+
+            // foreach($invoiceDatas as $invoiceData){
+                $arr['period'] = '2023Q1';
+                $arr['sales'] = '200.00';
+                $arr['expense'] = '200.00';
+                $arr['profit'] = '200.00';
+
+                $ofProfits[] = $arr;
+            // }
+            Excel::store(new OfProfitExport($ofProfits), 'public/xlsx/'.$fileName);
+
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }elseif($request->type == 'invoicing_by_client_list'){
+            $clientsTables = 'company_'.$request->company_id.'_clients';
+            Client::setGlobalTable($clientsTables);
+    
+            $table = 'company_'.$request->company_id.'_services';
+            Service::setGlobalTable($table);
+    
+            $table = 'company_'.$request->company_id.'_products';
+            Product::setGlobalTable($table);
+    
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+    
+            $table = 'company_'.$request->company_id.'_invoice_receipts';
+            InvoiceReceipt::setGlobalTable($table);
+    
+            $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+            InvoiceTable::setGlobalTable($invoiceTable);
+    
+            $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+            ItemMeta::setGlobalTable($item_meta_table);
+    
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
+
+            $fileName = 'CLIENTINVOICINGEVOLUTIONREPORT-'.time().$company_id.'.xlsx';
+                $invoice_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
+                $clients = Client::whereIn('id', $invoice_ids)->get();
+
+                $arr = [];
+                $invoiceByClients = [];
+    
+                foreach($clients as $client){
+                    $arr['reference'] = $client->reference.''.$client->reference_number;
+                    $arr['name'] = $client->legal_name.' ('.$client->name.')';
+                    $arr['tin'] = $client->tin;
+                    $arr['client_category'] = '';
+                    $arr['zip_code'] = $client->zip_code;
+                    $arr['Q1'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                    $arr['Q2'] = '0.00';
+                    $arr['Q3'] = '0.00';
+                    $arr['Q4'] = '0.00';
+                    $arr['total'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                    $invoiceByClients[] = $arr;
+                }
+                Excel::store(new InvoiceByClientEvoluationExport($invoiceByClients), 'public/xlsx/'.$fileName);
+
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
+        }elseif($request->type == 'invoicing_by_agent_list'){
+            $clientsTables = 'company_'.$request->company_id.'_clients';
+            Client::setGlobalTable($clientsTables);
+    
+            $table = 'company_'.$request->company_id.'_services';
+            Service::setGlobalTable($table);
+    
+            $table = 'company_'.$request->company_id.'_products';
+            Product::setGlobalTable($table);
+    
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+    
+            $table = 'company_'.$request->company_id.'_invoice_receipts';
+            InvoiceReceipt::setGlobalTable($table);
+    
+            $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+            InvoiceTable::setGlobalTable($invoiceTable);
+    
+            $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+            ItemMeta::setGlobalTable($item_meta_table);
+    
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
+
+            $fileName = 'EMPLOYEEINVOICINGEVOLUTIONREPORT-'.time().$company_id.'.xlsx';
+
+                    $arr = [];
+                    $invoiceByagents = [];
+    
+                    $arr['name'] = \Auth::user()->name;
+                    $arr['Q1'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+                    $arr['Q2'] = '0.00';
+                    $arr['Q3'] = '0.00';
+                    $arr['Q4'] = '0.00';
+                    $arr['total'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+    
+                    $invoiceByagents[] = $arr;
+
+                    Excel::store(new InvoiceByAgentEvoluationExport($invoiceByagents), 'public/xlsx/'.$fileName);
+
+                    return response()->json([
+                        'status' => true,
+                        'url' => url('/storage/xlsx/'.$fileName),
+                     ]);
+        }elseif($request->type == 'invoicing_by_item_list'){
+            $clientsTables = 'company_'.$request->company_id.'_clients';
+            Client::setGlobalTable($clientsTables);
+    
+            $table = 'company_'.$request->company_id.'_services';
+            Service::setGlobalTable($table);
+    
+            $table = 'company_'.$request->company_id.'_products';
+            Product::setGlobalTable($table);
+    
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+    
+            $table = 'company_'.$request->company_id.'_invoice_receipts';
+            InvoiceReceipt::setGlobalTable($table);
+    
+            $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+            InvoiceTable::setGlobalTable($invoiceTable);
+    
+            $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+            ItemMeta::setGlobalTable($item_meta_table);
+    
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
+            
+            $fileName = 'CATALOGINVOICINGEVOLUTIONREPORT-'.time().$company_id.'.xlsx';
+
+            $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
+            // dd($products);
+               
+                $arr = [];
+                $invoiceByItems = [];
+    
+                foreach($products as $product){
+                    $arr['name'] = $product->name;
+                    $arr['reference'] = $product->reference.''.$product->reference_number;
+                    $arr['product_category'] = '';
+                    $arr['Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                    })->get()->sum('amount_with_out_vat');
+                    $arr['Q2'] = '0.00';
+                    $arr['Q3'] = '0.00';
+                    $arr['Q4'] = '0.00';
+                    $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                    })->get()->sum('amount_with_out_vat');
+                    
+    
+                    $invoiceByItems[] = $arr;
+                }
+                foreach($services as $service){
+                    $arr['name'] = $service->name;
+                    $arr['reference'] = $service->reference.''.$service->reference_number;
+                    $arr['product_category'] = '';
+                    $arr['Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                    })->get()->sum('amount_with_out_vat');
+                    $arr['Q2'] = '0.00';
+                    $arr['Q3'] = '0.00';
+                    $arr['Q4'] = '0.00';
+                    $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                    })->get()->sum('amount_with_out_vat');
+    
+                    $invoiceByItems[] = $arr;
+                }
+                Excel::store(new InvoiceByItemEvoluationExport($invoiceByItems), 'public/xlsx/'.$fileName);
+
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
+        }elseif($request->type == 'purchase_by_provider_list'){
+            $table = 'company_'.$request->company_id.'_services';
+            Service::setGlobalTable($table);
+    
+            $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+            PurchaseTable::setGlobalTable($purchaseTables); 
+    
+            $supplierTables = 'company_'.$request->company_id.'_suppliers';
+            Supplier::setGlobalTable($supplierTables); 
+            
+            $table = 'company_'.$request->company_id.'_purchase_receipts';
+            PurchaseReceipt::setGlobalTable($table);
+    
+            $table = 'company_'.$request->company_id.'_products';
+            Product::setGlobalTable($table);
+    
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+    
+            $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+            InvoiceTable::setGlobalTable($invoiceTable);
+    
+            $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+            ItemMeta::setGlobalTable($item_meta_table);
+    
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
+
+            $fileName = 'SUPPLIERPURCHASEEVOLUTIONREPORT-'.time().$company_id.'.xlsx';
+
+                $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+                $supplier_ids = PurchaseTable::with('supplier')->whereIn('reference',$referenceType)->pluck('supplier_id')->toArray();
+                $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
+
+                $arr = [];
+                $purchaseByProviders = [];
+    
+                foreach($suppliers as $supplier){
+                    $arr['reference'] = $supplier->reference.''.$supplier->reference_number;
+                    $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
+                    $arr['tin'] = $supplier->tin;
+                    $arr['supplier_category'] = '';
+                    $arr['zip_code'] = $supplier->zip_code;
+                    $arr['Q1'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount');
+                    $arr['Q2'] = '0.00';
+                    $arr['Q3'] = '0.00';
+                    $arr['Q4'] = '0.00';
+                    $arr['total'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount');
+                    
+                    $purchaseByProviders[] = $arr;
+                }
+                Excel::store(new PurchaseByProviderExport($purchaseByProviders), 'public/xlsx/'.$fileName);
+
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
+        }elseif($request->type == 'purchase_by_item_list'){
+            $table = 'company_'.$request->company_id.'_services';
+            Service::setGlobalTable($table);
+    
+            $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+            PurchaseTable::setGlobalTable($purchaseTables); 
+    
+            $supplierTables = 'company_'.$request->company_id.'_suppliers';
+            Supplier::setGlobalTable($supplierTables); 
+            
+            $table = 'company_'.$request->company_id.'_purchase_receipts';
+            PurchaseReceipt::setGlobalTable($table);
+    
+            $table = 'company_'.$request->company_id.'_products';
+            Product::setGlobalTable($table);
+    
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+    
+            $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+            InvoiceTable::setGlobalTable($invoiceTable);
+    
+            $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+            ItemMeta::setGlobalTable($item_meta_table);
+    
+            $table = 'company_'.$request->company_id.'_expense_and_investments';
+            ExpenseAndInvestment::setGlobalTable($table);
+    
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
+            
+            $fileName = 'CATALOGPURCHASEEVOLUTIONREPORT-'.time().$company_id.'.xlsx';
+
+            $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+            $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
+            $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
+               
+                $arr = [];
+                $purchaseByItems = [];
+    
+                foreach($products as $product){
+                    $arr['name'] = $product->name;
+                    $arr['reference'] = $product->reference.''.$product->reference_number;
+                    $arr['product_category'] = '';
+                    $arr['Q1'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                    })->get()->sum('amount_with_out_vat');
+                    $arr['Q2'] = '0.00';
+                    $arr['Q3'] = '0.00';
+                    $arr['Q4'] = '0.00';
+                    $arr['total'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                    })->get()->sum('amount_with_out_vat');
+                    
+    
+                    $purchaseByItems[] = $arr;
+                }
+                foreach($services as $service){
+                    $arr['name'] = $service->name;
+                    $arr['reference'] = $service->reference.''.$service->reference_number;
+                    $arr['product_category'] = '';
+                    $arr['Q1'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                    })->get()->sum('amount_with_out_vat');
+                    $arr['Q2'] = '0.00';
+                    $arr['Q3'] = '0.00';
+                    $arr['Q4'] = '0.00';
+                    $arr['total'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                    })->get()->sum('amount_with_out_vat');
+    
+                    $purchaseByItems[] = $arr;
+                }
+                foreach($expenses as $expense){
+                    $arr['name'] = $expense->name;
+                    $arr['reference'] = $expense->reference.''.$expense->reference_number;
+                    $arr['product_category'] = '';
+                    $arr['Q1'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($expense) {
+                        $query->where('reference_id', $expense->id)->whereIn('reference',['EAI']);
+                    })->get()->sum('amount_with_out_vat');
+                    $arr['Q2'] = '0.00';
+                    $arr['Q3'] = '0.00';
+                    $arr['Q4'] = '0.00';
+                    $arr['total'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($expense) {
+                        $query->where('reference_id', $expense->id)->whereIn('reference',['EAI']);
+                    })->get()->sum('amount_with_out_vat');
+                    
+    
+                    $purchaseByItems[] = $arr;
+                }
+                Excel::store(new PurchasesByItemExport($purchaseByItems), 'public/xlsx/'.$fileName);
+
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
+        }
     }
 }
