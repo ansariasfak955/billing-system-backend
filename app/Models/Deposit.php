@@ -28,6 +28,10 @@ class Deposit extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    public function payment_options(){
+
+        return $this->hasOne(PaymentOption::class,'id', 'payment_option');
+    }
     public function getPaidByNameAttribute(){
         
         if(isset( $this->attributes['paid_by'] )){

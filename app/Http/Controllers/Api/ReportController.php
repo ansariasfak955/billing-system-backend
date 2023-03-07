@@ -214,9 +214,7 @@ class ReportController extends Controller
             $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
             $products = Product::whereIn('id',$itemProductIds)->get();
             $services = Service::whereIn('id',$itemServiceIds)->get();
-            // dd($invoice_ids);
-            // $products = Product::get();
-            // $services = Service::get();
+
             $data = [];
             $data['invoice_items'] = [];
             foreach($products as $product){
@@ -228,7 +226,6 @@ class ReportController extends Controller
                                 InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
                                 $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                                 })->get()->sum('amount'),
-                                // Item::where('parent_id',$product->id)->get()->sum('amount'),
                             ]
                         ];
             }
@@ -664,7 +661,7 @@ class ReportController extends Controller
             $data = [];
 
             foreach($clients as $client){
-                $arr['name'] = $client->client_name;
+                $arr['name'] = $client->legal_name;
                 $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','pending')->count();
                 $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','refused')->count();
                 $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','accepted')->count();
@@ -1804,9 +1801,11 @@ class ReportController extends Controller
                             "label" => "" .  $paymentOption->name,
                             "backgroundColor" => "#26C184",
                             "data" => [
-                                    InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption) {
-                                    $query->where('payment_option', $paymentOption->id);
-                                    })->get()->sum('amount'),
+                                Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                                    $query->where('payment_option', $paymentOption->id)->where('type','deposit');
+                                    })->get()->sum('amount') - Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                                        $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
+                                        })->get()->sum('amount'),
                                 ]
                             ];
                 }
@@ -1815,19 +1814,16 @@ class ReportController extends Controller
                     "data" =>  $data
                 ]);
         }elseif($request->type =='agents'){
-            // $clients = Client::get();
-            // $data = [];
+
             $data['agents'] = [];
-            // foreach($clients as $client){
                 $data['agents'][] = [
                         "type" => "bar",
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                 InvoiceTable::get()->sum('amount'),
+                            Deposit::where('type','deposit')->where('paid_by','1')->sum('amount') -  Deposit::where('type','withdraw')->where('paid_by','1')->sum('amount'),
                             ]
                         ];
-            // }
             return response()->json([
                 "status" => true,
                 "data" => $data
@@ -1866,7 +1862,6 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         $paymentOptions = PaymentOption::get();
        
         $arr = [];
@@ -1874,11 +1869,17 @@ class ReportController extends Controller
 
         foreach($paymentOptions as $paymentOption){
             $arr['name'] = $paymentOption->name;
-            $arr['deposit'] = '';
-            $arr['withdrawals'] = InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption) {
-                $query->where('payment_option', $paymentOption->id);
-                })->get()->sum('amount');
-            $arr['balance'] = '';
+            $arr['deposit'] = Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                                $query->where('payment_option', $paymentOption->id)->where('type','deposit');
+                                })->get()->sum('amount');
+            $arr['withdrawals'] = Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                                    $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
+                                    })->get()->sum('amount');
+            $arr['balance'] = Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                                $query->where('payment_option', $paymentOption->id)->where('type','deposit');
+                                })->get()->sum('amount') - Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                                $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
+                                })->get()->sum('amount');
             
 
             $data[] = $arr;
@@ -1917,20 +1918,15 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         $paymentOptions = PaymentOption::get();
        
         $arr = [];
         $data = [];
 
-        // foreach($paymentOptions as $paymentOption){
             $arr['name'] = \Auth::user()->name;
-            $arr['deposit'] = Deposit::where('type','deposit')->sum('amount');
-            // $arr['withdrawals'] = InvoiceTable::WhereHas('payment_options', function ($query) use ($paymentOption) {
-            //     $query->where('payment_option', $paymentOption->id);
-            //     })->get()->sum('amount');
-            $arr['withdrawals'] = InvoiceTable::get()->sum('amount');
-            $arr['balance'] = Deposit::where('type','withdraw')->sum('amount');
+            $arr['deposit'] = Deposit::where('type','deposit')->where('paid_by','1')->sum('amount');
+            $arr['withdrawals'] = Deposit::where('type','withdraw')->where('paid_by','1')->sum('amount');
+            $arr['balance'] = Deposit::where('type','deposit')->where('paid_by','1')->sum('amount') - Deposit::where('type','withdraw')->where('paid_by','1')->sum('amount');
             
 
             $data[] = $arr;
@@ -1963,6 +1959,9 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
         $table = 'company_'.$request->company_id.'_purchase_receipts';
         PurchaseReceipt::setGlobalTable($table);
 
@@ -1993,13 +1992,6 @@ class ReportController extends Controller
                 $arr['payment_option'] = $invoiceData->payment_option_name;
                 $arr['amount'] = $invoiceData->amount;
                 $arr['paid'] = $invoiceData->set_as_paid;
-                // $arr['amount'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
-                //     $q->where('type', $referenceType);
-                // })->where('paid','1')->sum('amount');
-                // $arr['paid'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
-                //     $q->where('type', $referenceType);
-                // })->where('paid','0')->sum('amount');
-
                 $data[] = $arr;
             }
             foreach($purchasePaymentOptions as $purchaseData){
@@ -2011,13 +2003,6 @@ class ReportController extends Controller
                 $arr['amount'] = $purchaseData->amount;
                 $arr['payment_option'] = $purchaseData->payment_option_name;
                 $arr['paid'] = $purchaseData->set_as_paid;
-                // $arr['amount'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
-                //     $q->where('type', $referenceType);
-                // })->where('paid','1')->sum('amount');
-                // $arr['paid'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
-                //     $q->where('type', $referenceType);
-                // })->where('paid','0')->sum('amount');
-
                 $data[] = $arr;
             }
             
