@@ -546,7 +546,7 @@ class ReportController extends Controller
             foreach($clients as $client){
                 $data['sales_clients'][] = [
                         "type" => "bar",
-                        "label" => "" .  $client->client_name,
+                        "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
                              SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
