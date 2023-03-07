@@ -540,7 +540,7 @@ class ReportController extends Controller
         }elseif( $request->type == "clients" ){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
-            $clients = SalesEstimate::whereIn('id',$client_ids)->get();
+            $clients = Client::whereIn('id',$client_ids)->get();
             $data = [];
             $data['sales_clients'] = [];
             foreach($clients as $client){
@@ -576,19 +576,21 @@ class ReportController extends Controller
                 "data" => $data
             ]);
         }elseif($request->type == "items"){
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $productTables = Product::get();
-            $services = Service::get();
+            // $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
             $data = [];
             $data['sales_items'] = [];
-            foreach($productTables as $productTable){
+            foreach($products as $products){
                 $data['sales_items'][] = [
                         "type" => "bar",
-                        "label" => "" .  $productTable->name,
+                        "label" => "" .  $products->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($productTable) {
-                                $query->where('reference_id', $productTable->id);
+                                SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($products) {
+                                $query->where('reference_id', $products->id)->whereIn('reference',['PRO']);
                                 })->get()->sum('amount'),
                             ]
                         ];
@@ -600,7 +602,7 @@ class ReportController extends Controller
                         "backgroundColor" => "#26C184",
                         "data" => [
                                 SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                                $query->where('reference_id', $service->id);
+                                $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                                 })->get()->sum('amount'),
                             ]
                         ];
@@ -611,16 +613,6 @@ class ReportController extends Controller
             ]);
 
         }
-        // foreach($client_ids as $client_id){
-        //     $purchaseDatas = SalesEstimate::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
-        //     $sum = 0;
-        //     $arr['client_id'] = $client_id;
-        //     // foreach($purchaseDatas as $purchaseData){
-        //     //    $sum = $sum + $purchaseData->items()->sum('base_price');
-        //     // }
-        //     $arr['sum'] = SalesEstimate::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
-        //     $data[] = $arr;
-        // }
 
         return response()->json([
             "status" => true,
@@ -746,10 +738,10 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $products = Product::get();
-        $services = Service::get();
-        // dd($products);
-            // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+        $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
            
             $arr = [];
             $data = [];
@@ -758,25 +750,25 @@ class ReportController extends Controller
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['pending'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->where('status','pending')->count();
                 $arr['accepted'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->where('status','accepted')->count();
                 $arr['closed'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->where('status','closed')->count();
                 $arr['refused'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->where('status','refused')->count();
                 $arr['total'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->count();
                 $arr['units'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->count();
                 $arr['amount'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->get()->sum('amount_with_out_vat');
                 
 
@@ -786,25 +778,25 @@ class ReportController extends Controller
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['pending'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->where('status','pending')->count();
                 $arr['accepted'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->where('status','accepted')->count();
                 $arr['closed'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->where('status','closed')->count();
                 $arr['refused'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->where('status','refused')->count();
                 $arr['total'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->count();
                 $arr['units'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->count();
                 $arr['amount'] = SalesEstimate::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->get()->sum('amount_with_out_vat');
 
                 $data[] = $arr;
