@@ -852,7 +852,7 @@ class ReportExportController extends Controller
                         $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                        $query->where('reference_id', $product->id->whereIn('reference',['PRO']))->where('type', $referenceType);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
                         $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
