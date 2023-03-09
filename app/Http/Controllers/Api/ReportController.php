@@ -2140,7 +2140,7 @@ class ReportController extends Controller
                     "label" => "Sales", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "$500"
+                        InvoiceTable::get()->sum('amount_with_out_vat'),
                     ]
                 ],
                 [
@@ -2148,7 +2148,7 @@ class ReportController extends Controller
                     "label" => "Expenses", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "$500"
+                        PurchaseTable::where('reference','PINV')->get()->sum('amount_with_out_vat'),
                     ]
                 ],
                 [
@@ -2156,7 +2156,7 @@ class ReportController extends Controller
                     "label" => "Profit", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "$500"
+                        InvoiceTable::get()->sum('amount_with_out_vat') - PurchaseTable::where('reference','PINV')->get()->sum('amount_with_out_vat'),
                     ]
                 ]
             ]
@@ -2192,13 +2192,13 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
-        $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-        $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
-        $products = Product::whereIn('id',$itemProductIds)->get();
-        $services = Service::whereIn('id',$itemServiceIds)->get();
-        $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
+        // $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        // $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        // $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        // $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
+        // $products = Product::whereIn('id',$itemProductIds)->get();
+        // $services = Service::whereIn('id',$itemServiceIds)->get();
+        // $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
 
         $invoiceAmount = InvoiceTable::get()->sum('amount_with_out_vat');
         $purchaseAmount = PurchaseTable::where('reference','PINV')->get()->sum('amount_with_out_vat');
@@ -2759,13 +2759,18 @@ class ReportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
-        ConsumptionTax::setGlobalTable('company_'.$request->company_id.'_consumption_taxes');
-        $query = ConsumptionTax::query();
+        $taxes = 'company_'.$request->company_id.'_consumption_taxes';
+        ConsumptionTax::setGlobalTable($taxes);
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+
         $data = [];
         
+        if($request->type == 'taxes'){
+            
+        }
+
         $data = [
             "tax_Summary" => [
                 [
@@ -2790,21 +2795,14 @@ class ReportController extends Controller
                     "$756" 
                     ] 
                 ] 
-            ],
-            "subtotal_tax" => [
-                [
-                    "data" => [
-                        // Item::where('type', 'inv')->sum('subtotal')
-                    ]
-                ]
             ]
         ];
         
-        // $taxes = ConsumptionTax::get();
-        // foreach($taxes as $key => $consumptionTax){
-        //     $data = $consumptionTax->tax;
+        $taxes = ConsumptionTax::get();
+        foreach($taxes as $key => $consumptionTax){
+            $data = $consumptionTax->tax;
             
-        // }
+        }
         return response()->json([
             "status" => true,
             "data" =>  $data
