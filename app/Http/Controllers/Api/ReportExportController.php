@@ -844,6 +844,7 @@ class ReportExportController extends Controller
                 foreach($products as $product){
                     $arr['name'] = $product->name;
                     $arr['reference'] = $product->reference.''.$product->reference_number;
+                    $arr['category'] = $product->product_category_name;
                     $arr['pending'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
                         $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->where('status','pending')->count();
@@ -861,7 +862,7 @@ class ReportExportController extends Controller
                     })->count();
                     $arr['units'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
                         $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
-                    })->count();;
+                    })->count();
                     $arr['amount'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
                         $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->get()->sum('amount_with_out_vat');
@@ -872,6 +873,7 @@ class ReportExportController extends Controller
                 foreach($services as $service){
                     $arr['name'] = $service->name;
                     $arr['reference'] = $service->reference.''.$service->reference_number;
+                    $arr['category'] = $service->product_category_name;
                     $arr['pending'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
                         $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                     })->where('status','pending')->count();
@@ -889,7 +891,7 @@ class ReportExportController extends Controller
                     })->count();
                     $arr['units'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
                         $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
-                    })->count();;
+                    })->count();
                     $arr['amount'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
                         $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                     })->get()->sum('amount_with_out_vat');

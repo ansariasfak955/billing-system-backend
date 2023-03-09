@@ -49,6 +49,7 @@
             <td>{{$incidentByItemExport['total']}}</td>
             <td>{{$incidentByItemExport['units']}}</td>
             <td>{{$incidentByItemExport['amount']}}</td>
+            <td>{{$incidentByItemExport['category']}}</td>
         </tr>
         @endforeach
     </tbody>
