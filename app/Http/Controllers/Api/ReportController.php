@@ -2602,9 +2602,13 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-         $productTables = Product::get();
-         $expenses = ExpenseAndInvestment::get();
-         $services = Service::get();
+        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $expenseInvestmentIds = Item::whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
          $data = [];
          $data['purchase_items'] = [];
          foreach($productTables as $productTable){
@@ -2614,9 +2618,8 @@ class ReportController extends Controller
                      "backgroundColor" => "#26C184",
                      "data" => [
                          PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($productTable) {
-                             $query->where('reference_id', $productTable->id);
+                             $query->where('reference_id', $productTable->id)->whereIn('reference',['PRO']);
                              })->get()->sum('amount'),
-                         // Item::where('reference_id', $productTable->id)->get()->sum('amount'),
                          ]
                      ];
          }
@@ -2627,9 +2630,8 @@ class ReportController extends Controller
                      "backgroundColor" => "#26C184",
                      "data" => [
                          PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($service) {
-                             $query->where('reference_id', $service->id);
+                             $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                              })->get()->sum('amount'),
-                         // Item::where('reference_id', $productTable->id)->get()->sum('amount'),
                          ]
                      ];
          }
@@ -2640,9 +2642,8 @@ class ReportController extends Controller
                      "backgroundColor" => "#26C184",
                      "data" => [
                          PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($expense) {
-                             $query->where('reference_id', $expense->id);
+                             $query->where('reference_id', $expense->id)->whereIn('reference',['EAI']);
                              })->get()->sum('amount'),
-                         // Item::where('reference_id', $productTable->id)->get()->sum('amount'),
                          ]
                      ];
          }
