@@ -2191,18 +2191,26 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        
-            // $invoiceDatas = InvoiceTable::with('payment_options')->get();
-            // $purchaseDatas = PurchaseTable::with('payment_options')->get();
-            // dd($purchaseDatas);
+
+        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
+
+        $invoiceAmount = InvoiceTable::get()->sum('amount_with_out_vat');
+        $purchaseAmount = PurchaseTable::where('reference','PINV')->get()->sum('amount_with_out_vat');
+
             $arr = [];
             $data = [];
 
-            // foreach($invoiceDatas as $invoiceData){
+            // foreach($products as $invoiceData){
                 $arr['period'] = '2023Q1';
-                $arr['sales'] = '200.00';
-                $arr['expense'] = '200.00';
-                $arr['profit'] = '200.00';
+                $arr['sales'] = $invoiceAmount;
+                $arr['expense'] = '00';
+                $arr['profit'] =  $invoiceAmount;
 
                 $data[] = $arr;
             // }
@@ -2231,7 +2239,8 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
             
-        $clients = Client::get();
+        $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
+        $clients = Client::whereIn('id',$client_ids)->get();
         $data = [];
         $data['invoice_client'] = [];
         foreach($clients as $client){
@@ -2270,8 +2279,9 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        
-            $clients = Client::get();
+
+            $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
+            $clients = Client::whereIn('id',$client_ids)->get();
 
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
@@ -2379,18 +2389,20 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $productTables = Product::get();
-        $services = Service::get();
+        $itemProductIds = Item::with('supplier')->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::with('supplier')->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
         $data = [];
         $data['invoice_items'] = [];
-        foreach($productTables as $productTable){
+        foreach($products as $product){
             $data['invoice_items'][] = [
                     "type" => "bar",
-                    "label" => "" .  $productTable->name,
+                    "label" => "" .  $product->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($productTable) {
-                            $query->where('reference_id', $productTable->id);
+                            InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                            $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                             })->get()->sum('amount'),
                         ]
                     ];
@@ -2402,7 +2414,7 @@ class ReportController extends Controller
                     "backgroundColor" => "#26C184",
                     "data" => [
                             InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                            $query->where('reference_id', $service->id);
+                            $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                             })->get()->sum('amount'),
                         ]
                     ];
@@ -2432,9 +2444,10 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $products = Product::get();
-        $services = Service::get();
-        // dd($products);
+        $itemProductIds = Item::with('supplier')->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::with('supplier')->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
            
             $arr = [];
             $data = [];
@@ -2443,13 +2456,13 @@ class ReportController extends Controller
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->get()->sum('amount_with_out_vat');
                 $arr['Q2'] = '0.00';
                 $arr['Q3'] = '0.00';
                 $arr['Q4'] = '0.00';
                 $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->get()->sum('amount_with_out_vat');
                 
 
@@ -2459,13 +2472,13 @@ class ReportController extends Controller
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->get()->sum('amount_with_out_vat');
                 $arr['Q2'] = '0.00';
                 $arr['Q3'] = '0.00';
                 $arr['Q4'] = '0.00';
                 $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->get()->sum('amount_with_out_vat');
 
                 $data[] = $arr;
@@ -2494,8 +2507,10 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $suppliers = Supplier::get();
+        
+        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        $supplier_ids = PurchaseTable::with('supplier')->whereIn('reference',$referenceType)->pluck('supplier_id')->toArray();
+        $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
             $data = [];
             $data['purchase_supplier'] = [];
             foreach($suppliers as $supplier){
