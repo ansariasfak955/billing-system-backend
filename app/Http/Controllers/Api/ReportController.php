@@ -2611,14 +2611,14 @@ class ReportController extends Controller
         $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
          $data = [];
          $data['purchase_items'] = [];
-         foreach($productTables as $productTable){
+         foreach($products as $product){
              $data['purchase_items'][] = [
                      "type" => "bar",
-                     "label" => "" .  $productTable->name,
+                     "label" => "" .  $product->name,
                      "backgroundColor" => "#26C184",
                      "data" => [
-                         PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($productTable) {
-                             $query->where('reference_id', $productTable->id)->whereIn('reference',['PRO']);
+                         PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($product) {
+                             $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                              })->get()->sum('amount'),
                          ]
                      ];
