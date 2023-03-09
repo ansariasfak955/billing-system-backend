@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Company;
 
-class AddAmountColumnInInvoiceReceiptsTable extends Migration
+class ChangeTypeColumnInInvoiceReceiptsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,12 +15,14 @@ class AddAmountColumnInInvoiceReceiptsTable extends Migration
     public function up()
     {
         Schema::table('invoice_receipts', function (Blueprint $table) {
-            $table->decimal('amount', 10, 2)->default(0)->change();
+            if (Schema::hasColumn('invoice_receipts', 'amount')){
+                $table->decimal('amount', 10, 2)->default(0)->change();
+            }   
         });
          foreach(Company::pluck('id') as $company_id){
             
-            if (Schema::hasTable('company_'.$company_id.'_invoice_receipts')) {
-                Schema::table('company_'.$company_id.'_invoice_receipts', function (Blueprint $table) {
+            if (Schema::hasTable('company_'.$company_id.'_invoice_receipts') && Schema::hasColumn('company_'.$company_id.'_invoice_receipts', 'amount')) {
+                Schema::table('company_'.$company_id.'_invoice_receipts', function (Blueprint $table) use ($company_id){
                     //add same column here too
                     $table->decimal('amount', 10, 2)->default(0)->change();
                 });
