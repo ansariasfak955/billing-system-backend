@@ -92,20 +92,18 @@ class ReportExportController extends Controller
 
         $fileName = 'CLIENTSALESREPORT-'.time().$company_id.'.xlsx';
 
-            $clients = Client::get();
+            $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
+            $clients = Client::whereIn('id',$client_ids)->get();
 
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
             foreach($clients as $client){
+                $arr['reference'] = $client->reference.''.$client->reference_number;
                 $arr['name'] = $client->legal_name;
-                $arr['currency'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('currency')->first();
-                $arr['after_tax'] = '';
-                $arr['according_to'] = $client->reference_type;
-                $arr['start_date'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('date')->first();
-                $arr['end_date'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('date')->first();
-                $arr['document_type'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('date')->first();
+                $arr['tin'] = $client->tin;
+                $arr['category'] = $client->client_category_name;
                 $arr['pending'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','pending')->count();
                 $arr['refused'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','refused')->count();
                 $arr['accepted'] = SalesEstimate::where('reference', $referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
@@ -208,11 +206,11 @@ class ReportExportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $products = Product::get();
-        $services = Service::get();
-        // dd($products);
+        $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
-            // $clients = SalesEstimate::where('reference', $referenceType)->get();
 
             $fileName = 'ITEMSSALESREPORT-'.time().$company_id.'.xlsx';
 
@@ -222,24 +220,28 @@ class ReportExportController extends Controller
             foreach($products as $product){
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
+                $arr['category'] = $product->product_category_name;
                 $arr['pending'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                 })->where('status','pending')->count();
                 $arr['accepted'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                 })->where('status','accepted')->count();
                 $arr['closed'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                 })->where('status','closed')->count();
                 $arr['refused'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                 })->where('status','refused')->count();
                 $arr['total'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                 })->count();
                 $arr['amount'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                 })->get()->sum('amount_with_out_vat');
+                $arr['units'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
+                })->count();
                 
 
                 $itemsSalesExports[] = $arr;
@@ -247,24 +249,28 @@ class ReportExportController extends Controller
             foreach($services as $service){
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['category'] = $service->product_category_name;
                 $arr['pending'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                 })->where('status','pending')->count();
                 $arr['accepted'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                 })->where('status','accepted')->count();
                 $arr['closed'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                 })->where('status','closed')->count();
                 $arr['refused'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                 })->where('status','refused')->count();
                 $arr['total'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                 })->count();
                 $arr['amount'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                 })->get()->sum('amount_with_out_vat');
+                $arr['units'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
+                })->count();
 
                 $itemsSalesExports[] = $arr;
             }
@@ -302,7 +308,9 @@ class ReportExportController extends Controller
         Reference::setGlobalTable($referenceTable);
 
         $fileName = 'INVOICECLIENTREPORT-'.time().$company_id.'.xlsx';
-            $clients = Client::get();
+
+        $client_ids = InvoiceTable::pluck('client_id')->toArray();
+        $clients = Client::whereIn('id',$client_ids)->get();
 
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
 
@@ -313,6 +321,7 @@ class ReportExportController extends Controller
                 $arr['name'] = $client->legal_name.'('.$client->name.')';
                 $arr['reference'] = $client->reference.''.$client->reference_number;
                 $arr['ruc'] = $client->tin;
+                $arr['category'] = $client->client_category_name;
                 $arr['invoiced'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount');
                 $arr['paid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_paid');
                 $arr['Unpaid'] = InvoiceTable::where('reference', $referenceType)->where('client_id',$client->id)->get()->sum('amount_due');
@@ -399,8 +408,11 @@ class ReportExportController extends Controller
         Reference::setGlobalTable($referenceTable);
 
         $fileName = 'INVOICEITEMSREPORT-'.time().$company_id.'.xlsx';
-        $products = Product::get();
-        $services = Service::get();
+        $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
+        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
         // dd($products);
             $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
 
@@ -410,9 +422,12 @@ class ReportExportController extends Controller
             foreach($products as $product){
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
-                $arr['units'] = '';
+                $arr['category'] = $product->product_category_name;
+                $arr['units'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
+                })->count();
                 $arr['amount'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                    $query->where('reference_id', $product->id)->where('type', $referenceType);
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                 })->get()->sum('amount_with_out_vat');
                 
 
@@ -421,9 +436,12 @@ class ReportExportController extends Controller
             foreach($services as $service){
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['units'] = '';
+                $arr['category'] = $product->product_category_name;
+                $arr['units'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
+                })->count();
                 $arr['amount'] = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                    $query->where('reference_id', $service->id)->where('type', $referenceType);
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                 })->get()->sum('amount_with_out_vat');
 
                 $invoiceItemsExports[] = $arr;
@@ -467,48 +485,35 @@ class ReportExportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-        
-            $invoiceDatas = InvoiceTable::with('payment_options')->get();
-            $purchaseDatas = PurchaseTable::with('payment_options')->get();
-            // dd($purchaseDatas);
+        if($request->type =='cash_Flow'){
 
-            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $fileName = 'CASHFLOWREPORT-'.time().$company_id.'.xlsx';
-            $arr = [];
-            $data = [];
+            $paymentOption = InvoiceTable::get();
+            $purchasePaymentOptions = PurchaseTable::where('reference','PINV')->get();
 
-            foreach($invoiceDatas as $invoiceData){
+            $arr = [];
+            $cashFlowExports = [];
+
+            foreach($paymentOption as $invoiceData){
                 $arr['date'] = $invoiceData->date;
                 $arr['type'] = $invoiceData->reference_type;
                 $arr['reference'] = $invoiceData->reference.''.$invoiceData->reference_number;
                 $arr['client'] = $invoiceData->client_name;
                 $arr['employee'] = \Auth::user()->name;
-                // $arr['payment_option'] = $invoiceData->payment_options->name;
-                $arr['amount'] = $invoiceData->amount_paid;
-                // $arr['amount'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
-                //     $q->where('type', $referenceType);
-                // })->where('paid','1')->sum('amount');
-                // $arr['paid'] = InvoiceReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
-                //     $q->where('type', $referenceType);
-                // })->where('paid','0')->sum('amount');
-
+                $arr['payment_option'] = $invoiceData->payment_option_name;
+                $arr['amount'] = $invoiceData->amount;
+                $arr['paid'] = $invoiceData->set_as_paid;
                 $cashFlowExports[] = $arr;
             }
-            foreach($purchaseDatas as $purchaseData){
+            foreach($purchasePaymentOptions as $purchaseData){
                 $arr['date'] = $purchaseData->date;
                 $arr['type'] = $purchaseData->reference_type;
                 $arr['reference'] = $purchaseData->reference.''.$purchaseData->reference_number;
-                $arr['client'] = $purchaseData->client_name;
+                $arr['supplier'] = $purchaseData->supplier_name;
                 $arr['employee'] = \Auth::user()->name;
-                // $arr['payment_option'] = $purchaseData->payment_options->name;
-                $arr['amount'] = $purchaseData->amount_paid;
-                // $arr['amount'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
-                //     $q->where('type', $referenceType);
-                // })->where('paid','1')->sum('amount');
-                // $arr['paid'] = PurchaseReceipt::whereHas('invoice', function($q) use ($request,$referenceType){
-                //     $q->where('type', $referenceType);
-                // })->where('paid','0')->sum('amount');
-
+                $arr['amount'] = $purchaseData->amount;
+                $arr['payment_option'] = $purchaseData->payment_option_name;
+                $arr['paid'] = $purchaseData->set_as_paid;
                 $cashFlowExports[] = $arr;
             }
             
@@ -518,6 +523,7 @@ class ReportExportController extends Controller
                 'status' => true,
                 'url' => url('/storage/xlsx/'.$fileName),
              ]);
+        }
 
 
     }
@@ -676,7 +682,6 @@ class ReportExportController extends Controller
                 $arr['accepted'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->where('status','accepted')->count();
                 $arr['closed'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->where('status','closed')->count();
                 $arr['total'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->count();
-                $arr['amount'] = TechnicalIncident::where('reference', $referenceType)->where('assigned_to',\Auth::id())->get()->sum('amount');
 
                 $incidentsAgentsExports[] = $arr;
             
@@ -716,7 +721,8 @@ class ReportExportController extends Controller
         Reference::setGlobalTable($referenceTable);
             $fileName = 'CLIENTTECHNICALSERVICEREPORT-'.time().$company_id.'.xlsx';
                     
-            $clients = Client::get();
+            $client_ids = TechnicalTable::pluck('client_id')->toArray();
+            $clients = Client::whereIn('id',$client_ids)->get();
 
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
@@ -726,6 +732,7 @@ class ReportExportController extends Controller
                 $arr['reference'] = $client->reference.''.$client->reference_number;
                 $arr['ruc'] = $client->tin;
                 $arr['name'] = $client->legal_name.' ('.$client->name.')';
+                $arr['category'] = $client->client_category_name;
                 $arr['pending'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','pending')->count();
                 $arr['refused'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','refused')->count();
                 $arr['accepted'] = TechnicalTable::where('reference', $referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
@@ -824,8 +831,10 @@ class ReportExportController extends Controller
 
         $fileName = 'CATALOGTECHNICALSERVICEREPORT-'.time().$company_id.'.xlsx';
         
-            $products = Product::get();
-            $services = Service::get();
+        $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
             // dd($products);
                 $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
                
@@ -836,25 +845,25 @@ class ReportExportController extends Controller
                     $arr['name'] = $product->name;
                     $arr['reference'] = $product->reference.''.$product->reference_number;
                     $arr['pending'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->where('status','pending')->count();
                     $arr['accepted'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                        $query->where('reference_id', $product->id->whereIn('reference',['PRO']))->where('type', $referenceType);
                     })->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->where('status','refused')->count();
                     $arr['total'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->count();
                     $arr['units'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->count();;
                     $arr['amount'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($product,$referenceType) {
-                        $query->where('reference_id', $product->id)->where('type', $referenceType);
+                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO'])->where('type', $referenceType);
                     })->get()->sum('amount_with_out_vat');
                     
     
@@ -864,25 +873,25 @@ class ReportExportController extends Controller
                     $arr['name'] = $service->name;
                     $arr['reference'] = $service->reference.''.$service->reference_number;
                     $arr['pending'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                     })->where('status','pending')->count();
                     $arr['accepted'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                     })->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                     })->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                     })->where('status','refused')->count();
                     $arr['total'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                     })->count();
                     $arr['units'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                     })->count();;
                     $arr['amount'] = TechnicalTable::with(['items'])->WhereHas('items', function ($query) use ($service,$referenceType) {
-                        $query->where('reference_id', $service->id)->where('type', $referenceType);
+                        $query->where('reference_id', $service->id)->whereIn('reference',['SER'])->where('type', $referenceType);
                     })->get()->sum('amount_with_out_vat');
     
                     $incidentByItemExports[] = $arr;

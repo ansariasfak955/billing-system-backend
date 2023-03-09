@@ -47,8 +47,9 @@
             <td>{{$itemsSalesExport['accepted']}}</td>
             <td>{{$itemsSalesExport['closed']}}</td>
             <td>{{$itemsSalesExport['total']}}</td>
-            <td></td>
+            <td>{{$itemsSalesExport['units']}}</td>
             <td>{{$itemsSalesExport['amount']}}</td>
+            <td>{{$itemsSalesExport['category']}}</td>
         </tr>
         @endforeach
     </tbody>

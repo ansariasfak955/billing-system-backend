@@ -40,7 +40,7 @@
             <td>{{$invoiceClientsExport['reference']}}</td>
             <td>{{$invoiceClientsExport['ruc']}}</td>
             <td>{{$invoiceClientsExport['name']}}</td>
-            <td></td>
+            <td>{{$invoiceClientsExport['category']}}</td>
             <td>{{$invoiceClientsExport['invoiced']}}</td>
             <td>{{$invoiceClientsExport['paid']}}</td>
             <td>{{$invoiceClientsExport['Unpaid']}}</td>

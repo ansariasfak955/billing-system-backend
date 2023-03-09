@@ -33,7 +33,8 @@
         <tr>
             <td>{{$invoiceItemsExport['reference']}}</td>
             <td>{{$invoiceItemsExport['name']}}</td>
-            <td></td>
+            <td>{{$invoiceItemsExport['category']}}</td>
+            <td>{{$invoiceItemsExport['units']}}</td>
             <td>{{$invoiceItemsExport['amount']}}</td>
         </tr>
         @endforeach

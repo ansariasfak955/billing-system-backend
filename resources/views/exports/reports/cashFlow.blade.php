@@ -48,9 +48,18 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($cashFlowExports as $cashFlowExport)
         <tr>
+            <td>{{$cashFlowExport['date']}}</td>
+            <td>{{$cashFlowExport['type']}}</td>
+            <td>{{$cashFlowExport['reference']}}</td>
+            <td>{{$cashFlowExport['client']}}</td>
+            <td>{{$cashFlowExport['employee']}}</td>
+            <td>{{$cashFlowExport['payment_option']}}</td>
+            <td>{{$cashFlowExport['amount']}}</td>
             <td></td>
-            <td></td>
+            <td>{{($cashFlowExport['paid']) ? 'yes' : 'no'}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

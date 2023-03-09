@@ -30,7 +30,6 @@
             <td>{{$incidentsAgentsExport['accepted']}}</td>
             <td>{{$incidentsAgentsExport['closed']}}</td>
             <td>{{$incidentsAgentsExport['total']}}</td>
-            <td>{{$incidentsAgentsExport['amount']}}</td>
         </tr>
         @endforeach
     </tbody>

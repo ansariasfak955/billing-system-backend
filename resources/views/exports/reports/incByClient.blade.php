@@ -47,7 +47,7 @@
             <td>{{$incidentByClientExport['reference']}}</td>
             <td>{{$incidentByClientExport['ruc']}}</td>
             <td>{{$incidentByClientExport['name']}}</td>
-            <td></td>
+            <td>{{$incidentByClientExport['category']}}</td>
             <td>{{$incidentByClientExport['pending']}}</td>
             <td>{{$incidentByClientExport['refused']}}</td>
             <td>{{$incidentByClientExport['accepted']}}</td>

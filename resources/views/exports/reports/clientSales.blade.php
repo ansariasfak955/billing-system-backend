@@ -44,10 +44,10 @@
     <tbody>
         @foreach($clientSalesExports as $clientSalesExport)
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{$clientSalesExport['reference']}}</td>
+            <td>{{$clientSalesExport['tin']}}</td>
             <td>{{$clientSalesExport['name']}}</td>
-            <td></td>
+            <td>{{$clientSalesExport['category']}}</td>
             <td>{{$clientSalesExport['pending']}}</td>
             <td>{{$clientSalesExport['refused']}}</td>
             <td>{{$clientSalesExport['accepted']}}</td>
