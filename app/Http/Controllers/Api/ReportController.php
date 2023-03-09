@@ -2444,8 +2444,9 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $itemProductIds = Item::with('supplier')->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-        $itemServiceIds = Item::with('supplier')->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
+        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
         $products = Product::whereIn('id',$itemProductIds)->get();
         $services = Service::whereIn('id',$itemServiceIds)->get();
            
@@ -2507,7 +2508,7 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-        
+
         $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
         $supplier_ids = PurchaseTable::with('supplier')->whereIn('reference',$referenceType)->pluck('supplier_id')->toArray();
         $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
@@ -2680,9 +2681,9 @@ class ReportController extends Controller
         Reference::setGlobalTable($referenceTable);
         
         $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
-        $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-        $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
+        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        $expenseInvestmentIds = Item::whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
         $products = Product::whereIn('id',$itemProductIds)->get();
         $services = Service::whereIn('id',$itemServiceIds)->get();
         $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
