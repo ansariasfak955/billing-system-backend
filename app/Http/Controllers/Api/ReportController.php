@@ -1282,8 +1282,9 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         if($request->type == 'incident_by_item'){
-            $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-            $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
             $products = Product::whereIn('id',$itemProductIds)->get();
             $services = Service::whereIn('id',$itemServiceIds)->get();
 
@@ -1319,8 +1320,9 @@ class ReportController extends Controller
             ]);
         }elseif($request->type == 'by_item_history'){
 
-            $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-            $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
             $products = Product::whereIn('id',$itemProductIds)->get();
             $services = Service::whereIn('id',$itemServiceIds)->get();
                
