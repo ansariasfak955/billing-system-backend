@@ -187,7 +187,7 @@ class InvoiceReceiptController extends Controller
         // }
         $amount = $invoiceReceipt->amount;
         // $invoiceReceipt->amount = $amount-$amountToSub;
-        $invoiceReceipt->amount = $amount-($request->amount ?? 0);
+        $invoiceReceipt->amount = $amount-($request->amount);
         if($request->paid){
             // $invoiceReceipt->paid = '1';
             $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
