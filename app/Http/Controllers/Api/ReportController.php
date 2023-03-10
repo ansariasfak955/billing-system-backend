@@ -2820,7 +2820,6 @@ class ReportController extends Controller
          $data['tax_Summary'] = [];
          foreach($taxes as $tax){
                 $data['tax_Summary'][] = [
-                    [
                         "type" => "bar", 
                         "label" => "Collected", 
                         "backgroundColor" => "#26C184", 
@@ -2828,30 +2827,27 @@ class ReportController extends Controller
                             InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
                                 $query->where('vat', $tax->tax);
                             })->get()->sum('tax_amount'),
-                        ] 
-                    ], 
-                    [
-                        "type" => "bar", 
-                        "label" => "Paid", 
-                        "backgroundColor" => "#FB6363", 
-                        "data" => [
-                            PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                                $query->where('vat', $tax->tax);
-                            })->get()->sum('tax_amount'),
-                        ] 
-                    ], 
-                    [
-                        "type" => "bar", 
-                        "label" => "Total", 
-                        "backgroundColor" => "#FE9140", 
-                        "data" => [
-                            InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                                $query->where('vat', $tax->tax);
-                            })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                                $query->where('vat', $tax->tax);
-                            })->get()->sum('tax_amount'),
-                        ] 
-                    ] 
+                        ]  
+                ];
+                $data['tax_Summary'][] = [
+                    "type" => "bar", 
+                    "label" => "Paid", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                            $query->where('vat', $tax->tax);
+                        })->get()->sum('tax_amount'),
+                    ]  
+                ];
+                $data['tax_Summary'][] = [
+                    "type" => "bar", 
+                    "label" => "Total", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                            $query->where('vat', $tax->tax);
+                        })->get()->sum('tax_amount'),
+                    ]  
                 ];
             }
         }elseif($request->type == 'taxes'){
