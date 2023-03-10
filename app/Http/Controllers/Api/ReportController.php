@@ -2865,6 +2865,25 @@ class ReportController extends Controller
                 $data[] = $arr;
             }
 
+        }elseif($request->type == 'vat'){
+            $taxes = 'company_'.$request->company_id.'_consumption_taxes';
+            ConsumptionTax::setGlobalTable($taxes);
+
+            $taxes = ConsumptionTax::get();
+
+            $arr = [];
+            $data = [];
+
+            foreach($taxes as $key => $tax){
+                $arr['vat'] = $tax->tax;
+                $arr['Collected'] = '';
+                $arr['Paid'] = '';
+                $arr['Total'] = '';
+                $arr['Subtotal'] = '';
+                $arr['Tax'] = '';
+
+                $data[] = $arr;
+            }
         }
         
         return response()->json([
