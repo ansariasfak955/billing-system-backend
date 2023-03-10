@@ -2876,11 +2876,11 @@ class ReportController extends Controller
 
             foreach($taxes as $key => $tax){
                 $arr['vat'] = $tax->tax;
-                $arr['Collected'] = '';
-                $arr['Paid'] = '';
-                $arr['Total'] = '';
-                $arr['Subtotal'] = '';
-                $arr['Tax'] = '';
+                $arr['Collected'] = 'Collected';
+                $arr['Paid'] = 'Paid';
+                $arr['Total'] = 'Total';
+                $arr['Subtotal'] = 'Subtotal';
+                $arr['Tax'] = 'Tax';
 
                 $data[] = $arr;
             }
