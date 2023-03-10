@@ -115,7 +115,8 @@ class InvoiceTable extends Model
       }
       public function getTaxAmountAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('taxAmount');
+          $taxAmount =  $this->items->sum('taxAmount') ?? 0;
+          return sprintf("%.2f",$taxAmount);
         }
       }
 	public function getAmountDueAttribute(){

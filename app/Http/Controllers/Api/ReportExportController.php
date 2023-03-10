@@ -49,6 +49,7 @@ use App\Exports\ReportExport\InvoiceByAgentEvoluationExport;
 use App\Exports\ReportExport\InvoiceByItemEvoluationExport;
 use App\Exports\ReportExport\PurchaseByProviderExport;
 use App\Exports\ReportExport\PurchasesByItemExport;
+use App\Exports\ReportExport\TaxSummaryExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -1531,5 +1532,91 @@ class ReportExportController extends Controller
                     'url' => url('/storage/xlsx/'.$fileName),
                  ]);
         }
+    }
+    public function taxSummary(Request $request,$company_id){
+        if($request->type == 'tax'){
+
+            $clientsTables = 'company_'.$request->company_id.'_clients';
+            Client::setGlobalTable($clientsTables);
+    
+            $table = 'company_'.$request->company_id.'_services';
+            Service::setGlobalTable($table);
+    
+            $table = 'company_'.$request->company_id.'_products';
+            Product::setGlobalTable($table);
+
+            $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+            PurchaseTable::setGlobalTable($purchaseTables);     
+    
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
+    
+            $table = 'company_'.$request->company_id.'_invoice_receipts';
+            InvoiceReceipt::setGlobalTable($table);
+    
+            $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+            InvoiceTable::setGlobalTable($invoiceTable);
+    
+            $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+            ItemMeta::setGlobalTable($item_meta_table);
+
+            $taxes = 'company_'.$request->company_id.'_consumption_taxes';
+            ConsumptionTax::setGlobalTable($taxes);
+    
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
+
+            $fileName = 'TAXREPORT-'.time().$company_id.'.xlsx';
+
+            $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice','Purchase Invoice'])->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
+            $taxes = ConsumptionTax::whereIn('tax',$itemProductIds)->get();
+            // return $taxes;
+
+            $arr = [];
+            $data = [];
+            foreach($taxes as $tax){
+
+                $arr['vat'] = $tax->primary_name.' '.$tax->tax.' '.'%';
+                $arr['Collected'] = 'Collected';
+                $arr['Paid'] = 'Paid';
+                $arr['Total'] = 'Total';
+                $arr['Subtotal'] = 'Subtotal';
+                $arr['Tax'] = 'Tax';
+                $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount');
+                $arr['ctax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount');
+                $arr['paid'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount');
+                $arr['ptax'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount');
+                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount');
+                $arr['ttax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount');
+
+                $taxes[] = $arr;
+            }
+            Excel::store(new TaxSummaryExport($taxes), 'public/xlsx/'.$fileName);
+
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+
+        }
+
     }
 }

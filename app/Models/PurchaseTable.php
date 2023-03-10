@@ -68,7 +68,8 @@ class PurchaseTable extends Model
     }
     public function getAmountWithOutVatAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('amount_with_out_vat');
+          $amount = $this->items->sum('amount_with_out_vat') ?? 0;
+          return sprintf("%.2f",$amount);
         }
       }
       public function getAmountPaidAttribute(){
@@ -104,7 +105,8 @@ class PurchaseTable extends Model
     }
       public function getTaxAmountAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('taxAmount');
+          $taxAmount =  $this->items->sum('taxAmount') ?? 0;
+          return sprintf("%.2f",$taxAmount);
         }
       }
       public function getTotalQuantityAttribute(){
