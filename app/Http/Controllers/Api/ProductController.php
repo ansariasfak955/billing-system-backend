@@ -235,6 +235,11 @@ class ProductController extends Controller
         $product->manage_stock = $request->manage_stock??$product->manage_stock;
         $product->save();
 
+        $productRate = 'company_'.$request->company_id.'_product_rates';
+        ProductRate::setGlobalTable($productRate);
+
+        $product_rate = ProductRate::where('product_id',$product->id)->update(['purchase_price'=>$product->purchase_price]);
+
         return response()->json([
             "status" => true,
             "product" => $product,
