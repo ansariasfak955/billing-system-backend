@@ -2839,6 +2839,12 @@ class ReportController extends Controller
             $data = [];
             foreach($taxes as $tax){
 
+                $arr['vat'] = $tax->tax;
+                $arr['Collected'] = 'Collected';
+                $arr['Paid'] = 'Paid';
+                $arr['Total'] = 'Total';
+                $arr['Subtotal'] = 'Subtotal';
+                $arr['Tax'] = 'Tax';
                 $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
                     $query->where('vat', $tax->tax);
                 })->get()->sum('amount');
@@ -2865,26 +2871,27 @@ class ReportController extends Controller
                 $data[] = $arr;
             }
 
-        }elseif($request->type == 'vat'){
-            $taxes = 'company_'.$request->company_id.'_consumption_taxes';
-            ConsumptionTax::setGlobalTable($taxes);
-
-            $taxes = ConsumptionTax::get();
-
-            $arr = [];
-            $data = [];
-
-            foreach($taxes as $key => $tax){
-                $arr['vat'] = $tax->tax;
-                $arr['Collected'] = 'Collected';
-                $arr['Paid'] = 'Paid';
-                $arr['Total'] = 'Total';
-                $arr['Subtotal'] = 'Subtotal';
-                $arr['Tax'] = 'Tax';
-
-                $data[] = $arr;
-            }
         }
+        // elseif($request->type == 'vat'){
+        //     $taxes = 'company_'.$request->company_id.'_consumption_taxes';
+        //     ConsumptionTax::setGlobalTable($taxes);
+
+        //     $taxes = ConsumptionTax::get();
+
+        //     $arr = [];
+        //     $data = [];
+
+        //     foreach($taxes as $key => $tax){
+        //         $arr['vat'] = $tax->tax;
+        //         $arr['Collected'] = 'Collected';
+        //         $arr['Paid'] = 'Paid';
+        //         $arr['Total'] = 'Total';
+        //         $arr['Subtotal'] = 'Subtotal';
+        //         $arr['Tax'] = 'Tax';
+
+        //         $data[] = $arr;
+        //     }
+        // }
         
         return response()->json([
             "status" => true,
