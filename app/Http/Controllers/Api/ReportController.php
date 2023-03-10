@@ -2885,7 +2885,7 @@ class ReportController extends Controller
             $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice','Purchase Invoice'])->pluck('prefix')->toArray();
             $itemProductIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
             $itemServiceIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
-            $taxes = ConsumptionTax::whereIn('tax',$itemProductIds)->get();
+            $taxes = ConsumptionTax::get();
             // return $taxes;
 
             $arr = [];
