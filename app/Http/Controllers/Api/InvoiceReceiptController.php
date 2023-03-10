@@ -171,6 +171,8 @@ class InvoiceReceiptController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
         $invoiceReceipt = InvoiceReceipt::where('id', $request->invoice_receipt)->first();
+        $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
+
         // $invoice->update($request->except('company_id', '_method'));
 
 
@@ -185,22 +187,59 @@ class InvoiceReceiptController extends Controller
         //     $amountToSub = $request->amount;
         //     $status = 'partially paid';
         // }
+        $fullAmount = 0;
+        $CreateRec = 1;
+        $paid = '0';
+        $amountToCut = $request->amount ?? 0;
+        if(round($request->amount,2) == round($invoice->amount_due, 2)){
+            if($request->paid){
+
+                $CreateRec = 0;
+                $paid = '1';
+            }
+
+            $amountToCut = 0;
+            $fullAmount =  1;
+        }
+        if( (!$invoice->amount_due || $invoice->amount_due == 0.00) && $request->amount){
+            return response()->json([
+                "status" => false,
+                "message" => 'All pending amount is already  been paid!'
+            ]);
+        }
+        if($fullAmount){
+            $status =  'paid';
+        }else{
+            $status =  'partially paid';
+        }
+        // return [$CreateRec, $amountToCut, $status];
         $amount = $invoiceReceipt->amount;
         // $invoiceReceipt->amount = $amount-$amountToSub;
-        $invoiceReceipt->amount = $amount-($request->amount ?? 0);
+        if( round($amount,2) - round($request->amount, 2) != 0.00){
+
+            $invoiceReceipt->amount = $amount-$amountToCut;
+        }else{
+            $CreateRec = 0;
+            $fullAmount = 1;
+        }
         if($request->paid){
-            // $invoiceReceipt->paid = '1';
-            $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
+            if($fullAmount){
+
+                $invoiceReceipt->paid = '1';
+            }
             if($invoice){
 
-                $invoice->status =  'partially paid';
+                $invoice->status =  $status;
                 $invoice->save();
             }
         }
-        
-        $invoiceReceipt->save();
-        $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
-        if($invoice->amount_due){
+        $invoiceReceipt->save(); 
+        $receipt =null;
+        $paidRec = '0';
+        if($request->paid){
+            $paidRec = '1';
+        }
+        if($CreateRec){
             $receipt = InvoiceReceipt::create([
                 'invoice_id' => $invoiceReceipt->invoice_id,
                 'concept' => $request->concept,
@@ -209,18 +248,14 @@ class InvoiceReceiptController extends Controller
                 'payment_date' => $request->payment_date,
                 'amount' => $request->amount,
                 'expiration_date' => $request->expiration_date,
-                'paid' =>$request->paid ?? 0,
+                'paid' => $paidRec,
                 'paid_by' => $request->paid_by
             ]);
-        }else{
-            $receipt = $invoiceReceipt;
-            $invoice->status =  'paid';
-            $invoice->save();
         }
-
+        $id =  ($receipt ? $receipt->id : $invoiceReceipt->id);
         return response()->json([
             "status" => true,
-            "data" => InvoiceReceipt::with('invoice')->find($receipt->id)
+            "data" => InvoiceReceipt::with('invoice')->find($id)
         ]);
     }
 
