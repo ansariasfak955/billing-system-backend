@@ -2751,20 +2751,35 @@ class ReportController extends Controller
 
     }
     public function taxSummary(Request $request){
-        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
-        PurchaseTable::setGlobalTable($purchaseTables); 
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
 
-        $supplierTables = 'company_'.$request->company_idInciden.'_suppliers';
-        Supplier::setGlobalTable($supplierTables); 
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables);     
 
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
-        $taxes = 'company_'.$request->company_id.'_consumption_taxes';
-        ConsumptionTax::setGlobalTable($taxes);
+        $table = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+
+        $taxes = 'company_'.$request->company_id.'_consumption_taxes';
+        ConsumptionTax::setGlobalTable($taxes);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
 
         $data = [];
         
@@ -2830,8 +2845,6 @@ class ReportController extends Controller
             $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice','Purchase Invoice'])->pluck('prefix')->toArray();
             $itemProductIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
             $itemServiceIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
-            // $products = Product::whereIn('id',$itemProductIds)->get();
-            // $services = Service::whereIn('id',$itemServiceIds)->get();
             $taxes = ConsumptionTax::whereIn('tax',$itemProductIds)->get();
             // return $taxes;
 
@@ -2839,7 +2852,7 @@ class ReportController extends Controller
             $data = [];
             foreach($taxes as $tax){
 
-                $arr['vat'] = $tax->tax;
+                $arr['vat'] = $tax->primary_name.' '.$tax->tax.' '.'%';
                 $arr['Collected'] = 'Collected';
                 $arr['Paid'] = 'Paid';
                 $arr['Total'] = 'Total';
