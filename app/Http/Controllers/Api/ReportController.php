@@ -2784,32 +2784,76 @@ class ReportController extends Controller
         $data = [];
         
         if($request->type == 'taxSummary'){
-            $data = [
-                "tax_Summary" => [
-                    [
-                        "type" => "bar", 
-                        "label" => "Collected", 
-                        "backgroundColor" => "#26C184", 
-                        "data" => [
-                        "$3847" 
-                        ] 
-                    ], 
-                    [
-                            "type" => "bar", 
-                            "label" => "Paid", 
-                            "backgroundColor" => "#FB6363", 
-                            "data" => ["$88"] 
-                        ], 
-                    [
-                        "type" => "bar", 
-                        "label" => "Total", 
-                        "backgroundColor" => "#FE9140", 
-                        "data" => [
-                        "$756" 
-                        ] 
+
+            // $data = [
+            //     "tax_Summary" => [
+            //         [
+            //             "type" => "bar", 
+            //             "label" => "Collected", 
+            //             "backgroundColor" => "#26C184", 
+            //             "data" => [
+            //             "$3847" 
+            //             ] 
+            //         ], 
+            //         [
+            //                 "type" => "bar", 
+            //                 "label" => "Paid", 
+            //                 "backgroundColor" => "#FB6363", 
+            //                 "data" => ["$88"] 
+            //             ], 
+            //         [
+            //             "type" => "bar", 
+            //             "label" => "Total", 
+            //             "backgroundColor" => "#FE9140", 
+            //             "data" => [
+            //             "$756" 
+            //             ] 
+            //         ] 
+            //     ]
+            // ];
+            $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice','Purchase Invoice'])->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
+            $taxes = ConsumptionTax::whereIn('tax',$itemProductIds)->get();
+
+         $data = [];
+         $data['tax_Summary'] = [];
+         foreach($taxes as $tax){
+             $data['tax_Summary'][] = [
+                [
+                    "type" => "bar", 
+                    "label" => "Collected", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                            $query->where('vat', $tax->tax);
+                        })->get()->sum('tax_amount'),
                     ] 
-                ]
+                ], 
+                [
+                    "type" => "bar", 
+                    "label" => "Paid", 
+                    "backgroundColor" => "#FB6363", 
+                    "data" => [
+                        PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                            $query->where('vat', $tax->tax);
+                        })->get()->sum('tax_amount'),
+                        ] 
+                ], 
+                [
+                    "type" => "bar", 
+                    "label" => "Total", 
+                    "backgroundColor" => "#FE9140", 
+                    "data" => [
+                        InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                            $query->where('vat', $tax->tax);
+                        })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                            $query->where('vat', $tax->tax);
+                        })->get()->sum('tax_amount'),
+                        ] 
+                ] 
             ];
+         }
         }elseif($request->type == 'taxes'){
             $clientsTables = 'company_'.$request->company_id.'_clients';
             Client::setGlobalTable($clientsTables);
@@ -2844,7 +2888,7 @@ class ReportController extends Controller
 
             $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice','Purchase Invoice'])->pluck('prefix')->toArray();
             $itemProductIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
-            $itemServiceIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
             $taxes = ConsumptionTax::whereIn('tax',$itemProductIds)->get();
             // return $taxes;
 
