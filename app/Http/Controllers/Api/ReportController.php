@@ -2804,6 +2804,9 @@ class ReportController extends Controller
     
             $table = 'company_'.$request->company_id.'_products';
             Product::setGlobalTable($table);
+
+            $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+            PurchaseTable::setGlobalTable($purchaseTables);     
     
             $itemTable = 'company_'.$request->company_id.'_items';
             Item::setGlobalTable($itemTable);
@@ -2824,31 +2827,39 @@ class ReportController extends Controller
             Reference::setGlobalTable($referenceTable);
 
 
-            $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
-            $itemProductIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
+            $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice','Purchase Invoice'])->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
             $itemServiceIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
             // $products = Product::whereIn('id',$itemProductIds)->get();
             // $services = Service::whereIn('id',$itemServiceIds)->get();
-            $taxes = ConsumptionTax::whereIn('id',$itemProductIds)->get();
-            dd($taxes);
+            $taxes = ConsumptionTax::whereIn('tax',$itemProductIds)->get();
+            // return $taxes;
 
             $arr = [];
             $data = [];
+            foreach($taxes as $tax){
 
-            // foreach($taxes as $key => $consumptionTax){
-            //     $arr['tax'] = $consumptionTax->tax;
+                $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount');
+                $arr['ctax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount');
+                $arr['paid'] =PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount');
+                $arr['ptax'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount');
+                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount');
+                $arr['ttax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount');
 
-            //     $data[] = $arr;
-                
-            // }
-            // foreach($products as $tax){
-
-            //     $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-            //         $query->where('reference_id', $tax->id)->whereIn('reference',['PRO']);
-            //     })->get()->sum('amount_with_out_vat');
-
-            //     $data[] = $arr;
-            // }
+                $data[] = $arr;
+            }
 
         }
         
