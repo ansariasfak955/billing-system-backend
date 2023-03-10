@@ -241,7 +241,7 @@ class ProductController extends Controller
         $allRates = Rate::get();
         
         foreach($allRates as $rate){
-            $product_rate = ProductRate::create(['name' =>  $rate->name, 'description' => $rate->description, 'product_id' => $product->id]);
+            $product_rate = ProductRate::update(['name' =>  $rate->name, 'description' => $rate->description, 'product_id' => $product->id]);
             $product_rate->purchase_price = $product->purchase_price;
             $product_rate->sales_price = $product->price;
             $product_rate->discount = $product->discount;
