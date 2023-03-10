@@ -56,7 +56,7 @@ class ReportController extends Controller
                     "label" => "Sales", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "$". Item::where('type', 'inv')->sum('subtotal')
+                         Item::where('type', 'inv')->sum('subtotal')
                     ] 
                 ], 
                 [
@@ -64,7 +64,7 @@ class ReportController extends Controller
                         "label" => "Expenses", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$". InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                             InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
                         ]  
                 ], 
                 [
@@ -72,7 +72,7 @@ class ReportController extends Controller
                     "label" => "Profit", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                        "$". Item::where('type', 'inv')->sum('subtotal') - InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                         Item::where('type', 'inv')->sum('subtotal') - InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
                     ] 
                 ] 
             ], 
@@ -82,7 +82,7 @@ class ReportController extends Controller
                     "label" => "Invoiced", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "$". InvoiceReceipt::where('type', 'inv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
+                         InvoiceReceipt::where('type', 'inv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
                     ] 
                 ], 
                 [
@@ -90,7 +90,7 @@ class ReportController extends Controller
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
                     "data" => [
-                        "$ ". InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                         InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
                     ]  
                 ], 
                 [
@@ -98,7 +98,7 @@ class ReportController extends Controller
                     "label" => "Unpaid", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                        "$ ". InvoiceReceipt::where('type', 'inv')->where('paid', '0')->sum('amount')
+                         InvoiceReceipt::where('type', 'inv')->where('paid', '0')->sum('amount')
                     ] 
                 ] 
             ], 
@@ -108,7 +108,7 @@ class ReportController extends Controller
                     "label" => "Invoiced", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "$ ". PurchaseReceipt::where('type', 'pinv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
+                         PurchaseReceipt::where('type', 'pinv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
                     ] 
                 ], 
                 [
@@ -116,7 +116,7 @@ class ReportController extends Controller
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
                     "data" => [
-                        "$ ". PurchaseReceipt::where('type', 'pinv')->where('paid', '1')->sum('amount')
+                         PurchaseReceipt::where('type', 'pinv')->where('paid', '1')->sum('amount')
                     ] 
                 ], 
                 [
@@ -124,7 +124,7 @@ class ReportController extends Controller
                     "label" => "Unpaid", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                        "$ ". PurchaseReceipt::where('type', 'pinv')->where('paid', '0')->sum('amount')
+                         PurchaseReceipt::where('type', 'pinv')->where('paid', '0')->sum('amount')
                     ] 
                 ] 
             ],
@@ -438,7 +438,7 @@ class ReportController extends Controller
                         "label" => "Pending(". SalesEstimate::where('reference', 'se')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                        " " . SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'pending')->count(),
+                         SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'pending')->count(),
                         ] 
                     ], 
                     [
@@ -446,7 +446,7 @@ class ReportController extends Controller
                             "label" => "Refused(". SalesEstimate::where('reference', 'se')->where('status', 'refused')->count().")", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                " " . SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'refused')->count(),
+                                 SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'refused')->count(),
                                 ] 
                         ], 
                     [
@@ -454,7 +454,7 @@ class ReportController extends Controller
                         "label" => "Accepted(". SalesEstimate::where('reference', 'se')->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            " " . SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'accepted')->count(), 
+                             SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'accepted')->count(), 
                         ] 
                     ],
                     [
@@ -462,7 +462,7 @@ class ReportController extends Controller
                         "label" => "Closed(". SalesEstimate::where('reference', 'se')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "" . SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'closed')->count(),
+                            SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'closed')->count(),
                         ] 
                     ],
             ], 
@@ -472,7 +472,7 @@ class ReportController extends Controller
                         "label" => "Pending (". SalesEstimate::where('reference', 'so')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            " ".SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'pending')->count(),
+                            SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'pending')->count(),
                         ] 
                     ], 
                     [
@@ -480,7 +480,7 @@ class ReportController extends Controller
                         "label" => "Refused (". SalesEstimate::where('reference', 'so')->where('status', 'refused')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            " ". SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'refused')->count(),
+                             SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'refused')->count(),
                         ]  
                     ], 
                     [
@@ -488,7 +488,7 @@ class ReportController extends Controller
                         "label" => "In Progress (". SalesEstimate::where('reference', 'so')->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            " ". SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'in progress')->count(),
+                             SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'in progress')->count(),
                         ] 
                     ],
                     [
@@ -496,7 +496,7 @@ class ReportController extends Controller
                         "label" => "Closed (". SalesEstimate::where('reference', 'so')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            " ". SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'closed')->count(),
+                             SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'closed')->count(),
                         ] 
                     ],
                          
@@ -507,7 +507,7 @@ class ReportController extends Controller
                         "label" => "Pending Invoice (". SalesEstimate::where('reference', 'sdn')->where('status', 'pending invoice')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            " ". SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'pending invoice')->count(),
+                             SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'pending invoice')->count(),
                         ] 
                     ], 
                     [
@@ -515,7 +515,7 @@ class ReportController extends Controller
                         "label" => "In Progress (". SalesEstimate::where('reference', 'sdn')->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            " ". SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'in progress')->count(),
+                             SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'in progress')->count(),
                         ] 
                     ], 
                     [
@@ -523,7 +523,7 @@ class ReportController extends Controller
                         "label" => "Closed (". SalesEstimate::where('reference', 'sdn')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            " ". SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'closed')->count(),
+                             SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'closed')->count(),
                         ] 
                         ],
                     [
@@ -531,7 +531,7 @@ class ReportController extends Controller
                         "label" => "Invoiced (". SalesEstimate::where('reference', 'sdn')->where('status', 'invoiced')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            " ". SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'invoiced')->count(),
+                             SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'invoiced')->count(),
                         ] 
                     ]  
                 ]
@@ -2796,40 +2796,40 @@ class ReportController extends Controller
                 ]
             ];
         }elseif($request->type == 'taxes'){
-            // $clientsTables = 'company_'.$request->company_id.'_clients';
-            // Client::setGlobalTable($clientsTables);
+            $clientsTables = 'company_'.$request->company_id.'_clients';
+            Client::setGlobalTable($clientsTables);
     
-            // $table = 'company_'.$request->company_id.'_services';
-            // Service::setGlobalTable($table);
+            $table = 'company_'.$request->company_id.'_services';
+            Service::setGlobalTable($table);
     
-            // $table = 'company_'.$request->company_id.'_products';
-            // Product::setGlobalTable($table);
+            $table = 'company_'.$request->company_id.'_products';
+            Product::setGlobalTable($table);
     
-            // $itemTable = 'company_'.$request->company_id.'_items';
-            // Item::setGlobalTable($itemTable);
+            $itemTable = 'company_'.$request->company_id.'_items';
+            Item::setGlobalTable($itemTable);
     
-            // $table = 'company_'.$request->company_id.'_invoice_receipts';
-            // InvoiceReceipt::setGlobalTable($table);
+            $table = 'company_'.$request->company_id.'_invoice_receipts';
+            InvoiceReceipt::setGlobalTable($table);
     
-            // $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-            // InvoiceTable::setGlobalTable($invoiceTable);
+            $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+            InvoiceTable::setGlobalTable($invoiceTable);
     
-            // $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-            // ItemMeta::setGlobalTable($item_meta_table);
+            $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+            ItemMeta::setGlobalTable($item_meta_table);
     
-            // $referenceTable = 'company_'.$request->company_id.'_references';
-            // Reference::setGlobalTable($referenceTable);
+            $referenceTable = 'company_'.$request->company_id.'_references';
+            Reference::setGlobalTable($referenceTable);
 
 
-            // $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
-            // $itemProductIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
-            // $itemServiceIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
-            // $products = Product::whereIn('id',$itemProductIds)->get();
-            // $services = Service::whereIn('id',$itemServiceIds)->get();
-            // $taxes = ConsumptionTax::get();
+            $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
+            $taxes = ConsumptionTax::get();
 
-            // $arr = [];
-            // $data = [];
+            $arr = [];
+            $data = [];
 
             // foreach($taxes as $key => $consumptionTax){
             //     $arr['tax'] = $consumptionTax->tax;
@@ -2837,6 +2837,14 @@ class ReportController extends Controller
             //     $data[] = $arr;
                 
             // }
+            foreach($products as $product){
+
+                $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('vat', $product->id)->whereIn('reference',['PRO']);
+                })->get()->sum('amount_with_out_vat');
+
+                $data[] = $arr;
+            }
 
         }
         
