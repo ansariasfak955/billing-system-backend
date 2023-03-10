@@ -37,4 +37,7 @@ class ServiceFilter extends ModelFilter
     public function price($price){
         return $this->where('price', 'LIKE', '%'.$price.'%');
     }
+    public function ser($ser){
+        return $this->where('id', 'LIKE', '%'.$ser.'%');
+    }
 }

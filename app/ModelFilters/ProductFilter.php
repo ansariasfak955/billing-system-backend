@@ -37,4 +37,7 @@ class ProductFilter extends ModelFilter
     public function price($price){
         return $this->where('price', 'LIKE', '%'.$price.'%');
     }
+    public function pro($pro){
+        return $this->where('id', 'LIKE', '%'.$pro.'%');
+    }
 }

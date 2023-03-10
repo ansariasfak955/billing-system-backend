@@ -212,8 +212,8 @@ class ReportController extends Controller
             $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
             $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
             $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-            $products = Product::whereIn('id',$itemProductIds)->get();
-            $services = Service::whereIn('id',$itemServiceIds)->get();
+            $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+            $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
 
             $data = [];
             $data['invoice_items'] = [];
@@ -361,8 +361,8 @@ class ReportController extends Controller
         $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
         $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
         $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $products = Product::whereIn('id',$itemProductIds)->get();
-        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
         // dd($products);
            
             $arr = [];
@@ -579,8 +579,8 @@ class ReportController extends Controller
             // $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
             $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
             $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-            $products = Product::whereIn('id',$itemProductIds)->get();
-            $services = Service::whereIn('id',$itemServiceIds)->get();
+            $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+            $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
             $data = [];
             $data['sales_items'] = [];
             foreach($products as $products){
@@ -740,8 +740,8 @@ class ReportController extends Controller
 
         $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
         $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $products = Product::whereIn('id',$itemProductIds)->get();
-        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
            
             $arr = [];
             $data = [];
@@ -1285,8 +1285,8 @@ class ReportController extends Controller
             
             $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
             $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-            $products = Product::whereIn('id',$itemProductIds)->get();
-            $services = Service::whereIn('id',$itemServiceIds)->get();
+            $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+            $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
 
             $data = [];
             $data['invoice_items'] = [];
@@ -1323,8 +1323,8 @@ class ReportController extends Controller
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
             $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-            $products = Product::whereIn('id',$itemProductIds)->get();
-            $services = Service::whereIn('id',$itemServiceIds)->get();
+            $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+            $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
                
                 $arr = [];
                 $data = [];
@@ -1627,8 +1627,8 @@ class ReportController extends Controller
         $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
         $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
         $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
-        $products = Product::whereIn('id',$itemProductIds)->get();
-        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
         $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
            
             $arr = [];
@@ -2393,8 +2393,8 @@ class ReportController extends Controller
         $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
         $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
         $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $products = Product::whereIn('id',$itemProductIds)->get();
-        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
         $data = [];
         $data['invoice_items'] = [];
         foreach($products as $product){
@@ -2449,8 +2449,8 @@ class ReportController extends Controller
         $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
         $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
         $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $products = Product::whereIn('id',$itemProductIds)->get();
-        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
            
             $arr = [];
             $data = [];
@@ -2607,8 +2607,8 @@ class ReportController extends Controller
         $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
         $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
         $expenseInvestmentIds = Item::whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
-        $products = Product::whereIn('id',$itemProductIds)->get();
-        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
         $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
          $data = [];
          $data['purchase_items'] = [];
@@ -2687,8 +2687,8 @@ class ReportController extends Controller
         $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
         $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
         $expenseInvestmentIds = Item::whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
-        $products = Product::whereIn('id',$itemProductIds)->get();
-        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
         $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
            
             $arr = [];
@@ -2816,6 +2816,9 @@ class ReportController extends Controller
     
             $item_meta_table = 'company_'.$request->company_id.'_item_metas';
             ItemMeta::setGlobalTable($item_meta_table);
+
+            $taxes = 'company_'.$request->company_id.'_consumption_taxes';
+            ConsumptionTax::setGlobalTable($taxes);
     
             $referenceTable = 'company_'.$request->company_id.'_references';
             Reference::setGlobalTable($referenceTable);
@@ -2824,9 +2827,10 @@ class ReportController extends Controller
             $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
             $itemProductIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
             $itemServiceIds = Item::whereIn('type',$referenceType)->pluck('vat')->toArray();
-            $products = Product::whereIn('id',$itemProductIds)->get();
-            $services = Service::whereIn('id',$itemServiceIds)->get();
-            $taxes = ConsumptionTax::get();
+            // $products = Product::whereIn('id',$itemProductIds)->get();
+            // $services = Service::whereIn('id',$itemServiceIds)->get();
+            $taxes = ConsumptionTax::whereIn('id',$itemProductIds)->get();
+            dd($taxes);
 
             $arr = [];
             $data = [];
@@ -2837,14 +2841,14 @@ class ReportController extends Controller
             //     $data[] = $arr;
                 
             // }
-            foreach($products as $product){
+            // foreach($products as $tax){
 
-                $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('vat', $product->id)->whereIn('reference',['PRO']);
-                })->get()->sum('amount_with_out_vat');
+            //     $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+            //         $query->where('reference_id', $tax->id)->whereIn('reference',['PRO']);
+            //     })->get()->sum('amount_with_out_vat');
 
-                $data[] = $arr;
-            }
+            //     $data[] = $arr;
+            // }
 
         }
         
