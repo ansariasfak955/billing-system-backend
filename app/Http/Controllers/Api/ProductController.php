@@ -235,21 +235,6 @@ class ProductController extends Controller
         $product->manage_stock = $request->manage_stock??$product->manage_stock;
         $product->save();
 
-        $rateTable = 'company_'.$request->company_id.'_rates';
-        Rate::setGlobalTable($rateTable);
-
-        $allRates = Rate::get();
-        
-        // foreach($allRates as $rate){
-            $product_rate = ProductRate::update($request->except('company_id', '_method'));
-            $product_rate->purchase_price = $product->purchase_price;
-            $product_rate->sales_price = $product->price;
-            $product_rate->discount = $product->discount;
-            $product_rate->purchase_margin = $product->purchase_margin;
-            $product_rate->sales_margin = $product->sales_margin;
-            $product_rate->save();
-        // }
-
         return response()->json([
             "status" => true,
             "product" => $product,
