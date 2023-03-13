@@ -285,7 +285,7 @@ class ReportController extends Controller
             $column = 'amount';
             }else{
             $column = 'amount_with_out_vat';
-            }
+        }
 
             $client_ids = InvoiceTable::pluck('client_id')->toArray();
             $clients = Client::whereIn('id',$client_ids)->get();
@@ -861,6 +861,13 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
+
         $data = [];
         if( $request->type == "overview" ){
             $data = [
@@ -904,7 +911,7 @@ class ReportController extends Controller
                         "label" => "Pending (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'pending')->get()->sum($column)
                         ]
                     ], 
                     [
@@ -912,7 +919,7 @@ class ReportController extends Controller
                             "label" => "Refused (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'refused')->count().")",
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'refused')->get()->sum('amount')
+                                TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'refused')->get()->sum($column)
                             ] 
                         ], 
                     [
@@ -920,7 +927,7 @@ class ReportController extends Controller
                         "label" => "Accepted (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'accepted')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'accepted')->get()->sum($column)
                         ]
                     ],
                     [
@@ -928,7 +935,7 @@ class ReportController extends Controller
                         "label" => "Closed (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'closed')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'closed')->get()->sum($column)
                         ]
                     ],
                 ], 
@@ -938,7 +945,7 @@ class ReportController extends Controller
                         "label" => "Pending (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'pending')->get()->sum($column)
                         ] 
                     ], 
                     [
@@ -946,7 +953,7 @@ class ReportController extends Controller
                         "label" => "Refused (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'refused')->count().")",  
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'refused')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'refused')->get()->sum($column)
                         ]  
                     ], 
                     [
@@ -954,7 +961,7 @@ class ReportController extends Controller
                         "label" => "In Progress (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'in_progress')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'in_progress')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'in_progress')->get()->sum($column)
                         ] 
                     ],
                     [
@@ -962,7 +969,7 @@ class ReportController extends Controller
                         "label" => "Closed (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'closed')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'closed')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'closed')->get()->sum($column)
                         ] 
                     ],
                          
@@ -973,7 +980,7 @@ class ReportController extends Controller
                         "label" => "Pending Invoice (". TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->get()->sum($column)
                         ] 
                     ], 
                     [
@@ -981,7 +988,7 @@ class ReportController extends Controller
                         "label" => "In Progress (". TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'in_progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->get()->sum($column)
                         ] 
                     ], 
                     [
@@ -989,7 +996,7 @@ class ReportController extends Controller
                         "label" => "Closed (". TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'closed')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'closed')->get()->sum($column)
                         ] 
                     ],
                     [
@@ -997,7 +1004,7 @@ class ReportController extends Controller
                         "label" => "Invoiced  (". TechnicalTable::filter($request->all())->where('reference', 'invoiced')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'invoiced')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'invoiced')->get()->sum($column)
                         ] 
                     ]  
                 ]
@@ -1178,6 +1185,13 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
+
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
+
         if($request->type == 'incident_by_client'){
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $client_ids = TechnicalTable::pluck('client_id')->toArray();
@@ -1190,7 +1204,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             TechnicalTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
+                             TechnicalTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column),
                             ]
                         ];
             }
@@ -1214,7 +1228,7 @@ class ReportController extends Controller
                 $arr['accepted'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','accepted')->count();
                 $arr['closed'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','closed')->count();
                 $arr['total'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->count();
-                $arr['amount'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                $arr['amount'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
 
                 $data[] = $arr;
             }
@@ -1253,6 +1267,13 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
+
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
+
         if($request->type == 'incident_by_agent'){
             $data = [];
             $data['incident_agent'] = [];
@@ -1262,7 +1283,7 @@ class ReportController extends Controller
                         "label" => "" . \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             TechnicalTable::filter($request->all())->get()->sum('amount'),
+                             TechnicalTable::filter($request->all())->get()->sum($column),
                             ]
                         ];
             // }
@@ -1282,7 +1303,7 @@ class ReportController extends Controller
             $arr['accepted'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->where('status','accepted')->count();
             $arr['closed'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->where('status','closed')->count();
             $arr['total'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->count();
-            $arr['amount'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+            $arr['amount'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
 
                 $data[] = $arr;
             
