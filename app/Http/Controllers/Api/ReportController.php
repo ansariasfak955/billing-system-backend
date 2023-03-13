@@ -971,34 +971,47 @@ class ReportController extends Controller
                         "type" => "bar", 
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
+                        "backgroundColorR" => "#FB6363", 
+                        "backgroundColorRe" => "#FE9140", 
+                        "backgroundColorC" => "#26C184", 
                         "data" => [
                              TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'pending')->count()
-                        ] 
-                    ], 
-                    [
-                            "type" => "bar", 
-                            "label" => "Refused", 
-                            "backgroundColor" => "#FB6363", 
-                            "data" => [
-                                 TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'refused')->count()
-                            ]
-                    ], 
-                    [
-                        "type" => "bar", 
-                        "label" => "Resolved", 
-                        "backgroundColor" => "#FE9140", 
-                        "data" => [
+                        ],
+                        "dataR" => [
+                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'refused')->count()
+                        ],
+                        "dataRe" => [
                              TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'resolved')->count()
+                        ],
+                        "dataC" => [
+                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
                         ]
-                    ],
-                    [
-                        "type" => "bar", 
-                        "label" => "Closed", 
-                        "backgroundColor" => "#26C184", 
-                        "data" => [
-                             TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
-                        ]
-                    ],
+
+                    ]
+                    // [
+                    //         "type" => "bar", 
+                    //         "label" => "Refused", 
+                    //         "backgroundColor" => "#FB6363", 
+                    //         "data" => [
+                    //              TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'refused')->count()
+                    //         ]
+                    // ], 
+                    // [
+                    //     "type" => "bar", 
+                    //     "label" => "Resolved", 
+                    //     "backgroundColor" => "#FE9140", 
+                    //     "data" => [
+                    //          TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'resolved')->count()
+                    //     ]
+                    // ],
+                    // [
+                    //     "type" => "bar", 
+                    //     "label" => "Closed", 
+                    //     "backgroundColor" => "#26C184", 
+                    //     "data" => [
+                    //          TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
+                    //     ]
+                    // ],
                 ],
             ];
         }elseif($request->type == "incidents_by_agent"){
