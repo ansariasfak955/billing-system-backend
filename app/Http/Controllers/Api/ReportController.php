@@ -1875,7 +1875,7 @@ class ReportController extends Controller
                             "data" => [
                                 Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
                                     $query->where('payment_option', $paymentOption->id)->where('type','deposit');
-                                    })->get()->sum('amount') - filter($request->all())->Deposit::WhereHas('payment_options', function ($query) use ($paymentOption) {
+                                    })->get()->sum('amount') - Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
                                         $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
                                         })->get()->sum('amount'),
                                 ]
@@ -2114,7 +2114,7 @@ class ReportController extends Controller
                     "label" => "Sales stock value", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "$ ". Product::get()->sum('sales_stock_value') 
+                         Product::get()->sum('sales_stock_value') 
                     ] 
                 ], 
                 [
@@ -2122,7 +2122,7 @@ class ReportController extends Controller
                         "label" => "Purchase stock value", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". Product::get()->sum('purchase_stock_value') 
+                            Product::get()->sum('purchase_stock_value') 
                         ] 
                 ], 
             ]
