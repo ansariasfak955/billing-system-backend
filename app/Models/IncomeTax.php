@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class IncomeTax extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
     protected $guarded = ['id', 'created_at', 'updated_at'];
     
     protected static $globalTable = 'income_taxes';
@@ -23,5 +24,9 @@ class IncomeTax extends Model
         if(isset($this->attributes['taxes'])){
             return json_decode($this->attributes['taxes']);
         }
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\IncomeTaxFilter::class);
     }
 }

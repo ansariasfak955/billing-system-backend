@@ -24,7 +24,7 @@ class IncomeTaxController extends Controller
         IncomeTax::setGlobalTable('company_'.$request->company_id.'_income_taxes');
         $query = IncomeTax::query();
 
-        $taxes = $query->get();
+        $taxes = $query->filter($request->all())->get();
         if( !count($taxes)){
             return response()->json([
                 "status" => false,
