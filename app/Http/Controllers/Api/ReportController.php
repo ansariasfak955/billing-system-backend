@@ -2973,39 +2973,39 @@ class ReportController extends Controller
 
             $arr = [];
             $data = [];
-            // foreach($taxes as $tax){
+            foreach($taxes as $tax){
 
-            //     $arr['vat'] = $tax->primary_name.' '.$tax->tax.' '.'%';
-            //     $arr['Collected'] = 'Collected';
-            //     $arr['Paid'] = 'Paid';
-            //     $arr['Total'] = 'Total';
-            //     $arr['Subtotal'] = 'Subtotal';
-            //     $arr['Tax'] = 'Tax';
-            //     $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-            //         $query->where('vat', $tax->tax);
-            //     })->get()->sum('amount');
-            //     $arr['ctax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-            //         $query->where('vat', $tax->tax);
-            //     })->get()->sum('tax_amount');
-            //     $arr['paid'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-            //         $query->where('vat', $tax->tax);
-            //     })->get()->sum('amount');
-            //     $arr['ptax'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-            //         $query->where('vat', $tax->tax);
-            //     })->get()->sum('tax_amount');
-            //     $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-            //         $query->where('vat', $tax->tax);
-            //     })->get()->sum('amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-            //         $query->where('vat', $tax->tax);
-            //     })->get()->sum('amount');
-            //     $arr['ttax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-            //         $query->where('vat', $tax->tax);
-            //     })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-            //         $query->where('vat', $tax->tax);
-            //     })->get()->sum('tax_amount');
+                $arr['vat'] = $tax->primary_name.' '.$tax->tax.' '.'%';
+                $arr['Collected'] = 'Collected';
+                $arr['Paid'] = 'Paid';
+                $arr['Total'] = 'Total';
+                $arr['Subtotal'] = 'Subtotal';
+                $arr['Tax'] = 'Tax';
+                $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount');
+                $arr['ctax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount');
+                $arr['paid'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount');
+                $arr['ptax'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount');
+                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('amount');
+                $arr['ttax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                    $query->where('vat', $tax->tax);
+                })->get()->sum('tax_amount');
 
-            //     $data[] = $arr;
-            // }
+                $data[] = $arr;
+            }
 
             foreach($incomeTaxes as $taxes){
 
