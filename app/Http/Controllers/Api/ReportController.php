@@ -450,6 +450,12 @@ class ReportController extends Controller
         $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         // dd($referenceType);
 
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
+
         $data = [];
         if( $request->type == "overview" ){
             $data = [
@@ -570,7 +576,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
+                             SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum($column),
                             ]
                         ];
             }
@@ -588,7 +594,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                SalesEstimate::filter($request->all())->get()->sum('amount'),
+                                SalesEstimate::filter($request->all())->get()->sum($column),
                             ]
                         ];
             // }
@@ -669,6 +675,12 @@ class ReportController extends Controller
         $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
         $clients = Client::whereIn('id',$client_ids)->get();
 
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
+
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
@@ -680,7 +692,7 @@ class ReportController extends Controller
                 $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','accepted')->count();
                 $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','closed')->count();
                 $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->count();
-                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
 
                 $data[] = $arr;
             }
@@ -715,6 +727,12 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
+
             $arr = [];
             $data = [];
 
@@ -724,7 +742,7 @@ class ReportController extends Controller
                 $arr['accepted'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('status','accepted')->count();
                 $arr['closed'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('status','closed')->count();
                 $arr['total'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->count();
-                $arr['amount'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+                $arr['amount'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
 
                 $data[] = $arr;
             
