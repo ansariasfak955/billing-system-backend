@@ -173,7 +173,7 @@ class ReportController extends Controller
             $column = 'amount';
             }else{
             $column = 'amount_with_out_vat';
-            }
+        }
 
         // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         
@@ -1525,6 +1525,12 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
+
         if($request->type == "supplier"){
 
             $supplier_ids = PurchaseTable::with('supplier')->pluck('supplier_id')->toArray();
@@ -1537,7 +1543,7 @@ class ReportController extends Controller
                         "label" => "" .  $supplier->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->where('reference','PINV')->get()->sum('amount'),
+                             PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->where('reference','PINV')->get()->sum($column),
                             ]
                         ];
             }
@@ -1628,6 +1634,12 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
+
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
         
         $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
         $supplier_ids = PurchaseTable::with('supplier')->whereIn('reference',$referenceType)->pluck('supplier_id')->toArray();
@@ -1639,7 +1651,7 @@ class ReportController extends Controller
 
             foreach($suppliers as $supplier){
                 $arr['name'] = $supplier->legal_name;
-                $arr['invoiced'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount');
+                $arr['invoiced'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum($column);
                 $arr['paid'] =  PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount_paid');
                 $arr['Unpaid'] =  PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount_due');
 
@@ -2192,6 +2204,12 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
+
         $data = [];
         if($request->type == "ofProfit"){
         $data = [
@@ -2310,7 +2328,7 @@ class ReportController extends Controller
                     "label" => "" .  $client->legal_name.' ('.$client->name.')',
                     "backgroundColor" => "#26C184",
                     "data" => [
-                         InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
+                         InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column),
                         ]
                     ];
         }
@@ -2350,11 +2368,11 @@ class ReportController extends Controller
 
             foreach($clients as $client){
                 $arr['name'] = $client->legal_name.' ('.$client->name.')';
-                $arr['Q1'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                $arr['Q1'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
                 $arr['Q2'] = '0.00';
                 $arr['Q3'] = '0.00';
                 $arr['Q4'] = '0.00';
-                $arr['tottal'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                $arr['tottal'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
                 $data[] = $arr;
             }
     }elseif($request->type == "invoicing_by_agent"){
@@ -2386,7 +2404,7 @@ class ReportController extends Controller
                     "label" => "" .  \Auth::user()->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                         InvoiceTable::filter($request->all())->get()->sum('amount'),
+                         InvoiceTable::filter($request->all())->get()->sum($column),
                         ]
                     ];
     }elseif($request->type == "invoicing_by_agent_list"){
@@ -2418,11 +2436,11 @@ class ReportController extends Controller
                 $data = [];
 
                 $arr['name'] = \Auth::user()->name;
-                $arr['Q1'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+                $arr['Q1'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
                 $arr['Q2'] = '0.00';
                 $arr['Q3'] = '0.00';
                 $arr['Q4'] = '0.00';
-                $arr['total'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+                $arr['total'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
 
                 $data[] = $arr;
     }elseif($request->type == "invoicing_by_item"){
@@ -2465,7 +2483,7 @@ class ReportController extends Controller
                     "data" => [
                             InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
                             $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                            })->get()->sum('amount'),
+                            })->get()->sum($column),
                         ]
                     ];
         }
@@ -2582,7 +2600,7 @@ class ReportController extends Controller
                         "label" => "" .  $supplier->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum('amount'),
+                             PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum($column),
                             ]
                         ];
             }
@@ -2625,11 +2643,11 @@ class ReportController extends Controller
 
             foreach($suppliers as $supplier){
                 $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
-                $arr['Q1'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount');
+                $arr['Q1'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum($column);
                 $arr['Q2'] = '0.00';
                 $arr['Q3'] = '0.00';
                 $arr['Q4'] = '0.00';
-                $arr['total'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum('amount');
+                $arr['total'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum($column);
                 $data[] = $arr;
             }
     }elseif($request->type == "purchase_by_item"){
