@@ -2053,7 +2053,7 @@ class ReportController extends Controller
 
 
             $arr = [];
-            $data = [];
+            $data = []; 
 
             foreach($paymentOption as $invoiceData){
                 $arr['date'] = $invoiceData->date;
