@@ -29,6 +29,7 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+
     public function overview(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables); 
@@ -168,6 +169,12 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+            }
+
         // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         
         if($request->type == "clients"){
@@ -181,7 +188,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount'),
+                             InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column),
                             ]
                         ];
             }
@@ -199,7 +206,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             InvoiceTable::filter($request->all())->get()->sum('amount'),
+                             InvoiceTable::filter($request->all())->get()->sum($column),
                             ]
                         ];
             // }
@@ -273,6 +280,13 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
+
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+            }
+
             $client_ids = InvoiceTable::pluck('client_id')->toArray();
             $clients = Client::whereIn('id',$client_ids)->get();
             // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
@@ -281,7 +295,7 @@ class ReportController extends Controller
 
             foreach($clients as $client){
                 $arr['name'] = $client->legal_name;
-                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount');
+                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
                 $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount_paid');
                 $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount_due');
                 $data[] = $arr;
@@ -317,12 +331,19 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-            // $clients = Client::get();
+            
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+            }
+
+
             $arr = [];
             $data = [];
 
                 $arr['name'] = \Auth::user()->name;
-                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
                 $arr['paid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount_paid');
                 $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount_due');
 
