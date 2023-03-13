@@ -986,7 +986,7 @@ class ReportController extends Controller
                         "dataC" => [
                             TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
                         ]
-
+                            
                     ]
                     // [
                     //         "type" => "bar", 
