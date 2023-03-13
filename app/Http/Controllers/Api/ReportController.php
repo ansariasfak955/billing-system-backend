@@ -2860,7 +2860,7 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        // $data = [];
+        $data = [];
         
         if($request->type == 'taxSummary'){
 
