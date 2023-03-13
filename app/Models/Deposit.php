@@ -50,7 +50,7 @@ class Deposit extends Model
     }
     public function modelFilter()
     {
-        return $this->provideFilter(\App\ModelFilters\InvoiceDepositFiltersFilter::class);
+        return $this->provideFilter(\App\ModelFilters\InvoiceDepositFilter::class);
     }
 
 }

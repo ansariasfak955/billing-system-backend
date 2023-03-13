@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Deposit;
 use App\Models\Client;
+use App\Models\PaymentOption;
 use App\Exports\InvoiceDepositWithdrawExport;
 use Validator;
 use Excel;
@@ -19,6 +20,10 @@ class DepositController extends Controller
                 "message" =>  "Please select company"
             ]);
         }
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+        
         $table = 'company_'.$request->company_id.'_deposits';
         Deposit::setGlobalTable($table);
 

@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use EloquentFilter\Filterable;
 
 class PaymentOption extends Model
 {
-    use HasFactory;
+    use HasFactory,Filterable;
 
     protected $fillable = [
         "name",
@@ -23,5 +24,9 @@ class PaymentOption extends Model
     }
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\PaymentOptionFilter::class);
     }
 }
