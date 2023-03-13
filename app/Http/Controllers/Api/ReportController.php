@@ -64,7 +64,7 @@ class ReportController extends Controller
                         "label" => "Expenses", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                             InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                             InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount')
                         ]  
                 ], 
                 [
@@ -72,7 +72,7 @@ class ReportController extends Controller
                     "label" => "Profit", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                         Item::where('type', 'inv')->sum('subtotal') - InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                         Item::where('type', 'inv')->sum('subtotal') - InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount')
                     ] 
                 ] 
             ], 
@@ -82,7 +82,7 @@ class ReportController extends Controller
                     "label" => "Invoiced", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                         InvoiceReceipt::where('type', 'inv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
+                         InvoiceReceipt::filter($request->all())->where('type', 'inv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
                     ] 
                 ], 
                 [
@@ -90,7 +90,7 @@ class ReportController extends Controller
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
                     "data" => [
-                         InvoiceReceipt::where('type', 'inv')->where('paid', '1')->sum('amount')
+                         InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount')
                     ]  
                 ], 
                 [
@@ -98,7 +98,7 @@ class ReportController extends Controller
                     "label" => "Unpaid", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                         InvoiceReceipt::where('type', 'inv')->where('paid', '0')->sum('amount')
+                         InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '0')->sum('amount')
                     ] 
                 ] 
             ], 
@@ -108,7 +108,7 @@ class ReportController extends Controller
                     "label" => "Invoiced", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                         PurchaseReceipt::where('type', 'pinv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
+                         PurchaseReceipt::filter($request->all())->where('type', 'pinv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
                     ] 
                 ], 
                 [
@@ -116,7 +116,7 @@ class ReportController extends Controller
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
                     "data" => [
-                         PurchaseReceipt::where('type', 'pinv')->where('paid', '1')->sum('amount')
+                         PurchaseReceipt::filter($request->all())->where('type', 'pinv')->where('paid', '1')->sum('amount')
                     ] 
                 ], 
                 [
@@ -124,7 +124,7 @@ class ReportController extends Controller
                     "label" => "Unpaid", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                         PurchaseReceipt::where('type', 'pinv')->where('paid', '0')->sum('amount')
+                         PurchaseReceipt::filter($request->all())->where('type', 'pinv')->where('paid', '0')->sum('amount')
                     ] 
                 ] 
             ],
@@ -435,7 +435,7 @@ class ReportController extends Controller
                 "estimates_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending(". SalesEstimate::where('reference', 'se')->where('status', 'pending')->count().")", 
+                        "label" => "Pending(". SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                          SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'pending')->count(),
@@ -443,7 +443,7 @@ class ReportController extends Controller
                     ], 
                     [
                             "type" => "bar", 
-                            "label" => "Refused(". SalesEstimate::where('reference', 'se')->where('status', 'refused')->count().")", 
+                            "label" => "Refused(". SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'refused')->count().")", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
                                  SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'refused')->count(),
@@ -451,7 +451,7 @@ class ReportController extends Controller
                         ], 
                     [
                         "type" => "bar", 
-                        "label" => "Accepted(". SalesEstimate::where('reference', 'se')->where('status', 'accepted')->count().")", 
+                        "label" => "Accepted(". SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'accepted')->count(), 
@@ -459,7 +459,7 @@ class ReportController extends Controller
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed(". SalesEstimate::where('reference', 'se')->where('status', 'closed')->count().")", 
+                        "label" => "Closed(". SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                             SalesEstimate::filter($request->all())->where('reference', 'se')->where('status', 'closed')->count(),
@@ -469,7 +469,7 @@ class ReportController extends Controller
                 "orders_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending (". SalesEstimate::where('reference', 'so')->where('status', 'pending')->count().")", 
+                        "label" => "Pending (". SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                             SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'pending')->count(),
@@ -477,7 +477,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Refused (". SalesEstimate::where('reference', 'so')->where('status', 'refused')->count().")", 
+                        "label" => "Refused (". SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'refused')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
                              SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'refused')->count(),
@@ -485,7 +485,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (". SalesEstimate::where('reference', 'so')->where('status', 'in progress')->count().")", 
+                        "label" => "In Progress (". SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'in progress')->count(),
@@ -493,7 +493,7 @@ class ReportController extends Controller
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". SalesEstimate::where('reference', 'so')->where('status', 'closed')->count().")", 
+                        "label" => "Closed (". SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->where('reference', 'so')->where('status', 'closed')->count(),
@@ -504,7 +504,7 @@ class ReportController extends Controller
                 "delivery_notes_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending Invoice (". SalesEstimate::where('reference', 'sdn')->where('status', 'pending invoice')->count().")", 
+                        "label" => "Pending Invoice (". SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'pending invoice')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                              SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'pending invoice')->count(),
@@ -512,7 +512,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (". SalesEstimate::where('reference', 'sdn')->where('status', 'in progress')->count().")", 
+                        "label" => "In Progress (". SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
                              SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'in progress')->count(),
@@ -520,7 +520,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". SalesEstimate::where('reference', 'sdn')->where('status', 'closed')->count().")", 
+                        "label" => "Closed (". SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'closed')->count(),
@@ -528,7 +528,7 @@ class ReportController extends Controller
                         ],
                     [
                         "type" => "bar", 
-                        "label" => "Invoiced (". SalesEstimate::where('reference', 'sdn')->where('status', 'invoiced')->count().")",
+                        "label" => "Invoiced (". SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'invoiced')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->where('reference', 'sdn')->where('status', 'invoiced')->count(),
@@ -831,7 +831,7 @@ class ReportController extends Controller
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalIncident::where('reference', 'inc')->where('status', 'pending')->count()
+                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'pending')->count()
                         ] 
                     ], 
                     [
@@ -839,7 +839,7 @@ class ReportController extends Controller
                             "label" => "Refused", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                TechnicalIncident::where('reference', 'inc')->where('status', 'refused')->count()
+                                TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'refused')->count()
                             ]
                     ], 
                     [
@@ -847,7 +847,7 @@ class ReportController extends Controller
                         "label" => "Resolved", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalIncident::where('reference', 'inc')->where('status', 'resolved')->count()
+                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'resolved')->count()
                         ]
                     ],
                     [
@@ -855,75 +855,75 @@ class ReportController extends Controller
                         "label" => "Closed", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalIncident::where('reference', 'inc')->where('status', 'closed')->count()
+                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
                         ]
                     ],
                 ],
                 "estimates_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending (". TechnicalTable::where('reference', 'we')->where('status', 'pending')->count().")", 
+                        "label" => "Pending (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::where('reference', 'we')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'pending')->get()->sum('amount')
                         ]
                     ], 
                     [
                             "type" => "bar", 
-                            "label" => "Refused (". TechnicalTable::where('reference', 'we')->where('status', 'refused')->count().")",
+                            "label" => "Refused (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'refused')->count().")",
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                TechnicalTable::where('reference', 'we')->where('status', 'refused')->get()->sum('amount')
+                                TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'refused')->get()->sum('amount')
                             ] 
                         ], 
                     [
                         "type" => "bar", 
-                        "label" => "Accepted (". TechnicalTable::where('reference', 'we')->where('status', 'accepted')->count().")", 
+                        "label" => "Accepted (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::where('reference', 'we')->where('status', 'accepted')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'accepted')->get()->sum('amount')
                         ]
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". TechnicalTable::where('reference', 'we')->where('status', 'closed')->count().")", 
+                        "label" => "Closed (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::where('reference', 'we')->where('status', 'closed')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'closed')->get()->sum('amount')
                         ]
                     ],
                 ], 
                 "orders_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending (". TechnicalTable::where('reference', 'wo')->where('status', 'pending')->count().")", 
+                        "label" => "Pending (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::where('reference', 'wo')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'pending')->get()->sum('amount')
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Refused (". TechnicalTable::where('reference', 'wo')->where('status', 'refused')->count().")",  
+                        "label" => "Refused (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'refused')->count().")",  
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            TechnicalTable::where('reference', 'wo')->where('status', 'refused')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'refused')->get()->sum('amount')
                         ]  
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (". TechnicalTable::where('reference', 'wo')->where('status', 'in_progress')->count().")",
+                        "label" => "In Progress (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'in_progress')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::where('reference', 'wo')->where('status', 'in_progress')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'in_progress')->get()->sum('amount')
                         ] 
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". TechnicalTable::where('reference', 'wo')->where('status', 'closed')->count().")",
+                        "label" => "Closed (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'closed')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::where('reference', 'wo')->where('status', 'closed')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'closed')->get()->sum('amount')
                         ] 
                     ],
                          
@@ -931,34 +931,34 @@ class ReportController extends Controller
                 "delivery_notes_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending Invoice (". TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->count().")", 
+                        "label" => "Pending Invoice (". TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (". TechnicalTable::where('reference', 'wdn')->where('status', 'in_progress')->count().")", 
+                        "label" => "In Progress (". TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'in_progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            TechnicalTable::where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->get()->sum('amount')
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". TechnicalTable::where('reference', 'wdn')->where('status', 'closed')->count().")", 
+                        "label" => "Closed (". TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::where('reference', 'wdn')->where('status', 'closed')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'closed')->get()->sum('amount')
                         ] 
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Invoiced  (". TechnicalTable::where('reference', 'invoiced')->where('status', 'closed')->count().")", 
+                        "label" => "Invoiced  (". TechnicalTable::filter($request->all())->where('reference', 'invoiced')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::where('reference', 'wdn')->where('status', 'invoiced')->get()->sum('amount')
+                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'invoiced')->get()->sum('amount')
                         ] 
                     ]  
                 ]
@@ -972,7 +972,7 @@ class ReportController extends Controller
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                             TechnicalIncident::where('reference', 'inc')->where('status', 'pending')->count()
+                             TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'pending')->count()
                         ] 
                     ], 
                     [
@@ -980,7 +980,7 @@ class ReportController extends Controller
                             "label" => "Refused", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                 TechnicalIncident::where('reference', 'inc')->where('status', 'refused')->count()
+                                 TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'refused')->count()
                             ]
                     ], 
                     [
@@ -988,7 +988,7 @@ class ReportController extends Controller
                         "label" => "Resolved", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                             TechnicalIncident::where('reference', 'inc')->where('status', 'resolved')->count()
+                             TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'resolved')->count()
                         ]
                     ],
                     [
@@ -996,7 +996,7 @@ class ReportController extends Controller
                         "label" => "Closed", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                             TechnicalIncident::where('reference', 'inc')->where('status', 'closed')->count()
+                             TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
                         ]
                     ],
                 ],
@@ -1009,7 +1009,7 @@ class ReportController extends Controller
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 500
+                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'pending')->count()
                         ] 
                     ], 
                     [
@@ -1017,7 +1017,7 @@ class ReportController extends Controller
                             "label" => "Refused", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                "$ ". 500
+                                TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'refused')->count()
                             ]
                     ], 
                     [
@@ -1025,7 +1025,7 @@ class ReportController extends Controller
                         "label" => "Resolved", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 500
+                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'resolved')->count()
                         ]
                     ],
                     [
@@ -1033,7 +1033,7 @@ class ReportController extends Controller
                         "label" => "Closed", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            "$ ". 500
+                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
                         ]
                     ],
                 ],
@@ -2883,7 +2883,7 @@ class ReportController extends Controller
 
 
             $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice','Purchase Invoice'])->pluck('prefix')->toArray();
-            $itemProductIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
+            $itemProductIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->pluck('tax')->toArray();
             $itemServiceIds = Item::whereIn('type',$referenceType)->groupby('vat')->pluck('vat')->toArray();
             $taxes = ConsumptionTax::get();
             // return $taxes;
@@ -2925,26 +2925,6 @@ class ReportController extends Controller
             }
 
         }
-        // elseif($request->type == 'vat'){
-        //     $taxes = 'company_'.$request->company_id.'_consumption_taxes';
-        //     ConsumptionTax::setGlobalTable($taxes);
-
-        //     $taxes = ConsumptionTax::get();
-
-        //     $arr = [];
-        //     $data = [];
-
-        //     foreach($taxes as $key => $tax){
-        //         $arr['vat'] = $tax->tax;
-        //         $arr['Collected'] = 'Collected';
-        //         $arr['Paid'] = 'Paid';
-        //         $arr['Total'] = 'Total';
-        //         $arr['Subtotal'] = 'Subtotal';
-        //         $arr['Tax'] = 'Tax';
-
-        //         $data[] = $arr;
-        //     }
-        // }
         
         return response()->json([
             "status" => true,
