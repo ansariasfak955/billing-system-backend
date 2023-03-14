@@ -682,43 +682,48 @@ class ReportController extends Controller
             $column = 'amount_with_out_vat';
         }
 
-            // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
-            foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
-                $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','pending')->count();
-                $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','refused')->count();
-                $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','accepted')->count();
-                $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','closed')->count();
-                $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->count();
-                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
-
-                $data[] = $arr;
+            if($request->type == 'Sales Estimate'){
+                foreach($clients as $client){
+                    $arr['name'] = $client->legal_name;
+                    $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','pending')->count();
+                    $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','refused')->count();
+                    $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','accepted')->count();
+                    $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','closed')->count();
+                    $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
+                    $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
+    
+                    $data[] = $arr;
+                }
+            }elseif($request->type == 'Sales Order'){
+                foreach($clients as $client){
+                    $arr['name'] = $client->legal_name;
+                    $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','pending')->count();
+                    $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','refused')->count();
+                    $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
+                    $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','closed')->count();
+                    $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
+                    $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
+    
+                    $data[] = $arr;
+                }
+            }else{
+                foreach($clients as $client){
+                    $arr['name'] = $client->legal_name;
+                    $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','pending invoice')->count();
+                    $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','invoiced')->count();
+                    $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
+                    $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','closed')->count();
+                    $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
+                    $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
+    
+                    $data[] = $arr;
+                }
             }
-            foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
-                $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','pending')->count();
-                $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','refused')->count();
-                $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','in progress')->count();
-                $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','closed')->count();
-                $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->count();
-                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
 
-                $data[] = $arr;
-            }
-            foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
-                $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','pending invoice')->count();
-                $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','invoiced')->count();
-                $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','in progress')->count();
-                $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','closed')->count();
-                $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->count();
-                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
-
-                $data[] = $arr;
-            }
             
             return response()->json([
                 "status" => true,
@@ -2173,28 +2178,29 @@ class ReportController extends Controller
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
 
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
         $productIds = SupplierSpecialPrice::pluck('product_id')->toArray();
-        $supplierSpecialPrices = Product::whereIn('id',$productIds)->get();
+        $productPrices = Product::whereIn('id',$productIds)->get();
         // return $supplierSpecialPrices;
 
         $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+        // print_r($referenceType);die;
            
         $arr = [];
         $data = [];
 
-        foreach($supplierSpecialPrices as $supplierSpecialPrice){
-            $arr['reference'] = $supplierSpecialPrice->reference.$supplierSpecialPrice->reference_number;
-            $arr['name'] = $supplierSpecialPrice->name;
-            $arr['stock'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
-                $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
-            })->count();
-            $arr['sales_stock_value'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
-                $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
-            })->get()->sum('amount');
-            $arr['purchase_stock_value'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
-                $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
+        foreach($productPrices as $productPrice){
+            $arr['reference'] = $productPrice->reference.$productPrice->reference_number;
+            $arr['name'] = $productPrice->name;
+            $stock = Item::where('reference_id', $productPrice->id)->whereIn('reference',['PRO'])->whereIn('type',$referenceType)->sum('quantity');
+            $arr['stock'] = $stock;
+            $arr['sales_stock_value'] = $productPrice->price*$stock;
+            $arr['purchase_stock_value'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($productPrice) {
+                $query->where('reference_id', $productPrice->id)->whereIn('reference',['PRO']);
             })->get()->sum('amount_with_out_vat');
 
             $data[] = $arr;
@@ -3002,72 +3008,75 @@ class ReportController extends Controller
 
             $arr = [];
             $data = [];
-            foreach($taxes as $tax){
+            if($request->type == 'IVA'){
+                foreach($taxes as $tax){
 
-                $arr['vat'] = $tax->primary_name.' '.$tax->tax.' '.'%';
-                $arr['Collected'] = 'Collected';
-                $arr['Paid'] = 'Paid';
-                $arr['Total'] = 'Total';
-                $arr['Subtotal'] = 'Subtotal';
-                $arr['Tax'] = 'Tax';
-                $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                    $query->where('vat', $tax->tax);
-                })->get()->sum('amount');
-                $arr['ctax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                    $query->where('vat', $tax->tax);
-                })->get()->sum('tax_amount');
-                $arr['paid'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                    $query->where('vat', $tax->tax);
-                })->get()->sum('amount');
-                $arr['ptax'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                    $query->where('vat', $tax->tax);
-                })->get()->sum('tax_amount');
-                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                    $query->where('vat', $tax->tax);
-                })->get()->sum('amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                    $query->where('vat', $tax->tax);
-                })->get()->sum('amount');
-                $arr['ttax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                    $query->where('vat', $tax->tax);
-                })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
-                    $query->where('vat', $tax->tax);
-                })->get()->sum('tax_amount');
+                    $arr['vat'] = $tax->primary_name.' '.$tax->tax.' '.'%';
+                    $arr['Collected'] = 'Collected';
+                    $arr['Paid'] = 'Paid';
+                    $arr['Total'] = 'Total';
+                    $arr['Subtotal'] = 'Subtotal';
+                    $arr['Tax'] = 'Tax';
+                    $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                        $query->where('vat', $tax->tax);
+                    })->get()->sum('amount');
+                    $arr['ctax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                        $query->where('vat', $tax->tax);
+                    })->get()->sum('tax_amount');
+                    $arr['paid'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                        $query->where('vat', $tax->tax);
+                    })->get()->sum('amount');
+                    $arr['ptax'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                        $query->where('vat', $tax->tax);
+                    })->get()->sum('tax_amount');
+                    $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                        $query->where('vat', $tax->tax);
+                    })->get()->sum('amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                        $query->where('vat', $tax->tax);
+                    })->get()->sum('amount');
+                    $arr['ttax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                        $query->where('vat', $tax->tax);
+                    })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax) {
+                        $query->where('vat', $tax->tax);
+                    })->get()->sum('tax_amount');
+    
+                    $data[] = $arr;
+                }
+    
+            }else{
+                foreach($incomeTaxes as $taxes){
 
-                $data[] = $arr;
-            }
-
-            foreach($incomeTaxes as $taxes){
-
-                $arr['vat'] = $taxes->name.' '.$taxes->tax.' '.'%';
-                $arr['Collected'] = 'Collected';
-                $arr['Paid'] = 'Paid';
-                $arr['Total'] = 'Total';
-                $arr['Subtotal'] = 'Subtotal';
-                $arr['Tax'] = 'Tax';
-                $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
-                    $query->where('tax', $taxes->tax);
-                })->get()->sum('amount');
-                $arr['ctax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
-                    $query->where('tax', $taxes->tax);
-                })->get()->sum('tax_amount');
-                $arr['paid'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
-                    $query->where('tax', $taxes->tax);
-                })->get()->sum('amount');
-                $arr['ptax'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
-                    $query->where('tax', $taxes->tax);
-                })->get()->sum('tax_amount');
-                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
-                    $query->where('tax', $taxes->tax);
-                })->get()->sum('amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
-                    $query->where('tax', $taxes->tax);
-                })->get()->sum('amount');
-                $arr['ttax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
-                    $query->where('tax', $taxes->tax);
-                })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
-                    $query->where('tax', $taxes->tax);
-                })->get()->sum('tax_amount');
-
-                $data[] = $arr;
+                    $arr['vat'] = $taxes->name.' '.$taxes->tax.' '.'%';
+                    $arr['Collected'] = 'Collected';
+                    $arr['Paid'] = 'Paid';
+                    $arr['Total'] = 'Total';
+                    $arr['Subtotal'] = 'Subtotal';
+                    $arr['Tax'] = 'Tax';
+                    $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
+                        $query->where('tax', $taxes->tax);
+                    })->get()->sum('amount');
+                    $arr['ctax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
+                        $query->where('tax', $taxes->tax);
+                    })->get()->sum('tax_amount');
+                    $arr['paid'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
+                        $query->where('tax', $taxes->tax);
+                    })->get()->sum('amount');
+                    $arr['ptax'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
+                        $query->where('tax', $taxes->tax);
+                    })->get()->sum('tax_amount');
+                    $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
+                        $query->where('tax', $taxes->tax);
+                    })->get()->sum('amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
+                        $query->where('tax', $taxes->tax);
+                    })->get()->sum('amount');
+                    $arr['ttax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
+                        $query->where('tax', $taxes->tax);
+                    })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($taxes) {
+                        $query->where('tax', $taxes->tax);
+                    })->get()->sum('tax_amount');
+    
+                    $data[] = $arr;
+                }
             }
 
         }

@@ -85,7 +85,6 @@ class ReportExportController extends Controller
             $fileName = 'OVERVIEWREPORT-'.time().$company_id.'.xlsx';
 
                 $arr = [];
-                $overViewExports = [];
 
                 $arr['Sales'] = Item::where('type', 'inv')->sum('subtotal');
                 $arr['Expenses'] = InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount');
@@ -97,7 +96,7 @@ class ReportExportController extends Controller
                 $arr['PPaid'] = PurchaseReceipt::filter($request->all())->where('type', 'pinv')->where('paid', '1')->sum('amount');
                 $arr['PUnpaid'] = PurchaseReceipt::filter($request->all())->where('type', 'pinv')->where('paid', '0')->sum('amount');
 
-                $overViewExports[] = $arr;
+                $overViewExports = $arr;
 
             Excel::store(new OverViewExport($overViewExports), 'public/xlsx/'.$fileName);
 
