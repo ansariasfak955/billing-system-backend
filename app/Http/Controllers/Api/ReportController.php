@@ -2168,7 +2168,7 @@ class ReportController extends Controller
             $arr['stock'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
                 $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
             })->count();
-            $arr['sales_stock_value'] = Product::get()->sum('amount');
+            $arr['sales_stock_value'] = Product::get()->sum('price');
             $arr['purchase_stock_value'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
                 $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
             })->get()->sum('amount_with_out_vat');
