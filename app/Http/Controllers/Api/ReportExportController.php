@@ -1252,28 +1252,36 @@ class ReportExportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-        
-        $fileName = 'STOCKVALUATIONREPORT-'.time().$company_id.'.xlsx';
-        $supplierSpecialPrices = SupplierSpecialPrice::get();
-           
-        $arr = [];
-        $stockValuationExports = [];
 
-        foreach($supplierSpecialPrices as $supplierSpecialPrice){
-            $arr['reference'] = 'PRO00001';
-            $arr['name'] = $supplierSpecialPrice->product_name;
-            $arr['stock'] = '3.00';
-            $arr['sales_stock_value'] = '300.00';
-            $arr['purchase_stock_value'] = '300.00';
+        if($request->type == 'stock_Voluation'){
+            
+            $fileName = 'STOCKVALUATIONREPORT-'.time().$company_id.'.xlsx';
+            $productIds = SupplierSpecialPrice::pluck('product_id')->toArray();
+            $supplierSpecialPrices = Product::whereIn('id',$productIds)->get();
+            
+            $arr = [];
+            $stockValuationExports = [];
 
-            $stockValuationExports[] = $arr;
+            foreach($supplierSpecialPrices as $supplierSpecialPrice){
+                $arr['reference'] = $supplierSpecialPrice->reference.$supplierSpecialPrice->reference_number;
+                $arr['name'] =  $supplierSpecialPrice->name;
+                $arr['stock'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
+                    $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
+                })->count();
+                $arr['sales_stock_value'] = Product::get()->sum('price');
+                $arr['purchase_stock_value'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
+                    $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
+                })->get()->sum('amount_with_out_vat');
+                
+                $stockValuationExports[] = $arr;
+            }
+            Excel::store(new StockValuationExport($stockValuationExports), 'public/xlsx/'.$fileName);
+
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+            ]);
         }
-        Excel::store(new StockValuationExport($stockValuationExports), 'public/xlsx/'.$fileName);
-
-        return response()->json([
-            'status' => true,
-            'url' => url('/storage/xlsx/'.$fileName),
-         ]);
         
     }
     public function ofEvolution(Request $request,$company_id){
