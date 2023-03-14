@@ -1268,11 +1268,12 @@ class ReportExportController extends Controller
                 $arr['stock'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
                     $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
                 })->count();
+                $arr['category'] =  $supplierSpecialPrice->product_category_name;
                 $arr['sales_stock_value'] = Product::get()->sum('price');
                 $arr['purchase_stock_value'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
                     $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
                 })->get()->sum('amount_with_out_vat');
-                
+
                 $stockValuationExports[] = $arr;
             }
             Excel::store(new StockValuationExport($stockValuationExports), 'public/xlsx/'.$fileName);

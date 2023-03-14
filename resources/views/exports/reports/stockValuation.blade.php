@@ -29,6 +29,7 @@
             <td>{{$stockValuationExport['stock']}}</td>
             <td>{{$stockValuationExport['sales_stock_value']}}</td>
             <td>{{$stockValuationExport['purchase_stock_value']}}</td>
+            <td>{{$stockValuationExport['category']}}</td>
         </tr>
         @endforeach
     </tbody>
