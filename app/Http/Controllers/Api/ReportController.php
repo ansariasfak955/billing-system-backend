@@ -697,6 +697,28 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
+            foreach($clients as $client){
+                $arr['name'] = $client->legal_name;
+                $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','pending')->count();
+                $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','refused')->count();
+                $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','in progress')->count();
+                $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','closed')->count();
+                $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->count();
+                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
+
+                $data[] = $arr;
+            }
+            foreach($clients as $client){
+                $arr['name'] = $client->legal_name;
+                $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','pending invoice')->count();
+                $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','invoiced')->count();
+                $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','in progress')->count();
+                $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('status','closed')->count();
+                $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->count();
+                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
+
+                $data[] = $arr;
+            }
             
             return response()->json([
                 "status" => true,
