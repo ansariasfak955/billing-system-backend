@@ -50,22 +50,64 @@ use App\Exports\ReportExport\InvoiceByItemEvoluationExport;
 use App\Exports\ReportExport\PurchaseByProviderExport;
 use App\Exports\ReportExport\PurchasesByItemExport;
 use App\Exports\ReportExport\TaxSummaryExport;
+use App\Exports\ReportExport\OverViewExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
 
 class ReportExportController extends Controller
 {
-    public function clientSalesExport(Request $request, $company_id){
-        $validator = Validator::make($request->all(),[
-            'type' => 'required'
-        ]);
-        if($validator->fails()){
+    public function overviewExport(Request $request,$company_id){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables); 
+
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $invoice_table = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoice_table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $pruchaseReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($pruchaseReceiptTable);
+
+        if($request->type == 'overview'){
+            $fileName = 'OVERVIEWREPORT-'.time().$company_id.'.xlsx';
+
+                $arr = [];
+                $overViewExports = [];
+
+                $arr['Sales'] = Item::where('type', 'inv')->sum('subtotal');
+                $arr['Expenses'] = InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount');
+                $arr['Profit'] = Item::where('type', 'inv')->sum('subtotal') - InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount');
+                $arr['Invoiced'] = InvoiceReceipt::filter($request->all())->where('type', 'inv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount');
+                $arr['Paid'] = InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount');
+                $arr['Unpaid'] = InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '0')->sum('amount');
+                $arr['PInvoiced'] = PurchaseReceipt::filter($request->all())->where('type', 'pinv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount');
+                $arr['PPaid'] = PurchaseReceipt::filter($request->all())->where('type', 'pinv')->where('paid', '1')->sum('amount');
+                $arr['PUnpaid'] = PurchaseReceipt::filter($request->all())->where('type', 'pinv')->where('paid', '0')->sum('amount');
+
+                $overViewExports[] = $arr;
+
+            Excel::store(new OverViewExport($overViewExports), 'public/xlsx/'.$fileName);
+
+            
             return response()->json([
-                'status' => false,
-                'message' => $validator->errors()->first()
-            ]);
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+
         }
+    }
+    public function clientSalesExport(Request $request, $company_id){
 
         $salesTables = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($salesTables);
