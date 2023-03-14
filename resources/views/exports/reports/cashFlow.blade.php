@@ -16,6 +16,10 @@
             <th>Showing:</th>
             <td>data</td>
         </tr>
+    </thead>
+</table>
+<table>
+    <thead>
         <tr>
             <th>Cash Flow Report:</th>
         </tr>
@@ -57,9 +61,47 @@
             <td>{{$cashFlowExport['employee']}}</td>
             <td>{{$cashFlowExport['payment_option']}}</td>
             <td>{{$cashFlowExport['amount']}}</td>
-            <td></td>
+            <td>{{$cashFlowExport['payment_option']}}</td>
             <td>{{($cashFlowExport['paid']) ? 'yes' : 'no'}}</td>
         </tr>
         @endforeach
     </tbody>
+</table>
+<table>
+    <thead>
+        <tr>
+            <th>Deposit Report:</th>
+        </tr>
+        <tr>
+            <th>Invoices</th>
+            <td>20</td>
+        </tr>
+        <tr>
+            <th>Account Deposits</th>
+            <td>30</td>
+        </tr>
+    </thead>
+</table>
+<table>
+    <thead>
+        <tr>
+            <th>Withdrawals Report:</th>
+        </tr>
+        <tr>
+            <th>Refunds</th>
+            <td>30</td>
+        </tr>
+        <tr>
+            <th>Purchases</th>
+            <td>30</td>
+        </tr>
+        <tr>
+            <th>Tickets and other expenses</th>
+            <td>30</td>
+        </tr>
+        <tr>
+            <th>Account Withdrawals</th>
+            <td>30</td>
+        </tr>
+    </thead>
 </table>
