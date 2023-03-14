@@ -2153,9 +2153,9 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-        
-        $supplierSpecialPrices = SupplierSpecialPrice::get();
-        // dd($supplierSpecialPrices);
+        $productIds = SupplierSpecialPrice::pluck('product_id')->toArray();
+        $supplierSpecialPrices = Product::whereIn('id',$productIds)->get();
+        // return $supplierSpecialPrices;
 
         $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
            
@@ -2163,11 +2163,15 @@ class ReportController extends Controller
         $data = [];
 
         foreach($supplierSpecialPrices as $supplierSpecialPrice){
-            $arr['reference'] = 'PRO00001';
-            $arr['name'] = $supplierSpecialPrice->product_name;
-            $arr['stock'] = '3.00';
-            $arr['sales_stock_value'] = '300.00';
-            $arr['purchase_stock_value'] = '300.00';
+            $arr['reference'] = $supplierSpecialPrice->reference.$supplierSpecialPrice->reference_number;
+            $arr['name'] = $supplierSpecialPrice->name;
+            $arr['stock'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
+                $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
+            })->count();
+            $arr['sales_stock_value'] = $supplierSpecialPrice->amount;
+            $arr['purchase_stock_value'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($supplierSpecialPrice) {
+                $query->where('reference_id', $supplierSpecialPrice->id)->whereIn('reference',['PRO']);
+            })->get()->sum('amount_with_out_vat');
 
             $data[] = $arr;
         }
