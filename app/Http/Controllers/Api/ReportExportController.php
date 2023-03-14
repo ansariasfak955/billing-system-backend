@@ -51,6 +51,7 @@ use App\Exports\ReportExport\PurchaseByProviderExport;
 use App\Exports\ReportExport\PurchasesByItemExport;
 use App\Exports\ReportExport\TaxSummaryExport;
 use App\Exports\ReportExport\OverViewExport;
+use App\Exports\ReportExport\SalesOverViewExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -104,6 +105,53 @@ class ReportExportController extends Controller
                 'status' => true,
                 'url' => url('/storage/xlsx/'.$fileName),
              ]);
+
+        }
+    }
+    public function salesOverviewExport(Request $request,$company_id){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_users';
+        User::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        if($request->type =='overview'){
+            $fileName = 'SALESOVERVIEWREPORT-'.time().$company_id.'.xlsx';
+
+            $arr = [];
+            $salesOverViewExports = [];
+
+            $arr['status'] = '';
+            $arr['quantity'] = '';
+            $arr['amount'] = '';
+
+            $salesOverViewExports[] = $arr;
+
+        Excel::store(new SalesOverViewExport($salesOverViewExports), 'public/xlsx/'.$fileName);
+
+        
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+         ]);
 
         }
     }
