@@ -401,6 +401,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('tax-summary-export', 'ReportExportController@taxSummary');
             Route::post('overview-export', 'ReportExportController@overviewExport');
             Route::post('sales-overview-export', 'ReportExportController@salesOverviewExport');
+            Route::post('technical-overview-export', 'ReportExportController@technicalServiceOverview');
 
 
 

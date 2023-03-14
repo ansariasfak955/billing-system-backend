@@ -52,6 +52,7 @@ use App\Exports\ReportExport\PurchasesByItemExport;
 use App\Exports\ReportExport\TaxSummaryExport;
 use App\Exports\ReportExport\OverViewExport;
 use App\Exports\ReportExport\SalesOverViewExport;
+use App\Exports\ReportExport\TechnicalOverViewExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -146,6 +147,43 @@ class ReportExportController extends Controller
             $salesOverViewExports[] = $arr;
 
         Excel::store(new SalesOverViewExport($salesOverViewExports), 'public/xlsx/'.$fileName);
+
+        
+        return response()->json([
+            'status' => true,
+            'url' => url('/storage/xlsx/'.$fileName),
+         ]);
+
+        }
+    }
+    public function technicalServiceOverview(Request $request,$company_id){
+        $technicalTables = 'company_'.$request->company_id.'_technical_tables';
+        TechnicalTable::setGlobalTable($technicalTables); 
+
+        $technicalIncident = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($technicalIncident);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+        if($request->type =='overview'){
+            $fileName = 'TECHNICALSERVICEOVERVIEWREPORT-'.time().$company_id.'.xlsx';
+
+            $arr = [];
+            $technicalOverviewExports = [];
+
+            $arr['status'] = '';
+            $arr['quantity'] = '';
+            $arr['amount'] = '';
+
+            $technicalOverviewExports[] = $arr;
+
+        Excel::store(new TechnicalOverViewExport($technicalOverviewExports), 'public/xlsx/'.$fileName);
 
         
         return response()->json([
