@@ -2172,9 +2172,9 @@ class ReportController extends Controller
                 })->get()->sum('amount');
                 // dd($invoiceAmount);
             $arr['name'] = $paymentOption->name;
-            $arr['deposit'] = $deposit;
-            $arr['withdrawals'] = '';
-            $arr['balance'] = $deposit - $withdrawal;
+            $arr['deposit'] = $deposit + $invoiceAmount;
+            $arr['withdrawals'] = $withdrawal;
+            $arr['balance'] = (($invoiceAmount + $deposit) - $withdrawal);
             
 
             $data[] = $arr;
@@ -2225,7 +2225,7 @@ class ReportController extends Controller
             $arr['name'] = \Auth::user()->name;
             $arr['deposit'] = $deposit + $invoiceAmount;
             $arr['withdrawals'] = $withdrawal;
-            $arr['balance'] = $invoiceAmount - $deposit;
+            $arr['balance'] = (($invoiceAmount + $deposit) -  $withdrawal);
 
             $data[] = $arr;
         // }
