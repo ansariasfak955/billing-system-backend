@@ -74,5 +74,33 @@ class InvoiceTableFilter extends ModelFilter
         $startDate = \Carbon\Carbon::parse($date);
         return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
     }
+    public function year($year)
+    {
+        return $this->whereYear('date',$year);
+    }
+    public function clientCategory($clientCategory)
+    {
+        return $this->whereHas('client', function($q) use ($clientCategory){
+            $q->whereHas('category', function($q) use ($clientCategory){
+                $q ->where('client_category', $clientCategory);
+            });  
+        });
+    }
+    public function productId($productId)
+    {
+        return $this->whereHas('items', function($q) use ($productId){
+            $q->where('reference_id', $productId);
+        });
+    }
+    public function productType($productType)
+    {
+        return $this->whereHas('items', function($q) use ($productType){
+            $q->where('reference', $productType);
+        });
+    }
+    public function agentId($agentId)
+    {
+        return $this->where('agent_id', $agentId);
+    }
 
 }

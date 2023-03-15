@@ -133,13 +133,38 @@ class ReportController extends Controller
             "expense_distribution" => 
             [
                 [
-                    "type" => "bar", 
-                    "label" => "Personnel Expenses", 
+                    "type" => "pie", 
+                    "label" => "Transporte", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "2900" 
+                        "600" 
+                    ] 
+                ],
+                [
+                    "type" => "pie", 
+                    "label" => "Seguros", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "20" 
+                    ] 
+                ],
+                [
+                    "type" => "pie", 
+                    "label" => "Service purchases", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "30" 
+                    ] 
+                ],
+                [
+                    "type" => "pie", 
+                    "label" => "Product purchases", 
+                    "backgroundColor" => "#26C184", 
+                    "data" => [
+                        "30" 
                     ] 
                 ]
+
             ]  
         ];  
         return response()->json([
@@ -176,7 +201,7 @@ class ReportController extends Controller
             $column = 'amount_with_out_vat';
         }
 
-        // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         
         if($request->type == "clients"){
             $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
@@ -189,7 +214,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column),
+                             InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference', $referenceType)->get()->sum($column),
                             ]
                         ];
             }
@@ -290,16 +315,26 @@ class ReportController extends Controller
 
             $client_ids = InvoiceTable::pluck('client_id')->toArray();
             $clients = Client::whereIn('id',$client_ids)->get();
-            // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
 
-            foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
-                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
-                $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount_paid');
-                $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum('amount_due');
-                $data[] = $arr;
+            if($request->type == 'normal_invoice'){
+                foreach($clients as $client){
+                    $arr['name'] = $client->legal_name;
+                    $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
+                    $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_paid');
+                    $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due');
+                    $data[] = $arr;
+                }
+            }else{
+                foreach($clients as $client){
+                    $arr['name'] = $client->legal_name;
+                    $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
+                    $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_paid');
+                    $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due');
+                    $data[] = $arr;
+                }
             }
             
             return response()->json([
@@ -339,14 +374,15 @@ class ReportController extends Controller
             $column = 'amount_with_out_vat';
             }
 
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
 
             $arr = [];
             $data = [];
 
                 $arr['name'] = \Auth::user()->name;
-                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
-                $arr['paid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount_paid');
-                $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount_due');
+                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column);
+                $arr['paid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_paid');
+                $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_due');
 
                 $data[] = $arr;
             
@@ -393,9 +429,8 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
-                $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                })->count();
+                $units = Item::where('reference_id', $product->id)->whereIn('reference',['PRO'])->sum('quantity');
+                $arr['units'] = $units;
                 $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
                     $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
                 })->get()->sum('amount_with_out_vat');
@@ -406,9 +441,8 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['units'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                })->count();
+                $units = Item::where('reference_id', $service->id)->whereIn('reference',['SER'])->sum('quantity');
+                $arr['units'] = $units;
                 $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
                     $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
                 })->get()->sum('amount_with_out_vat');
@@ -566,7 +600,7 @@ class ReportController extends Controller
             ];
 
         }elseif( $request->type == "clients" ){
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
             $clients = Client::whereIn('id',$client_ids)->get();
             $data = [];
@@ -577,7 +611,7 @@ class ReportController extends Controller
                         "label" => "" .  $client->legal_name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             SalesEstimate::filter($request->all())->where('client_id',$client->id)->get()->sum($column),
+                             SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column),
                             ]
                         ];
             }
@@ -703,7 +737,7 @@ class ReportController extends Controller
                     $arr['name'] = $client->legal_name;
                     $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','pending')->count();
                     $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','refused')->count();
-                    $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
+                    $arr['in_progress'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
                     $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','closed')->count();
                     $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
                     $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
@@ -713,9 +747,9 @@ class ReportController extends Controller
             }else{
                 foreach($clients as $client){
                     $arr['name'] = $client->legal_name;
-                    $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','pending invoice')->count();
-                    $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','invoiced')->count();
-                    $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
+                    $arr['pending_invoice'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','pending invoice')->count();
+                    $arr['invoiced'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','invoiced')->count();
+                    $arr['in_progress'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
                     $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','closed')->count();
                     $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
                     $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
@@ -763,7 +797,7 @@ class ReportController extends Controller
 
             $arr = [];
             $data = [];
-
+            if($request->type == 'Sales Estimate'){
                 $arr['name'] = \Auth::user()->name;
                 $arr['pending'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('status','pending')->count();
                 $arr['refused'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('status','refused')->count();
@@ -773,6 +807,28 @@ class ReportController extends Controller
                 $arr['amount'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
 
                 $data[] = $arr;
+            }elseif($request->type == 'Sales Order'){
+                $arr['name'] = $client->legal_name;
+                $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','pending')->count();
+                $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','refused')->count();
+                $arr['in_progress'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
+                $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','closed')->count();
+                $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
+                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
+
+                $data[] = $arr;
+            }else{
+                $arr['name'] = $client->legal_name;
+                $arr['pending_invoice'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','pending invoice')->count();
+                $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','invoiced')->count();
+                $arr['in_progress'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
+                $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','closed')->count();
+                $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
+                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
+
+                $data[] = $arr;
+            }
+
             
         return response()->json([
             "status" => true,
@@ -1967,18 +2023,20 @@ class ReportController extends Controller
         $data = [];
 
         foreach($paymentOptions as $paymentOption){
+            $deposit =  Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
+                $query->where('payment_option', $paymentOption->id)->where('type','deposit');
+            })->get()->sum('amount');
+            $withdrawal = Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
+                $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
+            })->get()->sum('amount');
+            $invoiceAmount = InvoiceTable::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
+                $query->where('id', $paymentOption->id);
+                })->get()->sum('amount');
+                // dd($invoiceAmount);
             $arr['name'] = $paymentOption->name;
-            $arr['deposit'] = Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
-                                $query->where('payment_option', $paymentOption->id)->where('type','deposit');
-                                })->get()->sum('amount');
-            $arr['withdrawals'] = Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
-                                    $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
-                                    })->get()->sum('amount');
-            $arr['balance'] = Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
-                                $query->where('payment_option', $paymentOption->id)->where('type','deposit');
-                                })->get()->sum('amount') - Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
-                                $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
-                                })->get()->sum('amount');
+            $arr['deposit'] = $deposit;
+            $arr['withdrawals'] = '';
+            $arr['balance'] = $deposit - $withdrawal;
             
 
             $data[] = $arr;
