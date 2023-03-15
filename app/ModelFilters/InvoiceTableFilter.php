@@ -104,9 +104,19 @@ class InvoiceTableFilter extends ModelFilter
             $q->where('reference', $productType);
         });
     }
-    public function agentId($agentId)
+    public function setUsPid($agentId)
     {
         return $this->where('agent_id', $agentId);
+    }
+    public function paymentOption($payment_option)
+    {
+        return $this->whereHas('payment_options', function($q) use ($payment_option){
+            $q ->where('name', $payment_option);
+        });
+    }
+    public function paid($paid)
+    {
+        return $this->where('set_as_paid', $paid);
     }
 
 }
