@@ -340,18 +340,15 @@ class ReportController extends Controller
                     $data[] = $arr;
                 }
             }else{
-                // if($request->type == 'client_category'){
-                    $clientCategory = Client::pluck('client_category')->toArray();
-                    $categories = ClientCategory::whereIn('id',$clientCategory)->get();
-                    // return $categories;
-                    foreach($categories as $category){
-                        $arr['name'] = $category->name;
-                        $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum($column);
-                        $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum('amount_paid');
-                        $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum('amount_due');
-                        $data[] = $arr;
-                    }
-                // }
+                $clientCategory = Client::pluck('client_category')->toArray();
+                $categories = ClientCategory::whereIn('id',$clientCategory)->get();
+                foreach($categories as $category){
+                    $arr['name'] = $category->name;
+                    $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum($column);
+                    $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum('amount_paid');
+                    $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum('amount_due');
+                    $data[] = $arr;
+                }
             }
             
             return response()->json([
