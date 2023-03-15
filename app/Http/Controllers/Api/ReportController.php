@@ -339,7 +339,7 @@ class ReportController extends Controller
                     $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due');
                     $data[] = $arr;
                 }
-            }else{
+            }elseif($request->type == 'client_category'){
                 $clientCategory = Client::pluck('client_category')->toArray();
                 $categories = ClientCategory::whereIn('id',$clientCategory)->get();
                 foreach($categories as $category){
@@ -349,6 +349,31 @@ class ReportController extends Controller
                     $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum('amount_due');
                     $data[] = $arr;
                 }
+            }else{
+            
+                $products = Product::filter($request->all())->get();
+                $services = Service::filter($request->all())->get();
+                // dd($products);
+                   
+                    $arr = [];
+                    $data = [];
+        
+                    foreach($products as $product){
+                        $arr['name'] = $product->name;
+                        $arr['invoiced'] = $product->price;
+                        $arr['paid'] = '-';
+                        $arr['Unpaid'] = '-';
+                        
+        
+                        $data[] = $arr;
+                    }
+                    foreach($services as $service){
+                        $arr['name'] = $service->name;
+                        $arr['invoiced'] = $service->price;
+                        $arr['paid'] = '-';
+                        $arr['Unpaid'] = '-';
+                        $data[] = $arr;
+                    }
             }
             
             return response()->json([
@@ -392,13 +417,21 @@ class ReportController extends Controller
 
             $arr = [];
             $data = [];
-
+            if($request->type == 'normal_invoice'){
                 $arr['name'] = \Auth::user()->name;
                 $arr['invoiced'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column);
                 $arr['paid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_paid');
                 $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_due');
 
                 $data[] = $arr;
+            }else{
+                $arr['name'] = \Auth::user()->name;
+                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column);
+                $arr['paid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid');
+                $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due');
+                
+                $data[] = $arr;
+            }
             
             return response()->json([
                 "status" => true,
