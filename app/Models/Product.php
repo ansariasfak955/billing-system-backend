@@ -61,6 +61,9 @@ class Product extends Model
     public function product_attachments(){
         return $this->hasMany(ProductAttachment::class, 'product_id')->where('type' , attachment);
     }
+    public function productCategory(){
+        return $this->hasOne(ProductCategory::class,'id', 'product_category_id');
+    }
     public function items(){
         return $this->hasMany(Item::class, 'reference_id')->where('reference' , 'pro');
     }

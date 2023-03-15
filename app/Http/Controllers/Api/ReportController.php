@@ -26,6 +26,7 @@ use App\Models\Deposit;
 use App\Models\ExpenseAndInvestment;
 use App\Models\SupplierSpecialPrice;
 use App\Models\ClientCategory;
+use App\Models\ProductCategory;
 use App\Models\IncomeTax;
 use Illuminate\Http\Request;
 
@@ -462,6 +463,9 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
+
+        $product_category_table = 'company_'.$request->company_id.'_product_categories';
+        ProductCategory::setGlobalTable($product_category_table);
         
         $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
         $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
@@ -472,6 +476,7 @@ class ReportController extends Controller
            
             $arr = [];
             $data = [];
+        if($request->type == 'product'){
 
             foreach($products as $product){
                 $arr['name'] = $product->name;
@@ -496,6 +501,19 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
+        }else{
+            // $productCategory = Product::pluck('product_category_id')->toArray();
+            // $categories = ProductCategory::whereIn('id',$productCategory)->get();
+            $categories = Product::get();
+            foreach($categories as $category){
+                $arr['name'] = $category->product_category_name;
+                $units = Item::where('reference_id', $category->id)->whereIn('reference',['PRO'])->sum('quantity');
+                $arr['units'] = $units;
+                $arr['amount'] = $category->price;
+
+                $data[] = $arr;
+            }
+        }
 
         return response()->json([
             "status" => true,
