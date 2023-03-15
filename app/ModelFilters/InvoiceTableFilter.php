@@ -82,13 +82,19 @@ class InvoiceTableFilter extends ModelFilter
     {
         return $this->whereHas('client', function($q) use ($clientCategory){
             $q->whereHas('category', function($q) use ($clientCategory){
-                $q ->where('client_category', $clientCategory);
+                $q ->where('id', $clientCategory);
             });  
+        });
+    }
+    public function clientId($clientId)
+    {
+        return $this->whereHas('client', function($q) use ($clientId){
+            $q ->where('client_id', $clientId);
         });
     }
     public function productId($productId)
     {
-        return $this->whereHas('items', function($q) use ($productId){
+        return $this->whereHas('item', function($q) use ($productId){
             $q->where('reference_id', $productId);
         });
     }

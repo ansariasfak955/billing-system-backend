@@ -25,6 +25,7 @@ use App\Models\TechnicalIncident;
 use App\Models\Deposit;
 use App\Models\ExpenseAndInvestment;
 use App\Models\SupplierSpecialPrice;
+use App\Models\ClientCategory;
 use App\Models\IncomeTax;
 use Illuminate\Http\Request;
 
@@ -307,6 +308,9 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
+        $table = 'company_'.$request->company_id.'_client_categories';
+        ClientCategory::setGlobalTable($table);
+
         if($request->after_tax){
             $column = 'amount';
             }else{
@@ -327,7 +331,7 @@ class ReportController extends Controller
                     $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due');
                     $data[] = $arr;
                 }
-            }else{
+            }elseif($request->type == 'refund_invoice'){
                 foreach($clients as $client){
                     $arr['name'] = $client->legal_name;
                     $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
@@ -335,6 +339,19 @@ class ReportController extends Controller
                     $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due');
                     $data[] = $arr;
                 }
+            }else{
+                // if($request->type == 'client_category'){
+                    $clientCategory = Client::pluck('client_category')->toArray();
+                    $categories = ClientCategory::whereIn('id',$clientCategory)->get();
+                    // return $categories;
+                    foreach($categories as $category){
+                        $arr['name'] = $category->name;
+                        $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum($column);
+                        $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum('amount_paid');
+                        $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$category->id)->get()->sum('amount_due');
+                        $data[] = $arr;
+                    }
+                // }
             }
             
             return response()->json([
