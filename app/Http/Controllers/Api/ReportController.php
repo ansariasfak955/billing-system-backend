@@ -472,7 +472,6 @@ class ReportController extends Controller
         $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
         $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
         $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
-        // dd($products);
            
             $arr = [];
             $data = [];
@@ -501,11 +500,9 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
-        }else{
-            // $productCategory = Product::pluck('product_category_id')->toArray();
-            // $categories = ProductCategory::whereIn('id',$productCategory)->get();
-            $categories = Product::get();
-            foreach($categories as $category){
+        }elseif($request->type == 'category'){
+
+            foreach($products as $category){
                 $arr['name'] = $category->product_category_name;
                 $units = Item::where('reference_id', $category->id)->whereIn('reference',['PRO'])->sum('quantity');
                 $arr['units'] = $units;
@@ -513,6 +510,16 @@ class ReportController extends Controller
 
                 $data[] = $arr;
             }
+            foreach($services as $category){
+                $arr['name'] = $category->product_category_name;
+                $units = Item::where('reference_id', $category->id)->whereIn('reference',['SER'])->sum('quantity');
+                $arr['units'] = $units;
+                $arr['amount'] = $category->price;
+
+                $data[] = $arr;
+            }
+        }else{
+
         }
 
         return response()->json([
