@@ -301,6 +301,52 @@ class ReportController extends Controller
                                         ]
                                     ];
                         }
+                    }elseif($request->product == 'invoice_product'){
+            
+                        $product = Product::where('id', $request->product_id)->first();
+                            $arr = [];
+                            
+                        if ($product) {
+                            
+                                $data['invoice_agents'] = [];
+                                $data['invoice_agents'][] = [
+                                    "type" => "bar",
+                                    "label" => "" .  \Auth::user()->name,
+                                    "backgroundColor" => "#26C184",
+                                    "data" => [
+                                        $product->price,
+                                        ]
+                                    ];
+                                
+                        } else {
+                            return response()->json([
+                                "status" => false,
+                                "message" =>  'Product not found'
+                            ]);
+                        }
+                        
+                    }elseif($request->service == 'invoice_service'){
+        
+                        $service = Service::where('id', $request->service_id)->first();
+        
+                        if ($service) {
+                            
+                            $data['invoice_agents'] = [];
+                            $data['invoice_agents'][] = [
+                                "type" => "bar",
+                                "label" => "" .  \Auth::user()->name,
+                                "backgroundColor" => "#26C184",
+                                "data" => [
+                                    $service->price,
+                                    ]
+                                ];
+                            
+                        } else {
+                            return response()->json([
+                                "status" => false,
+                                "message" =>  'Service not found'
+                            ]);
+                        }
                     }
             return response()->json([
                 "status" => true,
