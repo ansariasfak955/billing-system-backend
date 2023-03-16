@@ -354,9 +354,15 @@ class ReportController extends Controller
             ]);
 
         }else if($request->type == "items"){
-            $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
-            $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-            $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            if($request->client_id){
+                $invoiceIds = InvoiceTable::where('client_id',$request->client_id)->whereIn('reference',$referenceType)->pluck('id')->toArray();
+                $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->whereIn('parent_id',$invoiceIds)->pluck('reference_id')->toArray();
+                $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->whereIn('parent_id',$invoiceIds)->pluck('reference_id')->toArray();
+            }else{
+                $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+                $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            }
             $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
             $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
 
@@ -715,20 +721,20 @@ class ReportController extends Controller
             }
         }elseif($request->type == 'category'){
 
-            foreach($products as $category){
-                $arr['name'] = $category->product_category_name;
-                $units = Item::where('reference_id', $category->id)->whereIn('reference',['PRO'])->sum('quantity');
-                $arr['units'] = $units;
-                $arr['amount'] = $category->price;
+            // foreach($products as $category){
+            //     $arr['name'] = $category->product_category_name;
+            //     $units = Item::where('reference_id', $category->id)->whereIn('reference',['PRO'])->sum('quantity');
+            //     $arr['units'] = $units;
+            //     $arr['amount'] = $category->price;
 
-                $data[] = $arr;
-            }
-            foreach($services as $category){
-                $arr['name'] = $category->product_category_name;
-                $units = Item::where('reference_id', $category->id)->whereIn('reference',['SER'])->sum('quantity');
-                $arr['units'] = $units;
-                $arr['amount'] = $category->price;
-
+            //     $data[] = $arr;
+            // }
+            $categories = ProductCategory::get();
+            foreach($categories as $category){
+                $arr['name'] = $category->name;
+                $arr['invoiced'] = InvoiceTable::filter($request->all())->get()->sum('amount');
+                $arr['paid'] = InvoiceTable::filter($request->all())->get()->sum('amount_paid');
+                $arr['Unpaid'] = InvoiceTable::filter($request->all())->get()->sum('amount_due');
                 $data[] = $arr;
             }
         }
