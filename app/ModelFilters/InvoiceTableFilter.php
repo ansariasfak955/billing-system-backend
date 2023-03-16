@@ -104,7 +104,7 @@ class InvoiceTableFilter extends ModelFilter
             $q->where('reference', $productType);
         });
     }
-    public function setUsPid($agentId)
+    public function agentId($agentId)
     {
         return $this->where('agent_id', $agentId);
     }

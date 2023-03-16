@@ -72,4 +72,20 @@ class SalesTableFilter extends ModelFilter
         $startDate = \Carbon\Carbon::parse($date);
         return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
     }
+    public function clientCategory($clientCategory)
+    {
+        return $this->whereHas('client', function($q) use ($clientCategory){
+            $q->whereHas('category', function($q) use ($clientCategory){
+                $q ->where('id', $clientCategory);
+            });  
+        });
+    }
+    public function year($year)
+    {
+        return $this->whereYear('created_at',$year);
+    }
+    public function agentId($agentId)
+    {
+        return $this->where('agent_id', $agentId);
+    }
 }
