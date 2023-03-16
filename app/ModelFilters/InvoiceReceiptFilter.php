@@ -82,5 +82,9 @@ class InvoiceReceiptFilter extends ModelFilter
        $optionsArr = explode(',', $options);
        return $this->whereIn('payment_option', $optionsArr);
     }
+    public function year($year)
+    {
+        return $this->whereYear('created_at',$year);
+    }
 
 }

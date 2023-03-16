@@ -76,7 +76,7 @@ class InvoiceTableFilter extends ModelFilter
     }
     public function year($year)
     {
-        return $this->whereYear('date',$year);
+        return $this->whereYear('created_at',$year);
     }
     public function clientCategory($clientCategory)
     {
