@@ -238,7 +238,11 @@ class ProductController extends Controller
         $productRate = 'company_'.$request->company_id.'_product_rates';
         ProductRate::setGlobalTable($productRate);
 
-        $product_rate = ProductRate::where('product_id',$product->id)->update(['purchase_price'=>$product->purchase_price]);
+        $product_rate = ProductRate::where('product_id',$product->id)->update([
+            'purchase_price'=>$product->purchase_price,
+            'purchase_margin'=>$product->purchase_margin,
+            'sales_margin'=>$product->sales_margin
+        ]);
 
         return response()->json([
             "status" => true,
