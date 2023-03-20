@@ -78,4 +78,19 @@ class PurchaseReceiptFilter extends ModelFilter
        $optionsArr = explode(',', $options);
        return $this->whereIn('payment_option', $optionsArr);
     }
+    public function year($year)
+    {
+        return $this->whereYear('created_at',$year);
+    }
+    public function endDate($date)
+    {
+        $endDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('created_at', '<=', $endDate->format('Y-m-d'));
+    }
+
+    public function startDate($date)
+    {
+        $startDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('created_at', '>=', $startDate->format('Y-m-d'));
+    }
 }
