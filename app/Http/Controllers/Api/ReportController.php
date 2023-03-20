@@ -52,7 +52,11 @@ class ReportController extends Controller
         InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
         $pruchaseReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
         PurchaseReceipt::setGlobalTable($pruchaseReceiptTable);
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
         $client_id = Client::pluck('id')->toArray();
+        $purchaseReferenceTypes = Reference::where('type', 'Purchase Invoice')->pluck('prefix')->toArray();
+        $invoiceReferenceTypes = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
         $data = [
             "profit" => [
                 [
@@ -60,7 +64,7 @@ class ReportController extends Controller
                     "label" => "Sales", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                         Item::where('type', 'inv')->sum('subtotal')
+                         Item::whereIn('type', $invoiceReferenceTypes)->sum('subtotal')
                     ] 
                 ], 
                 [
@@ -68,7 +72,7 @@ class ReportController extends Controller
                         "label" => "Expenses", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                             InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount')
+                             InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '1')->sum('amount')
                         ]  
                 ], 
                 [
@@ -76,7 +80,7 @@ class ReportController extends Controller
                     "label" => "Profit", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                         Item::where('type', 'inv')->sum('subtotal') - InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount')
+                         Item::whereIn('type', $invoiceReferenceTypes)->sum('subtotal') - InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '1')->sum('amount')
                     ] 
                 ] 
             ], 
@@ -86,7 +90,7 @@ class ReportController extends Controller
                     "label" => "Invoiced", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                         InvoiceReceipt::filter($request->all())->where('type', 'inv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
+                         InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
                     ] 
                 ], 
                 [
@@ -94,7 +98,7 @@ class ReportController extends Controller
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
                     "data" => [
-                         InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '1')->sum('amount')
+                         InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '1')->sum('amount')
                     ]  
                 ], 
                 [
@@ -102,7 +106,7 @@ class ReportController extends Controller
                     "label" => "Unpaid", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                         InvoiceReceipt::filter($request->all())->where('type', 'inv')->where('paid', '0')->sum('amount')
+                         InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '0')->sum('amount')
                     ] 
                 ] 
             ], 
@@ -112,7 +116,7 @@ class ReportController extends Controller
                     "label" => "Invoiced", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                         PurchaseReceipt::filter($request->all())->where('type', 'pinv')->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
+                         PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferenceTypes)->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount')
                     ] 
                 ], 
                 [
@@ -120,7 +124,7 @@ class ReportController extends Controller
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
                     "data" => [
-                         PurchaseReceipt::filter($request->all())->where('type', 'pinv')->where('paid', '1')->sum('amount')
+                         PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferenceTypes)->where('paid', '1')->sum('amount')
                     ] 
                 ], 
                 [
@@ -128,7 +132,7 @@ class ReportController extends Controller
                     "label" => "Unpaid", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                         PurchaseReceipt::filter($request->all())->where('type', 'pinv')->where('paid', '0')->sum('amount')
+                         PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferenceTypes)->where('paid', '0')->sum('amount')
                     ] 
                 ] 
             ],
