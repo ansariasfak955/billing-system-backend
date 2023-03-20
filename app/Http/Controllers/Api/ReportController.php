@@ -216,7 +216,7 @@ class ReportController extends Controller
         if($request->type == "clients"){
             $data = [];
             $data['invoice_client'] = [];
-            if($request->category == 'client_category'){
+            if($request->category == 'client_categories'){
                 $categories = ClientCategory::get();
                 //    return $categories;
                 $arr = [];
@@ -384,33 +384,26 @@ class ReportController extends Controller
 
         if($request->after_tax){
             $column = 'amount';
-            }else{
+        }
+        else{
             $column = 'amount_with_out_vat';
         }
 
             $client_ids = InvoiceTable::pluck('client_id')->toArray();
             $clients = Client::whereIn('id',$client_ids)->get();
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $arr = [];
             $data = [];
+            //no category history
+            $request['clientCategoryNull'] = 1;
+            $arr['name'] = 'No selected category';
+            $arr['invoiced'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column);
+            $arr['paid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid');
+            $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due');
+            $data[] = $arr;
+            unset($request['clientCategoryNull']);
 
-            if($request->type == 'normal_invoice'){
-                foreach($clients as $client){
-                    $arr['name'] = $client->legal_name;
-                    $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
-                    $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_paid');
-                    $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due');
-                    $data[] = $arr;
-                }
-            }elseif($request->type == 'refund_invoice'){
-                foreach($clients as $client){
-                    $arr['name'] = $client->legal_name;
-                    $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
-                    $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_paid');
-                    $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due');
-                    $data[] = $arr;
-                }
-            }elseif($request->type == 'client_category'){
+            if($request->category == 'client_categories'){
+                $arr = [];
                 // $clientCategory = Client::pluck('client_category')->toArray();
                 $categories = ClientCategory::get();
                 foreach($categories as $category){
@@ -421,49 +414,14 @@ class ReportController extends Controller
                     $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due');
                     $data[] = $arr;
                 }
-            }elseif($request->type == 'invoice_product'){
-            
-                $referenceArr = ['INV','RET'];
-                $data = [];
-                foreach($referenceType as $type){
-                    $arr = [];
-                    $items = [];
-        
-                    if($type == 'INV'){
-                        $items = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($request) {
-                            $query->where('reference_id', $request->id)->where('reference',   $request->reference);
-                        })->get();
-                    }else{
-                        if($type == 'RET'){
-                            $items = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($request) {
-                                $query->where('reference_id', $request->id)->where('reference',   $request->reference);
-                            })->get();
-                        }
-                    }
-                    if(count($items)){
-        
-                       foreach($items as $item){
-                            $arr['client'] = $item->client_name;
-                            $arr['amount'] = $item->items->where('reference_id', $request->id)->where('reference', $request->reference)->sum('amount');
-                            $arr['paid'] = '_';
-                            $arr['Unpaid'] = '_';
-                            $data[] = $arr;
-                       }
-                    }
+            }else{
+                foreach($clients as $client){
+                    $arr['name'] = $client->legal_name;
+                    $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
+                    $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_paid');
+                    $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due');
+                    $data[] = $arr;
                 }
-        
-                if( !empty($data) ){
-                    return response()->json([
-                    'success' => true,
-                    'data' => $data,
-                    ]);
-                }
-                return response()->json([
-                    'success' => false,
-                    'data' => [],
-                    'message' => 'No data found!',
-                ]);
-                
             }
             
             return response()->json([
@@ -496,113 +454,39 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-            
         if($request->after_tax){
             $column = 'amount';
-            }else{
+        }else{
             $column = 'amount_with_out_vat';
-            }
+        }
 
-            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            if($request->client_id){
-                $invoiceIds = InvoiceTable::where('client_id',$request->client_id)->whereIn('reference',$referenceType)->pluck('id')->toArray();
-                $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->whereIn('parent_id',$invoiceIds)->pluck('reference_id')->toArray();
-                $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->whereIn('parent_id',$invoiceIds)->pluck('reference_id')->toArray();
-            }else{
-                $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-                $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-            }
-    
-            $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-            $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        if($request->client_id){
+            $invoiceIds = InvoiceTable::where('client_id',$request->client_id)->whereIn('reference',$referenceType)->pluck('id')->toArray();
+            $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->whereIn('parent_id',$invoiceIds)->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->whereIn('parent_id',$invoiceIds)->pluck('reference_id')->toArray();
+        }else{
+            $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+        }
 
-            $arr = [];
-            $data = [];
-            if($request->type == 'normal_invoice'){
-                $arr['name'] = \Auth::user()->name;
-                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column);
-                $arr['paid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_paid');
-                $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_due');
+        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
+        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
 
-                $data[] = $arr;
-            }elseif($request->type == 'refund_invoice'){
-                $arr['name'] = \Auth::user()->name;
-                $arr['invoiced'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column);
-                $arr['paid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid');
-                $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due');
-                
-                $data[] = $arr;
-            }elseif($request->type == 'client_product'){
+        $arr = [];
+        $data = [];
+        $arr['name'] = \Auth::user()->name;
+        $arr['invoiced'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column);
+        $arr['paid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_paid');
+        $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_due');
 
-                foreach($products as $product){
-                    $arr['name'] = $product->name;
-                    $arr['reference'] = $product->reference.''.$product->reference_number;
-                    $units = Item::where('reference_id', $product->id)->whereIn('reference',['PRO'])->sum('quantity');
-                    $arr['units'] = $units;
-                    $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                    })->get()->sum('amount_with_out_vat');
-                    
-    
-                    $data[] = $arr;
-                }
-                foreach($services as $service){
-                    $arr['name'] = $service->name;
-                    $arr['reference'] = $service->reference.''.$service->reference_number;
-                    $units = Item::where('reference_id', $service->id)->whereIn('reference',['SER'])->sum('quantity');
-                    $arr['units'] = $units;
-                    $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                    })->get()->sum('amount_with_out_vat');
-    
-                    $data[] = $arr;
-                }
-            }elseif($request->type == 'invoice_product'){
-            
-                $product = Product::where('id', $request->product_id)->first();
-                    $arr = [];
-                    
-                if ($product) {
-                    
-                        $arr['name'] = $product->name;
-                        $arr['invoiced'] = $product->price;
-                        $arr['paid'] = '-';
-                        $arr['Unpaid'] = '-';
-                        
+        $data[] = $arr;
         
-                        $data = $arr;
-                } else {
-                    return response()->json([
-                        "status" => false,
-                        "message" =>  'Product not found'
-                    ]);
-                }
-                
-            }elseif($request->type == 'invoice_service'){
-
-                $service = Service::where('id', $request->service_id)->first();
-
-                if ($service) {
-                    
-                    $arr['name'] = $service->name;
-                    $arr['invoiced'] = $service->price;
-                    $arr['paid'] = '-';
-                    $arr['Unpaid'] = '-';
-                    
-    
-                    $data = $arr;
-                } else {
-                    return response()->json([
-                        "status" => false,
-                        "message" =>  'Service not found'
-                    ]);
-                }
-            }
-            
-            return response()->json([
-                "status" => true,
-                "data" =>  $data
-            ]);
+        
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
     }
     public function invoiceItemsHistory(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
@@ -648,43 +532,41 @@ class ReportController extends Controller
            
             $arr = [];
             $data = [];
-        if($request->type == 'product'){
+        if($request->category == 'catalog'){
 
             foreach($products as $product){
+                $request['product_id'] = $product->id;
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $units = Item::where('reference_id', $product->id)->whereIn('reference',['PRO'])->sum('quantity');
                 $arr['units'] = $units;
-                $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                })->get()->sum('amount_with_out_vat');
+                $arr['amount'] = InvoiceTable::filter($request->all())->get()->sum('amount_with_out_vat');
                 
 
                 $data[] = $arr;
             }
             foreach($services as $service){
+                $request['service_id'] = $service->id;
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $units = Item::where('reference_id', $service->id)->whereIn('reference',['SER'])->sum('quantity');
                 $arr['units'] = $units;
-                $arr['amount'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                })->get()->sum('amount_with_out_vat');
+                $arr['amount'] = InvoiceTable::filter($request->all())->get()->sum('amount_with_out_vat');
 
                 $data[] = $arr;
             }
-        }elseif($request->type == 'category'){
+        }else{
 
-            // foreach($products as $category){
-            //     $arr['name'] = $category->product_category_name;
-            //     $units = Item::where('reference_id', $category->id)->whereIn('reference',['PRO'])->sum('quantity');
-            //     $arr['units'] = $units;
-            //     $arr['amount'] = $category->price;
-
-            //     $data[] = $arr;
-            // }
             $categories = ProductCategory::get();
+            $request['productCategoryNull'] = 1;
+            $arr['name'] = 'Not found in catalog';
+            $arr['invoiced'] = InvoiceTable::filter($request->all())->get()->sum('amount');
+            $arr['paid'] = InvoiceTable::filter($request->all())->get()->sum('amount_paid');
+            $arr['Unpaid'] = InvoiceTable::filter($request->all())->get()->sum('amount_due');
+            unset($request['productCategoryNull']);
+            $data[] = $arr;
             foreach($categories as $category){
+                $request['productCategory'] = $category->id;
                 $arr['name'] = $category->name;
                 $arr['invoiced'] = InvoiceTable::filter($request->all())->get()->sum('amount');
                 $arr['paid'] = InvoiceTable::filter($request->all())->get()->sum('amount_paid');
@@ -1003,7 +885,7 @@ class ReportController extends Controller
                     $data[] = $arr;
                 }
             
-            }elseif($request->category == 'client_category'){
+            }elseif($request->category == 'client_categories'){
                 $categories = ClientCategory::get();
                 foreach($categories as $category){
                     $request['clientCategory'] = $category->id;
