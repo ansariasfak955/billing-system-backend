@@ -64,7 +64,7 @@ class ReportController extends Controller
                     "label" => "Sales", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                         Item::whereIn('type', $invoiceReferenceTypes)->sum('subtotal')
+                         Item::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->sum('subtotal')
                     ] 
                 ], 
                 [
@@ -80,7 +80,7 @@ class ReportController extends Controller
                     "label" => "Profit", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                         Item::whereIn('type', $invoiceReferenceTypes)->sum('subtotal') - InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '1')->sum('amount')
+                         Item::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->sum('subtotal') - InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '1')->sum('amount')
                     ] 
                 ] 
             ], 
