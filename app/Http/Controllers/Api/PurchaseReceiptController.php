@@ -220,7 +220,7 @@ class PurchaseReceiptController extends Controller
             $paidRec = '1';
         }
         if($CreateRec){
-            $receipt = InvoiceReceipt::create([
+            $receipt = PurchaseReceipt::create([
                 'purchase_id' => $purchaseReceipt->purchase_id,
                 'concept' => $request->concept,
                 'payment_option' => $request->payment_option,
