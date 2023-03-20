@@ -162,11 +162,77 @@ class PurchaseReceiptController extends Controller
         PurchaseTable::setGlobalTable($purchaseTable);
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
-        $receipt = PurchaseReceipt::where('id', $request->purchase_receipt)->first();
+ 
+        $purchaseReceipt = PurchaseReceipt::where('id', $request->purchase_receipt)->first();
         
-        $receipt->update($request->except('company_id', '_method'));
+        $purchase  = PurchaseTable::find($purchaseReceipt->purchase_id);
 
+        $fullAmount = 0;
+        $CreateRec = 1;
+        $paid = '0';
+        $amountToCut = $request->amount ?? 0;
+        if(round($request->amount,2) == round($purchase->amount_due, 2)){
+            if($request->paid){
 
+                $CreateRec = 0;
+                $paid = '1';
+            }
+
+            $amountToCut = 0;
+            $fullAmount =  1;
+        }
+        if( (!$purchase->amount_due || $purchase->amount_due == 0.00) && $request->amount){
+            return response()->json([
+                "status" => false,
+                "message" => 'All pending amount is already  been paid!'
+            ]);
+        }
+        if($fullAmount){
+            $status =  'paid';
+        }else{
+            $status =  'partially paid';
+        }
+        // return [$CreateRec, $amountToCut, $status];
+        $amount = $purchaseReceipt->amount;
+        // $purchaseReceipt->amount = $amount-$amountToSub;
+        if( round($amount,2) - round($request->amount, 2) != 0.00){
+
+            $purchaseReceipt->amount = $amount-$amountToCut;
+        }else{
+            $CreateRec = 0;
+            $fullAmount = 1;
+        }
+        if($request->paid){
+            if($fullAmount){
+
+                $purchaseReceipt->paid = '1';
+            }
+            if($purchase){
+
+                $purchase->status =  $status;
+                $purchase->save();
+            }
+        }
+        $purchaseReceipt->save(); 
+        $receipt =null;
+        $paidRec = '0';
+        if($request->paid){
+            $paidRec = '1';
+        }
+        if($CreateRec){
+            $receipt = InvoiceReceipt::create([
+                'purchase_id' => $purchaseReceipt->purchase_id,
+                'concept' => $request->concept,
+                'payment_option' => $request->payment_option,
+                'bank_account' => $request->bank_account,
+                'payment_date' => $request->payment_date,
+                'amount' => $request->amount,
+                'expiration_date' => $request->expiration_date,
+                'paid' => $paidRec,
+                'paid_by' => $request->paid_by
+            ]);
+        }
+        $id =  ($receipt ? $receipt->id : $purchaseReceipt->id);
         return response()->json([
             "status" => true,
             "data" => PurchaseReceipt::with('invoice','items')->where('id', $request->purchase_receipt)->first()

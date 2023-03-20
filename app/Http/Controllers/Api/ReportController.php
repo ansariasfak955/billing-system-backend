@@ -1106,18 +1106,18 @@ class ReportController extends Controller
                        foreach($items as $item){
                             $arr['client'] = $item->client_name;
                             $arr['pending'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($request,$referenceType) {
-                                $query->where('reference_id', $request->id)->where('reference',   $request->reference)>whereIn('type',$referenceType);
+                                $query->where('reference_id', $request->id)->where('reference',   $request->reference)->whereIn('type',$referenceType);
                             })->get('status','pending')->count();
                             $arr['refused'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($request,$referenceType) {
-                                $query->where('reference_id', $request->id)->where('reference',   $request->reference)>whereIn('type',$referenceType);
+                                $query->where('reference_id', $request->id)->where('reference',   $request->reference)->whereIn('type',$referenceType);
                             })->get('status','refused')->count();
                             $arr['accepted'] = SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($request,$referenceType) {
-                                $query->where('reference_id', $request->id)->where('reference',   $request->reference)>whereIn('type',$referenceType);
+                                $query->where('reference_id', $request->id)->where('reference',   $request->reference)->whereIn('type',$referenceType);
                             })->get('status','accepted')->count();
                             $arr['closed'] =  SalesEstimate::with(['items'])->WhereHas('items', function ($query) use ($request,$referenceType) {
-                                $query->where('reference_id', $request->id)->where('reference',   $request->reference)>whereIn('type',$referenceType);
+                                $query->where('reference_id', $request->id)->where('reference',   $request->reference)->whereIn('type',$referenceType);
                             })->get('status','pending')->count();
-                            $arr['amount'] = $item->items->where('reference_id', $request->id)->where('reference', $request->reference)>whereIn('type',$referenceType)->sum('amount');
+                            $arr['amount'] = $item->items->where('reference_id', $request->id)->where('reference', $request->reference)->whereIn('type',$referenceType)->sum('amount');
                             $data[] = $arr;
                        }
                     }
