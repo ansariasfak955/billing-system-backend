@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Awobaz\Compoships\Compoships;
+use EloquentFilter\Filterable;
 
 class Item extends Model
 {
-    use HasFactory, Compoships;
+    use HasFactory, Compoships,Filterable;
     protected $fillable = [
     	'reference',
         'parent_id',
@@ -166,5 +167,9 @@ class Item extends Model
             }
             return 0;
         }
-      }
+    }
+    public function modelFilter()
+    {
+        return $this->provideFilter(\App\ModelFilters\ItemFilter::class);
+    }
 }
