@@ -28,6 +28,7 @@ use App\Models\SupplierSpecialPrice;
 use App\Models\ClientCategory;
 use App\Models\ProductCategory;
 use App\Models\IncomeTax;
+use App\Models\PurchaseTicket;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -2120,6 +2121,8 @@ class ReportController extends Controller
     public function cashFlow(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
+        $ticketTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTicket::setGlobalTable($ticketTables); 
 
         $table = 'company_'.$request->company_id.'_payment_options';
         PaymentOption::setGlobalTable($table);
@@ -2141,10 +2144,13 @@ class ReportController extends Controller
 
         $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
         InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+        $purchaseReceiptTable = 'company_'.$request->company_id.'_purchase_receipts';
+        PurchaseReceipt::setGlobalTable($purchaseReceiptTable);
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
         $invoiceReferences =  Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
+        $purchaseReferences =  Reference::where('type', 'Purchase Invoice')->pluck('prefix')->toArray();
         $returnInvoiceReferences =  Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
         $data = [];
         if($request->type == "overview"){
@@ -2207,7 +2213,7 @@ class ReportController extends Controller
                         "label" => "Purchases", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". 300
+                            "$ ". PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferences)->where('paid', '1')->sum('amount')
                         ] 
                     ], 
                     [
@@ -2215,7 +2221,7 @@ class ReportController extends Controller
                         "label" => "Tickets and other expenses", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". 200
+                            "$ ".PurchaseTicket::filter($request->all())->where('paid', '1')->sum('amount')
                         ] 
                         ],
                     [
@@ -2229,7 +2235,7 @@ class ReportController extends Controller
                 ]
             ];
         }elseif($request->type == 'paymentOption'){
-            $paymentOptions = PaymentOption::filter($request->all())->get();
+            $paymentOptions = PaymentOption::get();
                
                 $data = [];
                 $data['invoice_items'] = [];
@@ -2239,14 +2245,9 @@ class ReportController extends Controller
                             "label" => "" .  $paymentOption->name,
                             "backgroundColor" => "#26C184",
                             "data" => [
-                                // Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
-                                //     $query->where('payment_option', $paymentOption->id)->where('type','deposit');
-                                //     })->get()->sum('amount') - Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
-                                //         $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
-                                //         })->get()->sum('amount'),
-                                    InvoiceTable::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
+                                    InvoiceTable::filter($request->all())->whereHas('payment_options', function ($query) use ($paymentOption) {
                                         $query->where('id', $paymentOption->id);
-                                        })->get()->sum('amount'),
+                                    })->get()->sum('amount'),
                                 ]
                             ];
                 }
@@ -2310,14 +2311,14 @@ class ReportController extends Controller
 
         foreach($paymentOptions as $paymentOption){
             $deposit =  Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
-                $query->where('payment_option', $paymentOption->id)->where('type','deposit');
-            })->get()->sum('amount');
+                $query->where('payment_option', $paymentOption->id);
+            })->where('type','deposit')->get()->sum('amount');
             $withdrawal = Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
-                $query->where('payment_option', $paymentOption->id)->where('type','withdraw');
-            })->get()->sum('amount');
+                $query->where('payment_option', $paymentOption->id);
+            })->where('type','withdraw')->get()->sum('amount');
             $invoiceAmount = InvoiceTable::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
                 $query->where('id', $paymentOption->id);
-                })->get()->sum('amount');
+            })->get()->sum('amount');
                 // dd($invoiceAmount);
             $arr['name'] = $paymentOption->name;
             $arr['deposit'] = $deposit + $invoiceAmount;
