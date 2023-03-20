@@ -143,7 +143,7 @@ class ReportController extends Controller
                     "label" => "Transporte", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        "600" 
+                        "60" 
                     ] 
                 ],
                 [
@@ -203,35 +203,34 @@ class ReportController extends Controller
 
         $table = 'company_'.$request->company_id.'_client_categories';
         ClientCategory::setGlobalTable($table);
+        $productCategorytable = 'company_'.$request->company_id.'_product_categories';
+        ProductCategory::setGlobalTable($productCategorytable);
 
         if($request->after_tax){
-            $column = 'amount';
-            }else{
-            $column = 'amount_with_out_vat';
+            $taxColumn = 'amount';
+        }else{
+            $taxColumn = 'amount_with_out_vat';
         }
 
         $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-        
         if($request->type == "clients"){
-            $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
-            $clients = Client::whereIn('id',$client_ids)->get();
             $data = [];
             $data['invoice_client'] = [];
-            foreach($clients as $client){
-                $data['invoice_client'][] = [
-                        "type" => "bar",
-                        "label" => "" .  $client->legal_name,
-                        "backgroundColor" => "#26C184",
-                        "data" => [
-                             InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference', $referenceType)->get()->sum($column),
-                            ]
-                        ];
-            }
             if($request->category == 'client_category'){
                 $categories = ClientCategory::get();
-                // dd($categories);
+                //    return $categories;
                 $arr = [];
                 $data = [];
+                $request['clientCategoryNull'] = 1;
+                $data['invoice_client'][] = [
+                    "type" => "bar",
+                    "label" => "No Selected Category",
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                            InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn),
+                        ]
+                    ];
+                unset($request['clientCategoryNull']);
                 foreach($categories as $category){
                     $request['clientCategory'] = $category->id;
                     $data['invoice_client'][] = [
@@ -239,44 +238,25 @@ class ReportController extends Controller
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($column),
+                                InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn),
                             ]
                         ];
                 }
-            }elseif($request->product == 'invoice_product'){
-                $referenceArr = ['INV','RET'];
-                $data = [];
-                // $arr = [];
-                foreach($referenceType as $type){
-                    // $arr = [];
-                    $items = [];
-        
-                    if($type == 'INV'){
-                        $items = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($request) {
-                            $query->where('reference_id', $request->id)->where('reference',   $request->reference);
-                        })->get();
-                    }else{
-                        if($type == 'RET'){
-                            $items = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($request) {
-                                $query->where('reference_id', $request->id)->where('reference',   $request->reference);
-                            })->get();
-                        }
-                    }
-                    if(count($items)){
-        
-                       foreach($items as $item){
-                            $data['invoice_client'][] = [
-                                "type" => "bar",
-                                "label" => "" .  $item->client_name,
-                                "backgroundColor" => "#26C184",
-                                "data" => [
-                                    $item->items->where('reference_id', $request->id)->where('reference', $request->reference)->sum('amount')
-                                    ]
-                                ];
-                       }
-                    }
+            }else{
+                $client_ids = InvoiceTable::whereHas('client')->pluck('client_id')->toArray();
+                $clients = Client::whereIn('id',$client_ids)->get();
+
+                foreach($clients as $client){
+                    $data['invoice_client'][] = [
+                    "type" => "bar",
+                    "label" => "" .  $client->legal_name,
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                            InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference', $referenceType)->get()->sum($taxColumn),
+                        ]
+                    ];
                 }
-            }
+            }           
             return response()->json([
                 "status" => true,
                 "data" => $data
@@ -286,72 +266,13 @@ class ReportController extends Controller
             $data = [];
             $data['invoice_agents'] = [];
                 $data['invoice_agents'][] = [
-                        "type" => "bar",
-                        "label" => "" .  \Auth::user()->name,
-                        "backgroundColor" => "#26C184",
-                        "data" => [
-                             InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column),
-                            ]
-                        ];
-                    if($request->client == 'Invoice_client'){
-                        if($request->client_id){
-                            $data['invoice_agents'] = [];
-                            $data['invoice_agents'][] = [
-                                    "type" => "bar",
-                                    "label" => "" .  \Auth::user()->name,
-                                    "backgroundColor" => "#26C184",
-                                    "data" => [
-                                         InvoiceTable::where('client_id',$request->client_id)->where('reference',$referenceType)->get()->sum('amount'),
-                                        ]
-                                    ];
-                        }
-                    }elseif($request->product == 'invoice_product'){
-            
-                        $product = Product::where('id', $request->product_id)->first();
-                            $arr = [];
-                            
-                        if ($product) {
-                            
-                                $data['invoice_agents'] = [];
-                                $data['invoice_agents'][] = [
-                                    "type" => "bar",
-                                    "label" => "" .  \Auth::user()->name,
-                                    "backgroundColor" => "#26C184",
-                                    "data" => [
-                                        $product->price,
-                                        ]
-                                    ];
-                                
-                        } else {
-                            return response()->json([
-                                "status" => false,
-                                "message" =>  'Product not found'
-                            ]);
-                        }
-                        
-                    }elseif($request->service == 'invoice_service'){
-        
-                        $service = Service::where('id', $request->service_id)->first();
-        
-                        if ($service) {
-                            
-                            $data['invoice_agents'] = [];
-                            $data['invoice_agents'][] = [
-                                "type" => "bar",
-                                "label" => "" .  \Auth::user()->name,
-                                "backgroundColor" => "#26C184",
-                                "data" => [
-                                    $service->price,
-                                    ]
-                                ];
-                            
-                        } else {
-                            return response()->json([
-                                "status" => false,
-                                "message" =>  'Service not found'
-                            ]);
-                        }
-                    }
+                "type" => "bar",
+                "label" => "" .  \Auth::user()->name,
+                "backgroundColor" => "#26C184",
+                "data" => [
+                        InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($taxColumn),
+                    ]
+                ];
             return response()->json([
                 "status" => true,
                 "data" => $data
@@ -367,34 +288,63 @@ class ReportController extends Controller
                 $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
                 $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
             }
+
             $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
             $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
 
             $data = [];
             $data['invoice_items'] = [];
-            foreach($products as $product){
-                $data['invoice_items'][] = [
+            if($request->category == 'catalog'){
+
+                foreach($products as $product){
+                    $request['product_id'] = $product->id;
+                    $data['invoice_items'][] = [
                         "type" => "bar",
                         "label" => "" .  $product->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                                $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                                })->get()->sum('amount'),
+                                InvoiceTable::filter($request->all())->get()->sum('amount'),
                             ]
-                        ];
-            }
-            foreach($services as $service){
-                $data['invoice_items'][] = [
+                    ];
+                }
+                foreach($services as $service){
+                    $request['service_id'] = $service->id;
+                    $data['invoice_items'][] = [
                         "type" => "bar",
                         "label" => "" .  $service->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                                $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                                })->get()->sum('amount'),
+                                InvoiceTable::filter($request->all())->get()->sum('amount'),
                             ]
-                        ];
+                    ];
+                }
+            }else{
+                $categories = ProductCategory::get();
+                //    return $categories;
+                $arr = [];
+                $data = [];
+                $request['productCategoryNull'] = 1;
+                $data['invoice_items'][] = [
+                    "type" => "bar",
+                    "label" => "Not found in catalog
+                    ",
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                            InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn),
+                        ]
+                    ];
+                unset($request['productCategoryNull']);
+                foreach($categories as $category){
+                    $request['productCategory'] = $category->id;
+                    $data['invoice_items'][] = [
+                        "type" => "bar",
+                        "label" => "" .  $category->name,
+                        "backgroundColor" => "#26C184",
+                        "data" => [
+                            InvoiceTable::filter($request->all())->get()->sum($taxColumn),
+                        ]
+                    ];
+                }
             }
             
             return response()->json([

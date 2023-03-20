@@ -172,4 +172,7 @@ class Item extends Model
     {
         return $this->provideFilter(\App\ModelFilters\ItemFilter::class);
     }
+    public function product(){
+        return $this->hasOne(Product::class,['id', 'reference'], ['reference_id', 'reference']);
+    }
 }

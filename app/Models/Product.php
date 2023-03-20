@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use EloquentFilter\Filterable;
+use Awobaz\Compoships\Compoships;
+
 use DB;
 
 class Product extends Model
 {
-    use HasFactory,Filterable;
+    use HasFactory, Compoships,Filterable;
     
     protected $fillable = ['name', 'price', 'reference', 'reference_number', 'purchase_price', 'barcode', 'image', 'description', 'private_comments', 'created_from', 'purchase_margin', 'sales_margin', 'discount', 'minimum_price', 'tax', 'images'];
 
