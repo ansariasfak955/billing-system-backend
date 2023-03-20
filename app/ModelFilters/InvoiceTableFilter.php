@@ -66,13 +66,13 @@ class InvoiceTableFilter extends ModelFilter
     public function endDate($date)
     {
         $endDate = \Carbon\Carbon::parse($date);
-        return $this->whereDate('date', '<=', $endDate->format('Y-m-d'));
+        return $this->whereDate('created_at', '<=', $endDate->format('Y-m-d'));
     }
 
     public function startDate($date)
     {
         $startDate = \Carbon\Carbon::parse($date);
-        return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
+        return $this->whereDate('created_at', '>=', $startDate->format('Y-m-d'));
     }
     public function year($year)
     {
@@ -142,7 +142,7 @@ class InvoiceTableFilter extends ModelFilter
     public function paymentOption($payment_option)
     {
         return $this->whereHas('payment_options', function($q) use ($payment_option){
-            $q ->where('name', $payment_option);
+            $q ->where('id', $payment_option);
         });
     }
     public function paid($paid)

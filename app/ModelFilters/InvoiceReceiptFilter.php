@@ -97,4 +97,10 @@ class InvoiceReceiptFilter extends ModelFilter
         $startDate = \Carbon\Carbon::parse($date);
         return $this->whereDate('created_at', '>=', $startDate->format('Y-m-d'));
     }
+    public function agent($id)
+    {
+        return $this->whereHas('invoice', function($q) use ($id){
+            $q->where('agent_id',$id);   
+        });
+    }
 }

@@ -16,7 +16,7 @@ class InvoiceDepositFilter extends ModelFilter
     public function deposit($id){
         return $this->where('id', $id);
     }
-    public function clientId($clientId){
+    public function client($clientId){
         return $this->where('client_id', $clientId);
     }
     public function paymentOption($paymentOption)
@@ -26,6 +26,20 @@ class InvoiceDepositFilter extends ModelFilter
         });
        
     }
-   
+    public function year($year)
+    {
+        return $this->whereYear('created_at',$year);
+    }
+    public function endDate($date)
+    {
+        $endDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('created_at', '<=', $endDate->format('Y-m-d'));
+    }
+
+    public function startDate($date)
+    {
+        $startDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('created_at', '>=', $startDate->format('Y-m-d'));
+    }
 
 }
