@@ -625,7 +625,7 @@ class ReportController extends Controller
                 "estimates_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending(". SalesEstimate::whereIn('reference', $salesEstimatereferenceType)->where('status', 'pending')->count().")", 
+                        "label" => "Pending(". SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                          SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'pending')->get()->sum($column),
@@ -633,7 +633,7 @@ class ReportController extends Controller
                     ], 
                     [
                             "type" => "bar", 
-                            "label" => "Refused(". SalesEstimate::whereIn('reference', $salesEstimatereferenceType)->where('status', 'refused')->count().")", 
+                            "label" => "Refused(". SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'refused')->count().")", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
                                  SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'refused')->get()->sum($column),
@@ -641,7 +641,7 @@ class ReportController extends Controller
                         ], 
                     [
                         "type" => "bar", 
-                        "label" => "Accepted(". SalesEstimate::whereIn('reference', $salesEstimatereferenceType)->where('status', 'accepted')->count().")", 
+                        "label" => "Accepted(". SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'accepted')->get()->sum($column), 
@@ -649,7 +649,7 @@ class ReportController extends Controller
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed(". SalesEstimate::whereIn('reference', $salesEstimatereferenceType)->where('status', 'closed')->count().")", 
+                        "label" => "Closed(". SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                             SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'closed')->get()->sum($column),
@@ -659,7 +659,7 @@ class ReportController extends Controller
                 "orders_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending (". SalesEstimate::whereIn('reference', $salesOrderreferenceType)->where('status', 'pending')->count().")", 
+                        "label" => "Pending (". SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                             SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'pending')->get()->sum($column),
@@ -667,7 +667,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Refused (". SalesEstimate::whereIn('reference', $salesOrderreferenceType)->where('status', 'refused')->count().")", 
+                        "label" => "Refused (". SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'refused')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
                              SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'refused')->get()->sum($column),
@@ -675,7 +675,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (". SalesEstimate::whereIn('reference', $salesOrderreferenceType)->where('status', 'in progress')->count().")", 
+                        "label" => "In Progress (". SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'in progress')->get()->sum($column),
@@ -683,7 +683,7 @@ class ReportController extends Controller
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". SalesEstimate::whereIn('reference', $salesOrderreferenceType)->where('status', 'closed')->count().")", 
+                        "label" => "Closed (". SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'closed')->get()->sum($column),
@@ -694,7 +694,7 @@ class ReportController extends Controller
                 "delivery_notes_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending Invoice (". SalesEstimate::whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'pending invoice')->count().")", 
+                        "label" => "Pending Invoice (". SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'pending invoice')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
                              SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'pending invoice')->get()->sum($column),
@@ -702,7 +702,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (". SalesEstimate::whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'in progress')->count().")", 
+                        "label" => "In Progress (". SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
                              SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'in progress')->get()->sum($column),
@@ -710,7 +710,7 @@ class ReportController extends Controller
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". SalesEstimate::whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'closed')->count().")", 
+                        "label" => "Closed (". SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'closed')->get()->sum($column),
@@ -718,7 +718,7 @@ class ReportController extends Controller
                         ],
                     [
                         "type" => "bar", 
-                        "label" => "Invoiced (". SalesEstimate::whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'invoiced')->count().")",
+                        "label" => "Invoiced (". SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'invoiced')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
                              SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'invoiced')->get()->sum($column),
@@ -729,7 +729,7 @@ class ReportController extends Controller
 
         }elseif( $request->type == "clients" ){
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $client_ids = SalesEstimate::with('client')->pluck('client_id')->toArray();
+            $client_ids = SalesEstimate::filter($request->all())->with('client')->pluck('client_id')->toArray();
             $clients = Client::whereIn('id',$client_ids)->get();
             $data = [];
             $data['sales_clients'] = [];
@@ -769,8 +769,8 @@ class ReportController extends Controller
             // $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
             $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
             $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-            $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-            $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
             $data = [];
             $data['sales_items'] = [];
             foreach($products as $products){
@@ -2362,22 +2362,19 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
-        $paymentOptions = PaymentOption::filter($request->all())->get();
-       
         $arr = [];
         $data = [];
             
-            $deposit = Deposit::filter($request->all())->where('type','deposit')->where('paid_by','1')->sum('amount');
-            $withdrawal = Deposit::filter($request->all())->where('type','withdraw')->where('paid_by','1')->sum('amount');
-            $invoiceAmount = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+        $deposit = Deposit::filter($request->all())->where('type','deposit')->where('paid_by','1')->sum('amount');
+        $withdrawal = Deposit::filter($request->all())->where('type','withdraw')->where('paid_by','1')->sum('amount');
+        $invoiceAmount = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
 
-            $arr['name'] = \Auth::user()->name;
-            $arr['deposit'] = $deposit + $invoiceAmount;
-            $arr['withdrawals'] = $withdrawal;
-            $arr['balance'] = (($invoiceAmount + $deposit) -  $withdrawal);
+        $arr['name'] = \Auth::user()->name;
+        $arr['deposit'] = $deposit + $invoiceAmount;
+        $arr['withdrawals'] = $withdrawal;
+        $arr['balance'] = (($invoiceAmount + $deposit) -  $withdrawal);
 
-            $data[] = $arr;
-        // }
+        $data[] = $arr;
         return response()->json([
             "status" => true,
             "data" =>  $data
