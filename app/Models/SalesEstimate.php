@@ -73,14 +73,6 @@ class SalesEstimate extends Model
     public function items(){
         return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference']);
     }
-    public function products(){
-        $referenceType = Reference::where('type', 'Product')->pluck('prefix')->toArray();
-        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference'])->whereIn('reference',$referenceType);
-    }
-    public function services(){
-        $referenceType = Reference::where('type', 'Service')->pluck('prefix')->toArray();
-        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference'])->whereIn('reference',$referenceType);
-    }
     public function item_meta(){
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
@@ -143,7 +135,7 @@ class SalesEstimate extends Model
 	public function getDateAttribute(){
 
         if( isset( $this->attributes['date'] ) ){
-            return date('d-m-y', strtotime($this->attributes['date']) );
+            return date( 'Y-m-d', strtotime($this->attributes['date']) );
         }
     }
 	public function getReferenceTypeAttribute(){
