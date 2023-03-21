@@ -135,7 +135,7 @@ class SalesEstimate extends Model
 	public function getDateAttribute(){
 
         if( isset( $this->attributes['date'] ) ){
-            return date( 'Y-m-d', strtotime($this->attributes['date']) );
+            return date('d-m-y', strtotime($this->attributes['date']) );
         }
     }
 	public function getReferenceTypeAttribute(){
