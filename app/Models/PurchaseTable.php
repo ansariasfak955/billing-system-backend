@@ -28,6 +28,18 @@ class PurchaseTable extends Model
 
         return $this->hasMany(ItemMeta::class, 'parent_id');
     }
+    public function products(){
+        $referenceType = Reference::where('type', 'Product')->pluck('prefix')->toArray();
+        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference'])->whereIn('reference',$referenceType);
+    }
+    public function services(){
+        $referenceType = Reference::where('type', 'Service')->pluck('prefix')->toArray();
+        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference'])->whereIn('reference',$referenceType);
+    }
+    public function expenses(){
+        $referenceType = Reference::where('type', 'Expense')->pluck('prefix')->toArray();
+        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference'])->whereIn('reference',$referenceType);
+    }
     public function receipts(){
 
         return $this->hasMany(PurchaseReceipt::class, 'purchase_id');

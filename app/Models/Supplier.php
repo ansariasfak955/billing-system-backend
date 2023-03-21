@@ -37,6 +37,9 @@ class Supplier extends Model
             return get_category_name($company_id, $this->attributes['supplier_category']);
         }
     }
+    public function category(){
+        return $this->hasOne(ClientCategory::class,'id', 'supplier_category');
+    }
     public function getReferenceTypeAttribute(){
         if(isset( $this->attributes['reference'] )){
             $table = $this->getTable();
