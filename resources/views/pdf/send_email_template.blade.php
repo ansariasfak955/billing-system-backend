@@ -547,7 +547,7 @@
         
                     @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
                         <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name .@$invoiceData->client->legal_name}}({{@$client_supplier_name .@$invoiceData->client->name}})</b></td></tr>
-                    @endif
+                    @endif 
 
                     @if(@$client_supplier_tin_show)
                         <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin}}</b></td></tr>
