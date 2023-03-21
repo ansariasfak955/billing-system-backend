@@ -58,7 +58,7 @@ class PurchaseTableController extends Controller
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
         }
-        $purchase_table = $query->filter($request->all())->get();
+        $purchase_table = $query->filter($request->all())->orderBy('created_at', 'desc')->get();
 
         if($purchase_table->count() == 0) {
             return response()->json([

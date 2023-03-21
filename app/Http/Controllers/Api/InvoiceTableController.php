@@ -59,7 +59,7 @@ class InvoiceTableController extends Controller
            $query = $query->whereIn('reference', $refernce_ids);
        }
 
-        $query =  $query->filter($request->all())->get();
+        $query =  $query->filter($request->all())->orderBy('created_at', 'desc')->get();
         if(!count($query)){
 
                 return response()->json([
