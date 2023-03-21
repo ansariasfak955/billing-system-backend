@@ -1144,13 +1144,29 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $categoryTable = 'company_'.$request->company_id.'_client_categories';
+        ClientCategory::setGlobalTable($categoryTable);
+        $productCategorytable = 'company_'.$request->company_id.'_product_categories';
+        ProductCategory::setGlobalTable($productCategorytable);
+        $technicalIncidentReference =  Reference::where('type', 'Incident')->pluck('prefix')->toArray();
+        $workOrderReference =  Reference::where('type', 'Work Order')->pluck('prefix')->toArray();
+        $workDeliveryNotesReference =  Reference::where('type', 'Work Delivery Note')->pluck('prefix')->toArray();
+        $workEstimatesReference =  Reference::where('type', 'Work Estimate')->pluck('prefix')->toArray();
 
         if($request->after_tax){
-            $column = 'amount';
+            $taxColumn = 'amount';
         }else{
-            $column = 'amount_with_out_vat';
+            $taxColumn = 'amount_with_out_vat';
         }
+        if($request->reference){
+            $referenceType = [$request->reference];
+        }else{
 
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+        }
         $data = [];
         if( $request->type == "overview" ){
             $data = [
@@ -1160,7 +1176,7 @@ class ReportController extends Controller
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'pending')->count()
+                            TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'pending')->count()
                         ] 
                     ], 
                     [
@@ -1168,7 +1184,7 @@ class ReportController extends Controller
                             "label" => "Refused", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'refused')->count()
+                                TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'refused')->count()
                             ]
                     ], 
                     [
@@ -1176,7 +1192,7 @@ class ReportController extends Controller
                         "label" => "Resolved", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'resolved')->count()
+                            TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'resolved')->count()
                         ]
                     ],
                     [
@@ -1184,75 +1200,75 @@ class ReportController extends Controller
                         "label" => "Closed", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
+                            TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'closed')->count()
                         ]
                     ],
                 ],
                 "estimates_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'pending')->count().")", 
+                        "label" => "Pending (". TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'pending')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'pending')->get()->sum($taxColumn)
                         ]
                     ], 
                     [
                             "type" => "bar", 
-                            "label" => "Refused (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'refused')->count().")",
+                            "label" => "Refused (". TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'refused')->count().")",
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'refused')->get()->sum($column)
+                                TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'refused')->get()->sum($taxColumn)
                             ] 
                         ], 
                     [
                         "type" => "bar", 
-                        "label" => "Accepted (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'accepted')->count().")", 
+                        "label" => "Accepted (". TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'accepted')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'accepted')->get()->sum($taxColumn)
                         ]
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'closed')->count().")", 
+                        "label" => "Closed (". TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'we')->where('status', 'closed')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'closed')->get()->sum($taxColumn)
                         ]
                     ],
                 ], 
                 "orders_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'pending')->count().")", 
+                        "label" => "Pending (". TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'pending')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'pending')->get()->sum($taxColumn)
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Refused (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'refused')->count().")",  
+                        "label" => "Refused (". TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'refused')->count().")",  
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'refused')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'refused')->get()->sum($taxColumn)
                         ]  
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'in_progress')->count().")",
+                        "label" => "In Progress (". TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'in_progress')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'in_progress')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'in_progress')->get()->sum($taxColumn)
                         ] 
                     ],
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'closed')->count().")",
+                        "label" => "Closed (". TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'closed')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wo')->where('status', 'closed')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'closed')->get()->sum($taxColumn)
                         ] 
                     ],
                          
@@ -1260,26 +1276,26 @@ class ReportController extends Controller
                 "delivery_notes_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending Invoice (". TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->count().")", 
+                        "label" => "Pending Invoice (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->get()->sum($taxColumn)
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (". TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'in_progress')->count().")", 
+                        "label" => "In Progress (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'in_progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'pending')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->get()->sum($taxColumn)
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "Closed (". TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'closed')->count().")", 
+                        "label" => "Closed (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'closed')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'closed')->get()->sum($taxColumn)
                         ] 
                     ],
                     [
@@ -1287,7 +1303,7 @@ class ReportController extends Controller
                         "label" => "Invoiced  (". TechnicalTable::filter($request->all())->where('reference', 'invoiced')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->where('reference', 'wdn')->where('status', 'invoiced')->get()->sum($column)
+                            TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'invoiced')->get()->sum($taxColumn)
                         ] 
                     ]  
                 ]
@@ -1301,7 +1317,7 @@ class ReportController extends Controller
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                             TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'pending')->count()
+                             TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'pending')->count()
                         ]
                     ], 
                     [
@@ -1309,7 +1325,7 @@ class ReportController extends Controller
                             "label" => "Refused", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                 TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'refused')->count()
+                                 TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'refused')->count()
                             ]
                     ], 
                     [
@@ -1317,7 +1333,7 @@ class ReportController extends Controller
                         "label" => "Resolved", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                             TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'resolved')->count()
+                             TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'resolved')->count()
                         ]
                     ],
                     [
@@ -1325,7 +1341,7 @@ class ReportController extends Controller
                         "label" => "Closed", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                             TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
+                             TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'closed')->count()
                         ]
                     ],
                 ],
@@ -1338,7 +1354,7 @@ class ReportController extends Controller
                         "label" => "Pending", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'pending')->count()
+                            TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'pending')->count()
                         ] 
                     ], 
                     [
@@ -1346,7 +1362,7 @@ class ReportController extends Controller
                             "label" => "Refused", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'refused')->count()
+                                TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'refused')->count()
                             ]
                     ], 
                     [
@@ -1354,7 +1370,7 @@ class ReportController extends Controller
                         "label" => "Resolved", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'resolved')->count()
+                            TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'resolved')->count()
                         ]
                     ],
                     [
@@ -1362,7 +1378,7 @@ class ReportController extends Controller
                         "label" => "Closed", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalIncident::filter($request->all())->where('reference', 'inc')->where('status', 'closed')->count()
+                            TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'closed')->count()
                         ]
                     ],
                 ],
@@ -1441,7 +1457,7 @@ class ReportController extends Controller
                 "data" =>  $data
             ]);
     }
-    public function incidentByClient(Request $request){
+    public function technicalByClient(Request $request){
         $salesTables = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($salesTables);
 
@@ -1468,62 +1484,117 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-
+        $categoryTable = 'company_'.$request->company_id.'_client_categories';
+        ClientCategory::setGlobalTable($categoryTable);
+        $productCategorytable = 'company_'.$request->company_id.'_product_categories';
+        ProductCategory::setGlobalTable($productCategorytable);
         if($request->after_tax){
-            $column = 'amount';
-            }else{
-            $column = 'amount_with_out_vat';
+            $taxColumn = 'amount';
+        }else{
+            $taxColumn = 'amount_with_out_vat';
+        }
+        if($request->reference){
+            $referenceType = [$request->reference];
+        }else{
+
+            $referenceType = Reference::whereIn('type', ['Work Delivery Note','Work Estimate', 'Work Order'])->pluck('prefix')->toArray();
         }
 
+        $data = [];
         if($request->type == 'incident_by_client'){
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $client_ids = TechnicalTable::pluck('client_id')->toArray();
-            $clients = Client::whereIn('id',$client_ids)->get();
-            $data = [];
             $data['incident_clients'] = [];
-            foreach($clients as $client){
+            if($request->category == 'client_categories'){
+                $categories = ClientCategory::get();
+                $request['clientCategoryNull'] = 1;
                 $data['incident_clients'][] = [
-                        "type" => "bar",
-                        "label" => "" .  $client->legal_name,
-                        "backgroundColor" => "#26C184",
-                        "data" => [
-                             TechnicalTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column),
-                            ]
-                        ];
-            }
-            return response()->json([
-                "status" => true,
-                "data" => $data
-            ]);
+                    "type" => "bar",
+                    "label" => "No Selected Category",
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                        TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                    ]
+                ];
+                unset($request['clientCategoryNull']);
+                foreach($categories as $category){
+                    $request['clientCategory'] = $category->id;
+                    $data['incident_clients'][] = [
+                    "type" => "bar",
+                    "label" => "" .  $category->name,
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                            TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                        ]
+                    ];
+                }
+            }else{
+                $client_ids = TechnicalTable::filter($request->all())->whereHas('client')->pluck('client_id')->toArray();
+                $clients = Client::whereIn('id',$client_ids)->get();
+                foreach($clients as $client){
+                    $data['incident_clients'][] = [
+                    "type" => "bar",
+                    "label" => "" .  $client->legal_name,
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                            TechnicalTable::filter($request->all())->where('client_id',$client->id)->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                        ]
+                    ];
+                }
+            }    
         }elseif($request->type == 'by_client_history'){
-                    
-            $client_ids = TechnicalTable::pluck('client_id')->toArray();
-            $clients = Client::whereIn('id',$client_ids)->get();
-
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
             $data = [];
-
-            foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
-                $arr['pending'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','pending')->count();
-                $arr['refused'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','refused')->count();
-                $arr['accepted'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','accepted')->count();
-                $arr['closed'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->where('status','closed')->count();
-                $arr['total'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->count();
-                $arr['amount'] = TechnicalTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
+            if($request->category == 'client_categories'){
+                $categories = ClientCategory::get();
+                $request['clientCategoryNull'] = 1;
+                $arr['name'] = "No Selected Category";
+                $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
+                $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
+                $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
+                $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
+                $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
+                $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn);
 
                 $data[] = $arr;
+                unset($request['clientCategoryNull']);
+                foreach($categories as $category){
+                    $request['clientCategory'] = $category->id;
+                    $arr['name'] = $category->name;
+                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
+                    $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
+                    $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
+                    $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
+                    $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
+                    $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn);
+    
+                    $data[] = $arr;
+                }
             }
+            else{
+
+                $client_ids = TechnicalTable::pluck('client_id')->toArray();
+                $clients = Client::whereIn('id',$client_ids)->get();
+    
+                foreach($clients as $client){
+                    $arr['name'] = $client->legal_name;
+                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','pending')->count();
+                    $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','refused')->count();
+                    $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
+                    $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','closed')->count();
+                    $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->count();
+                    $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->get()->sum($taxColumn);
+    
+                    $data[] = $arr;
+                }
+            }    
             
-            return response()->json([
-                "status" => true,
-                "data" =>  $data
-            ]);
         }
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
             
     }
-    public function incidentByAgent(Request $request){
+    public function technicalByAgent(Request $request){
         $salesTables = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($salesTables);
 
@@ -1547,33 +1618,35 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
-
+        $categoryTable = 'company_'.$request->company_id.'_client_categories';
+        ClientCategory::setGlobalTable($categoryTable);
+        $productCategorytable = 'company_'.$request->company_id.'_product_categories';
+        ProductCategory::setGlobalTable($productCategorytable);
         if($request->after_tax){
-            $column = 'amount';
-            }else{
-            $column = 'amount_with_out_vat';
+            $taxColumn = 'amount';
+        }else{
+            $taxColumn = 'amount_with_out_vat';
+        }
+        if($request->reference){
+            $referenceType = [$request->reference];
+        }else{
+
+            $referenceType = Reference::whereIn('type', ['Work Delivery Note','Work Estimate', 'Work Order'])->pluck('prefix')->toArray();
         }
 
+        $data = [];
         if($request->type == 'incident_by_agent'){
-            $data = [];
             $data['incident_agent'] = [];
-            // foreach($clients as $client){
-                $data['incident_agent'][] = [
-                        "type" => "bar",
-                        "label" => "" . \Auth::user()->name,
-                        "backgroundColor" => "#26C184",
-                        "data" => [
-                             TechnicalTable::filter($request->all())->get()->sum($column),
-                            ]
-                        ];
-            // }
-            return response()->json([
-                "status" => true,
-                "data" => $data
-            ]);
+            $data['incident_agent'][] = [
+            "type" => "bar",
+            "label" => "" . \Auth::user()->name,
+            "backgroundColor" => "#26C184",
+            "data" => [
+                    TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum( $taxColumn),
+                ]
+            ];
         }elseif($request->type == 'by_agent_history'){
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
@@ -1581,23 +1654,23 @@ class ReportController extends Controller
             $data = [];
 
             $arr['name'] = \Auth::user()->name;
-            $arr['pending'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->where('status','pending')->count();
-            $arr['refused'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->where('status','refused')->count();
-            $arr['accepted'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->where('status','accepted')->count();
-            $arr['closed'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->where('status','closed')->count();
-            $arr['total'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->count();
-            $arr['amount'] = TechnicalTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
+            $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','pending')->count();
+            $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','refused')->count();
+            $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','accepted')->count();
+            $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','closed')->count();
+            $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->count();
+            $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum($taxColumn);
 
                 $data[] = $arr;
             
-            return response()->json([
-                "status" => true,
-                "data" =>  $data
-            ]);
         }
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
             
     }
-    public function incidentByItem(Request $request){
+    public function technicalByItem(Request $request){
         $salesTables = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($salesTables);
 
@@ -1624,6 +1697,21 @@ class ReportController extends Controller
 
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
+        $categoryTable = 'company_'.$request->company_id.'_client_categories';
+        ClientCategory::setGlobalTable($categoryTable);
+        $productCategorytable = 'company_'.$request->company_id.'_product_categories';
+        ProductCategory::setGlobalTable($productCategorytable);
+        if($request->after_tax){
+            $taxColumn = 'amount';
+        }else{
+            $taxColumn = 'amount_with_out_vat';
+        }
+        if($request->reference){
+            $referenceType = [$request->reference];
+        }else{
+            $referenceType = Reference::whereIn('type', ['Work Delivery Note','Work Estimate', 'Work Order'])->pluck('prefix')->toArray();
+        }
+        $data = [];
         if($request->type == 'incident_by_item'){
             
             $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
@@ -1631,105 +1719,129 @@ class ReportController extends Controller
             $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
             $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
 
-            $data = [];
-            $data['invoice_items'] = [];
-            foreach($products as $product){
-                $data['invoice_items'][] = [
-                        "type" => "bar",
-                        "label" => "" .  $product->name,
-                        "backgroundColor" => "#26C184",
-                        "data" => [
-                                TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                                $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                                })->get()->sum('amount'),
-                            ]
-                        ];
-            }
-            foreach($services as $service){
-                $data['invoice_items'][] = [
-                        "type" => "bar",
-                        "label" => "" .  $service->name,
-                        "backgroundColor" => "#26C184",
-                        "data" => [
-                                TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                                $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                                })->get()->sum('amount'),
-                            ]
-                        ];
-            }
-            return response()->json([
-                "status" => true,
-                "data" => $data
-            ]);
-        }elseif($request->type == 'by_item_history'){
+            if($request->category == 'catalog'){
 
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-            $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+                $data['invoice_items'] = [];
+                foreach($products as $product){
+                    $request['product_id'] = $product->id;
+                    $data['invoice_items'][] = [
+                    "type" => "bar",
+                    "label" => "" .  $product->name,
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                            TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'),
+                        ]
+                    ];
+                }
+                foreach($services as $service){
+                    $request['service_id'] = $service->id;
+                    $data['invoice_items'][] = [
+                    "type" => "bar",
+                    "label" => "" .  $service->name,
+                    "backgroundColor" => "#26C184",
+                    "data" => [
+                            TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'),
+                        ]
+                    ];
+                }
+            }else{
+                $categories = ProductCategory::get();
+                $request['productCategoryNull'] = 1;
+                $arr['name'] = 'Not found in catalog';
+                $data['invoice_items'][] = [
+                "type" => "bar",
+                "label" => 'Not found in catalog',
+                "backgroundColor" => "#26C184",
+                "data" => [
+                        TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'),
+                    ]
+                ];
+                unset($request['productCategoryNull']);
+                foreach($categories as $category){
+                    $request['productCategory'] = $category->id;
+                    foreach($categories as $category){
+                        $request['productCategory'] = $category->id;
+                        $data['invoice_items'][] = [
+                            "type" => "bar",
+                            "label" => "" .  $category->name,
+                            "backgroundColor" => "#26C184",
+                            "data" => [
+                                TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                            ]
+                        ];
+                    }
+                }
+            }
+        }
+        elseif($request->type == 'by_item_history'){
+
+            $porductReferenceType = Reference::where('type', 'Product')->pluck('prefix')->toArray();
+            $serviceReferenceType = Reference::where('type', 'Service')->pluck('prefix')->toArray();
+            $itemProductIds = Item::whereIn('reference',$porductReferenceType)->pluck('reference_id')->toArray();
+            $itemServiceIds = Item::whereIn('reference', $serviceReferenceType)->pluck('reference_id')->toArray();
             $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
             $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
                
-                $arr = [];
-                $data = [];
+            $arr = [];
+            $data = [];
+            foreach($products as $product){
+                $arr['name'] = $product->name;
+                $arr['reference'] = $product->reference.''.$product->reference_number;
+                $arr['pending'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                })->where('status','pending')->count();
+                $arr['accepted'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                })->where('status','accepted')->count();
+                $arr['closed'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                })->where('status','closed')->count();
+                $arr['refused'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                })->where('status','refused')->count();
+                $arr['total'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                })->count();
+                $arr['units'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                })->count();
+                $arr['amount'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                })->get()->sum('amount');
+                
+
+                $data[] = $arr;
+            }
+            foreach($services as $service){
+                $arr['name'] = $service->name;
+                $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['pending'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                })->where('status','pending')->count();
+                $arr['accepted'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                })->where('status','accepted')->count();
+                $arr['closed'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                })->where('status','closed')->count();
+                $arr['refused'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                })->where('status','refused')->count();
+                $arr['total'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                })->count();
+                $arr['amount'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
+                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
+                })->get()->sum('amount');
+
+                $data[] = $arr;
+            }
     
-                foreach($products as $product){
-                    $arr['name'] = $product->name;
-                    $arr['reference'] = $product->reference.''.$product->reference_number;
-                    $arr['pending'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                    })->where('status','pending')->count();
-                    $arr['accepted'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                    })->where('status','accepted')->count();
-                    $arr['closed'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                    })->where('status','closed')->count();
-                    $arr['refused'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                    })->where('status','refused')->count();
-                    $arr['total'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                    })->count();
-                    $arr['units'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                    })->count();
-                    $arr['amount'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                        $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                    })->get()->sum('amount');
-                    
-    
-                    $data[] = $arr;
-                }
-                foreach($services as $service){
-                    $arr['name'] = $service->name;
-                    $arr['reference'] = $service->reference.''.$service->reference_number;
-                    $arr['pending'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                    })->where('status','pending')->count();
-                    $arr['accepted'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                    })->where('status','accepted')->count();
-                    $arr['closed'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                    })->where('status','closed')->count();
-                    $arr['refused'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                    })->where('status','refused')->count();
-                    $arr['total'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                    })->count();
-                    $arr['amount'] = TechnicalTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                        $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                    })->get()->sum('amount');
-    
-                    $data[] = $arr;
-                }
-    
-            return response()->json([
-                "status" => true,
-                "data" =>  $data
-            ]);
         }
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
             
     }
     public function incidentByAgentHistory(Request $request){
