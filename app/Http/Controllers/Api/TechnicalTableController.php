@@ -60,7 +60,7 @@ class TechnicalTableController extends Controller
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
         }
-        $technical_incidents = $query->filter($request->all())->get();
+        $technical_incidents = $query->filter($request->all())->orderBy('created_at', 'desc')->get();
 
         if($technical_incidents->count() == 0) {
             return response()->json([

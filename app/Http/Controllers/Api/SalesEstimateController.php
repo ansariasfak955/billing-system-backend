@@ -56,7 +56,7 @@ class SalesEstimateController extends Controller
             $refernce_ids = Reference::where('type', urldecode($request->type))->pluck('prefix')->toArray();
             $query = $query->whereIn('reference', $refernce_ids);
         }
-        $sales_estimate = $query->filter($request->all())->get();
+        $sales_estimate = $query->filter($request->all())->orderBy('created_at', 'desc')->get();
 
         if ($sales_estimate->count() == 0) {
             return response()->json([
