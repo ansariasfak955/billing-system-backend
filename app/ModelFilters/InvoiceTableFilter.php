@@ -111,7 +111,7 @@ class InvoiceTableFilter extends ModelFilter
             }); 
         });
     }
-    public function clientId($clientId)
+    public function client($clientId)
     {
         return $this->whereHas('client', function($q) use ($clientId){
             $q ->where('client_id', $clientId);
@@ -135,7 +135,7 @@ class InvoiceTableFilter extends ModelFilter
             $q->where('reference', $productType);
         });
     }
-    public function agentId($agentId)
+    public function agent($agentId)
     {
         return $this->where('agent_id', $agentId);
     }

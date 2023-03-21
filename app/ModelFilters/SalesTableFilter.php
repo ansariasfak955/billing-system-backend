@@ -64,19 +64,19 @@ class SalesTableFilter extends ModelFilter
     public function endDate($date)
     {
         $endDate = \Carbon\Carbon::parse($date);
-        return $this->whereDate('date', '<=', $endDate->format('Y-m-d'));
+        return $this->whereDate('created_at', '<=', $endDate->format('Y-m-d'));
     }
 
     public function startDate($date)
     {
         $startDate = \Carbon\Carbon::parse($date);
-        return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
+        return $this->whereDate('created_at', '>=', $startDate->format('Y-m-d'));
     }
     public function clientCategory($clientCategory)
     {
         return $this->whereHas('client', function($q) use ($clientCategory){
             $q->whereHas('category', function($q) use ($clientCategory){
-                $q ->where('id', $clientCategory);
+                $q->where('id', $clientCategory);
             });  
         });
     }
@@ -84,8 +84,44 @@ class SalesTableFilter extends ModelFilter
     {
         return $this->whereYear('created_at',$year);
     }
-    public function agentId($agentId)
+    public function agent($agentId)
     {
         return $this->where('agent_id', $agentId);
+    }
+    public function clientCategoryNull($clientCategory)
+    {
+        return $this->whereHas('client', function($q) use ($clientCategory){
+            $q->whereNull('client_category')->orWhere('client_category',0);  
+        });
+    }
+    public function productCategoryNull($clientCategory)
+    {
+        return $this->whereHas('products', function($q) use ($clientCategory){
+            $q->whereHas('product', function($q) use ($clientCategory){
+                $q->whereDoesntHave('productCategory');
+            });   
+        });
+    }
+    public function productCategory($clientCategory)
+    {
+        return $this->whereHas('products', function($q) use ($clientCategory){
+            $q->whereHas('product', function($q) use ($clientCategory){
+                $q->whereHas('productCategory', function($q) use ($clientCategory){
+                    $q ->where('id', $clientCategory);
+                });  
+            }); 
+        });
+    }
+    public function product($productId)
+    {
+        return $this->whereHas('products', function($q) use ($productId){
+            $q->where('reference_id', $productId);
+        });
+    }
+    public function service($productId)
+    {
+        return $this->whereHas('services', function($q) use ($productId){
+            $q->where('reference_id', $productId);
+        });
     }
 }
