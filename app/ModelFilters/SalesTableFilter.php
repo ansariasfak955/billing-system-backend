@@ -52,7 +52,7 @@ class SalesTableFilter extends ModelFilter
     public function createdByName($createdByName)
     {
             return $this->whereHas('client', function($q) use ($createdByName){
-                $q->where('legal_name', 'LIKE', '%'.$client_name.'%');
+                $q->where('legal_name', 'LIKE', '%'.$createdByName.'%');
             });
     }
     public function clientName($client_name)
@@ -96,8 +96,8 @@ class SalesTableFilter extends ModelFilter
     }
     public function productCategoryNull($clientCategory)
     {
-        return $this->whereHas('products', function($q) use ($clientCategory){
-            $q->whereHas('product', function($q) use ($clientCategory){
+        return $this->whereHas('products', function($q) {
+            $q->whereHas('product', function($q) {
                 $q->whereDoesntHave('productCategory');
             });   
         });
