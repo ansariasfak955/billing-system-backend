@@ -1147,7 +1147,7 @@ class ReportController extends Controller
 
         if($request->after_tax){
             $column = 'amount';
-            }else{
+        }else{
             $column = 'amount_with_out_vat';
         }
 
