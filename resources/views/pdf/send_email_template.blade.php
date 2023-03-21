@@ -550,27 +550,27 @@
                     @endif 
 
                     @if(@$client_supplier_tin_show)
-                        <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin .@$invoiceData->client->tin}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_phone_show)
-                        <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone .@$invoiceData->client->phone_1}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_reference_show)
-                        <tr><td style="padding: 0; margin: 0;">Reference: <b>{{$client_supplier_reference}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">Reference: <b>{{$client_supplier_reference .@$invoiceData->client->reference.''.@$invoiceData->client->reference_number}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_fax_show)
-                        <tr><td style="padding: 0; margin: 0;">Fax: <b>{{$client_supplier_fax}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">Fax: <b>{{$client_supplier_fax .@$invoiceData->client->fax}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_email_show)
-                        <tr><td style="padding: 0; margin: 0;">Email: <b>{{$client_supplier_email}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">Email: <b>{{$client_supplier_email .@$invoiceData->client->email}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_website_show)
-                        <tr><td style="padding: 0; margin: 0;">Website: <b>{{$client_supplier_website}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">Website: <b>{{$client_supplier_website .@$invoiceData->client->website}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_billing_show)
