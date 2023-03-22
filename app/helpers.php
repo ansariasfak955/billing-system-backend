@@ -1,5 +1,6 @@
 <?php
-  
+use App\Models\MyTemplate;
+use App\Models\MyTemplateMeta;
 function active_class($path, $active = 'active') {
   return call_user_func_array('Request::is', (array)$path) ? $active : '';
 }
@@ -520,4 +521,50 @@ function get_reference_type($company_id, $reference)
     $refernceTable = "company_".$company_id."_references";
     \App\Models\Reference::setGlobalTable($refernceTable);
     return \App\Models\Reference::where('prefix', $reference)->pluck('type')->first();
+}
+function add_signed_parameter_in_my_templates($company_id){
+    $templates = ['Normal Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
+    MyTemplate::setGlobalTable('company_'.$company_id.'_my_templates');
+    MyTemplateMeta::setGlobalTable('company_'.$company_id.'_my_template_metas');
+    foreach($templates as $template){
+        $template_created = MyTemplate::where('name', $template." Template")->first();
+        if($template_created){
+            echo "<pre>";
+            echo "adding";
+             /* Signed */
+            if(!MyTemplateMeta::where('option_name', 'document_hide_signed_box_heading')->where('template_id', $template_created->id)->first()){
+                echo "Signed Option is Not there";
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_hide_signed_box_heading",
+                    "option_value" => "Hide Signed Box",
+                    "category" => "Document Information",
+                    "type" => "hide_signed_box",
+                ]);
+            }
+            if(!MyTemplateMeta::where('option_name', 'document_signed_show')->where('template_id', $template_created->id)->first()){
+                echo "<pre>";
+                echo "Signed Option is Not there";
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_signed_show",
+                    "option_value" => "1",
+                    "category" => "Document Information",
+                    "type" => "hide_signed_box",
+                ]);
+            }
+            if(!MyTemplateMeta::where('option_name', 'document_signed_text')->where('template_id', $template_created->id)->first()){
+                echo "<pre>";
+                echo "Signed Option is Not there";
+                MyTemplateMeta::create([
+                    "template_id" => $template_created->id,
+                    "option_name" => "document_signed_text",
+                    "option_value" => "",
+                    "category" => "Document Information",
+                    "type" => "hide_signed_box",
+                ]);
+            }
+        }
+    }
+    echo 'done adding';       
 }

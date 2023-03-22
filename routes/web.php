@@ -14,7 +14,9 @@
 /* route links */
 //use App\Http\Controllers\Api\UserController;
 use Spatie\Permission\Models\Permission;
-
+Route::get('/add-signed-template-meta/{id}', function ($id) {
+    return add_signed_parameter_in_my_templates($id);
+});
 Auth::routes();
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/', function () {
