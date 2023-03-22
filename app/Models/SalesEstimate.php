@@ -70,6 +70,14 @@ class SalesEstimate extends Model
     	}
     	return '';
     }
+    public function products(){
+        $referenceType = Reference::where('type', 'Product')->pluck('prefix')->toArray();
+        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference'])->whereIn('reference',$referenceType);
+    }
+    public function services(){
+        $referenceType = Reference::where('type', 'Service')->pluck('prefix')->toArray();
+        return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference'])->whereIn('reference',$referenceType);
+    }
     public function items(){
         return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference']);
     }

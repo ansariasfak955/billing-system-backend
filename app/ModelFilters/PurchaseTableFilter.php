@@ -65,13 +65,71 @@ class PurchaseTableFilter extends ModelFilter
     public function endDate($date)
     {
         $endDate = \Carbon\Carbon::parse($date);
-        return $this->whereDate('date', '<=', $endDate->format('Y-m-d'));
+        return $this->whereDate('created_at', '<=', $endDate->format('Y-m-d'));
     }
 
     public function startDate($date)
     {
         $startDate = \Carbon\Carbon::parse($date);
-        return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
+        return $this->whereDate('created_at', '>=', $startDate->format('Y-m-d'));
+    }
+    public function supplierCategory($supplierCategory)
+    {
+        return $this->whereHas('supplier', function($q) use ($supplierCategory){
+            $q->whereHas('category', function($q) use ($supplierCategory){
+                $q->where('id', $supplierCategory);
+            });  
+        });
+    }
+    public function year($year)
+    {
+        return $this->whereYear('created_at',$year);
+    }
+    public function agent($agentId)
+    {
+        return $this->where('agent_id', $agentId);
+    }
+    public function supplierCategoryNull($supplierCategory)
+    {
+        return $this->whereHas('supplier', function($q) use ($supplierCategory){
+            $q->whereNull('supplier_category')->orWhere('supplier_category',0);  
+        });
+    }
+    public function productCategoryNull($supplierCategory)
+    {
+        return $this->whereHas('products', function($q) {
+            $q->whereHas('product', function($q) {
+                $q->whereDoesntHave('productCategory');
+            });   
+        });
+    }
+    public function productCategory($supplierCategory)
+    {
+        return $this->whereHas('products', function($q) use ($supplierCategory){
+            $q->whereHas('product', function($q) use ($supplierCategory){
+                $q->whereHas('productCategory', function($q) use ($supplierCategory){
+                    $q ->where('id', $supplierCategory);
+                });  
+            }); 
+        });
+    }
+    public function product($productId)
+    {
+        return $this->whereHas('products', function($q) use ($productId){
+            $q->where('reference_id', $productId);
+        });
+    }
+    public function service($productId)
+    {
+        return $this->whereHas('services', function($q) use ($productId){
+            $q->where('reference_id', $productId);
+        });
+    }
+    public function expense($productId)
+    {
+        return $this->whereHas('expenses', function($q) use ($productId){
+            $q->where('reference_id', $productId);
+        });
     }
 
 }
