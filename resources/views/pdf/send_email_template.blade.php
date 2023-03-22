@@ -547,43 +547,43 @@
         
                     @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
                         @if($invoiceData->client->legal_name)
-                            <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} ({{@$client_supplier_name}})  {{@$invoiceData->client->name}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} ({{@$client_supplier_name.' '.@$invoiceData->client->name}})</b></td></tr>
                         @endif
                     @endif 
 
                     @if(@$client_supplier_tin_show)
                         @if($invoiceData->client->tin)
-                            <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin .@$invoiceData->client->tin}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin .' '.@$invoiceData->client->tin}}</b></td></tr>
                         @endif
                     @endif
 
                     @if(@$client_supplier_phone_show)
                         @if($invoiceData->client->phone_1)
-                            <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone .@$invoiceData->client->phone_1}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone .' '.@$invoiceData->client->phone_1}}</b></td></tr>
                         @endif        
                     @endif
 
                     @if(@$client_supplier_reference_show)
                         @if($invoiceData->client->reference)
-                            <tr><td style="padding: 0; margin: 0;">Reference: <b>{{$client_supplier_reference .@$invoiceData->client->reference.''.@$invoiceData->client->reference_number}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Reference: <b>{{$client_supplier_reference .' '.@$invoiceData->client->reference.''.@$invoiceData->client->reference_number}}</b></td></tr>
                         @endif
                     @endif
 
                     @if(@$client_supplier_fax_show)
                         @if($invoiceData->client->fax)
-                            <tr><td style="padding: 0; margin: 0;">Fax: <b>{{$client_supplier_fax .@$invoiceData->client->fax}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Fax: <b>{{$client_supplier_fax .' '.@$invoiceData->client->fax}}</b></td></tr>
                         @endif
                     @endif
 
                     @if(@$client_supplier_email_show)
                         @if($invoiceData->client->email)
-                            <tr><td style="padding: 0; margin: 0;">Email: <b>{{$client_supplier_email .@$invoiceData->client->email}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Email: <b>{{$client_supplier_email .' '.@$invoiceData->client->email}}</b></td></tr>
                         @endif
                     @endif
 
                     @if(@$client_supplier_website_show)
                         @if($invoiceData->client->website)
-                            <tr><td style="padding: 0; margin: 0;">Website: <b>{{$client_supplier_website .@$invoiceData->client->website}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Website: <b>{{$client_supplier_website .' '.@$invoiceData->client->website}}</b></td></tr>
                         @endif
                     @endif
 
