@@ -37,11 +37,18 @@ class ProductFilter extends ModelFilter
     public function price($price){
         return $this->where('price', 'LIKE', '%'.$price.'%');
     }
-    public function productId($product){
-        return $this->where('id', $product );
-    }
     public function productType($productType)
     {
         return $this->where('reference', $productType);
+    }
+    public function category($id){
+        return $this->whereHas('productCategory', function($q) use($id){
+            $q->where('id', $id);
+        });
+    }
+    public function date($date)
+    {
+        $date = \Carbon\Carbon::parse($date);
+        return $this->whereDate('created_at', $date->format('Y-m-d'));
     }
 }

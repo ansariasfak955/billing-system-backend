@@ -34,6 +34,9 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
 
+    /* -------------------------------------------------------------------------- */
+    /*                               Overview Report                              */
+    /* -------------------------------------------------------------------------- */
     public function overview(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables); 
@@ -180,6 +183,9 @@ class ReportController extends Controller
         ]);
     }
 
+    /* -------------------------------------------------------------------------- */
+    /*                              Invoicing Report                              */
+    /* -------------------------------------------------------------------------- */
     public function invoicing(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables);
@@ -1772,9 +1778,9 @@ class ReportController extends Controller
         }
         elseif($request->type == 'by_item_history'){
 
-            $porductReferenceType = Reference::where('type', 'Product')->pluck('prefix')->toArray();
+            $productReferenceType = Reference::where('type', 'Product')->pluck('prefix')->toArray();
             $serviceReferenceType = Reference::where('type', 'Service')->pluck('prefix')->toArray();
-            $itemProductIds = Item::whereIn('reference',$porductReferenceType)->pluck('reference_id')->toArray();
+            $itemProductIds = Item::whereIn('reference',$productReferenceType)->pluck('reference_id')->toArray();
             $itemServiceIds = Item::whereIn('reference', $serviceReferenceType)->pluck('reference_id')->toArray();
             $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
             $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
@@ -1892,6 +1898,9 @@ class ReportController extends Controller
                 "data" =>  $data
             ]);
     }
+    /* -------------------------------------------------------------------------- */
+    /*                               Purchase Report                              */
+    /* -------------------------------------------------------------------------- */
     public function purchases( Request $request ){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
@@ -2059,6 +2068,11 @@ class ReportController extends Controller
             ]);
         }
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                 Purchase report history data by supplier                */
+    /* -------------------------------------------------------------------------- */
+
     public function purchaseSupplierHistory(Request $request){
 
         $table = 'company_'.$request->company_id.'_services';
@@ -2141,6 +2155,11 @@ class ReportController extends Controller
                 "data" =>  $data
             ]);
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                       Purchase Report history by item                      */
+    /* -------------------------------------------------------------------------- */
+
     public function purchaseItemHistory(Request $request){
 
         $table = 'company_'.$request->company_id.'_services';
@@ -2250,6 +2269,10 @@ class ReportController extends Controller
             "data" =>  $data
         ]);
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                               Cash Flow Report                              */
+    /* -------------------------------------------------------------------------- */
     public function cashFlow(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
@@ -2584,6 +2607,9 @@ class ReportController extends Controller
 
 
     }
+    /* -------------------------------------------------------------------------- */
+    /*                           Stock Valuation Report                           */
+    /* -------------------------------------------------------------------------- */
     public function stockValuation(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
@@ -2605,6 +2631,10 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
+        $column  = 'virtual_stock';
+        if($request->stock  == 'stock'){
+            $column  = 'stock';
+        }
         $data = [];
         $data = [
             "stock_valuation" => [
@@ -2613,16 +2643,16 @@ class ReportController extends Controller
                     "label" => "Sales stock value", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                         Product::get()->sum('sales_stock_value') 
+                        Product::filter($request->all())->sum('price') * Product::filter($request->all())->get()->sum($column)
                     ] 
                 ], 
                 [
-                        "type" => "bar", 
-                        "label" => "Purchase stock value", 
-                        "backgroundColor" => "#FB6363", 
-                        "data" => [
-                            Product::get()->sum('purchase_stock_value') 
-                        ] 
+                    "type" => "bar", 
+                    "label" => "Purchase stock value", 
+                    "backgroundColor" => "#FB6363", 
+                    "data" => [
+                        Product::filter($request->all())->sum('purchase_price')  * Product::filter($request->all())->get()->sum($column)
+                    ] 
                 ], 
             ]
         ];
@@ -2631,6 +2661,9 @@ class ReportController extends Controller
             "data" =>  $data
         ]);
     }
+    /* -------------------------------------------------------------------------- */
+    /*                           Stock Valuation History                          */
+    /* -------------------------------------------------------------------------- */
     public function stockValuationHistory(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
@@ -2655,25 +2688,20 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-        $productIds = SupplierSpecialPrice::pluck('product_id')->toArray();
-        $productPrices = Product::whereIn('id',$productIds)->get();
-        // return $supplierSpecialPrices;
-
-        $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
-        // print_r($referenceType);die;
-           
+        $products = Product::filter($request->all())->get();
         $arr = [];
         $data = [];
-
-        foreach($productPrices as $productPrice){
-            $arr['reference'] = $productPrice->reference.$productPrice->reference_number;
-            $arr['name'] = $productPrice->name;
-            $stock = Item::where('reference_id', $productPrice->id)->whereIn('reference',['PRO'])->whereIn('type',$referenceType)->sum('quantity');
+        $column  = 'virtual_stock';
+        if($request->stock  == 'stock'){
+            $column  = 'stock';
+        }
+        foreach($products as $product){
+            $arr['reference'] = $product->reference.$product->reference_number;
+            $arr['name'] = $product->name;
+            $stock = $product->$column;
             $arr['stock'] = $stock;
-            $arr['sales_stock_value'] = $productPrice->price*$stock;
-            $arr['purchase_stock_value'] = PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($productPrice) {
-                $query->where('reference_id', $productPrice->id)->whereIn('reference',['PRO']);
-            })->get()->sum('amount_with_out_vat');
+            $arr['sales_stock_value'] = $product->price*$stock;
+            $arr['purchase_stock_value'] = $product->purchase_price*$stock;
 
             $data[] = $arr;
         }
@@ -2683,6 +2711,10 @@ class ReportController extends Controller
         ]);
         
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                             OF Evolution Report                            */
+    /* -------------------------------------------------------------------------- */
     public function ofEvolution(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
