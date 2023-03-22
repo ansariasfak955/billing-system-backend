@@ -15,6 +15,7 @@
     $document_created_by_text = 'Created by:';
     $company_company_info_show = 0;
     $document_title_show = 0;
+    $hide_signed_box_show = 1;
     $document_title_text = '';
     $font = $template->font;
     $color = $template->color;
@@ -53,7 +54,7 @@
 <body>
     
     
-
+   
     @foreach($template->metas as $meta)
         @if($meta->category == 'Company Information' && $meta->type == 'logo' && $meta->option_name == 'show')
             @php
@@ -215,7 +216,7 @@
         @endif
         @if($meta->category == 'Document Information' && $meta->type == 'hide_signed_box' && $meta->option_name == 'show')
             @php
-            $hide_signed_box_show = $meta->option_value;
+                $hide_signed_box_show = (int)$meta->option_value;
             @endphp
         @endif
 
@@ -746,17 +747,21 @@
         @else
         
         <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
-        <p style="font-weight: bold;">Signed:</p><br
+            @if(@$hide_signed_box_show == 0)
+                <p style="font-weight: bold;">Signed:</p><br>
+            @endif
             <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                 <tr>
-                    <td style="margin: 0;">
-                        <div style="border: 1px solid gray; padding: 10px;">
-                            <img width="100" height="80" object-fit="cover"
-                                src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" />
-                            <p style="font-weight: bold; position: relative; bottom: 0;">Name:</p>
-                            <p style="font-weight: bold; position: relative; bottom: 0;">Ced/Ruc:</p>
-                        </div>
-                    </td>
+                    @if(@$hide_signed_box_show == 0)
+                        <td style="margin: 0;">
+                            <div style="border: 1px solid gray; padding: 10px;">
+                                <img width="100" height="80" object-fit="cover"
+                                    src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" />
+                                <p style="font-weight: bold; position: relative; bottom: 0;">Name:</p>
+                                <p style="font-weight: bold; position: relative; bottom: 0;">Ced/Ruc:</p>
+                            </div>
+                        </td>
+                    @endif
                     <td style="padding: 0; margin: 0; padding-left: 120px;">
                         <div>
                             <table style="border-collapse: collapse; width: 100%; ">
