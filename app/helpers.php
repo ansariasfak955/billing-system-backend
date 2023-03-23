@@ -652,3 +652,10 @@ function getDateToIterate($request){
     }
     return $data;
 }
+function generateRandomColor() {
+    $r = mt_rand(0, 255);
+    $g = mt_rand(0, 255);
+    $b = mt_rand(0, 255);
+
+    return "rgba($r, $g, $b, 0.5)";
+}

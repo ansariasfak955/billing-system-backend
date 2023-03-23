@@ -131,5 +131,16 @@ class PurchaseTableFilter extends ModelFilter
             $q->where('reference_id', $productId);
         });
     }
+    public function dateEndDate($date)
+    {
+        $endDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('date', '<=', $endDate->format('Y-m-d'));
+    }
+
+    public function dateStartDate($date)
+    {
+        $startDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
+    }
 
 }

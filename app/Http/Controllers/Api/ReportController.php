@@ -3535,71 +3535,98 @@ class ReportController extends Controller
                 $data['Profit'][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat') - PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat');
             }
             $finalData['labels'] = @$data['labels'];
-            $finalData['data'] = [
-                [
-                    "label" => "Sales",
-                    "fill" => true,
-                    "lineTension" => 0.5,
-                    "backgroundColor" => "rgba(60, 76, 207, 0.2)",
-                    "borderColor" => "#3c4ccf",
-                    "borderCapStyle" => "butt",
-                    "borderDash" => [],
-                    "borderDashOffset" => 0.0,
-                    "borderJoinStyle" => "miter",
-                    "pointBorderColor" => "#3c4ccf",
-                    "pointBackgroundColor" => "#fff",
-                    "pointBorderWidth" => 1,
-                    "pointHoverRadius" => 5,
-                    "pointHoverBackgroundColor" => "#3c4ccf",
-                    "pointHoverBorderColor" => "#fff",
-                    "pointHoverBorderWidth" => 2,
-                    "pointRadius" => 1,
-                    "pointHitRadius" => 1000,
-                    "data" => @$data['Sales']
-                ],
-                [
-                    "label" => "Expenses",
-                    "fill" => true,
-                    "lineTension" => 0.5,
-                    "backgroundColor" => "rgba(235, 239, 242, 0.2)",
-                    "borderColor" => "#ebeff2",
-                    "borderCapStyle" => "butt",
-                    "borderDash" => [],
-                    "borderDashOffset" => 0.0,
-                    "borderJoinStyle" => "miter",
-                    "pointBorderColor" => "#ebeff2",
-                    "pointBackgroundColor" => "#fff",
-                    "pointBorderWidth" => 1,
-                    "pointHoverRadius" => 5,
-                    "pointHoverBackgroundColor" => "#ebeff2",
-                    "pointHoverBorderColor" => "#eef0f2",
-                    "pointHoverBorderWidth" => 2,
-                    "pointRadius" => 1,
-                    "pointHitRadius" => 1000,
-                    "data" => @$data['Expenses']
-                ],
-                [
-                    "label" => "Profit",
-                    "fill" => true,
-                    "lineTension" => 0.5,
-                    "backgroundColor" => "rgba(235, 239, 242, 0.2)",
-                    "borderColor" => "#ebeff2",
-                    "borderCapStyle" => "butt",
-                    "borderDash" => [],
-                    "borderDashOffset" => 0.0,
-                    "borderJoinStyle" => "miter",
-                    "pointBorderColor" => "#ebeff2",
-                    "pointBackgroundColor" => "#fff",
-                    "pointBorderWidth" => 1,
-                    "pointHoverRadius" => 5,
-                    "pointHoverBackgroundColor" => "#ebeff2",
-                    "pointHoverBorderColor" => "#eef0f2",
-                    "pointHoverBorderWidth" => 2,
-                    "pointRadius" => 1,
-                    "pointHitRadius" => 1000,
-                    "data" => @$data['Profit']
-                ]
-            ];
+            if($request->module){
+                $finalData['data'] = [
+                    [
+                        "label" => $request->module,
+                        "fill" => true,
+                        "lineTension" => 0.5,
+                        "backgroundColor" => "rgba(60, 76, 207, 0.2)",
+                        "borderColor" => "#3c4ccf",
+                        "borderCapStyle" => "butt",
+                        "borderDash" => [],
+                        "borderDashOffset" => 0.0,
+                        "borderJoinStyle" => "miter",
+                        "pointBorderColor" => "#3c4ccf",
+                        "pointBackgroundColor" => "#fff",
+                        "pointBorderWidth" => 1,
+                        "pointHoverRadius" => 5,
+                        "pointHoverBackgroundColor" => "#3c4ccf",
+                        "pointHoverBorderColor" => "#fff",
+                        "pointHoverBorderWidth" => 2,
+                        "pointRadius" => 1,
+                        "pointHitRadius" => 1000,
+                        "data" => @$data[$request->module]
+                    ],
+                ];
+            }else{
+
+                $finalData['data'] = [
+                    [
+                        "label" => "Sales",
+                        "fill" => true,
+                        "lineTension" => 0.5,
+                        "backgroundColor" => "rgba(60, 76, 207, 0.2)",
+                        "borderColor" => "#3c4ccf",
+                        "borderCapStyle" => "butt",
+                        "borderDash" => [],
+                        "borderDashOffset" => 0.0,
+                        "borderJoinStyle" => "miter",
+                        "pointBorderColor" => "#3c4ccf",
+                        "pointBackgroundColor" => "#fff",
+                        "pointBorderWidth" => 1,
+                        "pointHoverRadius" => 5,
+                        "pointHoverBackgroundColor" => "#3c4ccf",
+                        "pointHoverBorderColor" => "#fff",
+                        "pointHoverBorderWidth" => 2,
+                        "pointRadius" => 1,
+                        "pointHitRadius" => 1000,
+                        "data" => @$data['Sales']
+                    ],
+                    [
+                        "label" => "Expenses",
+                        "fill" => true,
+                        "lineTension" => 0.5,
+                        "backgroundColor" => "rgba(235, 239, 242, 0.2)",
+                        "borderColor" => "#ebeff2",
+                        "borderCapStyle" => "butt",
+                        "borderDash" => [],
+                        "borderDashOffset" => 0.0,
+                        "borderJoinStyle" => "miter",
+                        "pointBorderColor" => "#ebeff2",
+                        "pointBackgroundColor" => "#fff",
+                        "pointBorderWidth" => 1,
+                        "pointHoverRadius" => 5,
+                        "pointHoverBackgroundColor" => "#ebeff2",
+                        "pointHoverBorderColor" => "#eef0f2",
+                        "pointHoverBorderWidth" => 2,
+                        "pointRadius" => 1,
+                        "pointHitRadius" => 1000,
+                        "data" => @$data['Expenses']
+                    ],
+                    [
+                        "label" => "Profit",
+                        "fill" => true,
+                        "lineTension" => 0.5,
+                        "backgroundColor" => "rgba(235, 239, 242, 0.2)",
+                        "borderColor" => "#ebeff2",
+                        "borderCapStyle" => "butt",
+                        "borderDash" => [],
+                        "borderDashOffset" => 0.0,
+                        "borderJoinStyle" => "miter",
+                        "pointBorderColor" => "#ebeff2",
+                        "pointBackgroundColor" => "#fff",
+                        "pointBorderWidth" => 1,
+                        "pointHoverRadius" => 5,
+                        "pointHoverBackgroundColor" => "#ebeff2",
+                        "pointHoverBorderColor" => "#eef0f2",
+                        "pointHoverBorderWidth" => 2,
+                        "pointRadius" => 1,
+                        "pointHitRadius" => 1000,
+                        "data" => @$data['Profit']
+                    ]
+                ];
+            }
         }else{
             $finalData = [];
             
@@ -3614,7 +3641,112 @@ class ReportController extends Controller
             }
         }
         return response()->json([
-            'success' => false,
+            'success' => true,
+            'data' => $finalData
+        ]);
+    }
+     /* -------------------------------------------------------------------------- */
+    /*                   Invoicing By Client sub report of of evolution                    */
+    /* -------------------------------------------------------------------------- */
+    public function InvoicingByClient(Request $request){
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+        $purchaseReferenceTypes = Reference::where('type', 'Purchase Invoice')->pluck('prefix')->toArray();
+        $client_ids = InvoiceTable::whereHas('client')->pluck('client_id')->toArray();
+        $clients = Client::whereIn('id',$client_ids)->get();
+        //set the year for the report
+        if(!$request->year){
+            $request['year'] =  date('Y');
+        }
+        if($request->after_tax){
+            $column = 'amount';
+            }else{
+            $column = 'amount_with_out_vat';
+        }
+        $dates =  getDateToIterate($request);
+        if($request->type == 'graph'){
+            $data = [];
+            foreach($dates as $date){
+                $data['labels'][] =  $date['name'];
+                foreach($clients as $client){
+                    $data[$client->id][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->get()->sum($column);
+                }
+            }
+            $finalData['labels'] = @$data['labels'];
+            
+            foreach($clients as $client){
+
+                $finalData['data'][] = 
+                [
+                    "label" => $client->legal_name.' ('.$client->name.')',
+                    "fill" => true,
+                    "lineTension" => 0.5,
+                    "backgroundColor" => generateRandomColor(),
+                    "borderColor" => "#3c4ccf",
+                    "borderCapStyle" => "butt",
+                    "borderDash" => [],
+                    "borderDashOffset" => 0.0,
+                    "borderJoinStyle" => "miter",
+                    "pointBorderColor" => "#3c4ccf",
+                    "pointBackgroundColor" => "#fff",
+                    "pointBorderWidth" => 1,
+                    "pointHoverRadius" => 5,
+                    "pointHoverBackgroundColor" => "#3c4ccf",
+                    "pointHoverBorderColor" => "#fff",
+                    "pointHoverBorderWidth" => 2,
+                    "pointRadius" => 1,
+                    "pointHitRadius" => 1000,
+                    "data" => @$data[$client->id]
+                ];
+            }
+        }else{
+            $finalData = [];
+            foreach($dates as $date){
+                $finalData['labels'][] =  $date['name'];
+            }
+            foreach($clients as $client){
+                $arr = [];
+                $arr['name'] = $client->legal_name.' ('.$client->name.')';
+                $arr['total'] = 0;
+                foreach($dates as $date){
+                    $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->get()->sum($column);
+                    $arr['data'][] =  $amount;
+                    $arr['total'] = $arr['total']+ $amount;
+                }
+                
+    
+                $finalData['data'][] = $arr;
+            }
+        }
+        return response()->json([
+            'success' => true,
             'data' => $finalData
         ]);
     }

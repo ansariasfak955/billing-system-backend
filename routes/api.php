@@ -347,6 +347,7 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('stock-valuation', 'ReportController@stockValuation');
                 Route::get('of-evolution', 'ReportController@ofEvolution');
                 Route::get('of-profit', 'ReportController@ofProfit');
+                Route::get('invoicing-by-client', 'ReportController@InvoicingByClient');
                 Route::get('tax-summary', 'ReportController@taxSummary');
                 //invoice history
                 Route::get('invoice-clients-history', 'ReportController@invoiceClientHistory');
