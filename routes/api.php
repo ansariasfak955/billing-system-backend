@@ -348,6 +348,8 @@ Route::group(['namespace' => 'Api'], function() {
                 Route::get('of-evolution', 'ReportController@ofEvolution');
                 Route::get('of-profit', 'ReportController@ofProfit');
                 Route::get('invoicing-by-client', 'ReportController@InvoicingByClient');
+                Route::get('invoicing-by-agent', 'ReportController@InvoicingByAgent');
+                Route::get('invoicing-by-item', 'ReportController@InvoicingByItem');
                 Route::get('tax-summary', 'ReportController@taxSummary');
                 //invoice history
                 Route::get('invoice-clients-history', 'ReportController@invoiceClientHistory');
