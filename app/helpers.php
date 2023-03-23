@@ -568,3 +568,87 @@ function add_signed_parameter_in_my_templates($company_id){
     }
     echo 'done adding';       
 }
+function getDateToIterate($request){
+    $data = [];
+    $year =     $request->year ?? date('Y');
+    $month =  $request->month ??date('m');
+    if($request->date_type == 'all_dates'){
+        $dateSubType = 'year';
+        if($request->date_sub_type){
+            $dateSubType = $request->date_sub_type;
+        }
+        if($dateSubType == 'year'){
+            $arr = [];
+            $arr['start_date'] = date('Y-').'01-'.'01';
+            $arr['end_date'] =  date('Y-').'12-'.'31';
+            $arr['name'] =  date("Y");
+            $data[] = $arr;
+        }elseif($dateSubType == 'quarter'){
+            $arr = [];
+            $arr['start_date'] = date('Y-').'01-'.'01';
+            $arr['end_date'] =  date('Y-').'03-'.'31';
+            $arr['name'] =  date("Y").'/Q1';
+            $data[] = $arr;
+        }else{
+            $currentYear = date('Y');
+            $currentMonth = date('m');
+            for ($month = 1; $month <= $currentMonth; $month++) {
+                $monthStartDate = date('Y-m-d', mktime(0, 0, 0, $month, 1, $currentYear));
+                $monthEndDate = date('Y-m-d', mktime(0, 0, 0, $month + 1, 0, $currentYear));
+            
+                $arr = [];
+                $arr['start_date']  = $monthStartDate;
+                $arr['end_date']    =   $monthEndDate ;
+                $arr['name'] =  date("Y").'/'.$month;
+                $data[] = $arr;
+            }
+
+        }
+    }elseif($request->date_type == 'month'){
+        $numDays = date('t', strtotime("$year-$month-01"));
+        // Loop through each day in the month and
+        for ($day = 1; $day <= $numDays; $day++) {
+            $dayStartDate = date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
+            $dayEndDate = date('Y-m-d', mktime(23, 59, 59, $month, $day, $year));
+            $name  = $day;
+            // Add day start and end dates to array
+            $arr['start_date'] =  $dayStartDate;
+            $arr['end_date'] =  $dayEndDate;
+            $arr['name'] =  $name;
+            $data[] = $arr;
+        }
+    }else{
+        $dateSubType = 'quarter';
+        if($request->date_sub_type){
+            $dateSubType = $request->date_sub_type;
+        }
+        if($dateSubType == 'quarter'){
+            for($quarter = 1; $quarter <= 4; $quarter++){
+                $arr = [];
+                $quarterStartDate = date('Y-m-d', mktime(0, 0, 0, ($quarter - 1) * 3 + 1, 1, $year));
+                $quarterEndDate = date('Y-m-d', mktime(0, 0, 0, $quarter * 3, 31, $year));
+                $name  = $year.'/Q'.$quarter;
+                $arr['start_date'] =  $quarterStartDate;
+                $arr['end_date'] =  $quarterEndDate;
+                $arr['name'] =  $name;
+                $data[] = $arr;
+            }
+        }else{
+            $numDays = date('t', strtotime("$year-$month-01"));
+
+            // Loop through each day in the month and
+            for ($day = 1; $day <= $numDays; $day++) {
+                $dayStartDate = date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
+                $dayEndDate = date('Y-m-d', mktime(23, 59, 59, $month, $day, $year));
+                $name  = $year.'/'.$day;
+                // Add day start and end dates to array
+                $arr['start_date'] =  $dayStartDate;
+                $arr['end_date'] =  $dayEndDate;
+                $arr['name'] =  $name;
+                $data[] = $arr;
+            }
+        }
+
+    }
+    return $data;
+}

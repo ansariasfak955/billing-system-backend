@@ -74,6 +74,17 @@ class InvoiceTableFilter extends ModelFilter
         $startDate = \Carbon\Carbon::parse($date);
         return $this->whereDate('created_at', '>=', $startDate->format('Y-m-d'));
     }
+    public function dateEndDate($date)
+    {
+        $endDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('date', '<=', $endDate->format('Y-m-d'));
+    }
+
+    public function dateStartDate($date)
+    {
+        $startDate = \Carbon\Carbon::parse($date);
+        return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
+    }
     public function year($year)
     {
         return $this->whereYear('created_at',$year);
