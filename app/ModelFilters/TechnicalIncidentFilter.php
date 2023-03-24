@@ -62,10 +62,30 @@ class TechnicalIncidentFilter extends ModelFilter
         $endDate = \Carbon\Carbon::parse($date);
         return $this->whereDate('date', '<=', $endDate->format('Y-m-d'));
     }
-
+    public function client($clientId)
+    {
+        return $this->whereHas('client', function($q) use ($clientId){
+            $q ->where('client_id', $clientId);
+        });
+    }
     public function startDate($date)
     {
         $startDate = \Carbon\Carbon::parse($date);
         return $this->whereDate('date', '>=', $startDate->format('Y-m-d'));
+    }
+    public function clientCategory($clientCategory)
+    {
+        return $this->whereHas('client', function($q) use ($clientCategory){
+            $q->whereHas('category', function($q) use ($clientCategory){
+                $q ->where('id', $clientCategory);
+            });  
+        });
+    }
+
+    public function clientCategoryNull($clientCategory)
+    {
+        return $this->whereHas('client', function($q) use ($clientCategory){
+            $q->whereDoesntHave('category');
+        });
     }
 }

@@ -30,6 +30,8 @@ use App\Models\ProductCategory;
 use App\Models\IncomeTax;
 use App\Models\PurchaseTicket;
 use Illuminate\Http\Request;
+use App\Exports\ReportExport\OfProfitExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -1322,112 +1324,214 @@ class ReportController extends Controller
     
                 $referenceType = Reference::where('type', 'Incident')->pluck('prefix')->toArray();
             }
-
+            // return  $referenceType; 
+            $statusesArr = ['Pending', 'Refused', 'Resolved','Closed', 'Accepted'];
             if($request->category == 'client_categories'){
-
-            }else{
+                $categories =  ClientCategory::get();
                 $tempData = [];
-                $statusesArr = ['Pending', 'Refused', 'In Progress','Closed'];
                 $clients = Client::get();
                 foreach($statusesArr as $status){
 
                     $tempData['labels'][] =  $status;
-                    $tempData['no_client'][] =  TechnicalTable::filter(['agent_id' =>$request->agent_id ])->whereIn('reference',$referenceType)->whereDoesntHave('client')->where('status', $status)->get()->sum($taxColumn);
-                    foreach($clients as $client){
-                        $tempData[$client->id][] =  TechnicalTable::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id ])->whereIn('reference',$referenceType)->where('status', $status)->get()->sum($taxColumn);
+                    $tempData['no_client'][] =  TechnicalIncident::filter(['agent_id' =>$request->agent_id, 'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereDoesntHave('client')->where('status', $status)->count();
+                    $tempData['no_category'][] =  TechnicalIncident::filter(['agent_id' =>$request->agent_id,'clientCategoryNull' => 1,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('status', $status)->count();
+                    foreach($categories as $category){
+                        $tempData[$category->id][] =  TechnicalIncident::filter([ 'agent_id' =>$request->agent_id,'clientCategory' => $category->id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', $status)->count();
                     }
                 }
-                $data = [
-                    "incidents_by_client" => [
-                        [
-                            "type" => "bar", 
-                            "label" => "Pending", 
-                            "backgroundColor" => "#26C184", 
-                            "data" => [
-                                 TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'pending')->count()
-                            ]
-                        ], 
-                        [
-                                "type" => "bar", 
-                                "label" => "Refused", 
-                                "backgroundColor" => "#FB6363", 
-                                "data" => [
-                                     TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'refused')->count()
-                                ]
-                        ], 
-                        [
-                            "type" => "bar", 
-                            "label" => "Resolved", 
-                            "backgroundColor" => "#FE9140", 
-                            "data" => [
-                                 TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'resolved')->count()
-                            ]
-                        ],
-                        [
-                            "type" => "bar", 
-                            "label" => "Closed", 
-                            "backgroundColor" => "#26C184", 
-                            "data" => [
-                                 TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'closed')->count()
-                            ]
-                        ],
-                    ],
+                $data['labels'] = @$tempData['labels'];
+                $data['data'][] = 
+                [
+                    "label" => 'Without Client',
+                    "fill" => true,
+                    "lineTension" => 0.5,
+                    "backgroundColor" => generateRandomColor(),
+                    "borderColor" => "#3c4ccf",
+                    "borderCapStyle" => "butt",
+                    "borderDash" => [],
+                    "borderDashOffset" => 0.0,
+                    "borderJoinStyle" => "miter",
+                    "pointBorderColor" => "#3c4ccf",
+                    "pointBackgroundColor" => "#fff",
+                    "pointBorderWidth" => 1,
+                    "pointHoverRadius" => 5,
+                    "pointHoverBackgroundColor" => "#3c4ccf",
+                    "pointHoverBorderColor" => "#fff",
+                    "pointHoverBorderWidth" => 2,
+                    "pointRadius" => 1,
+                    "pointHitRadius" => 1000,
+                    "data" => @$tempData['no_client']
                 ];
+                $data['data'][] = 
+                [
+                    "label" => 'No Selected Category',
+                    "fill" => true,
+                    "lineTension" => 0.5,
+                    "backgroundColor" => generateRandomColor(),
+                    "borderColor" => "#3c4ccf",
+                    "borderCapStyle" => "butt",
+                    "borderDash" => [],
+                    "borderDashOffset" => 0.0,
+                    "borderJoinStyle" => "miter",
+                    "pointBorderColor" => "#3c4ccf",
+                    "pointBackgroundColor" => "#fff",
+                    "pointBorderWidth" => 1,
+                    "pointHoverRadius" => 5,
+                    "pointHoverBackgroundColor" => "#3c4ccf",
+                    "pointHoverBorderColor" => "#fff",
+                    "pointHoverBorderWidth" => 2,
+                    "pointRadius" => 1,
+                    "pointHitRadius" => 1000,
+                    "data" => @$tempData['no_category']
+                ];
+                foreach($categories as $category){
+    
+                    $data['data'][] = 
+                    [
+                        "label" => $category->name,
+                        "fill" => true,
+                        "lineTension" => 0.5,
+                        "backgroundColor" => generateRandomColor(),
+                        "borderColor" => "#3c4ccf",
+                        "borderCapStyle" => "butt",
+                        "borderDash" => [],
+                        "borderDashOffset" => 0.0,
+                        "borderJoinStyle" => "miter",
+                        "pointBorderColor" => "#3c4ccf",
+                        "pointBackgroundColor" => "#fff",
+                        "pointBorderWidth" => 1,
+                        "pointHoverRadius" => 5,
+                        "pointHoverBackgroundColor" => "#3c4ccf",
+                        "pointHoverBorderColor" => "#fff",
+                        "pointHoverBorderWidth" => 2,
+                        "pointRadius" => 1,
+                        "pointHitRadius" => 1000,
+                        "data" => @$tempData[$category->id]
+                    ];
+                }
+            }else{
+                $tempData = [];
+                $clients = Client::get();
+                foreach($statusesArr as $status){
+
+                    $tempData['labels'][] =  $status;
+                    $tempData['no_client'][] =  TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereDoesntHave('client')->where('status', $status)->count();
+                    foreach($clients as $client){
+                        $tempData[$client->id][] =  TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', $status)->count();
+                    }
+                }
+                $data['labels'] = @$tempData['labels'];
+                $data['data'][] = 
+                [
+                    "label" => 'Without Client',
+                    "fill" => true,
+                    "lineTension" => 0.5,
+                    "backgroundColor" => generateRandomColor(),
+                    "borderColor" => "#3c4ccf",
+                    "borderCapStyle" => "butt",
+                    "borderDash" => [],
+                    "borderDashOffset" => 0.0,
+                    "borderJoinStyle" => "miter",
+                    "pointBorderColor" => "#3c4ccf",
+                    "pointBackgroundColor" => "#fff",
+                    "pointBorderWidth" => 1,
+                    "pointHoverRadius" => 5,
+                    "pointHoverBackgroundColor" => "#3c4ccf",
+                    "pointHoverBorderColor" => "#fff",
+                    "pointHoverBorderWidth" => 2,
+                    "pointRadius" => 1,
+                    "pointHitRadius" => 1000,
+                    "data" => @$tempData['no_client']
+                ];
+                foreach($clients as $client){
+    
+                    $data['data'][] = 
+                    [
+                        "label" => $client->legal_name.' ('.$client->name.')',
+                        "fill" => true,
+                        "lineTension" => 0.5,
+                        "backgroundColor" => generateRandomColor(),
+                        "borderColor" => "#3c4ccf",
+                        "borderCapStyle" => "butt",
+                        "borderDash" => [],
+                        "borderDashOffset" => 0.0,
+                        "borderJoinStyle" => "miter",
+                        "pointBorderColor" => "#3c4ccf",
+                        "pointBackgroundColor" => "#fff",
+                        "pointBorderWidth" => 1,
+                        "pointHoverRadius" => 5,
+                        "pointHoverBackgroundColor" => "#3c4ccf",
+                        "pointHoverBorderColor" => "#fff",
+                        "pointHoverBorderWidth" => 2,
+                        "pointRadius" => 1,
+                        "pointHitRadius" => 1000,
+                        "data" => @$tempData[$client->id]
+                    ];
+                }
+               
             }
         }elseif($request->type == "incidents_by_agent"){
-            $data = [
-                "incidents_by_agent" => [
-                    [
-                        "type" => "bar", 
-                        "label" => "Pending", 
-                        "backgroundColor" => "#26C184", 
-                        "data" => [
-                            TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'pending')->count()
-                        ] 
-                    ], 
-                    [
-                            "type" => "bar", 
-                            "label" => "Refused", 
-                            "backgroundColor" => "#FB6363", 
-                            "data" => [
-                                TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'refused')->count()
-                            ]
-                    ], 
-                    [
-                        "type" => "bar", 
-                        "label" => "Resolved", 
-                        "backgroundColor" => "#FE9140", 
-                        "data" => [
-                            TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'resolved')->count()
-                        ]
-                    ],
-                    [
-                        "type" => "bar", 
-                        "label" => "Closed", 
-                        "backgroundColor" => "#26C184", 
-                        "data" => [
-                            TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'closed')->count()
-                        ]
-                    ],
-                ],
-            ];
-        }elseif($request->type == "agent" ){
-            $agent_ids  = TechnicalTable::pluck('agent_id')->toArray();
-            $client_ids  = Client::whereIn('id', $agent_ids)->pluck('id')->toArray();
+            if($request->reference){
+                $referenceType = [$request->reference];
+            }else{
+    
+                $referenceType = Reference::where('type', 'Incident')->pluck('prefix')->toArray();
+            }
+            $statusesArr = ['Pending', 'Refused', 'Resolved','Closed'];
+            foreach($statusesArr as $status){
 
-        }else{
-            $client_ids  = Client::pluck('id')->toArray();
+                $tempData['labels'][] =  $status;
+                $tempData['no_client'][] =  TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereNull('assigned_to')->where('status', $status)->count();
+                
+                $tempData[\Auth::id()][] =  TechnicalIncident::filter(['client_id' => $request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('assigned_to', \Auth::id())->where('reference',$referenceType)->where('status', $status)->count();
+            }
+            $data['labels'] = @$tempData['labels'];
+            $data['data'][] = 
+            [
+                "label" => 'Unassigned',
+                "fill" => true,
+                "lineTension" => 0.5,
+                "backgroundColor" => generateRandomColor(),
+                "borderColor" => "#3c4ccf",
+                "borderCapStyle" => "butt",
+                "borderDash" => [],
+                "borderDashOffset" => 0.0,
+                "borderJoinStyle" => "miter",
+                "pointBorderColor" => "#3c4ccf",
+                "pointBackgroundColor" => "#fff",
+                "pointBorderWidth" => 1,
+                "pointHoverRadius" => 5,
+                "pointHoverBackgroundColor" => "#3c4ccf",
+                "pointHoverBorderColor" => "#fff",
+                "pointHoverBorderWidth" => 2,
+                "pointRadius" => 1,
+                "pointHitRadius" => 1000,
+                "data" => @$tempData['no_client']
+            ];
+
+            $data['data'][] = 
+            [
+                "label" => \Auth::user()->name,
+                "fill" => true,
+                "lineTension" => 0.5,
+                "backgroundColor" => generateRandomColor(),
+                "borderColor" => "#3c4ccf",
+                "borderCapStyle" => "butt",
+                "borderDash" => [],
+                "borderDashOffset" => 0.0,
+                "borderJoinStyle" => "miter",
+                "pointBorderColor" => "#3c4ccf",
+                "pointBackgroundColor" => "#fff",
+                "pointBorderWidth" => 1,
+                "pointHoverRadius" => 5,
+                "pointHoverBackgroundColor" => "#3c4ccf",
+                "pointHoverBorderColor" => "#fff",
+                "pointHoverBorderWidth" => 2,
+                "pointRadius" => 1,
+                "pointHitRadius" => 1000,
+                "data" => @$tempData[\Auth::id()]
+            ];
         }
-        // foreach($client_ids as $client_id){
-        //     $technicalDatas = TechnicalTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get();
-        //     $sum = 0;
-        //     $arr['client_id'] = $client_id;
-        //     // foreach($technicalDatas as $technicalData){
-        //     //    $sum = $sum + $technicalData->items()->sum('base_price');
-        //     // }
-        //     $arr['sum'] = TechnicalTable::with(['items', 'item_meta'])->where('client_id', $client_id)->get()->sum('amount');
-        //     $data[] = $arr;
-        // }
 
         return response()->json([
             "status" => true,
@@ -1435,6 +1539,114 @@ class ReportController extends Controller
         ]);
     }
     public function incidentByClientHistory(Request $request){
+        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
+        SalesEstimate::setGlobalTable($salesTables);
+
+        $clientsTables = 'company_'.$request->company_id.'_clients';
+        Client::setGlobalTable($clientsTables);
+
+        $table = 'company_'.$request->company_id.'_technical_incidents';
+        TechnicalIncident::setGlobalTable($table);
+
+        $table = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($table);
+        $categoryTable = 'company_'.$request->company_id.'_client_categories';
+        ClientCategory::setGlobalTable($categoryTable);
+        $table = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($table);
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_users';
+        User::setGlobalTable($table);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+        
+            // $client_ids = TechnicalIncident::with('client')->pluck('client_id')->toArray();
+            $clients = Client::get();
+
+            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
+            $arr = [];
+            $data = [];
+            if($request->reference){
+                $referenceType = [$request->reference];
+            }else{
+    
+                $referenceType = Reference::where('type', 'Incident')->pluck('prefix')->toArray();
+            }
+            // return  $referenceType; 
+            if($request->category == 'client_categories'){
+                $categories =  ClientCategory::get();
+                $arr['name'] = 'No category Selected';
+                $arr['pending'] = TechnicalIncident::filter(['clientCategoryNull' => 1, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'pending')->count();
+                $arr['resolved'] = TechnicalIncident::filter(['clientCategoryNull' => 1, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'resolved')->count();
+                $arr['refused'] = TechnicalIncident::filter(['clientCategoryNull' => 1, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'refused')->count();
+                $arr['accepted'] = TechnicalIncident::filter(['clientCategoryNull' => 1, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'accepted')->count();
+                $arr['closed'] = TechnicalIncident::filter(['clientCategoryNull' => 1, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'closed')->count();
+                $arr['total'] = TechnicalIncident::filter(['clientCategoryNull' => 1, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->count();
+    
+                $data[] = $arr;
+                $arr['name'] = 'Without Client';
+                $arr['pending'] = TechnicalIncident::filter([ 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'pending')->whereDoesntHave('client')->count();
+                $arr['resolved'] = TechnicalIncident::filter([ 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'resolved')->whereDoesntHave('client')->count();
+
+                $arr['refused'] = TechnicalIncident::filter([ 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'refused')->whereDoesntHave('client')->count();
+
+                $arr['accepted'] = TechnicalIncident::filter([ 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->whereDoesntHave('client')->where('status', 'accepted')->count();
+                $arr['closed'] = TechnicalIncident::filter([ 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'closed')->whereDoesntHave('client')->count();
+                $arr['total'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->count();
+    
+                $data[] = $arr;
+                foreach($categories as $category){
+    
+                    $arr['name'] = $category->name;
+                    $arr['pending'] = TechnicalIncident::filter(['clientCategory' => $category->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'pending')->count();
+                    $arr['resolved'] = TechnicalIncident::filter(['clientCategory' => $category->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'resolved')->count();
+                    $arr['refused'] = TechnicalIncident::filter(['clientCategory' => $category->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'refused')->count();
+                    $arr['accepted'] = TechnicalIncident::filter(['clientCategory' => $category->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'accepted')->count();
+                    $arr['closed'] = TechnicalIncident::filter(['clientCategory' => $category->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'closed')->count();
+                    $arr['total'] = TechnicalIncident::filter(['clientCategory' => $category->id, 'agent_id' =>$request->agent_id ])->count();
+        
+                    $data[] = $arr;
+                }
+            }else{
+                $clients = Client::get();
+                $arr['name'] = 'Without Client';
+                $arr['pending'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->where('reference',$referenceType)->where('status', 'pending')->count();
+                $arr['resolved'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->where('reference',$referenceType)->where('status', 'resolved')->count();
+                $arr['refused'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->where('reference',$referenceType)->where('status', 'refused')->count();
+                $arr['accepted'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->where('reference',$referenceType)->where('status', 'accepted')->count();
+                $arr['closed'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->where('reference',$referenceType)->where('status', 'closed')->count();
+                $arr['total'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->count();
+    
+                $data[] = $arr;
+                foreach($clients as $client){
+    
+                    
+                    $arr['name'] = $client->legal_name.' ('.$client->name.')';
+                    $arr['pending'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'pending')->count();
+                    $arr['resolved'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'resolved')->count();
+                    $arr['refused'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'refused')->count();
+                    $arr['accepted'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'accepted')->count();
+                    $arr['closed'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'closed')->count();
+                    $arr['total'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->count();
+        
+                    $data[] = $arr;
+                }
+               
+            }
+            
+            return response()->json([
+                "status" => true,
+                "data" =>  $data
+            ]);
+    }
+    public function incidentByAgentHistory(Request $request){
         $salesTables = 'company_'.$request->company_id.'_sales_estimates';
         SalesEstimate::setGlobalTable($salesTables);
 
@@ -1462,28 +1674,38 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
         
-            // $client_ids = TechnicalIncident::with('client')->pluck('client_id')->toArray();
-            $clients = Client::get();
+        $clients = Client::get();
 
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $arr = [];
-            $data = [];
+        if($request->reference){
+            $referenceType = [$request->reference];
+        }else{
 
-            foreach($clients as $client){
-                $arr['name'] = $client->legal_name;
-                $arr['pending'] = TechnicalIncident::filter($request->all())->where('client_id',$client->id)->where('status','pending')->count();
-                $arr['refused'] = TechnicalIncident::filter($request->all())->where('client_id',$client->id)->where('status','refused')->count();
-                $arr['accepted'] = TechnicalIncident::filter($request->all())->where('client_id',$client->id)->where('status','accepted')->count();
-                $arr['closed'] = TechnicalIncident::filter($request->all())->where('client_id',$client->id)->where('status','closed')->count();
-                $arr['total'] = TechnicalIncident::filter($request->all())->where('client_id',$client->id)->count();
+            $referenceType = Reference::where('type', 'Incident')->pluck('prefix')->toArray();
+        };
+        $arr = [];
+        $data = [];
 
-                $data[] = $arr;
-            }
-            
-            return response()->json([
-                "status" => true,
-                "data" =>  $data
-            ]);
+        $arr['name'] = 'Unassigned';
+        $arr['pending'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereNull('assigned_to')->where('status', 'Pending')->count();
+        $arr['refused'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereNull('assigned_to')->where('status', 'Refused')->count();
+        $arr['resolved'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereNull('assigned_to')->where('status', 'Resolved')->count();
+        $arr['closed'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereNull('assigned_to')->where('status', 'Closed')->count();
+        $arr['total'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereNull('assigned_to')->count();
+
+        $data[] = $arr;
+        $arr['name'] = \Auth::user()->name;
+        $arr['pending'] = TechnicalIncident::filter(['client_id' => $request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'Pending')->count();
+        $arr['refused'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'Refused')->count();
+        $arr['resolved'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'resolved')->count();
+        $arr['closed'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'Closed')->count();
+        $arr['total'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->count();
+
+        $data[] = $arr;
+        
+        return response()->json([
+            "status" => true,
+            "data" =>  $data
+        ]);
     }
     public function technicalByClient(Request $request){
         $salesTables = 'company_'.$request->company_id.'_sales_estimates';
@@ -1871,54 +2093,6 @@ class ReportController extends Controller
             "data" =>  $data
         ]);
             
-    }
-    public function incidentByAgentHistory(Request $request){
-        $salesTables = 'company_'.$request->company_id.'_sales_estimates';
-        SalesEstimate::setGlobalTable($salesTables);
-
-        $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTables);
-
-        $table = 'company_'.$request->company_id.'_technical_incidents';
-        TechnicalIncident::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_users';
-        User::setGlobalTable($table);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-        
-            $clients = Client::get();
-
-            // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $arr = [];
-            $data = [];
-
-                $arr['name'] = \Auth::user()->name;
-                $arr['pending'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Pending')->count();
-                $arr['refused'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Refused')->count();
-                $arr['resolved'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Resolved')->count();
-                $arr['closed'] = TechnicalIncident::where('assigned_to',\Auth::id())->where('status','Closed')->count();
-                $arr['total'] = TechnicalIncident::where('assigned_to',\Auth::id())->count();
-
-                $data[] = $arr;
-            
-            return response()->json([
-                "status" => true,
-                "data" =>  $data
-            ]);
     }
     /* -------------------------------------------------------------------------- */
     /*                               Purchase Report                              */
@@ -2733,662 +2907,6 @@ class ReportController extends Controller
         ]);
         
     }
-
-    /* -------------------------------------------------------------------------- */
-    /*                             OF Evolution Report                            */
-    /* -------------------------------------------------------------------------- */
-    public function ofEvolution(Request $request){
-        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
-        PurchaseTable::setGlobalTable($purchaseTables); 
-
-        $table = 'company_'.$request->company_id.'_payment_options';
-        PaymentOption::setGlobalTable($table);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-
-        $supplierTables = 'company_'.$request->company_id.'_suppliers';
-        Supplier::setGlobalTable($supplierTables); 
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_deposits';
-        Deposit::setGlobalTable($table);
-
-        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
-        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        if($request->after_tax){
-            $column = 'amount';
-            }else{
-            $column = 'amount_with_out_vat';
-        }
-
-        $data = [];
-        if($request->type == "ofProfit"){
-        $data = [
-            "Of_profit" => [
-                [
-                    "type" => "bar", 
-                    "label" => "Sales", 
-                    "backgroundColor" => "#26C184", 
-                    "data" => [
-                        InvoiceTable::get()->sum('amount_with_out_vat'),
-                    ]
-                ],
-                [
-                    "type" => "bar", 
-                    "label" => "Expenses", 
-                    "backgroundColor" => "#26C184", 
-                    "data" => [
-                        PurchaseTable::where('reference','PINV')->get()->sum('amount_with_out_vat'),
-                    ]
-                ],
-                [
-                    "type" => "bar", 
-                    "label" => "Profit", 
-                    "backgroundColor" => "#26C184", 
-                    "data" => [
-                        InvoiceTable::get()->sum('amount_with_out_vat') - PurchaseTable::where('reference','PINV')->get()->sum('amount_with_out_vat'),
-                    ]
-                ]
-            ]
-        ];
-    }elseif($request->type == "ofProfitList"){
-        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
-        PurchaseTable::setGlobalTable($purchaseTables); 
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $supplierTables = 'company_'.$request->company_id.'_suppliers';
-        Supplier::setGlobalTable($supplierTables); 
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_deposits';
-        Deposit::setGlobalTable($table);
-
-        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
-        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $table = 'company_'.$request->company_id.'_purchase_receipts';
-        PurchaseReceipt::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_payment_options';
-        PaymentOption::setGlobalTable($table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-
-        // $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
-        // $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-        // $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        // $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
-        // $products = Product::whereIn('id',$itemProductIds)->get();
-        // $services = Service::whereIn('id',$itemServiceIds)->get();
-        // $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
-
-        $invoiceAmount = InvoiceTable::get()->sum('amount_with_out_vat');
-        $purchaseAmount = PurchaseTable::where('reference','PINV')->get()->sum('amount_with_out_vat');
-
-            $arr = [];
-            $data = [];
-
-            // foreach($products as $invoiceData){
-                $arr['period'] = '2023Q1';
-                $arr['sales'] = $invoiceAmount;
-                $arr['expense'] = $purchaseAmount;
-                $arr['profit'] =  $invoiceAmount - $purchaseAmount;
-
-                $data[] = $arr;
-            // }
-    }elseif($request->type == "invoicing_by_client"){
-        $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTables);
-
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_invoice_receipts';
-        InvoiceReceipt::setGlobalTable($table);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-            
-        $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
-        $clients = Client::whereIn('id',$client_ids)->get();
-        $data = [];
-        $data['invoice_client'] = [];
-        foreach($clients as $client){
-            $data['invoice_client'][] = [
-                    "type" => "bar",
-                    "label" => "" .  $client->legal_name.' ('.$client->name.')',
-                    "backgroundColor" => "#26C184",
-                    "data" => [
-                         InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column),
-                        ]
-                    ];
-        }
-
-
-    }elseif($request->type == "invoicing_by_client_list"){
-        $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTables);
-
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_invoice_receipts';
-        InvoiceReceipt::setGlobalTable($table);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-
-            $client_ids = InvoiceTable::with('client')->pluck('client_id')->toArray();
-            $clients = Client::whereIn('id',$client_ids)->get();
-
-            // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
-            $arr = [];
-            $data = [];
-
-            foreach($clients as $client){
-                $arr['name'] = $client->legal_name.' ('.$client->name.')';
-                $arr['Q1'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
-                $arr['Q2'] = '0.00';
-                $arr['Q3'] = '0.00';
-                $arr['Q4'] = '0.00';
-                $arr['tottal'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->get()->sum($column);
-                $data[] = $arr;
-            }
-    }elseif($request->type == "invoicing_by_agent"){
-        $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTables);
-
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_invoice_receipts';
-        InvoiceReceipt::setGlobalTable($table);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-            $data = [];
-            $data['invoice_agents'] = [];
-            $data['invoice_agents'][] = [
-                    "type" => "bar",
-                    "label" => "" .  \Auth::user()->name,
-                    "backgroundColor" => "#26C184",
-                    "data" => [
-                         InvoiceTable::filter($request->all())->get()->sum($column),
-                        ]
-                    ];
-    }elseif($request->type == "invoicing_by_agent_list"){
-        $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTables);
-
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_invoice_receipts';
-        InvoiceReceipt::setGlobalTable($table);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-            // $clients = Client::get();
-                $arr = [];
-                $data = [];
-
-                $arr['name'] = \Auth::user()->name;
-                $arr['Q1'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
-                $arr['Q2'] = '0.00';
-                $arr['Q3'] = '0.00';
-                $arr['Q4'] = '0.00';
-                $arr['total'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column);
-
-                $data[] = $arr;
-    }elseif($request->type == "invoicing_by_item"){
-        $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTables);
-
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_invoice_receipts';
-        InvoiceReceipt::setGlobalTable($table);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-
-        $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
-        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
-        $data = [];
-        $data['invoice_items'] = [];
-        foreach($products as $product){
-            $data['invoice_items'][] = [
-                    "type" => "bar",
-                    "label" => "" .  $product->name,
-                    "backgroundColor" => "#26C184",
-                    "data" => [
-                            InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                                $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                            })->get()->sum($column),
-                        ]
-                    ];
-        }
-        foreach($services as $service){
-            $data['invoice_items'][] = [
-                    "type" => "bar",
-                    "label" => "" .  $service->name,
-                    "backgroundColor" => "#26C184",
-                    "data" => [
-                            InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                            $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                            })->get()->sum('amount'),
-                        ]
-                    ];
-        }
-    }elseif($request->type == "invoicing_by_item_list"){
-        $clientsTables = 'company_'.$request->company_id.'_clients';
-        Client::setGlobalTable($clientsTables);
-
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_invoice_receipts';
-        InvoiceReceipt::setGlobalTable($table);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-
-        $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
-        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
-           
-            $arr = [];
-            $data = [];
-
-            foreach($products as $product){
-                $arr['name'] = $product->name;
-                $arr['reference'] = $product->reference.''.$product->reference_number;
-                $arr['Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                })->get()->sum('amount_with_out_vat');
-                $arr['Q2'] = '0.00';
-                $arr['Q3'] = '0.00';
-                $arr['Q4'] = '0.00';
-                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                })->get()->sum('amount_with_out_vat');
-                
-
-                $data[] = $arr;
-            }
-            foreach($services as $service){
-                $arr['name'] = $service->name;
-                $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['Q1'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                })->get()->sum('amount_with_out_vat');
-                $arr['Q2'] = '0.00';
-                $arr['Q3'] = '0.00';
-                $arr['Q4'] = '0.00';
-                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                })->get()->sum('amount_with_out_vat');
-
-                $data[] = $arr;
-            }
-    }elseif($request->type == "purchase_by_provider"){
-        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
-        PurchaseTable::setGlobalTable($purchaseTables); 
-
-        $supplierTables = 'company_'.$request->company_id.'_suppliers';
-        Supplier::setGlobalTable($supplierTables); 
-        
-        $table = 'company_'.$request->company_id.'_purchase_receipts';
-        PurchaseReceipt::setGlobalTable($table);
-
-        $productTables = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($productTables);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $table = 'company_'.$request->company_id.'_expense_and_investments';
-        ExpenseAndInvestment::setGlobalTable($table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
-        $supplier_ids = PurchaseTable::with('supplier')->whereIn('reference',$referenceType)->pluck('supplier_id')->toArray();
-        $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
-            $data = [];
-            $data['purchase_supplier'] = [];
-            foreach($suppliers as $supplier){
-                $data['purchase_supplier'][] = [
-                        "type" => "bar",
-                        "label" => "" .  $supplier->legal_name,
-                        "backgroundColor" => "#26C184",
-                        "data" => [
-                             PurchaseTable::filter($request->all())->where('reference','PINV')->where('supplier_id',$supplier->id)->get()->sum($column),
-                            ]
-                        ];
-            }
-    }elseif($request->type == "purchase_by_provider_list"){
-
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
-        PurchaseTable::setGlobalTable($purchaseTables); 
-
-        $supplierTables = 'company_'.$request->company_id.'_suppliers';
-        Supplier::setGlobalTable($supplierTables); 
-        
-        $table = 'company_'.$request->company_id.'_purchase_receipts';
-        PurchaseReceipt::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-        
-        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
-        $supplier_ids = PurchaseTable::with('supplier')->whereIn('reference',$referenceType)->pluck('supplier_id')->toArray();
-        $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
-
-            // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
-            $arr = [];
-            $data = [];
-
-            foreach($suppliers as $supplier){
-                $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
-                $arr['Q1'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum($column);
-                $arr['Q2'] = '0.00';
-                $arr['Q3'] = '0.00';
-                $arr['Q4'] = '0.00';
-                $arr['total'] = PurchaseTable::filter($request->all())->where('supplier_id',$supplier->id)->get()->sum($column);
-                $data[] = $arr;
-            }
-    }elseif($request->type == "purchase_by_item"){
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
-        PurchaseTable::setGlobalTable($purchaseTables); 
-
-        $supplierTables = 'company_'.$request->company_id.'_suppliers';
-        Supplier::setGlobalTable($supplierTables); 
-        
-        $table = 'company_'.$request->company_id.'_purchase_receipts';
-        PurchaseReceipt::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $table = 'company_'.$request->company_id.'_expense_and_investments';
-        ExpenseAndInvestment::setGlobalTable($table);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-
-        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
-        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $expenseInvestmentIds = Item::whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
-        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
-        $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
-         $data = [];
-         $data['purchase_items'] = [];
-         foreach($products as $product){
-             $data['purchase_items'][] = [
-                     "type" => "bar",
-                     "label" => "" .  $product->name,
-                     "backgroundColor" => "#26C184",
-                     "data" => [
-                         PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($product) {
-                             $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                             })->get()->sum('amount'),
-                         ]
-                     ];
-         }
-         foreach($services as $service){
-             $data['purchase_items'][] = [
-                     "type" => "bar",
-                     "label" => "" .  $service->name,
-                     "backgroundColor" => "#26C184",
-                     "data" => [
-                         PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($service) {
-                             $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                             })->get()->sum('amount'),
-                         ]
-                     ];
-         }
-         foreach($expenses as $expense){
-             $data['purchase_items'][] = [
-                     "type" => "bar",
-                     "label" => "" .  $expense->name,
-                     "backgroundColor" => "#26C184",
-                     "data" => [
-                         PurchaseTable::filter($request->all())->where('reference','PINV')->WhereHas('items', function ($query) use ($expense) {
-                             $query->where('reference_id', $expense->id)->whereIn('reference',['EAI']);
-                             })->get()->sum('amount'),
-                         ]
-                     ];
-         }
-         return response()->json([
-             "status" => true,
-             "data" =>  $data
-         ]);
-    }elseif($request->type == "purchase_by_item_list"){
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
-
-        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
-        PurchaseTable::setGlobalTable($purchaseTables); 
-
-        $supplierTables = 'company_'.$request->company_id.'_suppliers';
-        Supplier::setGlobalTable($supplierTables); 
-        
-        $table = 'company_'.$request->company_id.'_purchase_receipts';
-        PurchaseReceipt::setGlobalTable($table);
-
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
-
-        $itemTable = 'company_'.$request->company_id.'_items';
-        Item::setGlobalTable($itemTable);
-
-        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
-        InvoiceTable::setGlobalTable($invoiceTable);
-
-        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
-        ItemMeta::setGlobalTable($item_meta_table);
-
-        $table = 'company_'.$request->company_id.'_expense_and_investments';
-        ExpenseAndInvestment::setGlobalTable($table);
-
-        $referenceTable = 'company_'.$request->company_id.'_references';
-        Reference::setGlobalTable($referenceTable);
-        
-        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
-        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $expenseInvestmentIds = Item::whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
-        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
-        $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
-           
-            $arr = [];
-            $data = [];
-
-            foreach($products as $product){
-                $arr['name'] = $product->name;
-                $arr['reference'] = $product->reference.''.$product->reference_number;
-                $arr['Q1'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                })->get()->sum('amount_with_out_vat');
-                $arr['Q2'] = '0.00';
-                $arr['Q3'] = '0.00';
-                $arr['Q4'] = '0.00';
-                $arr['total'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($product) {
-                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
-                })->get()->sum('amount_with_out_vat');
-                
-
-                $data[] = $arr;
-            }
-            foreach($services as $service){
-                $arr['name'] = $service->name;
-                $arr['reference'] = $service->reference.''.$service->reference_number;
-                $arr['Q1'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                })->get()->sum('amount_with_out_vat');
-                $arr['Q2'] = '0.00';
-                $arr['Q3'] = '0.00';
-                $arr['Q4'] = '0.00';
-                $arr['total'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($service) {
-                    $query->where('reference_id', $service->id)->whereIn('reference',['SER']);
-                })->get()->sum('amount_with_out_vat');
-
-                $data[] = $arr;
-            }
-            foreach($expenses as $expense){
-                $arr['name'] = $expense->name;
-                $arr['reference'] = $expense->reference.''.$expense->reference_number;
-                $arr['Q1'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($expense) {
-                    $query->where('reference_id', $expense->id)->whereIn('reference',['EAI']);
-                })->get()->sum('amount_with_out_vat');
-                $arr['Q2'] = '0.00';
-                $arr['Q3'] = '0.00';
-                $arr['Q4'] = '0.00';
-                $arr['total'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($expense) {
-                    $query->where('reference_id', $expense->id)->whereIn('reference',['EAI']);
-                })->get()->sum('amount_with_out_vat');
-                
-
-                $data[] = $arr;
-            }
-
-    }
-        
-        return response()->json([
-            "status" => true,
-            "data" =>  $data
-        ]);
-
-    }
     public function taxSummary(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
         Client::setGlobalTable($clientsTables);
@@ -3660,6 +3178,14 @@ class ReportController extends Controller
                 $arr['profit'] = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat') - PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat');
 
                 $finalData[] = $arr;
+            }
+            if($request->export){
+                $fileName = 'PROFITEVOLUTIONREPORT-'.time().$request->company_id.'.xlsx';
+                Excel::store(new OfProfitExport($finalData, $request), 'public/xlsx/'.$fileName);
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
             }
         }
         return response()->json([
