@@ -3646,7 +3646,7 @@ class ReportController extends Controller
         ]);
     }
     /* -------------------------------------------------------------------------- */
-    /*                   Invoicing By Client sub report of of evolution                    */
+    /*                   Invoicing By Client sub report of of evolution           */
     /* -------------------------------------------------------------------------- */
     public function InvoicingByClient(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
@@ -3696,7 +3696,7 @@ class ReportController extends Controller
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
                 foreach($clients as $client){
-                    $data[$client->id][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->get()->sum($column);
+                    $data[$client->id][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id, 'service_id' => $request->service_id])->get()->sum($column);
                 }
             }
             $finalData['labels'] = @$data['labels'];
@@ -3736,7 +3736,7 @@ class ReportController extends Controller
                 $arr['name'] = $client->legal_name.' ('.$client->name.')';
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->get()->sum($column);
+                    $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id, 'service_id' => $request->service_id])->get()->sum($column);
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }
@@ -3751,7 +3751,7 @@ class ReportController extends Controller
         ]);
     }
     /* -------------------------------------------------------------------------- */
-    /*                   Invoicing By Agent sub report of of evolution                    */
+    /*                   Invoicing By Agent sub report of of evolution            */
     /* -------------------------------------------------------------------------- */
     public function InvoicingByAgent(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
@@ -3800,7 +3800,7 @@ class ReportController extends Controller
             $data = [];
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
-                $data[\Auth::id()][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>\Auth::id() , 'product_id' => $request->product_id])->get()->sum($column);
+                $data[\Auth::id()][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>\Auth::id() , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->get()->sum($column);
             }
             $finalData['labels'] = @$data['labels'];
             $finalData['data'][] = 
@@ -3834,7 +3834,7 @@ class ReportController extends Controller
             $arr['name'] =  \Auth::user()->name;
             $arr['total'] = 0;
             foreach($dates as $date){
-                $amount =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>\Auth::id() , 'product_id' => $request->product_id])->get()->sum($column);;
+                $amount =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>\Auth::id() , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->get()->sum($column);;
                 $arr['data'][] =  $amount;
                 $arr['total'] = $arr['total']+ $amount;
             }
@@ -3848,7 +3848,7 @@ class ReportController extends Controller
         ]);
     }
     /* -------------------------------------------------------------------------- */
-    /*                   Invoicing By Items sub report of of evolution                    */
+    /*                   Invoicing By Items sub report of of evolution            */
     /* -------------------------------------------------------------------------- */
     public function InvoicingByItem(Request $request){
         $clientsTables = 'company_'.$request->company_id.'_clients';
@@ -3890,8 +3890,8 @@ class ReportController extends Controller
         $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
         $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
         $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
         //set the year for the report
         if(!$request->year){
             $request['year'] =  date('Y');
@@ -3908,7 +3908,10 @@ class ReportController extends Controller
                 $data['labels'][] =  $date['name'];
                 $data['no_category'][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column);
                 foreach($products as $product){
-                    $data[$product->id][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->get()->sum($column);
+                    $data['product_'.$product->id][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->get()->sum($column);
+                }
+                foreach($services as $service){
+                    $data['service_'.$service->id][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->get()->sum($column);
                 }
             }
             $finalData['labels'] = @$data['labels'];
@@ -3956,7 +3959,32 @@ class ReportController extends Controller
                     "pointHoverBorderWidth" => 2,
                     "pointRadius" => 1,
                     "pointHitRadius" => 1000,
-                    "data" => @$data[$product->id]
+                    "data" => @$data['product_'.$product->id]
+                ];
+            }
+            foreach($services as $service){
+
+                $finalData['data'][] = 
+                [
+                    "label" => $service->name,
+                    "fill" => true,
+                    "lineTension" => 0.5,
+                    "backgroundColor" => generateRandomColor(),
+                    "borderColor" => "#3c4ccf",
+                    "borderCapStyle" => "butt",
+                    "borderDash" => [],
+                    "borderDashOffset" => 0.0,
+                    "borderJoinStyle" => "miter",
+                    "pointBorderColor" => "#3c4ccf",
+                    "pointBackgroundColor" => "#fff",
+                    "pointBorderWidth" => 1,
+                    "pointHoverRadius" => 5,
+                    "pointHoverBackgroundColor" => "#3c4ccf",
+                    "pointHoverBorderColor" => "#fff",
+                    "pointHoverBorderWidth" => 2,
+                    "pointRadius" => 1,
+                    "pointHitRadius" => 1000,
+                    "data" => @$data['service_'.$service->id]
                 ];
             }
         }else{
@@ -3966,6 +3994,7 @@ class ReportController extends Controller
             }
             $arr = [];
             $arr['name'] = "Not found in catalog";
+            $arr['reference'] = "-";
             $arr['total'] = 0;
             foreach($dates as $date){
                 $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column);
@@ -3978,9 +4007,24 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr = [];
                 $arr['name'] = $product->name;
+                $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
                     $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->get()->sum($column);
+                    $arr['data'][] =  $amount;
+                    $arr['total'] = $arr['total']+ $amount;
+                }
+                
+    
+                $finalData['data'][] = $arr;
+            }
+            foreach($services as $service){
+                $arr = [];
+                $arr['name'] = $service->name;
+                $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['total'] = 0;
+                foreach($dates as $date){
+                    $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->get()->sum($column);
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }
@@ -3995,10 +4039,10 @@ class ReportController extends Controller
         ]);
     }
     /* -------------------------------------------------------------------------- */
-    /*                   Purchase  By Provider sub report of of evolution                    */
+    /*                   Purchase  By Provider sub report of of evolution         */
     /* -------------------------------------------------------------------------- */
     public function purchasesByProvider(Request $request){
-        $suppliersTables = 'company_'.$request->company_id.'_clients';
+        $suppliersTables = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($suppliersTables);
 
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
@@ -4027,7 +4071,6 @@ class ReportController extends Controller
 
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
-        $purchaseReferenceTypes = Reference::where('type', 'Purchase Invoice')->pluck('prefix')->toArray();
         //set the year for the report
         if(!$request->year){
             $request['year'] =  date('Y');
@@ -4050,7 +4093,7 @@ class ReportController extends Controller
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
                 foreach($suppliers as $supplier){
-                    $data[$supplier->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $data[$supplier->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column);
                 }
             }
             $finalData['labels'] = @$data['labels'];
@@ -4090,7 +4133,254 @@ class ReportController extends Controller
                 $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id ,'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $arr['data'][] =  $amount;
+                    $arr['total'] = $arr['total']+ $amount;
+                }
+                
+    
+                $finalData['data'][] = $arr;
+            }
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $finalData
+        ]);
+    }
+     /* -------------------------------------------------------------------------- */
+    /*                   Purchases By Items sub report of of evolution            */
+    /* -------------------------------------------------------------------------- */
+    public function purchasesByItem(Request $request){
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+        $serviceTable = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($serviceTable);
+
+        $productTable = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTable);
+        $expenseTable = 'company_'.$request->company_id.'_expense_and_investments';
+        ExpenseAndInvestment::setGlobalTable($expenseTable);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+        $supplier_ids = PurchaseTable::whereHas('supplier')->pluck('supplier_id')->toArray();
+        $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
+        $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        $referenceExpenseType = Reference::where('type', 'Expense and investment')->pluck('prefix')->toArray();
+        // return $referenceExpenseType;
+        $referenceProductType = Reference::where('type', 'Product')->pluck('prefix')->toArray();
+        $referenceServiceType = Reference::where('type', 'Service')->pluck('prefix')->toArray();
+        $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',$referenceProductType)->pluck('reference_id')->toArray();
+        $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',$referenceServiceType)->pluck('reference_id')->toArray();
+        $itemExpenseIds = Item::whereIn('type',$referenceType)->whereIn('reference',$referenceExpenseType)->pluck('reference_id')->toArray();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
+        $expenses = ExpenseAndInvestment::whereIn('id',$itemExpenseIds)->get();
+        //set the year for the report
+        if(!$request->year){
+            $request['year'] =  date('Y');
+        }
+        //set the year for the report
+        if(!$request->year){
+            $request['year'] =  date('Y');
+        }
+        if($request->after_tax){
+            $column = 'amount';
+        }else{
+            $column = 'amount_with_out_vat';
+        }
+        if($request->reference){
+            $referenceType = [$request->reference];
+        }else{
+            $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        }
+        $dates =  getDateToIterate($request);
+        if($request->type == 'graph'){
+            $data = [];
+            foreach($dates as $date){
+                $data['labels'][] =  $date['name'];
+                $data['no_category'][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column);
+                foreach($products as $product){
+                    $data['product_'.$product->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                }
+                foreach($services as $service){
+                    $data['service_'.$service->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                }
+                foreach($expenses as $expense){
+                    $data['expense_'.$expense->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'expense_id' => $expense->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                }
+            }
+            $finalData['labels'] = @$data['labels'];
+            $finalData['data'][] = 
+            [
+                "label" => "Not found in catalog",
+                "fill" => true,
+                "lineTension" => 0.5,
+                "backgroundColor" => generateRandomColor(),
+                "borderColor" => "#3c4ccf",
+                "borderCapStyle" => "butt",
+                "borderDash" => [],
+                "borderDashOffset" => 0.0,
+                "borderJoinStyle" => "miter",
+                "pointBorderColor" => "#3c4ccf",
+                "pointBackgroundColor" => "#fff",
+                "pointBorderWidth" => 1,
+                "pointHoverRadius" => 5,
+                "pointHoverBackgroundColor" => "#3c4ccf",
+                "pointHoverBorderColor" => "#fff",
+                "pointHoverBorderWidth" => 2,
+                "pointRadius" => 1,
+                "pointHitRadius" => 1000,
+                "data" => @$data['no_category']
+            ];
+            foreach($products as $product){
+
+                $finalData['data'][] = 
+                [
+                    "label" => $product->name,
+                    "fill" => true,
+                    "lineTension" => 0.5,
+                    "backgroundColor" => generateRandomColor(),
+                    "borderColor" => "#3c4ccf",
+                    "borderCapStyle" => "butt",
+                    "borderDash" => [],
+                    "borderDashOffset" => 0.0,
+                    "borderJoinStyle" => "miter",
+                    "pointBorderColor" => "#3c4ccf",
+                    "pointBackgroundColor" => "#fff",
+                    "pointBorderWidth" => 1,
+                    "pointHoverRadius" => 5,
+                    "pointHoverBackgroundColor" => "#3c4ccf",
+                    "pointHoverBorderColor" => "#fff",
+                    "pointHoverBorderWidth" => 2,
+                    "pointRadius" => 1,
+                    "pointHitRadius" => 1000,
+                    "data" => @$data['product_'.$product->id]
+                ];
+            }
+            foreach($services as $service){
+
+                $finalData['data'][] = 
+                [
+                    "label" => $service->name,
+                    "fill" => true,
+                    "lineTension" => 0.5,
+                    "backgroundColor" => generateRandomColor(),
+                    "borderColor" => "#3c4ccf",
+                    "borderCapStyle" => "butt",
+                    "borderDash" => [],
+                    "borderDashOffset" => 0.0,
+                    "borderJoinStyle" => "miter",
+                    "pointBorderColor" => "#3c4ccf",
+                    "pointBackgroundColor" => "#fff",
+                    "pointBorderWidth" => 1,
+                    "pointHoverRadius" => 5,
+                    "pointHoverBackgroundColor" => "#3c4ccf",
+                    "pointHoverBorderColor" => "#fff",
+                    "pointHoverBorderWidth" => 2,
+                    "pointRadius" => 1,
+                    "pointHitRadius" => 1000,
+                    "data" => @$data['service_'.$service->id]
+                ];
+            }
+            foreach($expenses as $expense){
+
+                $finalData['data'][] = 
+                [
+                    "label" => $expense->name,
+                    "fill" => true,
+                    "lineTension" => 0.5,
+                    "backgroundColor" => generateRandomColor(),
+                    "borderColor" => "#3c4ccf",
+                    "borderCapStyle" => "butt",
+                    "borderDash" => [],
+                    "borderDashOffset" => 0.0,
+                    "borderJoinStyle" => "miter",
+                    "pointBorderColor" => "#3c4ccf",
+                    "pointBackgroundColor" => "#fff",
+                    "pointBorderWidth" => 1,
+                    "pointHoverRadius" => 5,
+                    "pointHoverBackgroundColor" => "#3c4ccf",
+                    "pointHoverBorderColor" => "#fff",
+                    "pointHoverBorderWidth" => 2,
+                    "pointRadius" => 1,
+                    "pointHitRadius" => 1000,
+                    "data" => @$data['expense_'.$expense->id]
+                ];
+            }
+        }else{
+            $finalData = [];
+            foreach($dates as $date){
+                $finalData['labels'][] =  $date['name'];
+            }
+            $arr = [];
+            $arr['name'] = "Not found in catalog";
+            $arr['reference'] = "-";
+            $arr['total'] = 0;
+            foreach($dates as $date){
+                $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column);
+                $arr['data'][] =  $amount;
+                $arr['total'] = $arr['total']+ $amount;
+            }
+            
+
+            $finalData['data'][] = $arr;
+            foreach($products as $product){
+                $arr = [];
+                $arr['name'] = $product->name;
+                $arr['reference'] = $product->reference.''.$product->reference_number;
+                $arr['total'] = 0;
+                foreach($dates as $date){
+                    $amount =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $arr['data'][] =  $amount;
+                    $arr['total'] = $arr['total']+ $amount;
+                }
+                
+    
+                $finalData['data'][] = $arr;
+            }
+            foreach($services as $service){
+                $arr = [];
+                $arr['name'] = $service->name;
+                $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['total'] = 0;
+                foreach($dates as $date){
+                    $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $arr['data'][] =  $amount;
+                    $arr['total'] = $arr['total']+ $amount;
+                }
+                
+    
+                $finalData['data'][] = $arr;
+            }
+            foreach($expenses as $expense){
+                $arr = [];
+                $arr['name'] = $expense->name;
+                $arr['reference'] = $expense->reference.''.$expense->reference_number;
+                $arr['total'] = 0;
+                foreach($dates as $date){
+                    $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'expense_id' => $expense->id])->whereIn('reference', $referenceType)->get()->sum($column);
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }

@@ -37,7 +37,7 @@ class PurchaseTable extends Model
         return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference'])->whereIn('reference',$referenceType);
     }
     public function expenses(){
-        $referenceType = Reference::where('type', 'Expense')->pluck('prefix')->toArray();
+        $referenceType = Reference::where('type', 'Expense and investment')->pluck('prefix')->toArray();
         return $this->hasMany(Item::class,['parent_id', 'type'], ['id', 'reference'])->whereIn('reference',$referenceType);
     }
     public function receipts(){
