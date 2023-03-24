@@ -3994,4 +3994,114 @@ class ReportController extends Controller
             'data' => $finalData
         ]);
     }
+    /* -------------------------------------------------------------------------- */
+    /*                   Purchase  By Provider sub report of of evolution                    */
+    /* -------------------------------------------------------------------------- */
+    public function purchasesByProvider(Request $request){
+        $suppliersTables = 'company_'.$request->company_id.'_clients';
+        Supplier::setGlobalTable($suppliersTables);
+
+        $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
+        PurchaseTable::setGlobalTable($purchaseTables); 
+
+        $table = 'company_'.$request->company_id.'_payment_options';
+        PaymentOption::setGlobalTable($table);
+
+        $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
+        InvoiceTable::setGlobalTable($invoiceTable);
+
+        $referenceTable = 'company_'.$request->company_id.'_references';
+        Reference::setGlobalTable($referenceTable);
+
+        $supplierTables = 'company_'.$request->company_id.'_suppliers';
+        Supplier::setGlobalTable($supplierTables); 
+
+        $itemTable = 'company_'.$request->company_id.'_items';
+        Item::setGlobalTable($itemTable);
+
+        $table = 'company_'.$request->company_id.'_deposits';
+        Deposit::setGlobalTable($table);
+
+        $invoiceReceiptTable = 'company_'.$request->company_id.'_invoice_receipts';
+        InvoiceReceipt::setGlobalTable($invoiceReceiptTable);
+
+        $item_meta_table = 'company_'.$request->company_id.'_item_metas';
+        ItemMeta::setGlobalTable($item_meta_table);
+        $purchaseReferenceTypes = Reference::where('type', 'Purchase Invoice')->pluck('prefix')->toArray();
+        //set the year for the report
+        if(!$request->year){
+            $request['year'] =  date('Y');
+        }
+        if($request->after_tax){
+            $column = 'amount';
+        }else{
+            $column = 'amount_with_out_vat';
+        }
+        if($request->reference){
+            $referenceType = [$request->reference];
+        }else{
+            $referenceType = Reference::whereIn('type', ['Purchase Invoice'])->pluck('prefix')->toArray();
+        }
+        $supplier_ids = PurchaseTable::whereHas('supplier')->whereIn('reference', $referenceType)->pluck('supplier_id')->toArray();
+        $suppliers = Supplier::whereIn('id',$supplier_ids)->get();
+        $dates =  getDateToIterate($request);
+        if($request->type == 'graph'){
+            $data = [];
+            foreach($dates as $date){
+                $data['labels'][] =  $date['name'];
+                foreach($suppliers as $supplier){
+                    $data[$supplier->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereIn('reference', $referenceType)->get()->sum($column);
+                }
+            }
+            $finalData['labels'] = @$data['labels'];
+            
+            foreach($suppliers as $supplier){
+
+                $finalData['data'][] = 
+                [
+                    "label" => $supplier->legal_name.' ('.$supplier->name.')',
+                    "fill" => true,
+                    "lineTension" => 0.5,
+                    "backgroundColor" => generateRandomColor(),
+                    "borderColor" => "#3c4ccf",
+                    "borderCapStyle" => "butt",
+                    "borderDash" => [],
+                    "borderDashOffset" => 0.0,
+                    "borderJoinStyle" => "miter",
+                    "pointBorderColor" => "#3c4ccf",
+                    "pointBackgroundColor" => "#fff",
+                    "pointBorderWidth" => 1,
+                    "pointHoverRadius" => 5,
+                    "pointHoverBackgroundColor" => "#3c4ccf",
+                    "pointHoverBorderColor" => "#fff",
+                    "pointHoverBorderWidth" => 2,
+                    "pointRadius" => 1,
+                    "pointHitRadius" => 1000,
+                    "data" => @$data[$supplier->id]
+                ];
+            }
+        }else{
+            $finalData = [];
+            foreach($dates as $date){
+                $finalData['labels'][] =  $date['name'];
+            }
+            foreach($suppliers as $supplier){
+                $arr = [];
+                $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
+                $arr['total'] = 0;
+                foreach($dates as $date){
+                    $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $arr['data'][] =  $amount;
+                    $arr['total'] = $arr['total']+ $amount;
+                }
+                
+    
+                $finalData['data'][] = $arr;
+            }
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $finalData
+        ]);
+    }
 }
