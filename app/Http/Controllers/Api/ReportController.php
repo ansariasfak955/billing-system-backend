@@ -1316,42 +1316,64 @@ class ReportController extends Controller
             ];
 
         }elseif($request->type == "incidents_by_client"){
-            $data = [
-                "incidents_by_client" => [
-                    [
-                        "type" => "bar", 
-                        "label" => "Pending", 
-                        "backgroundColor" => "#26C184", 
-                        "data" => [
-                             TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'pending')->count()
-                        ]
-                    ], 
-                    [
+            if($request->reference){
+                $referenceType = [$request->reference];
+            }else{
+    
+                $referenceType = Reference::where('type', 'Incident')->pluck('prefix')->toArray();
+            }
+
+            if($request->category == 'client_categories'){
+
+            }else{
+                $tempData = [];
+                $statusesArr = ['Pending', 'Refused', 'In Progress','Closed'];
+                $clients = Client::get();
+                foreach($statusesArr as $status){
+
+                    $tempData['labels'][] =  $status;
+                    $tempData['no_client'][] =  TechnicalTable::filter(['agent_id' =>$request->agent_id ])->whereIn('reference',$referenceType)->whereDoesntHave('client')->where('status', $status)->get()->sum($taxColumn);
+                    foreach($clients as $client){
+                        $tempData[$client->id][] =  TechnicalTable::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id ])->whereIn('reference',$referenceType)->where('status', $status)->get()->sum($taxColumn);
+                    }
+                }
+                $data = [
+                    "incidents_by_client" => [
+                        [
                             "type" => "bar", 
-                            "label" => "Refused", 
-                            "backgroundColor" => "#FB6363", 
+                            "label" => "Pending", 
+                            "backgroundColor" => "#26C184", 
                             "data" => [
-                                 TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'refused')->count()
+                                 TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'pending')->count()
                             ]
-                    ], 
-                    [
-                        "type" => "bar", 
-                        "label" => "Resolved", 
-                        "backgroundColor" => "#FE9140", 
-                        "data" => [
-                             TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'resolved')->count()
-                        ]
+                        ], 
+                        [
+                                "type" => "bar", 
+                                "label" => "Refused", 
+                                "backgroundColor" => "#FB6363", 
+                                "data" => [
+                                     TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'refused')->count()
+                                ]
+                        ], 
+                        [
+                            "type" => "bar", 
+                            "label" => "Resolved", 
+                            "backgroundColor" => "#FE9140", 
+                            "data" => [
+                                 TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'resolved')->count()
+                            ]
+                        ],
+                        [
+                            "type" => "bar", 
+                            "label" => "Closed", 
+                            "backgroundColor" => "#26C184", 
+                            "data" => [
+                                 TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'closed')->count()
+                            ]
+                        ],
                     ],
-                    [
-                        "type" => "bar", 
-                        "label" => "Closed", 
-                        "backgroundColor" => "#26C184", 
-                        "data" => [
-                             TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'closed')->count()
-                        ]
-                    ],
-                ],
-            ];
+                ];
+            }
         }elseif($request->type == "incidents_by_agent"){
             $data = [
                 "incidents_by_agent" => [
@@ -4041,7 +4063,7 @@ class ReportController extends Controller
     /* -------------------------------------------------------------------------- */
     /*                   Purchase  By Provider sub report of of evolution         */
     /* -------------------------------------------------------------------------- */
-    public function purchasesByProvider(Request $request){
+    public function purchasesByProvider(Request $request){  
         $suppliersTables = 'company_'.$request->company_id.'_suppliers';
         Supplier::setGlobalTable($suppliersTables);
 

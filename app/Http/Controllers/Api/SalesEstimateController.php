@@ -94,13 +94,11 @@ class SalesEstimateController extends Controller
                 "message" => $validator->errors()->first()
             ]);
         }
-
         //change format of date
         if($request->date){
 
             $request['date'] = get_formatted_datetime($request->date);
         }
-
         if($request->assigned_date){
 
             $request['assigned_date'] = get_formatted_datetime($request->assigned_date);

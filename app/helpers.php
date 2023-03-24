@@ -465,6 +465,7 @@ function get_roles_permissions($company_id)
 }
 function get_formatted_datetime($date_time){
     // $strDate = substr($date_time,4,20);
+    $date_time =  str_replace('/', '-', $date_time);
     $date = strtotime($date_time);
     return date('Y-m-d H:i:s',$date);
 }
