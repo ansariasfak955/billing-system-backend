@@ -52,6 +52,7 @@ class SalesEstimate extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
+    
 	public function client(){
         return $this->hasOne(Client::class,'id', 'client_id');
     }
@@ -115,16 +116,11 @@ class SalesEstimate extends Model
             return get_user_name($company, $this->attributes['agent_id']);
         }
     }
-    public function getAmountWithOutVatAttribute(){
+    public function getTaxAmountAttribute(){
         if(isset($this->items)){
-          return $this->items->sum('amount_with_out_vat');
+            return $this->items->sum('taxAmount');
         }
-      }
-      public function getTaxAmountAttribute(){
-        if(isset($this->items)){
-          return $this->items->sum('taxAmount');
-        }
-      }
+    }
 	public function getCreatedByNameAttribute(){
         
         if(isset( $this->attributes['created_by'] )){
@@ -133,12 +129,18 @@ class SalesEstimate extends Model
             return get_user_name($createdby, $this->attributes['created_by']);
         }
     }
+    public function getAmountWithOutVatAttribute(){
+        if(isset($this->items)){
+            $amount =  $this->items->sum('amount_with_out_vat') ?? 0.00;
+            return number_format($amount, 2, '.', '');	
+        }
+    }
 
 	public function getAmountAttribute(){
-      if(isset($this->items)){
-		$amount =  $this->items->sum('amount') ?? 0;
-        return sprintf("%.2f",$amount);
-	  }
+        if(isset($this->items)){
+            $amount =  $this->items->sum('amount') ?? 0.00;
+            return number_format($amount, 2, '.', '');	  
+        } 
     }
 	public function getDateAttribute(){
 

@@ -236,7 +236,7 @@ class ReportController extends Controller
                     "label" => "No Selected Category",
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn),
+                            number_format(InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 unset($request['clientCategoryNull']);
@@ -247,7 +247,7 @@ class ReportController extends Controller
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn),
+                                number_format(InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn), 2, '.', ''),
                             ]
                         ];
                 }
@@ -261,7 +261,7 @@ class ReportController extends Controller
                     "label" => "" .  $client->legal_name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference', $referenceType)->get()->sum($taxColumn),
+                            number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference', $referenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 }
@@ -279,7 +279,7 @@ class ReportController extends Controller
                 "label" => "" .  \Auth::user()->name,
                 "backgroundColor" => "#26C184",
                 "data" => [
-                        InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($taxColumn),
+                        number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($taxColumn), 2, '.', '')
                     ]
                 ];
             return response()->json([
@@ -312,8 +312,8 @@ class ReportController extends Controller
                         "label" => "" .  $product->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                InvoiceTable::filter($request->all())->get()->sum('amount'),
-                            ]
+                            number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', ''),
+                        ]
                     ];
                 }
                 foreach($services as $service){
@@ -323,8 +323,8 @@ class ReportController extends Controller
                         "label" => "" .  $service->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                InvoiceTable::filter($request->all())->get()->sum('amount'),
-                            ]
+                            number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', ''),
+                        ]
                     ];
                 }
             }else{
@@ -339,7 +339,7 @@ class ReportController extends Controller
                     ",
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn),
+                            number_format(InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 unset($request['productCategoryNull']);
@@ -350,7 +350,7 @@ class ReportController extends Controller
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            InvoiceTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                            number_format(InvoiceTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', ''),
                             ]
                         ];
                     }
@@ -418,17 +418,18 @@ class ReportController extends Controller
                 foreach($categories as $category){
                     $request['clientCategory'] = $category->id;
                     $arr['name'] = $category->name;
-                    $arr['invoiced'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column);
-                    $arr['paid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid');
-                    $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due');
+                    $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
+                    
+                    $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
+                    $arr['Unpaid'] =  number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
                     $data[] = $arr;
                 }
             }else{
                 foreach($clients as $client){
                     $arr['name'] = $client->legal_name;
-                    $arr['invoiced'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
-                    $arr['paid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_paid');
-                    $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due');
+                    $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
+                    $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
+                    $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
                     $data[] = $arr;
                 }
             }
@@ -485,9 +486,9 @@ class ReportController extends Controller
         $arr = [];
         $data = [];
         $arr['name'] = \Auth::user()->name;
-        $arr['invoiced'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column);
-        $arr['paid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_paid');
-        $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_due');
+        $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
+        $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
+        $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
 
         $data[] = $arr;
         
@@ -549,7 +550,7 @@ class ReportController extends Controller
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $units = Item::where('reference_id', $product->id)->whereIn('reference',['PRO'])->sum('quantity');
                 $arr['units'] = $units;
-                $arr['amount'] = InvoiceTable::filter($request->all())->get()->sum('amount_with_out_vat');
+                $arr['amount'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_with_out_vat'), 2, '.', '');
                 
 
                 $data[] = $arr;
@@ -560,7 +561,7 @@ class ReportController extends Controller
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $units = Item::where('reference_id', $service->id)->whereIn('reference',['SER'])->sum('quantity');
                 $arr['units'] = $units;
-                $arr['amount'] = InvoiceTable::filter($request->all())->get()->sum('amount_with_out_vat');
+                $arr['amount'] =  number_format(InvoiceTable::filter($request->all())->get()->sum('amount_with_out_vat'), 2, '.', '');
 
                 $data[] = $arr;
             }
@@ -569,17 +570,17 @@ class ReportController extends Controller
             $categories = ProductCategory::get();
             $request['productCategoryNull'] = 1;
             $arr['name'] = 'Not found in catalog';
-            $arr['invoiced'] = InvoiceTable::filter($request->all())->get()->sum('amount');
-            $arr['paid'] = InvoiceTable::filter($request->all())->get()->sum('amount_paid');
-            $arr['Unpaid'] = InvoiceTable::filter($request->all())->get()->sum('amount_due');
+            $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', '');
+            $arr['paid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_paid'), 2, '.', '');
+            $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_due'), 2, '.', '');
             unset($request['productCategoryNull']);
             $data[] = $arr;
             foreach($categories as $category){
                 $request['productCategory'] = $category->id;
                 $arr['name'] = $category->name;
-                $arr['invoiced'] = InvoiceTable::filter($request->all())->get()->sum('amount');
-                $arr['paid'] = InvoiceTable::filter($request->all())->get()->sum('amount_paid');
-                $arr['Unpaid'] = InvoiceTable::filter($request->all())->get()->sum('amount_due');
+                $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', '');
+                $arr['paid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_paid'), 2, '.', '');
+                $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_due'), 2, '.', '');
                 $data[] = $arr;
             }
         }
@@ -645,7 +646,7 @@ class ReportController extends Controller
                         "label" => "Pending(". SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                         SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'pending')->get()->sum($taxColumn),
+                         number_format(SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'pending')->get()->sum($taxColumn), 2, '.', '')
                         ] 
                     ], 
                     [
@@ -653,15 +654,15 @@ class ReportController extends Controller
                             "label" => "Refused(". SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'refused')->count().")", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                 SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'refused')->get()->sum($taxColumn),
-                                ] 
+                                number_format( SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'refused')->get()->sum($taxColumn), 2, '.', '')
+                            ] 
                         ], 
                     [
                         "type" => "bar", 
                         "label" => "Accepted(". SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                             SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'accepted')->get()->sum($taxColumn), 
+                            number_format( SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'accepted')->get()->sum($taxColumn), 2, '.', ''), 
                         ] 
                     ],
                     [
@@ -669,7 +670,7 @@ class ReportController extends Controller
                         "label" => "Closed(". SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'closed')->get()->sum($taxColumn),
+                            number_format(SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'closed')->get()->sum($taxColumn), 2, '.', ''),
                         ] 
                     ],
             ], 
@@ -679,7 +680,7 @@ class ReportController extends Controller
                         "label" => "Pending (". SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'pending')->get()->sum($taxColumn),
+                            number_format( SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'pending')->get()->sum($taxColumn), 2, '.', ''),
                         ] 
                     ], 
                     [
@@ -687,7 +688,7 @@ class ReportController extends Controller
                         "label" => "Refused (". SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'refused')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                             SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'refused')->get()->sum($taxColumn),
+                            number_format( SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'refused')->get()->sum($taxColumn), 2, '.', ''),
                         ]  
                     ], 
                     [
@@ -695,7 +696,7 @@ class ReportController extends Controller
                         "label" => "In Progress (". SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                             SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'in progress')->get()->sum($taxColumn),
+                            number_format( SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'in progress')->get()->sum($taxColumn), 2, '.', ''),
                         ] 
                     ],
                     [
@@ -703,7 +704,7 @@ class ReportController extends Controller
                         "label" => "Closed (". SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                             SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'closed')->get()->sum($taxColumn),
+                            number_format(SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'closed')->get()->sum($taxColumn), 2, '.', ''),
                         ] 
                     ],
                          
@@ -714,7 +715,7 @@ class ReportController extends Controller
                         "label" => "Pending Invoice (". SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'pending invoice')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                             SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'pending invoice')->get()->sum($taxColumn),
+                            number_format(SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'pending invoice')->get()->sum($taxColumn), 2, '.', ''),
                         ] 
                     ], 
                     [
@@ -722,7 +723,7 @@ class ReportController extends Controller
                         "label" => "In Progress (". SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'in progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                             SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'in progress')->get()->sum($taxColumn),
+                            number_format(SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'in progress')->get()->sum($taxColumn), 2, '.', ''),
                         ] 
                     ], 
                     [
@@ -730,7 +731,7 @@ class ReportController extends Controller
                         "label" => "Closed (". SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                             SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'closed')->get()->sum($taxColumn),
+                            number_format(SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'closed')->get()->sum($taxColumn), 2, '.', ''),
                         ] 
                         ],
                     [
@@ -738,7 +739,7 @@ class ReportController extends Controller
                         "label" => "Invoiced (". SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'invoiced')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                             SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'invoiced')->get()->sum($taxColumn),
+                            number_format(SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'invoiced')->get()->sum($taxColumn), 2, '.', ''),
                         ] 
                     ]  
                 ]
@@ -759,8 +760,8 @@ class ReportController extends Controller
                     "label" => "No Selected Category",
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
-                            ]
+                        number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', ''),
+                    ]
                 ];
                 unset($request['clientCategoryNull']);
                 foreach($categories as $category){
@@ -770,7 +771,7 @@ class ReportController extends Controller
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                            number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', ''),
                             ]
                         ];
                 }
@@ -783,7 +784,7 @@ class ReportController extends Controller
                     "label" => "" .  $client->legal_name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            SalesEstimate::filter($request->all())->where('client_id',$client->id)->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                        number_format(SalesEstimate::filter($request->all())->where('client_id',$client->id)->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 }
@@ -801,7 +802,7 @@ class ReportController extends Controller
                 "label" => "" .  \Auth::user()->name,
                 "backgroundColor" => "#26C184",
                 "data" => [
-                    SalesEstimate::filter($request->all())->get()->sum($taxColumn),
+                    number_format(SalesEstimate::filter($request->all())->get()->sum($taxColumn), 2, '.', ''),
                 ]
             ];
             return response()->json([
@@ -826,7 +827,7 @@ class ReportController extends Controller
                     ",
                     "backgroundColor" => "#26C184",
                     "data" => [
-                             SalesEstimate::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn),
+                        number_format(SalesEstimate::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 unset($request['productCategoryNull']);
@@ -837,7 +838,7 @@ class ReportController extends Controller
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                             SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                            number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 }
@@ -849,7 +850,7 @@ class ReportController extends Controller
                     "label" => "" .  $product->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'),
+                        number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum   ('amount'), 2, '.', '')
                         ]
                     ];
                 }
@@ -860,7 +861,7 @@ class ReportController extends Controller
                     "label" => "" .  $service->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'),
+                        number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', '')
                         ]
                     ];
                 }
@@ -945,7 +946,7 @@ class ReportController extends Controller
                 $arr['accepted'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->where('status','accepted')->count();
                 $arr['closed'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->where('status','closed')->count();
                 $arr['total'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->count();
-                $arr['amount'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->get()->sum($column);
+                $arr['amount'] = number_format(SalesEstimate::filter($request->all())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
 
                 $data[] = $arr;
             }
@@ -959,7 +960,7 @@ class ReportController extends Controller
                 $arr['in_progress'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
                 $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','closed')->count();
                 $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
-                $arr['amount'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column);
+                $arr['amount'] = number_format(SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
 
                 $data[] = $arr;
             }
@@ -1016,7 +1017,7 @@ class ReportController extends Controller
         $arr['accepted'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->where('status','accepted')->count();
         $arr['closed'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->where('status','closed')->count();
         $arr['total'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->count();
-        $arr['amount'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column);
+        $arr['amount'] = number_format(SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
         $data[] = $arr;
         return response()->json([
             "status" => true,
@@ -1085,7 +1086,7 @@ class ReportController extends Controller
                 $arr['refused'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                 $arr['total'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
                 $arr['units'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
-                $arr['amount'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat');
+                $arr['amount'] = number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
                 $data[] = $arr;
                 unset($request['productCategoryNull']);
                 foreach($categories as $category){
@@ -1098,7 +1099,7 @@ class ReportController extends Controller
                     $arr['refused'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                     $arr['total'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['units'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
-                    $arr['amount'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat');
+                    $arr['amount'] =  number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
                     $data[] = $arr;
                 }
             }else{
@@ -1113,7 +1114,7 @@ class ReportController extends Controller
                     $arr['refused'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->where('status','refused')->count();
                     $arr['total'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
                     $arr['units'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
-                    $arr['amount'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->get()->sum('amount_with_out_vat');
+                    $arr['amount'] = number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->get()->sum('amount_with_out_vat'), 2, '.', '');
                     $data[] = $arr;
                 }
                 foreach($services as $service){
@@ -1126,7 +1127,7 @@ class ReportController extends Controller
                     $arr['refused'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->where('status','refused')->count();
                     $arr['total'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
                     $arr['units'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
-                    $arr['amount'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->get()->sum('amount_with_out_vat');
+                    $arr['amount'] = number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->get()->sum('amount_with_out_vat'), 2, '.', '');
     
                     $data[] = $arr;
                 }
@@ -1218,7 +1219,8 @@ class ReportController extends Controller
                         "label" => "Pending (". TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'pending')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'pending')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ]
                     ], 
                     [
@@ -1226,7 +1228,8 @@ class ReportController extends Controller
                             "label" => "Refused (". TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'refused')->count().")",
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'refused')->get()->sum($taxColumn)
+                                number_format(TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'refused')->get()->sum($taxColumn), 2, '.', '')
+                                
                             ] 
                         ], 
                     [
@@ -1234,7 +1237,8 @@ class ReportController extends Controller
                         "label" => "Accepted (". TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'accepted')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'accepted')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'accepted')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ]
                     ],
                     [
@@ -1242,7 +1246,8 @@ class ReportController extends Controller
                         "label" => "Closed (". TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'closed')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'closed')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ]
                     ],
                 ], 
@@ -1252,7 +1257,8 @@ class ReportController extends Controller
                         "label" => "Pending (". TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'pending')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'pending')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ] 
                     ], 
                     [
@@ -1260,7 +1266,8 @@ class ReportController extends Controller
                         "label" => "Refused (". TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'refused')->count().")",  
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'refused')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'refused')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ]  
                     ], 
                     [
@@ -1268,7 +1275,8 @@ class ReportController extends Controller
                         "label" => "In Progress (". TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'in_progress')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'in_progress')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'in_progress')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ] 
                     ],
                     [
@@ -1276,7 +1284,8 @@ class ReportController extends Controller
                         "label" => "Closed (". TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'closed')->count().")",
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'closed')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'closed')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ] 
                     ],
                          
@@ -1287,7 +1296,8 @@ class ReportController extends Controller
                         "label" => "Pending Invoice (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ] 
                     ], 
                     [
@@ -1295,7 +1305,8 @@ class ReportController extends Controller
                         "label" => "In Progress (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'in_progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ] 
                     ], 
                     [
@@ -1303,7 +1314,8 @@ class ReportController extends Controller
                         "label" => "Closed (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'closed')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'closed')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ] 
                     ],
                     [
@@ -1311,7 +1323,8 @@ class ReportController extends Controller
                         "label" => "Invoiced  (". TechnicalTable::filter($request->all())->where('reference', 'invoiced')->where('status', 'closed')->count().")", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'invoiced')->get()->sum($taxColumn)
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'invoiced')->get()->sum($taxColumn), 2, '.', '')
+                            
                         ] 
                     ]  
                 ]
@@ -1761,7 +1774,7 @@ class ReportController extends Controller
                     "label" => "No Selected Category",
                     "backgroundColor" => "#26C184",
                     "data" => [
-                        TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                        number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', ''),
                     ]
                 ];
                 unset($request['clientCategoryNull']);
@@ -1772,7 +1785,7 @@ class ReportController extends Controller
                     "label" => "" .  $category->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 }
@@ -1785,7 +1798,7 @@ class ReportController extends Controller
                     "label" => "" .  $client->legal_name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            TechnicalTable::filter($request->all())->where('client_id',$client->id)->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                            number_format(TechnicalTable::filter($request->all())->where('client_id',$client->id)->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 }
@@ -1814,7 +1827,7 @@ class ReportController extends Controller
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                     $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-                    $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn);
+                    $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', '');
     
                     $data[] = $arr;
                 }
@@ -1831,7 +1844,7 @@ class ReportController extends Controller
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','closed')->count();
                     $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->count();
-                    $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->get()->sum($taxColumn);
+                    $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->get()->sum($taxColumn), 2, '.', '');
     
                     $data[] = $arr;
                 }
@@ -1894,7 +1907,7 @@ class ReportController extends Controller
             "label" => "" . \Auth::user()->name,
             "backgroundColor" => "#26C184",
             "data" => [
-                    TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum( $taxColumn),
+                    number_format(TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum( $taxColumn), 2, '.', ''),
                 ]
             ];
         }elseif($request->type == 'by_agent_history'){
@@ -1909,7 +1922,7 @@ class ReportController extends Controller
             $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','accepted')->count();
             $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','closed')->count();
             $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->count();
-            $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum($taxColumn);
+            $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum($taxColumn), 2, '.', '');
 
                 $data[] = $arr;
             
@@ -1979,7 +1992,7 @@ class ReportController extends Controller
                     "label" => "" .  $product->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'),
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'), 2, '.', ''),
                         ]
                     ];
                 }
@@ -1990,7 +2003,7 @@ class ReportController extends Controller
                     "label" => "" .  $service->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'),
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2003,7 +2016,7 @@ class ReportController extends Controller
                 "label" => 'Not found in catalog',
                 "backgroundColor" => "#26C184",
                 "data" => [
-                        TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'),
+                        number_format(TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'), 2, '.', ''),
                     ]
                 ];
                 unset($request['productCategoryNull']);
@@ -2014,7 +2027,7 @@ class ReportController extends Controller
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn),
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->get()->sum('amount'), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2043,7 +2056,7 @@ class ReportController extends Controller
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                     $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['units'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-                    $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount');
+                    $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', '');
                     
     
                     $data[] = $arr;
@@ -2057,7 +2070,7 @@ class ReportController extends Controller
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                     $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-                    $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount');
+                    $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', '');
                     $data[] = $arr;
                 }
             }else{
@@ -2070,7 +2083,7 @@ class ReportController extends Controller
                 $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                 $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                 $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-                $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount');
+                $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', '');
                 $data[] = $arr;
                 unset($request['productCategoryNull']);
                 foreach($categories as $category){
@@ -2082,7 +2095,7 @@ class ReportController extends Controller
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                     $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-                    $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount');
+                    $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', '');
                     $data[] = $arr;
                 }
             }
@@ -2152,7 +2165,7 @@ class ReportController extends Controller
                     "label" => "No Selected Category",
                     "backgroundColor" => "#26C184",
                     "data" => [
-                        PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column),
+                        number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column), 2, '.', ''),
                     ]
                 ];
                 unset($request['supplierCategoryNull']);
@@ -2163,7 +2176,7 @@ class ReportController extends Controller
                     "label" => "" .  $category->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column),
+                            number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2207,7 +2220,7 @@ class ReportController extends Controller
                     "label" => "" .  $product->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                        PurchaseTable::filter($request->all())->whereIn('type',$referenceType)->get()->sum('amount'),
+                            number_format(PurchaseTable::filter($request->all())->whereIn('type',$referenceType)->get()->sum('amount'), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2218,7 +2231,7 @@ class ReportController extends Controller
                     "label" => "" .  $service->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                        PurchaseTable::filter($request->all())->whereIn('type',$referenceType)->get()->sum('amount'),
+                            number_format(PurchaseTable::filter($request->all())->whereIn('type',$referenceType)->get()->sum('amount'), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2229,7 +2242,7 @@ class ReportController extends Controller
                     "label" => "" .  $expense->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                        PurchaseTable::filter($request->all())->whereIn('type',$referenceType)->get()->sum('amount'),
+                            number_format(PurchaseTable::filter($request->all())->whereIn('type',$referenceType)->get()->sum('amount'), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2242,7 +2255,7 @@ class ReportController extends Controller
                     "label" => "No Selected Category",
                     "backgroundColor" => "#26C184",
                     "data" => [
-                        PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column),
+                        number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column), 2, '.', ''),
                     ]
                 ];
                 unset($request['productCategoryNull']);
@@ -2253,7 +2266,7 @@ class ReportController extends Controller
                     "label" => "" .  $category->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column),
+                            number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2322,26 +2335,26 @@ class ReportController extends Controller
             $categories = ClientCategory::where('type','supplier')->get();
             $request['supplierCategoryNull'] = 1;
             $arr['name'] = "No Selected Category";
-            $arr['invoiced'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column);
-            $arr['paid'] =  PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_paid');
-            $arr['Unpaid'] =  PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_due');
+            $arr['invoiced'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column), 2, '.', '');
+            $arr['paid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
+            $arr['Unpaid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
             $data[] = $arr;
             unset($request['supplierCategoryNull']);
             foreach($categories as $category){
                 $request['supplierCategory'] = $category->id;
                 $arr['name'] = $category->name;
-                $arr['invoiced'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column);
-                $arr['paid'] =  PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_paid');
-                $arr['Unpaid'] =  PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_due');
+                $arr['invoiced'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column), 2, '.', '');
+                $arr['paid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
+                $arr['Unpaid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
                 $data[] = $arr;
             }
         }else{
 
             foreach($suppliers as $supplier){
                 $arr['name'] = $supplier->legal_name;
-                $arr['invoiced'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum($column);
-                $arr['paid'] =  PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum('amount_paid');
-                $arr['Unpaid'] =  PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum('amount_due');
+                $arr['invoiced'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum($column), 2, '.', '');
+                $arr['paid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum('amount_paid'), 2, '.', '');
+                $arr['Unpaid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum('amount_due'), 2, '.', '');
                 $data[] = $arr;
             }
         }
@@ -2420,7 +2433,7 @@ class ReportController extends Controller
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-                $arr['amount'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat');
+                $arr['amount'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
                 
     
                 $data[] = $arr;
@@ -2430,7 +2443,7 @@ class ReportController extends Controller
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-                $arr['amount'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat');
+                $arr['amount'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
                 $data[] = $arr;
             }
             foreach($expenses as $expense){
@@ -2438,7 +2451,7 @@ class ReportController extends Controller
                 $arr['name'] = $expense->name;
                 $arr['reference'] = $expense->reference.''.$expense->reference_number;
                 $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-                $arr['amount'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat');
+                $arr['amount'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
                 $data[] = $arr;
             }
         }else{
@@ -2448,7 +2461,7 @@ class ReportController extends Controller
             $arr['name'] = "No Selected Category";
             $arr['reference'] = '-';
             $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-            $arr['amount'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat');
+            $arr['amount'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
             $data[] = $arr;
             unset($request['productCategoryNull']);
             foreach($categories as $category){
@@ -2456,7 +2469,7 @@ class ReportController extends Controller
                 $arr['name'] = $category->name;
                 $arr['reference'] = '-';
                 $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
-                $arr['amount'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat');
+                $arr['amount'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
                 $data[] = $arr;
             }
         }
@@ -2512,7 +2525,8 @@ class ReportController extends Controller
                         "label" => "Deposits", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                             InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount')
+                            number_format(InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount'), 2, '.', '')
+                             
                         ] 
                     ], 
                     [
@@ -2520,7 +2534,8 @@ class ReportController extends Controller
                             "label" => "Withdrawals", 
                             "backgroundColor" => "#FB6363", 
                             "data" => [
-                                InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount')
+                                number_format(InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount'), 2, '.', '')
+                                
                             ] 
                         ], 
                     [
@@ -2528,7 +2543,8 @@ class ReportController extends Controller
                         "label" => "Balance", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                             InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount') - InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount')
+                            number_format( InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount') - InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount'), 2, '.', '')
+                            
                         ] 
                     ] 
                 ], 
@@ -2538,7 +2554,8 @@ class ReportController extends Controller
                         "label" => "Invoices", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount')
+                            number_format(InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount'), 2, '.', '')
+                            
                         ] 
                     ], 
                     [
@@ -2546,7 +2563,8 @@ class ReportController extends Controller
                         "label" => "Account Deposits", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            Deposit::filter($request->all())->where('type','deposit')->where('paid_by','1')->sum('amount')
+                            number_format(Deposit::filter($request->all())->where('type','deposit')->where('paid_by','1')->sum('amount'), 2, '.', '')
+                            
                         ]  
                     ]
                 ], 
@@ -2556,7 +2574,8 @@ class ReportController extends Controller
                         "label" => "Refunds", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                             InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount')
+                            number_format(InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount'), 2, '.', '')
+                             
                         ] 
                     ], 
                     [
@@ -2564,7 +2583,8 @@ class ReportController extends Controller
                         "label" => "Purchases", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            "$ ". PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferences)->where('paid', '1')->sum('amount')
+                            "$ ". number_format(PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferences)->where('paid', '1')->sum('amount'), 2, '.', '')
+                            
                         ] 
                     ], 
                     [
@@ -2581,7 +2601,7 @@ class ReportController extends Controller
                         "label" => "Account Withdrawals", 
                         "backgroundColor" => "#FE9140", 
                         "data" => [
-                            "$ ". Deposit::filter($request->all())->where('type','withdraw')->where('paid_by','1')->sum('amount')
+                            "$ ". number_format( Deposit::filter($request->all())->where('type','withdraw')->where('paid_by','1')->sum('amount'), 2, '.', '')
                         ] 
                     ]  
                 ]
@@ -2597,9 +2617,9 @@ class ReportController extends Controller
                 "label" => "" .  $paymentOption->name,
                 "backgroundColor" => "#26C184",
                 "data" => [
-                        InvoiceTable::filter($request->all())->whereHas('payment_options', function ($query) use ($paymentOption) {
+                        number_format( InvoiceTable::filter($request->all())->whereHas('payment_options', function ($query) use ($paymentOption) {
                             $query->where('id', $paymentOption->id);
-                        })->get()->sum('amount'),
+                        })->get()->sum('amount'), 2, '.', ''),
                     ]
                 ];
             }
@@ -2615,7 +2635,7 @@ class ReportController extends Controller
                         "label" => "" .  \Auth::user()->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                            InvoiceTable::filter($request->all())->get()->sum('amount'),
+                                number_format( InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', ''),
                             ]
                         ];
             return response()->json([
@@ -2662,15 +2682,15 @@ class ReportController extends Controller
         $data = [];
 
         foreach($paymentOptions as $paymentOption){
-            $deposit =  Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
+            $deposit =  number_format( Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
                 $query->where('payment_option', $paymentOption->id);
-            })->where('type','deposit')->get()->sum('amount');
-            $withdrawal = Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
+            })->where('type','deposit')->get()->sum('amount'), 2, '.', '');
+            $withdrawal = number_format(Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
                 $query->where('payment_option', $paymentOption->id);
-            })->where('type','withdraw')->get()->sum('amount');
-            $invoiceAmount = InvoiceTable::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
+            })->where('type','withdraw')->get()->sum('amount'), 2, '.', '');
+            $invoiceAmount = number_format(InvoiceTable::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
                 $query->where('id', $paymentOption->id);
-            })->get()->sum('amount');
+            })->get()->sum('amount'), 2, '.', '');
                 // dd($invoiceAmount);
             $arr['name'] = $paymentOption->name;
             $arr['deposit'] = $deposit + $invoiceAmount;
