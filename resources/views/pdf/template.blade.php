@@ -569,7 +569,7 @@
                         <tr>
                             <td style="padding: 0; margin: 0;">Ced/Ruc:<b>{{$client_supplier_tin}}</b></td>
                         </tr>
-                    @elseif(@$client_supplier_tin)
+                    @elseif(@$client_supplier_tin_show && @$client_supplier_tin)
                     <tr>
                             <td style="padding: 0; margin: 0;">
                             {{ $client_supplier_tin ? $client_supplier_tin : 'Ced/Ruc:' }} <b>{{$client_supplier_tin}}</b>
