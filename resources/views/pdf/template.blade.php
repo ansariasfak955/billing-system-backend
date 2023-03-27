@@ -549,7 +549,7 @@
                         <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_tin_show)
+                    @if(@$client_supplier_tin_show && @$client_supplier_tin)
                         <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin}}</b></td></tr>
                     @endif
 
