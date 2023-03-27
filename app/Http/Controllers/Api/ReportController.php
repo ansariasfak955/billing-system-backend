@@ -1823,7 +1823,7 @@ class ReportController extends Controller
                 $categories = ClientCategory::get();
                 $request['clientCategoryNull'] = 1;
                 $arr['name'] = "No Selected Category";
-                $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
+                $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
                 $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                 $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                 $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
@@ -1835,7 +1835,7 @@ class ReportController extends Controller
                 foreach($categories as $category){
                     $request['clientCategory'] = $category->id;
                     $arr['name'] = $category->name;
-                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
+                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
@@ -1852,7 +1852,7 @@ class ReportController extends Controller
     
                 foreach($clients as $client){
                     $arr['name'] = $client->legal_name;
-                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','pending')->count();
+                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->whereIn('status',['pending','pending invoice'])->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','refused')->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','closed')->count();
@@ -1930,7 +1930,7 @@ class ReportController extends Controller
             $data = [];
 
             $arr['name'] = \Auth::user()->name;
-            $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','pending')->count();
+            $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->whereIn('status',['pending','pending invoice'])->count();
             $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','refused')->count();
             $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','accepted')->count();
             $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','closed')->count();
@@ -2063,7 +2063,7 @@ class ReportController extends Controller
                     $request['product_id'] = $product->id;
                     $arr['name'] = $product->name;
                     $arr['reference'] = $product->reference.''.$product->reference_number;
-                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
+                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
@@ -2078,7 +2078,7 @@ class ReportController extends Controller
                     $request['service_id'] = $service->id;
                     $arr['name'] = $service->name;
                     $arr['reference'] = $service->reference.''.$service->reference_number;
-                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
+                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
@@ -2091,7 +2091,7 @@ class ReportController extends Controller
                 $request['productCategoryNull'] = 1;
                 $arr['name'] = 'Not found in catalog';
                 $arr['reference'] = '-';
-                $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
+                $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
                 $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                 $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                 $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
@@ -2103,7 +2103,7 @@ class ReportController extends Controller
                     $request['productCategory'] = $category->id;
                     $arr['name'] = $category->name;
                     $arr['reference'] = '-';
-                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
+                    $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
