@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>After tax:</th>
@@ -35,15 +35,20 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($invoiceClientsExports as $invoiceClientsExport)
+        <?php
+
+            // return $data; die;
+        
+        ?>
+        @foreach($data as $invoiceClients)
         <tr>
-            <td>{{$invoiceClientsExport['reference']}}</td>
-            <td>{{$invoiceClientsExport['ruc']}}</td>
-            <td>{{$invoiceClientsExport['name']}}</td>
-            <td>{{$invoiceClientsExport['category']}}</td>
-            <td>{{$invoiceClientsExport['invoiced']}}</td>
-            <td>{{$invoiceClientsExport['paid']}}</td>
-            <td>{{$invoiceClientsExport['Unpaid']}}</td>
+            <td>{{@$invoiceClients['reference']}}</td>
+            <td>{{@$invoiceClients['ruc']}}</td>
+            <td>{{@$invoiceClients['name']}}</td>
+            <td>{{@$invoiceClients['category']}}</td>
+            <td>{{@$invoiceClients['invoiced']}}</td>
+            <td>{{@$invoiceClients['paid']}}</td>
+            <td>{{@$invoiceClients['Unpaid']}}</td>
         </tr>
         @endforeach
     </tbody>
