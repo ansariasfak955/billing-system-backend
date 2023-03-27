@@ -545,7 +545,7 @@
                         @endif
                         </th>
         
-                    @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
+                    @if((@$client_supplier_name_show || @$client_supplier_legal_name_show) && @$client_supplier_legal_name)
                         <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
                     @endif
 
@@ -553,28 +553,27 @@
                         <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_phone_show)
-                        <tr><td style="padding: 0; margin: 0;">
-                        Phone: <b>{{$client_supplier_phone}}</b></td></tr>
+                    @if(@$client_supplier_phone_show && @$client_supplier_phone)
+                        <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_reference_show)
+                    @if(@$client_supplier_reference_show && @$client_supplier_reference)
                         <tr><td style="padding: 0; margin: 0;">Reference: <b>{{$client_supplier_reference}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_fax_show)
+                    @if(@$client_supplier_fax_show && @$client_supplier_fax)
                         <tr><td style="padding: 0; margin: 0;">Fax: <b>{{$client_supplier_fax}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_email_show)
+                    @if(@$client_supplier_email_show && @$client_supplier_email)
                         <tr><td style="padding: 0; margin: 0;">Email: <b>{{$client_supplier_email}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_website_show)
+                    @if(@$client_supplier_website_show && @$client_supplier_website)
                         <tr><td style="padding: 0; margin: 0;">Website: <b>{{$client_supplier_website}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_billing_show)
+                    @if(@$client_supplier_billing_show && @$client_supplier_billing)
                         <tr><td style="padding: 0; margin: 0;">Billing: <b>{{$client_supplier_billing}}</b></td></tr>
                     @endif
 
