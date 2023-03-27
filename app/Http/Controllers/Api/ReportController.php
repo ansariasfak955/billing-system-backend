@@ -776,7 +776,7 @@ class ReportController extends Controller
                         ];
                 }
             }else{
-                $client_ids = SalesEstimate::filter($request->all())->whereHas('client')->pluck('client_id')->toArray();
+                $client_ids = SalesEstimate::whereHas('client')->pluck('client_id')->toArray();
                 $clients = Client::whereIn('id',$client_ids)->get();
                 foreach($clients as $client){
                     $data['sales_clients'][] = [
@@ -941,7 +941,7 @@ class ReportController extends Controller
             foreach($categories as $category){
                 $request['clientCategory'] = $category->id;
                 $arr['name'] = $category->name;
-                $arr['pending'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->where('status','pending')->count();
+                $arr['pending'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->whereIn('status',['pending', 'in_progress','pending_invoice','invoiced'])->count();
                 $arr['refused'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->where('status','refused')->count();
                 $arr['accepted'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->where('status','accepted')->count();
                 $arr['closed'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->where('status','closed')->count();
@@ -955,9 +955,10 @@ class ReportController extends Controller
             $clients = Client::whereIn('id',$client_ids)->get();
             foreach($clients as $client){
                 $arr['name'] = $client->legal_name;
-                $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','pending')->count();
+                $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->whereIn('status',['pending', 'in_progress','pending_invoice','invoiced'])->count();
+                $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','accepted')->count();
                 $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','refused')->count();
-                $arr['in_progress'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in progress')->count();
+                $arr['in_progress'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','in_progress')->count();
                 $arr['closed'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','closed')->count();
                 $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
                 $arr['amount'] = number_format(SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
