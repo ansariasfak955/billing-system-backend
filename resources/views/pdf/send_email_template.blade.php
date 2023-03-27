@@ -474,9 +474,9 @@
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} INFO</th>
 
                     <tr><td style="padding: 0; margin: 0;">Number: <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
-                    @if(@$invoiceData->client->legal_name)
+                    <!-- @if(@$invoiceData->client->legal_name)
                         <tr><td style="padding: 0; margin: 0;">Client Name: <b>{{ @$invoiceData->client->legal_name }}</b></td></tr>
-                    @endif
+                    @endif -->
                     @if(@$invoiceData->client->tin)
                         <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{ @$invoiceData->client->tin }}</b></td></tr>
                     @endif
@@ -547,7 +547,7 @@
         
                     @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
                         @if($invoiceData->client->legal_name)
-                            <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} ({{@$client_supplier_name.' '.@$invoiceData->client->name}})</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} {{@$client_supplier_name.' '.@$invoiceData->client->name}}</b></td></tr>
                         @endif
                     @endif 
 

@@ -31,6 +31,7 @@ use App\Models\IncomeTax;
 use App\Models\PurchaseTicket;
 use Illuminate\Http\Request;
 use App\Exports\ReportExport\OfProfitExport;
+use App\Exports\ReportExport\InvoiceClientExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -401,14 +402,14 @@ class ReportController extends Controller
             $client_ids = InvoiceTable::pluck('client_id')->toArray();
             $clients = Client::whereIn('id',$client_ids)->get();
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
-            $data = [];
+            $finalData = [];
             //no category history
             $request['clientCategoryNull'] = 1;
             $arr['name'] = 'No selected category';
             $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
             $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
             $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
-            $data[] = $arr;
+            $finalData[] = $arr;
             unset($request['clientCategoryNull']);
 
             if($request->category == 'client_categories'){
@@ -422,21 +423,33 @@ class ReportController extends Controller
                     
                     $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
                     $arr['Unpaid'] =  number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
             }else{
                 foreach($clients as $client){
                     $arr['name'] = $client->legal_name;
+                    $arr['reference'] = $client->reference.''.$client->reference_number;
+                    $arr['ruc'] = $client->tin;
+                    $arr['category'] = $client->client_category_name;
                     $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
                     $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
                     $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
+            }
+
+            if($request->export){
+                $fileName = 'INVOICECLIENTREPORT-'.time().$request->company_id.'.xlsx';
+                Excel::store(new InvoiceClientExport($finalData, $request), 'public/xlsx/'.$fileName);
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
             }
             
             return response()->json([
                 "status" => true,
-                "data" =>  $data
+                "data" =>  $finalData
             ]);
             
     }
