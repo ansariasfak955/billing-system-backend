@@ -442,7 +442,7 @@
                                 @endif
                                 <br>
                             @endif
-                            @if(@$company_website_show['show'])    
+                            @if(@$company_website_show['show'] && @$company_website_show['value'])    
                                 <span style="margin-left: 30px;">Website:</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
@@ -450,7 +450,7 @@
                                 @endif
                             @endif
                             <br>
-                            @if(@$company_phone_show['show'])    
+                            @if(@$company_phone_show['show'] && @$company_phone_show['value'])    
                                 <span style="margin-left: 30px;">Phone:</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
                                     {{$company_phone_show['value']}}
                                 @elseif(@$company_phone_show['show'] ==1 && @!$company_phone_show['value'])
