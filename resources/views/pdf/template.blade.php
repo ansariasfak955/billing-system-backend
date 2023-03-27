@@ -572,10 +572,10 @@
                             <td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b>
                             </td>
                         </tr>
-                    @elseif((@$client_supplier_name_show || @$client_supplier_legal_name_show) && (@$client_supplier_legal_name))
+                    @elseif(@$client_supplier_name_show && @$client_supplier_legal_name)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                            {{$client_supplier_legal_name ? $client_supplier_legal_name || $client_supplier_name ? $client_supplier_name : "Name/Legal Name:"}} <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b>
+                            {{$client_supplier_legal_name ? $client_supplier_legal_name : "Name/Legal Name:"}} <b>{{$client_supplier_legal_name}}</b>
                             </td>
                         </tr>
                     @endif
