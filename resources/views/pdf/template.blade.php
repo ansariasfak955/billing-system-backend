@@ -443,8 +443,7 @@
                                 <br>
                             @endif
                             @if(@$company_website_show['show'])    
-                                <span style="margin-left: 30px;">
-                                {{ @$company_website_show['value'] ? @$company_website_show['value'] : 'Website:'}}</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                                <span style="margin-left: 30px;">Website:</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
@@ -452,8 +451,7 @@
                             @endif
                             <br>
                             @if(@$company_phone_show['show'])    
-                                <span style="margin-left: 30px;">
-                                {{ @$company_phone_show['value'] ? @$company_phone_show['value'] : 'Phone:'}}</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
+                                <span style="margin-left: 30px;">Phone:</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
                                     {{$company_phone_show['value']}}
                                 @elseif(@$company_phone_show['show'] ==1 && @!$company_phone_show['value'])
                                     {{ $company->phone}}
@@ -569,6 +567,10 @@
 
                     @if(@$client_supplier_tin_show)
                         <tr>
+                            <td style="padding: 0; margin: 0;">Ced/Ruc:<b>{{$client_supplier_tin}}</b></td>
+                        </tr>
+                    @elseif(@$client_supplier_tin)
+                    <tr>
                             <td style="padding: 0; margin: 0;">
                             {{ $client_supplier_tin ? $client_supplier_tin : 'Ced/Ruc:' }} <b>{{$client_supplier_tin}}</b>
                             </td>
