@@ -415,7 +415,7 @@
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         @if($company_logo_show)
-                            <img src="{{ $company->logo }}" alt="" srcset="" style="width: 70px; height: 80px; object-fit: cover;">
+                            <img src="{{ $company->logo }}" alt="" srcset="" style="width: 80px; height: 80px; object-fit: cover;">
                         @endif
                         </td>
                         <td class="header_border" style="width:250px" @if($company_name_show || $company_country_show) @endif>
@@ -482,18 +482,8 @@
                             </td>
                         </tr>
                     @endif
-                    @if(@$client_supplier_legal_name_show)
-                    <tr>
-                        <td style="padding: 0; margin: 0;">Client Name: <b>Johnny {{(@$client_supplier_legal_name)}}</b>
-                        </td>
-                    </tr>
-                    @endif
-                    @if(@$client_supplier_tin_show)
-                    <tr>
-                        <td style="padding: 0; margin: 0;">Ced/Ruc: <b>54578 {{(@$client_supplier_tin)}}</b>
-                        </td>
-                    </tr>
-                    @endif
+                    <tr><td style="padding: 0; margin: 0;">Client Name: <b>Johnny</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>54578</b></td></tr>
                     @if($document_date_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
@@ -556,71 +546,36 @@
                         </th>
         
                     @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b>
-                            </td>
-                        </tr>
+                        <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
                     @endif
 
-                    <!-- @if(@$client_supplier_tin_show)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">Ced/Ruc:<b>{{$client_supplier_tin}}</b></td>
-                        </tr>
-                    @else -->
-                    @if(@$client_supplier_tin_show && @$client_supplier_tin)
-                    <tr>
-                            <td style="padding: 0; margin: 0;">
-                            {{ $client_supplier_tin ? $client_supplier_tin : 'Ced/Ruc:' }} <b>{{$client_supplier_tin}}</b>
-                            </td>
-                        </tr>
+                    @if(@$client_supplier_tin_show)
+                        <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_phone_show && @$client_supplier_phone)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">
-                                {{ $client_supplier_phone ? $client_supplier_phone : 'Phone:' }} <b>{{$client_supplier_phone}}</b>
-                            </td>
-                        </tr>
+                    @if(@$client_supplier_phone_show)
+                        <tr><td style="padding: 0; margin: 0;">
+                        Phone: <b>{{$client_supplier_phone}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_reference_show && @$client_supplier_reference)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">
-                            {{ $client_supplier_reference ? $client_supplier_reference : 'Reference:' }} <b>{{$client_supplier_reference}}</b>
-                            </td>
-                        </tr>
+                    @if(@$client_supplier_reference_show)
+                        <tr><td style="padding: 0; margin: 0;">Reference: <b>{{$client_supplier_reference}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_fax_show && @$client_supplier_fax)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">
-                                {{ $client_supplier_fax ? $client_supplier_fax : 'Fax:' }} <b>{{$client_supplier_fax}}</b>
-                            </td>
-                        </tr>
+                    @if(@$client_supplier_fax_show)
+                        <tr><td style="padding: 0; margin: 0;">Fax: <b>{{$client_supplier_fax}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_email_show)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">
-                            {{ $client_supplier_email ? $client_supplier_email : 'Email:' }} <b>{{$client_supplier_email}}</b>
-                            </td>
-                        </tr>
+                        <tr><td style="padding: 0; margin: 0;">Email: <b>{{$client_supplier_email}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_website_show)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">
-                            {{ $client_supplier_website ? $client_supplier_website : 'Website:' }} <b>{{$client_supplier_website}}</b>
-                            </td>
-                        </tr>
+                        <tr><td style="padding: 0; margin: 0;">Website: <b>{{$client_supplier_website}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_billing_show)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">
-                            {{ $client_supplier_billing ? $client_supplier_billing : 'Billing:' }} <b>{{$client_supplier_billing}}</b>
-                            </td>
-                        </tr>
+                        <tr><td style="padding: 0; margin: 0;">Billing: <b>{{$client_supplier_billing}}</b></td></tr>
                     @endif
 
                     <tr><td style="padding: 0; margin: 0;">
