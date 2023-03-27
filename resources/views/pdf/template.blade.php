@@ -484,6 +484,11 @@
                     @endif
                     @if(@$client_supplier_legal_name_show)
                     <tr>
+                        <td style="padding: 0; margin: 0;">Client Name: <b>Johnny {{(@$client_supplier_legal_name)}}</b>
+                        </td>
+                    </tr>
+                    @elseif(@$client_supplier_legal_name_show && @$client_supplier_legal_name)
+                    <tr>
                         <td style="padding: 0; margin: 0;">
                         {{ $client_supplier_legal_name ? $client_supplier_legal_name : 'Client Name:'}} <b>Johnny {{(@$client_supplier_legal_name)}}</b>
                         </td>
@@ -491,8 +496,13 @@
                     @endif
                     @if(@$client_supplier_tin_show)
                     <tr>
+                        <td style="padding: 0; margin: 0;">Ced/Ruc: <b>54578 {{(@$client_supplier_tin)}}</b>
+                        </td>
+                    </tr>
+                    @elseif(@$client_supplier_tin_show && @$client_supplier_tin)
+                    <tr>
                         <td style="padding: 0; margin: 0;">
-                        {{ $client_supplier_legal_name ? $client_supplier_legal_name : 'Ced/Ruc:'}} <b>54578 {{(@$client_supplier_tin)}}</b>
+                        {{ $client_supplier_tin ? $client_supplier_tin : 'Ced/Ruc:'}} <b>54578 {{(@$client_supplier_tin)}}</b>
                         </td>
                     </tr>
                     @endif
@@ -557,10 +567,15 @@
                         @endif
                         </th>
         
-                    @if((@$client_supplier_name_show || @$client_supplier_legal_name_show) && @$client_supplier_legal_name)
+                    @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
+                        <tr>
+                            <td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b>
+                            </td>
+                        </tr>
+                    @elseif((@$client_supplier_name_show || @$client_supplier_legal_name_show) && (@$client_supplier_legal_name))
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                            {{ $client_supplier_legal_name ? $client_supplier_legal_name : 'Name/Legal Name:' }} <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b>
+                            {{$client_supplier_legal_name ? $client_supplier_legal_name || $client_supplier_name ? $client_supplier_name : "Name/Legal Name:"}} <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b>
                             </td>
                         </tr>
                     @endif
