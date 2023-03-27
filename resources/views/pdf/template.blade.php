@@ -482,8 +482,20 @@
                             </td>
                         </tr>
                     @endif
-                    <tr><td style="padding: 0; margin: 0;">Client Name: <b>Johnny</b></td></tr>
-                    <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>54578</b></td></tr>
+                    @if(@$client_supplier_legal_name_show)
+                    <tr>
+                        <td style="padding: 0; margin: 0;">
+                        {{ $client_supplier_legal_name ? $client_supplier_legal_name : 'Client Name:'}} <b>Johnny {{(@$client_supplier_legal_name)}}</b>
+                        </td>
+                    </tr>
+                    @endif
+                    @if(@$client_supplier_tin_show)
+                    <tr>
+                        <td style="padding: 0; margin: 0;">
+                        {{ $client_supplier_legal_name ? $client_supplier_legal_name : 'Ced/Ruc:'}} <b>54578 {{(@$client_supplier_tin)}}</b>
+                        </td>
+                    </tr>
+                    @endif
                     @if($document_date_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
@@ -553,8 +565,12 @@
                         </tr>
                     @endif
 
-                    @if(@$client_supplier_tin_show && @$client_supplier_tin)
+                    @if(@$client_supplier_tin_show)
                         <tr>
+                            <td style="padding: 0; margin: 0;">Ced/Ruc:<b>{{$client_supplier_tin}}</b></td>
+                        </tr>
+                    @elseif(@$client_supplier_tin_show && @$client_supplier_tin)
+                    <tr>
                             <td style="padding: 0; margin: 0;">
                             {{ $client_supplier_tin ? $client_supplier_tin : 'Ced/Ruc:' }} <b>{{$client_supplier_tin}}</b>
                             </td>
