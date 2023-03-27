@@ -553,8 +553,12 @@
                         <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin}}</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_phone_show)
-                        <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone}}</b></td></tr>
+                    @if(@$client_supplier_phone_show && $client_supplier_phone)
+                        <tr>
+                            <td style="padding: 0; margin: 0;">
+                                $client_supplier_phone ? $client_supplier_phone : 'Phone': <b>{{$client_supplier_phone}}</b>
+                            </td>
+                        </tr>
                     @endif
 
                     @if(@$client_supplier_reference_show)

@@ -20,7 +20,6 @@ class OfProfitExport implements FromView
     public function view(): View
     {
         // dd($this->total);
-        $data = $this->data;
         $request = $this->request;
         return view('exports.reports.of-profit', compact('data', 'request'));
     }
