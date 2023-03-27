@@ -482,10 +482,10 @@
                             </td>
                         </tr>
                     @endif
-                    @if(@client_supplier_legal_name_show)
+                    @if(@$client_supplier_legal_name_show)
                     <tr><td style="padding: 0; margin: 0;">Client Name: <b>Johnny {{@$client_supplier_legal_name}}</b></td></tr>
                     @endif
-                    @if(@client_supplier_tin_show)
+                    @if(@$client_supplier_tin_show)
                     <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>54578 {{@client_supplier_tin}}</b></td></tr>
                     @endif
                     @if($document_date_show == 1)
