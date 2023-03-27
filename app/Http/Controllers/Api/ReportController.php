@@ -405,9 +405,9 @@ class ReportController extends Controller
             //no category history
             $request['clientCategoryNull'] = 1;
             $arr['name'] = 'No selected category';
-            $arr['invoiced'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column);
-            $arr['paid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid');
-            $arr['Unpaid'] = InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due');
+            $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
+            $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
+            $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
             $data[] = $arr;
             unset($request['clientCategoryNull']);
 
@@ -2737,9 +2737,9 @@ class ReportController extends Controller
         $arr = [];
         $data = [];
             
-        $deposit = Deposit::filter($request->all())->where('type','deposit')->where('paid_by','1')->sum('amount');
-        $withdrawal = Deposit::filter($request->all())->where('type','withdraw')->where('paid_by','1')->sum('amount');
-        $invoiceAmount = InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount');
+        $deposit = number_format(Deposit::filter($request->all())->where('type','deposit')->where('paid_by','1')->sum('amount'), 2, '.', '');
+        $withdrawal = number_format(Deposit::filter($request->all())->where('type','withdraw')->where('paid_by','1')->sum('amount'), 2, '.', '');
+        $invoiceAmount = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount'), 2, '.', '');
 
         $arr['name'] = \Auth::user()->name;
         $arr['deposit'] = $deposit + $invoiceAmount;
@@ -2859,7 +2859,8 @@ class ReportController extends Controller
                     "label" => "Sales stock value", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        Product::filter($request->all())->sum('price') * Product::filter($request->all())->get()->sum($column)
+                        number_format(Product::filter($request->all())->sum('price') * Product::filter($request->all())->get()->sum($column), 2, '.', '')
+                        
                     ] 
                 ], 
                 [
@@ -2867,7 +2868,8 @@ class ReportController extends Controller
                     "label" => "Purchase stock value", 
                     "backgroundColor" => "#FB6363", 
                     "data" => [
-                        Product::filter($request->all())->sum('purchase_price')  * Product::filter($request->all())->get()->sum($column)
+                        number_format(Product::filter($request->all())->sum('purchase_price')  * Product::filter($request->all())->get()->sum($column), 2, '.', '')
+                        
                     ] 
                 ], 
             ]
@@ -2979,9 +2981,9 @@ class ReportController extends Controller
                     "label" => "Collected", 
                     "backgroundColor" => "#26C184", 
                     "data" => [
-                        InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax,$column) {
+                        number_format(InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax,$column) {
                             $query->where($column, $tax->tax);
-                        })->get()->sum('tax_amount'),
+                        })->get()->sum('tax_amount'), 2, '.', ''),
                     ]  
                 ];
                 $data['tax_Summary'][] = [
@@ -2989,9 +2991,9 @@ class ReportController extends Controller
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
                     "data" => [
-                        PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax,$column) {
+                        number_format(PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax,$column) {
                             $query->where($column, $tax->tax);
-                        })->get()->sum('tax_amount'),
+                        })->get()->sum('tax_amount'), 2, '.', ''),
                     ]  
                 ];
                 $data['tax_Summary'][] = [
@@ -2999,9 +3001,9 @@ class ReportController extends Controller
                     "label" => "Total", 
                     "backgroundColor" => "#FE9140", 
                     "data" => [
-                        PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax,$column) {
+                        number_format( PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use ($tax,$column) {
                             $query->where($column, $tax->tax);
-                        })->get()->sum('tax_amount'),
+                        })->get()->sum('tax_amount'), 2, '.', ''),
                     ]  
                 ];
             }
@@ -3016,28 +3018,30 @@ class ReportController extends Controller
                 $arr['Total'] = 'Total';
                 $arr['Subtotal'] = 'Subtotal';
                 $arr['Tax'] = 'Tax';
-                $arr['collected'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax,$column) {
+                $arr['collected'] = number_format( InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use ($tax,$column) {
                     $query->where($column, $tax->tax);
-                })->get()->sum('amount');
-                $arr['ctax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
+                })->get()->sum('amount'), 2, '.', '');
+                $arr['ctax'] = number_format(InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
                     $query->where($column, $tax->tax);
-                })->get()->sum('tax_amount');
-                $arr['paid'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
+                })->get()->sum('tax_amount'), 2, '.', '');
+                $arr['paid'] = number_format(PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
                     $query->where($column, $tax->tax);
-                })->get()->sum('amount');
-                $arr['ptax'] = PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
+                })->get()->sum('amount'), 2, '.', '');
+                $arr['ptax'] = number_format(PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
                     $query->where($column, $tax->tax);
-                })->get()->sum('tax_amount');
-                $arr['total'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
+                })->get()->sum('tax_amount'), 2, '.', '');
+
+                $arr['total'] = number_format(InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
                     $query->where($column, $tax->tax);
                 })->get()->sum('amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
                     $query->where($column, $tax->tax);
-                })->get()->sum('amount');
-                $arr['ttax'] = InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
+                })->get()->sum('amount'), 2, '.', '');
+
+                $arr['ttax'] = number_format(InvoiceTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
                     $query->where($column, $tax->tax);
                 })->get()->sum('tax_amount') - PurchaseTable::filter($request->all())->WhereHas('items', function ($query) use($tax,$column) {
                     $query->where($column, $tax->tax);
-                })->get()->sum('tax_amount');
+                })->get()->sum('tax_amount'), 2, '.', '');
 
                 $data[] = $arr;
             }   
@@ -3090,9 +3094,9 @@ class ReportController extends Controller
             $data = [];
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
-                $data['Sales'][] = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat');
-                $data['Expenses'][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat');
-                $data['Profit'][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat') - PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat');
+                $data['Sales'][] = number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat'), 2, '.', '');
+                $data['Expenses'][] =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat'), 2, '.', '');
+                $data['Profit'][] =  number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat') - PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat'), 2, '.', '');
             }
             $finalData['labels'] = @$data['labels'];
             if($request->module){
@@ -3193,9 +3197,9 @@ class ReportController extends Controller
             foreach($dates as $date){
                 $arr = [];
                 $arr['period'] = $date['name'];
-                $arr['sales'] = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat');
-                $arr['expense'] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat');
-                $arr['profit'] = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat') - PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat');
+                $arr['sales'] = number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat'), 2, '.', '');
+                $arr['expense'] =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat'), 2, '.', '');
+                $arr['profit'] = number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->get()->sum('amount_with_out_vat') - PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date']])->whereIn('reference',$purchaseReferenceTypes)->get()->sum('amount_with_out_vat'), 2, '.', '');
 
                 $finalData[] = $arr;
             }
@@ -3264,7 +3268,7 @@ class ReportController extends Controller
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
                 foreach($clients as $client){
-                    $data[$client->id][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id, 'service_id' => $request->service_id])->get()->sum($column);
+                    $data[$client->id][] =  number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id, 'service_id' => $request->service_id])->get()->sum($column), 2, '.', '');
                 }
             }
             $finalData['labels'] = @$data['labels'];
@@ -3304,7 +3308,7 @@ class ReportController extends Controller
                 $arr['name'] = $client->legal_name.' ('.$client->name.')';
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id, 'service_id' => $request->service_id])->get()->sum($column);
+                    $amount = number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id, 'service_id' => $request->service_id])->get()->sum($column), 2, '.', '');
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }
@@ -3368,7 +3372,7 @@ class ReportController extends Controller
             $data = [];
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
-                $data[\Auth::id()][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>\Auth::id() , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->get()->sum($column);
+                $data[\Auth::id()][] =  number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>\Auth::id() , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->get()->sum($column), 2, '.', '');
             }
             $finalData['labels'] = @$data['labels'];
             $finalData['data'][] = 
@@ -3402,7 +3406,7 @@ class ReportController extends Controller
             $arr['name'] =  \Auth::user()->name;
             $arr['total'] = 0;
             foreach($dates as $date){
-                $amount =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>\Auth::id() , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->get()->sum($column);;
+                $amount =  number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>\Auth::id() , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->get()->sum($column), 2, '.', '');
                 $arr['data'][] =  $amount;
                 $arr['total'] = $arr['total']+ $amount;
             }
@@ -3474,12 +3478,12 @@ class ReportController extends Controller
             $data = [];
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
-                $data['no_category'][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column);
+                $data['no_category'][] =  number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column), 2, '.', '');
                 foreach($products as $product){
-                    $data['product_'.$product->id][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->get()->sum($column);
+                    $data['product_'.$product->id][] =  number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->get()->sum($column), 2, '.', '');
                 }
                 foreach($services as $service){
-                    $data['service_'.$service->id][] =  InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->get()->sum($column);
+                    $data['service_'.$service->id][] =  number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->get()->sum($column), 2, '.', '');
                 }
             }
             $finalData['labels'] = @$data['labels'];
@@ -3565,7 +3569,7 @@ class ReportController extends Controller
             $arr['reference'] = "-";
             $arr['total'] = 0;
             foreach($dates as $date){
-                $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column);
+                $amount = number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column), 2, '.', '');
                 $arr['data'][] =  $amount;
                 $arr['total'] = $arr['total']+ $amount;
             }
@@ -3578,7 +3582,7 @@ class ReportController extends Controller
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->get()->sum($column);
+                    $amount = number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->get()->sum($column), 2, '.', '');
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }
@@ -3592,7 +3596,7 @@ class ReportController extends Controller
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount = InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->get()->sum($column);
+                    $amount = number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->get()->sum($column), 2, '.', '');
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }
@@ -3661,7 +3665,7 @@ class ReportController extends Controller
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
                 foreach($suppliers as $supplier){
-                    $data[$supplier->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $data[$supplier->id][] =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                 }
             }
             $finalData['labels'] = @$data['labels'];
@@ -3701,7 +3705,7 @@ class ReportController extends Controller
                 $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id ,'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $amount = number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id ,'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }
@@ -3788,15 +3792,15 @@ class ReportController extends Controller
             $data = [];
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
-                $data['no_category'][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column);
+                $data['no_category'][] =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column), 2, '.', '');
                 foreach($products as $product){
-                    $data['product_'.$product->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $data['product_'.$product->id][] =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                 }
                 foreach($services as $service){
-                    $data['service_'.$service->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $data['service_'.$service->id][] =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                 }
                 foreach($expenses as $expense){
-                    $data['expense_'.$expense->id][] =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'expense_id' => $expense->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $data['expense_'.$expense->id][] =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'expense_id' => $expense->id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                 }
             }
             $finalData['labels'] = @$data['labels'];
@@ -3907,7 +3911,7 @@ class ReportController extends Controller
             $arr['reference'] = "-";
             $arr['total'] = 0;
             foreach($dates as $date){
-                $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column);
+                $amount = number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column), 2, '.', '');
                 $arr['data'][] =  $amount;
                 $arr['total'] = $arr['total']+ $amount;
             }
@@ -3920,7 +3924,7 @@ class ReportController extends Controller
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount =  PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $amount =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'product_id' => $product->id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }
@@ -3934,7 +3938,7 @@ class ReportController extends Controller
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $amount = number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }
@@ -3948,7 +3952,7 @@ class ReportController extends Controller
                 $arr['reference'] = $expense->reference.''.$expense->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount = PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'expense_id' => $expense->id])->whereIn('reference', $referenceType)->get()->sum($column);
+                    $amount = number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'agent_id' =>$request->agent_id , 'expense_id' => $expense->id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }
