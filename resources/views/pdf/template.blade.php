@@ -443,7 +443,8 @@
                                 <br>
                             @endif
                             @if(@$company_website_show['show'])    
-                                <span style="margin-left: 30px;">Website:</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                                <span style="margin-left: 30px;">
+                                {{ @$company_website_show['value'] ? @$company_website_show['value'] : 'Website:'}}</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
@@ -451,7 +452,8 @@
                             @endif
                             <br>
                             @if(@$company_phone_show['show'])    
-                                <span style="margin-left: 30px;">Phone:</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
+                                <span style="margin-left: 30px;">
+                                {{ @$company_phone_show['value'] ? @$company_phone_show['value'] : 'Phone:'}}</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
                                     {{$company_phone_show['value']}}
                                 @elseif(@$company_phone_show['show'] ==1 && @!$company_phone_show['value'])
                                     {{ $company->phone}}
@@ -482,8 +484,20 @@
                             </td>
                         </tr>
                     @endif
-                    <tr><td style="padding: 0; margin: 0;">Client Name: <b>Johnny</b></td></tr>
-                    <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>54578</b></td></tr>
+                    @if(@$client_supplier_legal_name_show && client_supplier_legal_name)
+                    <tr>
+                        <td style="padding: 0; margin: 0;">
+                        {{ $client_supplier_legal_name ? $client_supplier_legal_name : 'Client Name:'}} <b>Johnny {{(@$client_supplier_legal_name)}}</b>
+                        </td>
+                    </tr>
+                    @endif
+                    @if(@$client_supplier_tin_show && @$client_supplier_tin)
+                    <tr>
+                        <td style="padding: 0; margin: 0;">
+                        {{ $client_supplier_legal_name ? $client_supplier_legal_name : 'Ced/Ruc:'}} <b>54578 {{(@$client_supplier_tin)}}</b>
+                        </td>
+                    </tr>
+                    @endif
                     @if($document_date_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
@@ -553,7 +567,7 @@
                         </tr>
                     @endif
 
-                    @if(@$client_supplier_tin_show && @$client_supplier_tin)
+                    @if(@$client_supplier_tin_show)
                         <tr>
                             <td style="padding: 0; margin: 0;">
                             {{ $client_supplier_tin ? $client_supplier_tin : 'Ced/Ruc:' }} <b>{{$client_supplier_tin}}</b>
