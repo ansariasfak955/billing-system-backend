@@ -298,8 +298,8 @@ class ReportController extends Controller
                 $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
             }
 
-            $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-            $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
 
             $data = [];
             $data['invoice_items'] = [];
@@ -536,8 +536,8 @@ class ReportController extends Controller
             $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
         }
 
-        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
         
            
             $arr = [];
@@ -1067,8 +1067,8 @@ class ReportController extends Controller
             $itemServiceIds = Item::whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
         }
 
-        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
            
             $arr = [];
             $data = [];
@@ -1293,16 +1293,16 @@ class ReportController extends Controller
                 "delivery_notes_by_state" => [
                     [
                         "type" => "bar", 
-                        "label" => "Pending Invoice (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->count().")", 
+                        "label" => "Pending Invoice (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending invoice')->count().")", 
                         "backgroundColor" => "#26C184", 
                         "data" => [
-                            number_format(TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->get()->sum($taxColumn), 2, '.', '')
+                            number_format(TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending invoice')->get()->sum($taxColumn), 2, '.', '')
                             
                         ] 
                     ], 
                     [
                         "type" => "bar", 
-                        "label" => "In Progress (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'in_progress')->count().")", 
+                        "label" => "In Progress (". TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'In Progress')->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
                             number_format(TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending')->get()->sum($taxColumn), 2, '.', '')
@@ -1979,8 +1979,8 @@ class ReportController extends Controller
             
             $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
             $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
-            $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-            $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
 
             if($request->category == 'catalog'){
 
