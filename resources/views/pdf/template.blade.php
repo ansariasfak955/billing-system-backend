@@ -484,14 +484,14 @@
                             </td>
                         </tr>
                     @endif
-                    @if(@$client_supplier_legal_name_show && client_supplier_legal_name)
+                    @if(@$client_supplier_legal_name_show)
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         {{ $client_supplier_legal_name ? $client_supplier_legal_name : 'Client Name:'}} <b>Johnny {{(@$client_supplier_legal_name)}}</b>
                         </td>
                     </tr>
                     @endif
-                    @if(@$client_supplier_tin_show && @$client_supplier_tin)
+                    @if(@$client_supplier_tin_show)
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         {{ $client_supplier_legal_name ? $client_supplier_legal_name : 'Ced/Ruc:'}} <b>54578 {{(@$client_supplier_tin)}}</b>
