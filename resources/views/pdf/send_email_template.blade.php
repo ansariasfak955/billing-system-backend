@@ -409,7 +409,7 @@
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         @if($company_logo_show)
-                            <img src="{{ @$company->logo }}" alt="" srcset="" style="width: 80px; height: 80px; object-fit: cover;">
+                            <img src="{{ @$company->logo }}" alt="" srcset="" style="width: 70px; height: 80px; object-fit: cover;">
                         @endif
                         </td>
                         <span class="section">

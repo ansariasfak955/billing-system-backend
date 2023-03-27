@@ -158,13 +158,13 @@ class InvoiceTable extends Model
     public function getDateAttribute(){
 
         if( isset( $this->attributes['date'] ) ){
-            return date( 'Y-m-d', strtotime($this->attributes['date']) );
+            return date( 'd/m/Y', strtotime($this->attributes['date']) );
         }
     }
     public function getSentDateAttribute(){
 
         if( isset( $this->attributes['sent_date'] ) ){
-            return date( 'Y-m-d', strtotime($this->attributes['sent_date']) );
+            return date( 'd/m/Y', strtotime($this->attributes['sent_date']) );
         }
     }
     public function getReferenceTypeAttribute(){
