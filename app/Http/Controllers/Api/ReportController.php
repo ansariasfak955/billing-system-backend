@@ -826,8 +826,8 @@ class ReportController extends Controller
         }elseif($request->type == "items"){
             $taxColumn = 'amount_with_out_vat';
             // $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
-            $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
-            $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->whereIn('type', $referenceType)->toArray();
+            $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->whereIn('type', $referenceType)->toArray();
             $products = Product::whereIn('id',$itemProductIds)->get();
             $services = Service::whereIn('id',$itemServiceIds)->get();
             $data = [];

@@ -17,7 +17,7 @@ class AddSubscriptionColumnsInUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             //
         });
-         foreach(Company::pluck('id') as $company_id){
+        foreach(Company::pluck('id') as $company_id){
             
             if (Schema::hasTable('company_'.$company_id.'_users')) {
                 Schema::table('company_'.$company_id.'_users', function (Blueprint $table) {

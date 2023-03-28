@@ -927,6 +927,10 @@ class TableHelper
                 $table->string('smtp_password')->nullable();
                 $table->string('smtp_port')->nullable();
                 $table->string('mobile_number')->nullable();
+                $table->string('stripe_customer_id')->nullable();
+                $table->string('stripe_price_id')->nullable();
+                $table->string('stripe_subscription_id')->nullable();
+                $table->dateTime('plan_expiry_date')->nullable();
                 $table->timestamps();
             });
         }
