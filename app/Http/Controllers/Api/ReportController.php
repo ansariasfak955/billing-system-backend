@@ -1929,7 +1929,7 @@ class ReportController extends Controller
             $referenceType = [$request->reference];
         }else{
 
-            $referenceType = Reference::whereIn('type', ['Work Delivery Note','Work Estimate', 'Work Order'])->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         }
 
         $data = [];
@@ -2253,7 +2253,7 @@ class ReportController extends Controller
                     "label" => "" .  $product->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            number_format(PurchaseTable::filter($request->all())->whereIn('type',$referenceType)->get()->sum('amount'), 2, '.', ''),
+                            number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2264,7 +2264,7 @@ class ReportController extends Controller
                     "label" => "" .  $service->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            number_format(PurchaseTable::filter($request->all())->whereIn('type',$referenceType)->get()->sum('amount'), 2, '.', ''),
+                            number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2275,7 +2275,7 @@ class ReportController extends Controller
                     "label" => "" .  $expense->name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            number_format(PurchaseTable::filter($request->all())->whereIn('type',$referenceType)->get()->sum('amount'), 2, '.', ''),
+                            number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', ''),
                         ]
                     ];
                 }
@@ -2453,8 +2453,8 @@ class ReportController extends Controller
         $itemProductIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
         $itemServiceIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['SER'])->pluck('reference_id')->toArray();
         $expenseInvestmentIds = Item::with('supplier')->whereIn('type',$referenceType)->whereIn('reference',['EAI'])->pluck('reference_id')->toArray();
-        $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-        $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
+        $products = Product::whereIn('id',$itemProductIds)->get();
+        $services = Service::whereIn('id',$itemServiceIds)->get();
         $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
            
         $arr = [];
@@ -3698,7 +3698,7 @@ class ReportController extends Controller
             foreach($dates as $date){
                 $data['labels'][] =  $date['name'];
                 foreach($suppliers as $supplier){
-                    $data[$supplier->id][] =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
+                    $data[$supplier->id][] =  number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                 }
             }
             $finalData['labels'] = @$data['labels'];
@@ -3738,7 +3738,7 @@ class ReportController extends Controller
                 $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
                 $arr['total'] = 0;
                 foreach($dates as $date){
-                    $amount = number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier_id' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id ,'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
+                    $amount = number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id ,'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
                     $arr['data'][] =  $amount;
                     $arr['total'] = $arr['total']+ $amount;
                 }

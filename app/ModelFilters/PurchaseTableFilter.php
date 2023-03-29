@@ -119,6 +119,10 @@ class PurchaseTableFilter extends ModelFilter
             $q->where('reference_id', $productId);
         });
     }
+    public function supplier($id)
+    {
+        return $this->where('supplier_id', $id);
+    }
     public function service($productId)
     {
         return $this->whereHas('services', function($q) use ($productId){
