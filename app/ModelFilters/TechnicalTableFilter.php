@@ -107,9 +107,7 @@ class TechnicalTableFilter extends ModelFilter
     }
     public function client($clientId)
     {
-        return $this->whereHas('client', function($q) use ($clientId){
-            $q ->where('client_id', $clientId);
-        });
+        return $this->where('client_id', $clientId);
     }
     public function product($productId)
     {

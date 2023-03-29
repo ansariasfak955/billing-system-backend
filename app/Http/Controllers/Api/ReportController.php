@@ -1793,7 +1793,7 @@ class ReportController extends Controller
             $referenceType = [$request->reference];
         }else{
 
-            $referenceType = Reference::whereIn('type', ['Work Delivery Note','Work Estimate', 'Work Order'])->pluck('prefix')->toArray();
+            $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         }
 
         $data = [];
@@ -1831,7 +1831,7 @@ class ReportController extends Controller
                     "label" => "" .  $client->legal_name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            number_format(TechnicalTable::filter($request->all())->where('client_id',$client->id)->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', ''),
+                        number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 }
