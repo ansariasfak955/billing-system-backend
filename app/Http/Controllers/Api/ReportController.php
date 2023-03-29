@@ -737,7 +737,7 @@ class ReportController extends Controller
                         "label" => "In Progress (". SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->whereIn('status', ['in progress', 'in_progress'])->count().")", 
                         "backgroundColor" => "#FB6363", 
                         "data" => [
-                            number_format(SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'in progress')->get()->sum($taxColumn), 2, '.', ''),
+                            number_format(SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->whereIn('status', ['in progress', 'in_progress'])->get()->sum($taxColumn), 2, '.', ''),
                         ] 
                     ], 
                     [

@@ -55,6 +55,12 @@ class SalesTableFilter extends ModelFilter
                 $q->where('legal_name', 'LIKE', '%'.$createdByName.'%');
             });
     }
+    public function client($clientId)
+    {
+        return $this->whereHas('client', function($q) use ($clientId){
+            $q ->where('client_id', $clientId);
+        });
+    }
     public function clientName($client_name)
     {
             return $this->whereHas('client', function($q) use ($client_name){
