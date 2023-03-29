@@ -404,17 +404,17 @@ class ReportController extends Controller
             $clients = Client::whereIn('id',$client_ids)->get();
             $referenceType = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
             $finalData = [];
-            //no category history
-            $request['clientCategoryNull'] = 1;
-            $arr['name'] = 'No selected category';
-            $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
-            $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
-            $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
-            $finalData[] = $arr;
-            unset($request['clientCategoryNull']);
-
+            
             if($request->category == 'client_categories'){
                 $arr = [];
+                //no category history
+                $request['clientCategoryNull'] = 1;
+                $arr['name'] = 'No selected category';
+                $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
+                $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
+                $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
+                $finalData[] = $arr;
+                unset($request['clientCategoryNull']);
                 // $clientCategory = Client::pluck('client_category')->toArray();
                 $categories = ClientCategory::get();
                 foreach($categories as $category){
