@@ -1372,7 +1372,7 @@ class ReportController extends Controller
                 $referenceType = Reference::where('type', 'Incident')->pluck('prefix')->toArray();
             }
             // return  $referenceType; 
-            $statusesArr = ['Pending', 'Refused', 'Resolved','Closed', 'Accepted'];
+            $statusesArr = ['Pending', 'Refused', 'Resolved','Closed'];
             if($request->category == 'client_categories'){
                 $categories =  ClientCategory::get();
                 $tempData = [];
