@@ -6,19 +6,19 @@
         </tr>
         <tr>
             <th>After tax:</th>
-            <td>data</td>
+            <td>{{($request->after_tax ? 'yes' : 'no')}}</td>
         </tr>
         <tr>
             <th>According to:</th>
-            <td>data</td>
+            <td>{{($request->category == 'client_categories') ? 'Client Categories' : 'Clients'}}</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
     </thead>
 </table>
@@ -35,16 +35,13 @@
         </tr>
     </thead>
     <tbody>
-        <?php
-
-            // return $data; die;
-        
-        ?>
         @foreach($data as $invoiceClients)
-        <tr>
-            <td>{{@$invoiceClients['reference']}}</td>
-            <td>{{@$invoiceClients['ruc']}}</td>
-            <td>{{@$invoiceClients['name']}}</td>
+            <tr>
+                @if(@$request->category == 'clients'])
+                    <td>{{@$invoiceClients['reference']}}</td>
+                    <td>{{@$invoiceClients['ruc']}}</td>
+                    <td>{{@$invoiceClients['name']}}</td>
+                @endif
             <td>{{@$invoiceClients['category']}}</td>
             <td>{{@$invoiceClients['invoiced']}}</td>
             <td>{{@$invoiceClients['paid']}}</td>

@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>Start Date:</th>
@@ -21,15 +21,15 @@
         </tr>
         <tr>
             <th>Sales</th>
-            <td>{{@$overViewExports['Sales']}}</td>
+            <td>{{@$data['Sales']}}</td>
         </tr>
         <tr>
             <th>Expenses</th>
-            <td>{{@$overViewExports['Expenses']}}</td>
+            <td>{{@$data['Expenses']}}</td>
         </tr>
         <tr>
             <th>Profit</th>
-            <td>{{@$overViewExports['Profit']}}</td>
+            <td>{{@$data['Profit']}}</td>
         </tr>
 
     </thead>
@@ -41,15 +41,15 @@
         </tr>
         <tr>
             <th>Invoiced</th>
-            <td>{{@$overViewExports['Invoiced']}}</td>
+            <td>{{@$data['Invoiced']}}</td>
         </tr>
         <tr>
             <th>Paid</th>
-            <td>{{@$overViewExports['Paid']}}</td>
+            <td>{{@$data['Paid']}}</td>
         </tr>
         <tr>
             <th>Unpaid</th>
-            <td>{{@$overViewExports['Unpaid']}}</td>
+            <td>{{@$data['Unpaid']}}</td>
         </tr>
     </thead>
 </table>
@@ -60,15 +60,15 @@
         </tr>
         <tr>
             <th>Invoiced</th>
-            <td>{{@$overViewExports['PInvoiced']}}</td>
+            <td>{{@$data['PInvoiced']}}</td>
         </tr>
         <tr>
             <th>Paid</th>
-            <td>{{@$overViewExports['PPaid']}}</td>
+            <td>{{@$data['PPaid']}}</td>
         </tr>
         <tr>
             <th>Unpaid</th>
-            <td>{{@$overViewExports['PUnpaid']}}</td>
+            <td>{{@$data['PUnpaid']}}</td>
         </tr>
     </thead>
 </table>

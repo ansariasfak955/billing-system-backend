@@ -14,14 +14,16 @@ class OverViewExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $overViewExports;
-    public function __construct($overViewExports){
-        $this->overViewExports = $overViewExports;
+    protected $data, $request;
+    public function __construct($data, $request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $overViewExports = $this->overViewExports;
-        // dd($overViewExports);
-        return view('exports.reports.overView', compact('overViewExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.overView', compact('data','request'));
     }
 }

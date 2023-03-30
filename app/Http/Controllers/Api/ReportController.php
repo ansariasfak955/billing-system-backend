@@ -32,6 +32,7 @@ use App\Models\PurchaseTicket;
 use Illuminate\Http\Request;
 use App\Exports\ReportExport\OfProfitExport;
 use App\Exports\ReportExport\InvoiceClientExport;
+use App\Exports\ReportExport\OverViewExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -64,7 +65,7 @@ class ReportController extends Controller
         $client_id = Client::pluck('id')->toArray();
         $purchaseReferenceTypes = Reference::where('type', 'Purchase Invoice')->pluck('prefix')->toArray();
         $invoiceReferenceTypes = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
-        $data = [
+        $finalData = [
             "profit" => [
                 [
                     "type" => "bar", 
@@ -180,9 +181,34 @@ class ReportController extends Controller
 
             ]  
         ];  
+        if($request->export){
+            $fileName = 'OVERVIEWREPORT-'.time().$request->company_id.'.xlsx';
+
+                $arr = [];
+
+                $arr['Sales'] = Item::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->sum('subtotal');
+                $arr['Expenses'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '1')->sum('amount');
+                $arr['Profit'] = Item::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->sum('subtotal') - InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '1')->sum('amount');
+                $arr['Invoiced'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount');
+                $arr['Paid'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '1')->sum('amount');
+                $arr['Unpaid'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferenceTypes)->where('paid', '0')->sum('amount');
+                $arr['PInvoiced'] = PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferenceTypes)->whereDate('expiration_date', '>', date('Y-m-d'))->sum('amount');
+                $arr['PPaid'] = PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferenceTypes)->where('paid', '1')->sum('amount');
+                $arr['PUnpaid'] = PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferenceTypes)->where('paid', '0')->sum('amount');
+
+                $finalData = $arr;
+
+            Excel::store(new OverViewExport($finalData, $request), 'public/xlsx/'.$fileName);
+
+            
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
     }
 
