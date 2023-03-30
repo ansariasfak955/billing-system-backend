@@ -223,6 +223,7 @@ class ReportController extends Controller
         }
 
         $referenceType = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
+        $refundReferenceType = Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
         if($request->type == "clients"){
             $data = [];
             $data['invoice_client'] = [];
@@ -237,7 +238,7 @@ class ReportController extends Controller
                     "label" => "No Selected Category",
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            number_format(InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn), 2, '.', ''),
+                            number_format(InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn)+InvoiceTable::filter($request->all())->where('reference', $refundReferenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 unset($request['clientCategoryNull']);
@@ -248,7 +249,7 @@ class ReportController extends Controller
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
                         "data" => [
-                                number_format(InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn), 2, '.', ''),
+                                number_format(InvoiceTable::filter($request->all())->where('reference', $referenceType)->get()->sum($taxColumn)+InvoiceTable::filter($request->all())->where('reference', $refundReferenceType)->get()->sum($taxColumn), 2, '.', ''),
                             ]
                         ];
                 }
@@ -262,7 +263,7 @@ class ReportController extends Controller
                     "label" => "" .  $client->legal_name,
                     "backgroundColor" => "#26C184",
                     "data" => [
-                            number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference', $referenceType)->get()->sum($taxColumn), 2, '.', ''),
+                            number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference', $referenceType)->get()->sum($taxColumn)+InvoiceTable::filter($request->all())->where('reference', $refundReferenceType)->get()->sum($taxColumn), 2, '.', ''),
                         ]
                     ];
                 }
@@ -399,7 +400,7 @@ class ReportController extends Controller
         else{
             $column = 'amount_with_out_vat';
         }
-
+            $refundReferenceType = Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
             $client_ids = InvoiceTable::pluck('client_id')->toArray();
             $clients = Client::whereIn('id',$client_ids)->get();
             $referenceType = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
@@ -410,7 +411,7 @@ class ReportController extends Controller
                 //no category history
                 $request['clientCategoryNull'] = 1;
                 $arr['name'] = 'No selected category';
-                $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
+                $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column)+InvoiceTable::filter($request->all())->where('reference', $refundReferenceType)->get()->sum($column), 2, '.', '');
                 $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
                 $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
                 $finalData[] = $arr;
@@ -420,7 +421,7 @@ class ReportController extends Controller
                 foreach($categories as $category){
                     $request['clientCategory'] = $category->id;
                     $arr['name'] = $category->name;
-                    $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
+                    $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum($column)+InvoiceTable::filter($request->all())->where('reference', $refundReferenceType)->get()->sum($column), 2, '.', '');
                     
                     $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
                     $arr['Unpaid'] =  number_format(InvoiceTable::filter($request->all())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
@@ -432,7 +433,7 @@ class ReportController extends Controller
                     $arr['reference'] = $client->reference.''.$client->reference_number;
                     $arr['ruc'] = $client->tin;
                     $arr['category'] = $client->client_category_name;
-                    $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
+                    $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column)+InvoiceTable::filter($request->all())->where('reference', $refundReferenceType)->get()->sum($column), 2, '.', '');
                     $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
                     $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
                     $finalData[] = $arr;
