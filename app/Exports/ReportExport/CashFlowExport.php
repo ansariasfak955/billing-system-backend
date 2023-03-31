@@ -12,14 +12,16 @@ class CashFlowExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $cashFlowExports;
-    public function __construct($cashFlowExports){
-        $this->cashFlowExports = $cashFlowExports;
+    protected $data,$request;
+    public function __construct($data, $request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $cashFlowExports = $this->cashFlowExports;
-        // dd($cashFlowExports);
-        return view('exports.reports.cashFlow', compact('cashFlowExports'));
+        $data = $this->data; 
+        $request = $this->request; 
+        // dd($data);
+        return view('exports.reports.cashFlow', compact('data','request'));
     }
 }

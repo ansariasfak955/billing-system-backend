@@ -2,19 +2,19 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
         <tr>
             <th>Showing:</th>
-            <td>data</td>
+            <td>{{($request->after_tax ? 'Yes' : 'No')}}</td>
         </tr>
     </thead>
 </table>
@@ -52,17 +52,17 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($cashFlowExports as $cashFlowExport)
+        @foreach($data as $finalData)
         <tr>
-            <td>{{$cashFlowExport['date']}}</td>
-            <td>{{$cashFlowExport['type']}}</td>
-            <td>{{$cashFlowExport['reference']}}</td>
-            <td>{{$cashFlowExport['client']}}</td>
-            <td>{{$cashFlowExport['employee']}}</td>
-            <td>{{$cashFlowExport['payment_option']}}</td>
-            <td>{{$cashFlowExport['amount']}}</td>
-            <td>{{$cashFlowExport['payment_option']}}</td>
-            <td>{{($cashFlowExport['paid']) ? 'yes' : 'no'}}</td>
+            <td>{{$finalData['date']}}</td>
+            <td>{{$finalData['type']}}</td>
+            <td>{{$finalData['reference']}}</td>
+            <td>{{$finalData['client']}}</td>
+            <td>{{$finalData['employee']}}</td>
+            <td>{{$finalData['payment_option']}}</td>
+            <td>{{$finalData['amount']}}</td>
+            <td>{{$finalData['payment_option']}}</td>
+            <td>{{($finalData['paid']) ? 'yes' : 'no'}}</td>
         </tr>
         @endforeach
     </tbody>

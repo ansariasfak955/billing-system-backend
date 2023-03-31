@@ -35,6 +35,7 @@ use App\Exports\ReportExport\InvoiceClientExport;
 use App\Exports\ReportExport\OverViewExport;
 use App\Exports\ReportExport\InvoiceAgentExport;
 use App\Exports\ReportExport\InvoiceItemExport;
+use App\Exports\ReportExport\CashFlowExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -2737,6 +2738,35 @@ class ReportController extends Controller
                 "data" => $data
             ]);
         }
+        if($request->export){
+            $fileName = 'CASHFLOWREPORT-'.time().$request->company_id.'.xlsx';
+
+                $arr = [];
+                $invoiceReferences =  Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
+                $purchaseReferences =  Reference::where('type', 'Purchase Invoice')->pluck('prefix')->toArray();
+                $returnInvoiceReferences =  Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
+                
+                $arr['Deposits'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['Withdrawals'] = InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['Balance'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount') - InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['Invoices'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['account_deposits'] = Deposit::filter($request->all())->where('type','deposit')->where('paid_by','1')->sum('amount');
+                $arr['Refunds'] = InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['Purchases'] = PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferences)->where('paid', '1')->sum('amount');
+                $arr['Tickets_expenses'] = '0';
+                $arr['Account_withdrawals'] = Deposit::filter($request->all())->where('type','withdraw')->where('paid_by','1')->sum('amount');
+
+                $data = $arr;
+
+            Excel::store(new CashFlowExport($data, $request), 'public/xlsx/'.$fileName);
+
+            
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
+
         return response()->json([
             "status" => true,
             "data" =>  $data
@@ -2881,11 +2911,12 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
+
             $paymentOption = InvoiceTable::filter($request->all())->get();
             $purchasePaymentOptions = PurchaseTable::filter($request->all())->where('reference','PINV')->get();
             
             $arr = [];
-            $data = []; 
+            $finalData = []; 
 
             foreach($paymentOption as $invoiceData){
                 $arr['date'] = $invoiceData->date;
@@ -2896,23 +2927,34 @@ class ReportController extends Controller
                 $arr['payment_option'] = $invoiceData->payment_option_name;
                 $arr['amount'] = $invoiceData->amount;
                 $arr['paid'] = $invoiceData->set_as_paid;
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
             foreach($purchasePaymentOptions as $purchaseData){
                 $arr['date'] = $purchaseData->date;
                 $arr['type'] = $purchaseData->reference_type;
                 $arr['reference'] = $purchaseData->reference.''.$purchaseData->reference_number;
-                $arr['supplier'] = $purchaseData->supplier_name;
+                $arr['client'] = $purchaseData->supplier_name;
                 $arr['employee'] = \Auth::user()->name;
                 $arr['amount'] = $purchaseData->amount;
                 $arr['payment_option'] = $purchaseData->payment_option_name;
                 $arr['paid'] = $purchaseData->set_as_paid;
-                $data[] = $arr;
+                $finalData[] = $arr;
+            }
+            if($request->export){
+                $fileName = 'CASHFLOWREPORT-'.time().$request->company_id.'.xlsx';
+    
+                Excel::store(new CashFlowExport($finalData, $request), 'public/xlsx/'.$fileName);
+    
+                
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
             }
             
             return response()->json([
                 "status" => true,
-                "data" =>  $data
+                "data" =>  $finalData
             ]);
 
 
