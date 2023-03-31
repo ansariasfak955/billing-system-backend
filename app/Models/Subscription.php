@@ -9,7 +9,7 @@ class Subscription extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'price', 'description', 'type'];
+    protected $fillable = ['name', 'price', 'description', 'type', 'stripe_price_id'];
 
     protected static $globalTable = 'subscriptions';
 
