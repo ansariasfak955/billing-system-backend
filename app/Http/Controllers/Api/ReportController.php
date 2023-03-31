@@ -34,6 +34,7 @@ use App\Exports\ReportExport\OfProfitExport;
 use App\Exports\ReportExport\InvoiceClientExport;
 use App\Exports\ReportExport\OverViewExport;
 use App\Exports\ReportExport\InvoiceAgentExport;
+use App\Exports\ReportExport\InvoiceItemExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -593,29 +594,37 @@ class ReportController extends Controller
         
            
             $arr = [];
-            $data = [];
+            $finalData = [];
         if($request->category == 'catalog'){
 
             foreach($products as $product){
                 $request['product_id'] = $product->id;
                 $arr['name'] = $product->name;
+                $arr['category'] = $product->product_category_name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
-                $units = Item::where('reference_id', $product->id)->whereIn('reference',['PRO'])->sum('quantity');
+                // $units = Item::where('reference_id', $product->id)->whereIn('reference',['PRO'])->count();
+                $units = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['PRO']);
+                })->get()->count('quantity');
                 $arr['units'] = $units;
                 $arr['amount'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', '');
                 
 
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
             foreach($services as $service){
                 $request['service_id'] = $service->id;
                 $arr['name'] = $service->name;
+                $arr['category'] = $product->product_category_name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
-                $units = Item::where('reference_id', $service->id)->whereIn('reference',['SER'])->sum('quantity');
+                // $units = Item::where('reference_id', $service->id)->whereIn('reference',['SER'])->count();
+                $units = InvoiceTable::with(['items'])->WhereHas('items', function ($query) use ($product) {
+                    $query->where('reference_id', $product->id)->whereIn('reference',['SER']);
+                })->get()->count('quantity');
                 $arr['units'] = $units;
                 $arr['amount'] =  number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', '');
 
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
         }else{
 
@@ -625,21 +634,33 @@ class ReportController extends Controller
             $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', '');
             $arr['paid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_paid'), 2, '.', '');
             $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_due'), 2, '.', '');
+            $arr['amount'] =  number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', '');
             unset($request['productCategoryNull']);
-            $data[] = $arr;
+            $finalData[] = $arr;
             foreach($categories as $category){
                 $request['productCategory'] = $category->id;
                 $arr['name'] = $category->name;
                 $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', '');
                 $arr['paid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_paid'), 2, '.', '');
                 $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_due'), 2, '.', '');
-                $data[] = $arr;
+                $arr['amount'] =  number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', '');
+                // $arr['units'] = $units;
+                $finalData[] = $arr;
             }
+        }
+
+        if($request->export){
+            $fileName = 'INVOICEITEMSREPORT-'.time().$request->company_id.'.xlsx';
+            Excel::store(new InvoiceItemExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
 
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
 
     }

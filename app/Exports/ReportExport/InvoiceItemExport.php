@@ -11,14 +11,16 @@ class InvoiceItemExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $invoiceItemsExports;
-    public function __construct($invoiceItemsExports){
-        $this->invoiceItemsExports = $invoiceItemsExports;
+    protected $data, $request;
+    public function __construct($data, $request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $invoiceItemsExports = $this->invoiceItemsExports;
-        // dd($invoiceItemsExports);
-        return view('exports.reports.invoiceItem', compact('invoiceItemsExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.invoiceItem', compact('data','request'));
     }
 }
