@@ -33,6 +33,7 @@ use Illuminate\Http\Request;
 use App\Exports\ReportExport\OfProfitExport;
 use App\Exports\ReportExport\InvoiceClientExport;
 use App\Exports\ReportExport\OverViewExport;
+use App\Exports\ReportExport\InvoiceAgentExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -511,7 +512,8 @@ class ReportController extends Controller
             $column = 'amount_with_out_vat';
         }
 
-        $referenceType = Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
+        // $referenceType = Reference::where('type', 'Normal Invoice','Refund Invoice')->pluck('prefix')->toArray();
+        $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         if($request->client_id){
             $invoiceIds = InvoiceTable::where('client_id',$request->client_id)->whereIn('reference',$referenceType)->pluck('id')->toArray();
             $itemProductIds = Item::whereIn('type',$referenceType)->whereIn('reference',['PRO'])->whereIn('parent_id',$invoiceIds)->pluck('reference_id')->toArray();
@@ -525,18 +527,27 @@ class ReportController extends Controller
         $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
 
         $arr = [];
-        $data = [];
+        $finalData = [];
         $arr['name'] = \Auth::user()->name;
         $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
         $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
         $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
 
-        $data[] = $arr;
+        $finalData[] = $arr;
+
+        if($request->export){
+            $fileName = 'INVOICEAGENTSREPORT-'.time().$request->company_id.'.xlsx';
+            Excel::store(new InvoiceAgentExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
         
         
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
     }
     public function invoiceItemsHistory(Request $request){

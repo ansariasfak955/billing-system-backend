@@ -11,14 +11,16 @@ class InvoiceAgentExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $invoiceAgentsExports;
-    public function __construct($invoiceAgentsExports){
-        $this->invoiceAgentsExports = $invoiceAgentsExports;
+    protected $data, $request;
+    public function __construct($data, $request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $invoiceAgentsExports = $this->invoiceAgentsExports;
-        // dd($invoiceAgentsExports);
-        return view('exports.reports.invoiceAgent', compact('invoiceAgentsExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.invoiceAgent', compact('data','request'));
     }
 }

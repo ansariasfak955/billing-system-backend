@@ -2,23 +2,23 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>After tax:</th>
-            <td>data</td>
+            <td>{{($request->after_tax ? 'Yes' : 'No')}}</td>
         </tr>
         <tr>
             <th>According to:</th>
-            <td>data</td>
+            <td>Agent</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
     </thead>
 </table>
@@ -32,12 +32,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($invoiceAgentsExports as $invoiceAgentsExport)
+        @foreach($data as $finalData)
         <tr>
-            <td>{{$invoiceAgentsExport['name']}}</td>
-            <td>{{$invoiceAgentsExport['invoiced']}}</td>
-            <td>{{$invoiceAgentsExport['paid']}}</td>
-            <td>{{$invoiceAgentsExport['Unpaid']}}</td>
+            <td>{{$finalData['name']}}</td>
+            <td>{{$finalData['invoiced']}}</td>
+            <td>{{$finalData['paid']}}</td>
+            <td>{{$finalData['Unpaid']}}</td>
             <td></td>
         </tr>
         @endforeach
