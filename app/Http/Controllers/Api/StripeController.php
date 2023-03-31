@@ -156,36 +156,11 @@ class StripeController extends Controller
             }
             $user->subscription_status = 'active';
             $user->save();
-            if($user->referee_id && !$user->plan_assigned_to_refree){
-                $refree = User::find($user->referee_id);
-                if(!$refree){return;}
-                $freeMonth = Setting::where('key' , 'months-to-user-plan')->pluck('value')->first();
-
-                if(!$freeMonth){
-                    $freeMonth =  1;
-                }
-                $currentDate = \Carbon\Carbon::now();
-                if($refree->plan_expiry_date){
-                    if(date('Y-m-d',strtotime($refree->plan_expiry_date) ) > date('Y-m-d')){
-                        $currentDate = Carbon::parse(date('Y-m-d',strtotime($refree->plan_expiry_date) ));
-                    }
-                }
-                // Add  month to refree
-                $newDate = $currentDate->addMonth($freeMonth);
-                $refree->plan_expiry_date =  $newDate;
-                //prevent from updating own plan id
-                // if(!$refree->plan_id){
-
-                    $refree->plan_id = $price_id;
-                // }
-                $refree->save();
-                //update that referee has received the plan
-                $user->plan_assigned_to_refree = 1;
-                $user->save();
-            }
             return true;
         }
-    }//update the required payment info in user table
+    }
+    
+    //update the required payment info in user table
     public function updateUserOnSubscriptionUpdate($data){
         Stripe::setApiKey(env('STRIPE_SECRET'));
         $subscription = @$data->object->id;

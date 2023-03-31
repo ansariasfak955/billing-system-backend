@@ -424,6 +424,10 @@ Route::group(['namespace' => 'Api'], function() {
                     'enable_technical_module' => \Auth::user()->enable_technical_module,
                 ]);
             });
+
+            //stripe apis 
+            Route::post('create-payment-link', 'StripeController@createPaymentLink');
+            Route::get('cancel-subscription', 'StripeController@cancelSubscription');
         });
 
         /* Activity Type */
