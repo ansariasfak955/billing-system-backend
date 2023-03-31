@@ -1,0 +1,222 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+use Stripe\Stripe;
+use Stripe\Subscription;
+use Stripe\Plan;
+use Stripe\Product;
+use Stripe\Customer;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Carbon\Carbon;
+use Validator;
+class StripeController extends Controller
+{
+    public function createPaymentLink(Request $request){
+
+        $validator = Validator::make($request->all(),[
+            'price_id' => 'required',
+        ]);
+
+        if($validator->fails()){
+
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => $validator->errors()->first()
+
+            ]);
+        }
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        //create or check for customer
+        if(!\Auth::user()->stripe_customer_id){
+
+            $customerEmail = \Auth::user()->email;
+
+            $customer = Customer::all(['email' => $customerEmail])->data;
+
+            if (count($customer) == 0) {
+                // Create a new customer
+                $customer = Customer::create([
+                    'email' => $customerEmail,
+                    'name' => \Auth::user()->name,
+                ]);
+            } else {
+                // Use the existing customer
+                $customer = $customer[0];
+            }
+
+            $customerId = @$customer->id;
+            \Auth::user()->stripe_customer_id = $customerId;
+            \Auth::user()->save();
+        }else{
+            $customerId = \Auth::user()->stripe_customer_id;
+        }
+
+        $price = \Stripe\Price::retrieve($request->price_id);
+        $session = \Stripe\Checkout\Session::create([
+            'payment_method_types' => ['card'],
+            'customer' => $customerId,
+            'line_items' => [[
+                'price' => $price->id,
+                'quantity' => 1,
+            ]],
+            'mode' => 'subscription',
+            'metadata' => [
+                'price_id' => $price->id,
+                'user_id' => \Auth::id(),
+                'company_id' => request()->company_id
+            ],
+            'success_url' => env('WEBSITE_APP_URL').'?payment=success',
+            'cancel_url' => env('WEBSITE_APP_URL').'?payment=failed',
+        ]);
+        return response()->json(['url' => $session->url]);
+    }
+    public function cancelSubscription(Request $request){
+
+        if(!\Auth::user()->stripe_subscription_id){
+
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Subscription id not found!'
+
+            ]);
+        }
+
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $subscription = \Stripe\Subscription::retrieve(\Auth::user()->stripe_subscription_id);
+        $subscription->cancel();
+        \Auth::user()->subscription_status = 'cancelled';
+        \Auth::user()->save();
+        $token  =   \Auth::user()->createToken('api')->accessToken;
+        $data   =   User::find(\Auth::id());
+        $data['token'] = $token;
+        return response()->json([
+            'success'   =>  true,
+            'data'      =>  $data,
+            'message'   => 'Subscription cancelled!' 
+
+        ]);
+    }
+
+    //handle stripe webhook
+    public function handleStripeWebhook(Request $request)
+    {
+        $payload = $request->getContent();
+        $sig_header = $request->header('Stripe-Signature');
+        $event = null;
+
+        try {
+            $event = \Stripe\Webhook::constructEvent(
+                $payload, $sig_header, env('STRIPE_WEBHOOK_SECRET')
+            );
+        } catch (\UnexpectedValueException $e) {
+            // Invalid payload
+            return response()->json(['error' => $e->getMessage()], 400);
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            // Invalid signature
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+
+
+        if ($event->type === 'checkout.session.completed') {
+            // update customer subscription
+            $this->updateUserPaymentDetails($event->data);
+
+        }elseif($event->type === 'customer.subscription.deleted'){
+            $this->removeUserPlanDetails($event->data);
+        }elseif($event->type === 'customer.subscription.updated'){
+            $this->updateUserOnSubscriptionUpdate($event->data);
+        }
+
+        // Return a 200 response to acknowledge receipt of the event
+        return response()->json(['status' => 'success']);
+    }
+    
+    //update the required payment info in user table
+    public function updateUserPaymentDetails($data){
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $user_id = @$data->object->metadata->user_id;
+        $price_id = @$data->object->metadata->price_id;
+        $subscription = @$data->object->subscription;
+        $customer = @$data->object->customer;
+        if($user_id && $price_id && $subscription && $customer){
+            $subscriptionData = Subscription::retrieve($subscription);
+            $expiry_date = @$subscriptionData->current_period_end;
+            $user = User::find($user_id);
+            if(!$user){return;}
+
+            $user->plan_id = $price_id;
+            $user->stripe_customer_id = $customer;
+            $user->stripe_subscription_id = $subscription;
+            if($expiry_date ){
+                $user->plan_expiry_date = date('Y-m-d H:i:s', $expiry_date);
+            }
+            $user->subscription_status = 'active';
+            $user->save();
+            if($user->referee_id && !$user->plan_assigned_to_refree){
+                $refree = User::find($user->referee_id);
+                if(!$refree){return;}
+                $freeMonth = Setting::where('key' , 'months-to-user-plan')->pluck('value')->first();
+
+                if(!$freeMonth){
+                    $freeMonth =  1;
+                }
+                $currentDate = \Carbon\Carbon::now();
+                if($refree->plan_expiry_date){
+                    if(date('Y-m-d',strtotime($refree->plan_expiry_date) ) > date('Y-m-d')){
+                        $currentDate = Carbon::parse(date('Y-m-d',strtotime($refree->plan_expiry_date) ));
+                    }
+                }
+                // Add  month to refree
+                $newDate = $currentDate->addMonth($freeMonth);
+                $refree->plan_expiry_date =  $newDate;
+                //prevent from updating own plan id
+                // if(!$refree->plan_id){
+
+                    $refree->plan_id = $price_id;
+                // }
+                $refree->save();
+                //update that referee has received the plan
+                $user->plan_assigned_to_refree = 1;
+                $user->save();
+            }
+            return true;
+        }
+    }//update the required payment info in user table
+    public function updateUserOnSubscriptionUpdate($data){
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $subscription = @$data->object->id;
+        if( $subscription ){
+            $expiry_date = @$data->object->current_period_end;
+            $user = User::where('stripe_subscription_id',$subscription)->first();
+            if(!$user){return;}
+            if($expiry_date ){
+                $user->plan_expiry_date = date('Y-m-d H:i:s', $expiry_date);
+            }
+            $user->subscription_status = 'active';
+            $user->save();
+            return true;
+        }
+    }
+
+     //update the required payment info in user table
+    public function removeUserPlanDetails($data){
+       
+        $subscription = @$data->object->subscription;
+        if( $subscription){
+            $user = User::where('stripe_subscription_id', $subscription)->first();
+            if(!$user){return;}
+
+            // $user->plan_id = null;
+            // $user->stripe_subscription_id = null;
+            // $user->plan_expiry_date = null;
+            $user->subscription_status = 'cancelled';
+            $user->save();
+            return true;
+        }
+    }
+    
+}
