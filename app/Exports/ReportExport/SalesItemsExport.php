@@ -11,13 +11,15 @@ class SalesItemsExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $itemsSalesExports;
-    public function __construct($itemsSalesExports){
-        $this->itemsSalesExports = $itemsSalesExports;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $itemsSalesExports = $this->itemsSalesExports;
-        return view('exports.reports.itemsSales', compact('itemsSalesExports'));
+        $data = $this->data;
+        $request = $this->request;
+        return view('exports.reports.itemsSales', compact('data','request'));
     }
 }

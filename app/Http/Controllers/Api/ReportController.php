@@ -41,6 +41,7 @@ use App\Exports\ReportExport\CashFlowByAgentExport;
 use App\Exports\ReportExport\SalesOverViewExport;
 use App\Exports\ReportExport\SalesClientExport;
 use App\Exports\ReportExport\SalesAgentsExport;
+use App\Exports\ReportExport\SalesItemsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -1149,9 +1150,9 @@ class ReportController extends Controller
         }else{
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         }
-        // die($request->client);
+
         // if($request->client){
-        //     $client = Client::where('id', $request->client)->first();
+        //     $client = Client::where('id', $request->client_id)->first();
         //     $clientName = $client->legal_name;
             
         // }
@@ -1233,12 +1234,12 @@ class ReportController extends Controller
         $services = Service::whereIn('id',$itemServiceIds)->get();
            
             $arr = [];
-            $data = [];
+            $finalData = [];
             if($request->category == 'product_categories'){
                 $categories = ProductCategory::get();
                 //    return $categories;
                 $arr = [];
-                $data = [];
+                $finalData = [];
                 $request['productCategoryNull'] = 1;
                 $arr['name'] = 'No Selected Category';
                 $arr['reference'] = '';
@@ -1249,7 +1250,7 @@ class ReportController extends Controller
                 $arr['total'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
                 $arr['units'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
                 $arr['amount'] = number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
-                $data[] = $arr;
+                $finalData[] = $arr;
                 unset($request['productCategoryNull']);
                 foreach($categories as $category){
                     $request['productCategory'] = $category->id;
@@ -1262,7 +1263,7 @@ class ReportController extends Controller
                     $arr['total'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['units'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['amount'] =  number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
             }else{
                 $arr['name'] = 'Not Found in Catalog';
@@ -1274,11 +1275,12 @@ class ReportController extends Controller
                 $arr['total'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->whereDoesntHave('products')->count();
                 $arr['units'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->whereDoesntHave('products')->count();
                 $arr['amount'] = number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->whereDoesntHave('products')->get()->sum('amount_with_out_vat'), 2, '.', '');
-                $data[] = $arr;
+                $finalData[] = $arr;
                 foreach($products as $product){
                     $request['product_id'] = $product->id;
                     $arr['name'] = $product->name;
                     $arr['reference'] = $product->reference.''.$product->reference_number;
+                    $arr['category'] = $product->product_category_name;
                     $arr['pending'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
                     $arr['accepted'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
@@ -1286,12 +1288,13 @@ class ReportController extends Controller
                     $arr['total'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['units'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['amount'] = number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
                 foreach($services as $service){
                     $request['service_id'] = $service->id;
                     $arr['name'] = $service->name;
                     $arr['reference'] = $service->reference.''.$service->reference_number;
+                    $arr['category'] = $product->product_category_name;
                     $arr['pending'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
                     $arr['accepted'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
@@ -1300,13 +1303,22 @@ class ReportController extends Controller
                     $arr['units'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['amount'] = number_format(SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
     
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
+            }
+            if($request->export){
+                $fileName = 'ITEMSSALESREPORT-'.time().$request->company_id.'.xlsx';
+    
+                Excel::store(new SalesItemsExport($finalData, $request), 'public/xlsx/'.$fileName);
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
             }
 
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
 
     }

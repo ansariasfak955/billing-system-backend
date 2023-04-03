@@ -26,7 +26,7 @@
         </tr>
         <tr>
             @if($request->status)
-                <th>Document Type:</th>
+                <th>State:</th>
                 <td>{{@$request->status}}</td>
             @endif
         </tr>

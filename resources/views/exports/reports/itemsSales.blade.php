@@ -2,54 +2,109 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>According to:</th>
-            <td>data</td>
+            <td>{{($request->category == 'product_categories') ? 'Product Categories' : 'Catalog'}}</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
         <tr>
             <th>Document Type:</th>
-            <td>data</td>
+            <td>{{$request->referenceType}}</td>
+        </tr>
+        <tr>
+            @if($request->status)
+                <th>State:</th>
+                <td>{{@$request->status}}</td>
+            @endif
         </tr>
     </thead>
 </table>
 <table>
     <thead>
         <tr>
-            <th>Reference</th>
-            <th>Name</th>
-            <th>Pending</th>
-            <th>Refused</th>
-            <th>Accepted</th>
-            <th>Closed</th>
-            <th>Total</th>
-            <th>Units</th>
-            <th>Amount (before tax)</th>
-            <th>Product Category</th>
+            @if($request->category == 'catalog')
+                <th>Reference</th>
+                <th>Product Category</th>
+            @endif
+                <th>Name</th>
+            @if($request->status)
+                <th>Pending</th>
+                <th>Total</th>
+                <th>Units</th>
+                <th>Amount (before tax)</th>
+            @elseif($request->status)
+                <th>Refused</th>
+                <th>Total</th>
+                <th>Units</th>
+                <th>Amount (before tax)</th>
+            @elseif($request->status)
+                <th>Accepted</th>
+                <th>Total</th>
+                <th>Units</th>
+                <th>Amount (before tax)</th>
+            @elseif($request->status)
+                <th>Closed</th>
+                <th>Total</th>
+                <th>Units</th>
+                <th>Amount (before tax)</th>
+            @else
+                <th>Pending</th>
+                <th>Refused</th>
+                <th>Accepted</th>
+                <th>Closed</th>
+                <th>Total</th>
+                <th>Units</th>
+                <th>Amount (before tax)</th>
+            @endif
+
         </tr>
     </thead>
     <tbody>
-        @foreach($itemsSalesExports as $itemsSalesExport)
+        @foreach($data as $finalData)
         <tr>
-            <td>{{$itemsSalesExport['reference']}}</td>
-            <td>{{$itemsSalesExport['name']}}</td>
-            <td>{{$itemsSalesExport['pending']}}</td>
-            <td>{{$itemsSalesExport['refused']}}</td>
-            <td>{{$itemsSalesExport['accepted']}}</td>
-            <td>{{$itemsSalesExport['closed']}}</td>
-            <td>{{$itemsSalesExport['total']}}</td>
-            <td>{{$itemsSalesExport['units']}}</td>
-            <td>{{$itemsSalesExport['amount']}}</td>
-            <td>{{$itemsSalesExport['category']}}</td>
+            @if($request->category == 'catalog')
+                <td>{{$finalData['reference']}}</td>
+                <td>{{@$finalData['category']}}</td>
+            @endif
+            <td>{{$finalData['name']}}</td>
+            @if($request->status)
+                <td>{{$finalData['pending']}}</td>
+                <td>{{$finalData['total']}}</td>
+                <td>{{$finalData['units']}}</td>
+                <td>{{$finalData['amount']}}</td>
+            @elseif($request->status)
+                <td>{{$finalData['refused']}}</td>
+                <td>{{$finalData['total']}}</td>
+                <td>{{$finalData['units']}}</td>
+                <td>{{$finalData['amount']}}</td>
+            @elseif($request->status)
+                <td>{{$finalData['accepted']}}</td>
+                <td>{{$finalData['total']}}</td>
+                <td>{{$finalData['units']}}</td>
+                <td>{{$finalData['amount']}}</td>
+            @elseif($request->status)
+                <td>{{$finalData['closed']}}</td>
+                <td>{{$finalData['total']}}</td>
+                <td>{{$finalData['units']}}</td>
+                <td>{{$finalData['amount']}}</td>
+            @else
+                <td>{{$finalData['pending']}}</td>
+                <td>{{$finalData['refused']}}</td>
+                <td>{{$finalData['accepted']}}</td>
+                <td>{{$finalData['closed']}}</td>
+                <td>{{$finalData['total']}}</td>
+                <td>{{$finalData['units']}}</td>
+                <td>{{$finalData['amount']}}</td>
+            @endif
         </tr>
         @endforeach
     </tbody>
