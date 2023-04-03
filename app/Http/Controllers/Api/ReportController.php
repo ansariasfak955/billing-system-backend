@@ -40,6 +40,7 @@ use App\Exports\ReportExport\PaymentOptionExport;
 use App\Exports\ReportExport\CashFlowByAgentExport;
 use App\Exports\ReportExport\SalesOverViewExport;
 use App\Exports\ReportExport\SalesClientExport;
+use App\Exports\ReportExport\SalesAgentsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -1148,21 +1149,40 @@ class ReportController extends Controller
         }else{
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         }
+        // die($request->client);
+        // if($request->client){
+        //     $client = Client::where('id', $request->client)->first();
+        //     $clientName = $client->legal_name;
+            
+        // }
+        // echo "Client name: " . $clientName;die;
 
         $arr = [];
-        $data = [];
+        $finalData = [];
 
         $arr['name'] = \Auth::user()->name;
+        // $arr['clientName'] = $client->reference.''.$client->reference_number.' '.$client->legal_name;
         $arr['pending'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->where('status','pending')->count();
         $arr['refused'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->where('status','refused')->count();
         $arr['accepted'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->where('status','accepted')->count();
         $arr['closed'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->where('status','closed')->count();
         $arr['total'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->count();
         $arr['amount'] = number_format(SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
-        $data[] = $arr;
+        $finalData[] = $arr;
+
+        if($request->export){
+            $fileName = 'CLIENTSALESREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new SalesAgentsExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
+
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
 
     }

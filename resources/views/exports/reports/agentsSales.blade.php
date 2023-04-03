@@ -2,27 +2,39 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>After tax:</th>
-            <td>data</td>
+            <td>{{($request->after_tax ? 'Yes' : 'No')}}</td>
         </tr>
         <tr>
             <th>According to:</th>
-            <td>data</td>
+            <td>Agent</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
         <tr>
             <th>Document Type:</th>
-            <td>data</td>
+            <td>{{$request->referenceType}}</td>
+        </tr>
+        <tr>
+            @if($request->client)
+                <th>Selected Client:</th>
+                <td>{{@$data['clientName']}}</td>
+            @endif
+        </tr>
+        <tr>
+            @if($request->product_id)
+                <th>Selected Product:</th>
+                <td>{{@$data['productName']}}</td>
+            @endif
         </tr>
     </thead>
 </table>
@@ -39,15 +51,15 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($agentsSalesExports as $agentsSalesExport)
+        @foreach($data as $finalData)
         <tr>
-            <td>{{$agentsSalesExport['legal_name']}}</td>
-            <td>{{$agentsSalesExport['pending']}}</td>
-            <td>{{$agentsSalesExport['refused']}}</td>
-            <td>{{$agentsSalesExport['accepted']}}</td>
-            <td>{{$agentsSalesExport['closed']}}</td>
-            <td>{{$agentsSalesExport['total']}}</td>
-            <td>{{$agentsSalesExport['amount']}}</td>
+            <td>{{$finalData['name']}}</td>
+            <td>{{$finalData['pending']}}</td>
+            <td>{{$finalData['refused']}}</td>
+            <td>{{$finalData['accepted']}}</td>
+            <td>{{$finalData['closed']}}</td>
+            <td>{{$finalData['total']}}</td>
+            <td>{{$finalData['amount']}}</td>
         </tr>
         @endforeach
     </tbody>
