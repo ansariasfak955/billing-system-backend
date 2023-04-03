@@ -11,14 +11,16 @@ class SalesClientExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $clientSalesExports;
-    public function __construct($clientSalesExports){
-        $this->clientSalesExports = $clientSalesExports;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $clientSalesExports = $this->clientSalesExports;
-        // dd($clientSalesExports);
-        return view('exports.reports.clientSales', compact('clientSalesExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.clientSales', compact('data','request'));
     }
 }

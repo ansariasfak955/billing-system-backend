@@ -39,6 +39,7 @@ use App\Exports\ReportExport\CashFlowExport;
 use App\Exports\ReportExport\PaymentOptionExport;
 use App\Exports\ReportExport\CashFlowByAgentExport;
 use App\Exports\ReportExport\SalesOverViewExport;
+use App\Exports\ReportExport\SalesClientExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -1050,7 +1051,7 @@ class ReportController extends Controller
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         }
         $arr = [];
-        $data = [];
+        $finalData = [];
 
         if($request->category == 'client_categories'){
             $request['clientCategoryNull'] = 1;
@@ -1062,7 +1063,7 @@ class ReportController extends Controller
             $arr['total'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->count();
             $arr['amount'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->get()->sum($column);
 
-            $data[] = $arr;
+            $finalData[] = $arr;
             unset($request['clientCategoryNull']);
             $categories = ClientCategory::get();
             foreach($categories as $category){
@@ -1075,13 +1076,16 @@ class ReportController extends Controller
                 $arr['total'] = SalesEstimate::filter($request->all())->where('reference',$referenceType)->count();
                 $arr['amount'] = number_format(SalesEstimate::filter($request->all())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
 
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
         }else{
             $client_ids = SalesEstimate::whereHas('client')->where('reference',$referenceType)->pluck('client_id')->toArray();
             $clients = Client::whereIn('id',$client_ids)->get();
             foreach($clients as $client){
                 $arr['name'] = $client->legal_name;
+                $arr['reference'] = $client->reference.''.$client->reference_number;
+                $arr['tin'] = $client->tin;
+                $arr['category'] = $client->client_category_name;
                 $arr['pending'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->whereIn('status',['pending', 'in_progress','pending_invoice','invoiced'])->count();
                 $arr['accepted'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','accepted')->count();
                 $arr['refused'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->where('status','refused')->count();
@@ -1090,12 +1094,21 @@ class ReportController extends Controller
                 $arr['total'] = SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->count();
                 $arr['amount'] = number_format(SalesEstimate::filter($request->all())->where('client_id',$client->id)->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
 
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
+        }
+        if($request->export){
+            $fileName = 'CLIENTSALESREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new SalesClientExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
     }
     public function salesAgentsHistory(Request $request){
@@ -2623,7 +2636,7 @@ class ReportController extends Controller
     public function cashFlow(Request $request){
         $purchaseTables = 'company_'.$request->company_id.'_purchase_tables';
         PurchaseTable::setGlobalTable($purchaseTables); 
-        $ticketTables = 'company_'.$request->company_id.'_purchase_tables';
+        $ticketTables = 'company_'.$request->company_id.'_purchase_tickets';
         PurchaseTicket::setGlobalTable($ticketTables); 
 
         $table = 'company_'.$request->company_id.'_payment_options';
@@ -2781,6 +2794,7 @@ class ReportController extends Controller
                 "data" => $data
             ]);
         }
+
         if($request->export){
             $fileName = 'CASHFLOWREPORT-'.time().$request->company_id.'.xlsx';
 
@@ -3021,10 +3035,27 @@ class ReportController extends Controller
                 $arr['paid'] = $purchaseData->set_as_paid;
                 $finalData[] = $arr;
             }
+
+                $invoiceReferences =  Reference::where('type', 'Normal Invoice')->pluck('prefix')->toArray();
+                $purchaseReferences =  Reference::where('type', 'Purchase Invoice')->pluck('prefix')->toArray();
+                $returnInvoiceReferences =  Reference::where('type', 'Refund Invoice')->pluck('prefix')->toArray();
+                
+                $arr['Deposits'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['Withdrawals'] = InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['Balance'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount') - InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['Invoices'] = InvoiceReceipt::filter($request->all())->whereIn('type', $invoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['account_deposits'] = Deposit::filter($request->all())->where('type','deposit')->where('paid_by','1')->sum('amount');
+                $arr['Refunds'] = InvoiceReceipt::filter($request->all())->whereIn('type', $returnInvoiceReferences)->where('paid', '1')->sum('amount');
+                $arr['Purchases'] = PurchaseReceipt::filter($request->all())->whereIn('type', $purchaseReferences)->where('paid', '1')->sum('amount');
+                $arr['Tickets_expenses'] = '0';
+                $arr['Account_withdrawals'] = Deposit::filter($request->all())->where('type','withdraw')->where('paid_by','1')->sum('amount');
+
+                $overview = $arr;
+
             if($request->export){
                 $fileName = 'CASHFLOWREPORT-'.time().$request->company_id.'.xlsx';
-    
-                Excel::store(new CashFlowExport($finalData, $request), 'public/xlsx/'.$fileName);
+                
+                Excel::store(new CashFlowExport($finalData,$overview, $request), 'public/xlsx/'.$fileName);
     
                 
                 return response()->json([

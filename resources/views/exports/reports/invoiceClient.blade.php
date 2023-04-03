@@ -25,9 +25,11 @@
 <table>
     <thead>
         <tr>
-            <th>Reference</th>
-            <th>RUC</th>
-            <th>Name</th>
+            @if(@$request->category == 'clients']) 
+                <th>Reference</th>
+                <th>RUC</th>
+                <th>Name</th>
+            @endif
             <th>Client Category</th>
             <th>Invoiced</th>
             <th>Paid</th>

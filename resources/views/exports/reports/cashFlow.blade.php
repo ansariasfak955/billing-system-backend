@@ -31,15 +31,15 @@
         </tr>
         <tr>
             <th>Deposits</th>
-            <td></td>
+            <td>{{@$overview['Deposits']}}</td>
         </tr>
         <tr>
             <th>Withdrawals</th>
-            <td></td>
+            <td>{{@$overview['Withdrawals']}}</td>
         </tr>
         <tr>
             <th>Balance</th>
-            <td></td>
+            <td>{{@$overview['Balance']}}</td>
         </tr>
     </thead>
 </table>
@@ -60,15 +60,15 @@
     <tbody>
         @foreach($data as $finalData)
         <tr>
-            <td>{{$finalData['date']}}</td>
-            <td>{{$finalData['type']}}</td>
-            <td>{{$finalData['reference']}}</td>
-            <td>{{$finalData['client']}}</td>
-            <td>{{$finalData['employee']}}</td>
-            <td>{{$finalData['payment_option']}}</td>
-            <td>{{$finalData['amount']}}</td>
-            <td>{{$finalData['payment_option']}}</td>
-            <td>{{($finalData['paid']) ? 'yes' : 'no'}}</td>
+            <td>{{@$finalData['date']}}</td>
+            <td>{{@$finalData['type']}}</td>
+            <td>{{@$finalData['reference']}}</td>
+            <td>{{@$finalData['client']}}</td>
+            <td>{{@$finalData['employee']}}</td>
+            <td>{{@$finalData['payment_option']}}</td>
+            <td>{{@$finalData['amount']}}</td>
+            <td>{{@$finalData['payment_option']}}</td>
+            <td>{{(@$finalData['paid']) ? 'yes' : 'no'}}</td>
         </tr>
         @endforeach
     </tbody>
@@ -80,11 +80,11 @@
         </tr>
         <tr>
             <th>Invoices</th>
-            <td>20</td>
+            <td>{{@$overview['Invoices']}}</td>
         </tr>
         <tr>
             <th>Account Deposits</th>
-            <td>30</td>
+            <td>{{@$overview['account_deposits']}}</td>
         </tr>
     </thead>
 </table>
@@ -95,19 +95,19 @@
         </tr>
         <tr>
             <th>Refunds</th>
-            <td>30</td>
+            <td>{{@$overview['Refunds']}}</td>
         </tr>
         <tr>
             <th>Purchases</th>
-            <td>30</td>
+            <td>{{@$overview['Purchases']}}</td>
         </tr>
         <tr>
             <th>Tickets and other expenses</th>
-            <td>30</td>
+            <td>{{@$overview['Tickets_expenses']}}</td>
         </tr>
         <tr>
             <th>Account Withdrawals</th>
-            <td>30</td>
+            <td>{{@$overview['Account_withdrawals']}}</td>
         </tr>
     </thead>
 </table>
