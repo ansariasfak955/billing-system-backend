@@ -2,19 +2,25 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
         <tr>
             <th>Showing:</th>
-            <td>data</td>
+            <td>{{($request->after_tax ? 'Yes' : 'No')}}</td>
+        </tr>
+        <tr>
+            @if($request->paymentOption)
+                <th>Selected Payment Option:</th>
+                <td>{{$request->paymentOption}}</td>
+            @endif
         </tr>
     </thead>
 </table>
@@ -28,12 +34,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($cashflowAgentExports as $cashflowAgentExport)
+        @foreach($data as $finalData)
         <tr>
-            <td>{{$cashflowAgentExport['name']}}</td>
-            <td>{{$cashflowAgentExport['deposit']}}</td>
-            <td>{{$cashflowAgentExport['withdrawals']}}</td>
-            <td>{{$cashflowAgentExport['balance']}}</td>
+            <td>{{$finalData['name']}}</td>
+            <td>{{$finalData['deposit']}}</td>
+            <td>{{$finalData['withdrawals']}}</td>
+            <td>{{$finalData['balance']}}</td>
             <td></td>
         </tr>
         @endforeach

@@ -37,6 +37,7 @@ use App\Exports\ReportExport\InvoiceAgentExport;
 use App\Exports\ReportExport\InvoiceItemExport;
 use App\Exports\ReportExport\CashFlowExport;
 use App\Exports\ReportExport\PaymentOptionExport;
+use App\Exports\ReportExport\CashFlowByAgentExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -2802,7 +2803,13 @@ class ReportController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
 
         $paymentOptions = PaymentOption::filter($request->all())->get();
-       
+        
+        if($request->after_tax){
+            $column = 'amount';
+        }else{
+            $column = 'amount_with_out_vat';
+        }
+
         $arr = [];
         $finalData = [];
 
@@ -2815,7 +2822,7 @@ class ReportController extends Controller
             })->where('type','withdraw')->get()->sum('amount'), 2, '.', '');
             $invoiceAmount = number_format(InvoiceTable::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
                 $query->where('id', $paymentOption->id);
-            })->get()->sum('amount'), 2, '.', '');
+            })->get()->sum($column), 2, '.', '');
                 // dd($invoiceAmount);
             $arr['name'] = $paymentOption->name;
             $arr['deposit'] = $deposit + $invoiceAmount;
@@ -2872,22 +2879,41 @@ class ReportController extends Controller
         $item_meta_table = 'company_'.$request->company_id.'_item_metas';
         ItemMeta::setGlobalTable($item_meta_table);
 
+        if($request->after_tax){
+            $column = 'amount';
+        }else{
+            $column = 'amount_with_out_vat';
+        }
+
         $arr = [];
-        $data = [];
+        $finalData = [];
             
         $deposit = number_format(Deposit::filter($request->all())->where('type','deposit')->where('paid_by','1')->sum('amount'), 2, '.', '');
         $withdrawal = number_format(Deposit::filter($request->all())->where('type','withdraw')->where('paid_by','1')->sum('amount'), 2, '.', '');
-        $invoiceAmount = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum('amount'), 2, '.', '');
+        $invoiceAmount = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->get()->sum($column), 2, '.', '');
 
         $arr['name'] = \Auth::user()->name;
         $arr['deposit'] = $deposit + $invoiceAmount;
         $arr['withdrawals'] = $withdrawal;
         $arr['balance'] = (($invoiceAmount + $deposit) -  $withdrawal);
 
-        $data[] = $arr;
+        $finalData[] = $arr;
+
+        if($request->export){
+            $fileName = 'EMPLOYEECASHFLOWREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new CashFlowByAgentExport($finalData, $request), 'public/xlsx/'.$fileName);
+
+            
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
+
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
 
     }

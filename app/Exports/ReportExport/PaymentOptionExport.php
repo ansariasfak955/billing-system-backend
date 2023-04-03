@@ -11,14 +11,16 @@ class PaymentOptionExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $data;
-    public function __construct($data){
+    protected $data,$request;
+    public function __construct($data,$request){
         $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
         $data = $this->data;
-        dd($data);
-        return view('exports.reports.cashFlowPaymentOption', compact('data'));
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.cashFlowPaymentOption', compact('data','request'));
     }
 }
