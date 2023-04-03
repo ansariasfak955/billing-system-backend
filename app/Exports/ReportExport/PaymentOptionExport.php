@@ -11,14 +11,14 @@ class PaymentOptionExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $paymentOptionExports;
-    public function __construct($paymentOptionExports){
-        $this->paymentOptionExports = $paymentOptionExports;
+    protected $data;
+    public function __construct($data){
+        $this->data = $data;
     }
        public function view(): View
     {
-        $paymentOptionExports = $this->paymentOptionExports;
-        // dd($paymentOptionExports);
-        return view('exports.reports.cashFlowPaymentOption', compact('paymentOptionExports'));
+        $data = $this->data;
+        dd($data);
+        return view('exports.reports.cashFlowPaymentOption', compact('data'));
     }
 }

@@ -16,6 +16,12 @@
             <th>Showing:</th>
             <td>{{($request->after_tax ? 'Yes' : 'No')}}</td>
         </tr>
+        <tr>
+            @if($request->paymentOption)
+                <th>Selected Payment Option:</th>
+                <td>{{$request->paymentOption}}</td>
+            @endif
+        </tr>
     </thead>
 </table>
 <table>

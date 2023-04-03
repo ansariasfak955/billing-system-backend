@@ -2,19 +2,19 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
         <tr>
             <th>Showing:</th>
-            <td>data</td>
+            <td>{{($request->after_tax ? 'Yes' : 'No')}}</td>
         </tr>
     </thead>
 </table>
@@ -28,12 +28,12 @@
         </tr>
     </thead>
     <tbody>
-    @foreach($paymentOptionExports as $paymentOptionExport)
+    @foreach($data as $finalData)
         <tr>
-            <td>{{$paymentOptionExport['name']}}</td>
-            <td>{{$paymentOptionExport['deposit']}}</td>
-            <td>{{$paymentOptionExport['withdrawals']}}</td>
-            <td>{{$paymentOptionExport['balance']}}</td>
+            <td>{{$finalData['name']}}</td>
+            <td>{{$finalData['deposit']}}</td>
+            <td>{{$finalData['withdrawals']}}</td>
+            <td>{{$finalData['balance']}}</td>
         </tr>
         @endforeach
     </tbody>

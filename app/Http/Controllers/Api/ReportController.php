@@ -36,6 +36,7 @@ use App\Exports\ReportExport\OverViewExport;
 use App\Exports\ReportExport\InvoiceAgentExport;
 use App\Exports\ReportExport\InvoiceItemExport;
 use App\Exports\ReportExport\CashFlowExport;
+use App\Exports\ReportExport\PaymentOptionExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -2803,7 +2804,7 @@ class ReportController extends Controller
         $paymentOptions = PaymentOption::filter($request->all())->get();
        
         $arr = [];
-        $data = [];
+        $finalData = [];
 
         foreach($paymentOptions as $paymentOption){
             $deposit =  number_format( Deposit::filter($request->all())->WhereHas('payment_options', function ($query) use ($paymentOption) {
@@ -2822,11 +2823,24 @@ class ReportController extends Controller
             $arr['balance'] = (($invoiceAmount + $deposit) - $withdrawal);
             
 
-            $data[] = $arr;
+            $finalData[] = $arr;
         }
+
+        if($request->export){
+            $fileName = 'PAYMENTOPTIONCASHFLOWREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new PaymentOptionExport($finalData, $request), 'public/xlsx/'.$fileName);
+
+            
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
+
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
 
     }
