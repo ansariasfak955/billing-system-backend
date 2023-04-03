@@ -174,6 +174,7 @@ Route::group(['namespace' => 'Api'], function() {
     Route::post('register', 'AuthController@register');
     Route::post('forget-password', 'AuthController@forgetPassword');
     Route::post('reset-password', 'AuthController@resetPassword');
+    Route::post('stripe-webhook', 'StripeController@handleStripeWebhook');
     Route::get('create-company-tables', function(){
         App\Helpers\TableHelper::createTables(95);
     });
