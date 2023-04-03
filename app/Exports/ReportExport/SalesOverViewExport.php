@@ -11,14 +11,16 @@ class SalesOverViewExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $salesOverViewExports;
-    public function __construct($salesOverViewExports){
-        $this->salesOverViewExports = $salesOverViewExports;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $salesOverViewExports = $this->salesOverViewExports;
-        // dd($salesOverViewExports);
-        return view('exports.reports.salesOverview', compact('salesOverViewExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.salesOverview', compact('data','request'));
     }
 }

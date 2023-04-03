@@ -38,6 +38,7 @@ use App\Exports\ReportExport\InvoiceItemExport;
 use App\Exports\ReportExport\CashFlowExport;
 use App\Exports\ReportExport\PaymentOptionExport;
 use App\Exports\ReportExport\CashFlowByAgentExport;
+use App\Exports\ReportExport\SalesOverViewExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -713,9 +714,9 @@ class ReportController extends Controller
             $taxColumn = 'amount_with_out_vat';
         }
 
-        $data = [];
+        $finalData = [];
         if( $request->type == "overview" ){
-            $data = [
+            $finalData = [
                 "estimates_by_state" => [
                     [
                         "type" => "bar", 
@@ -822,16 +823,16 @@ class ReportController extends Controller
             ];
 
         }elseif( $request->type == "clients" ){
-            $data = [];
-            $data['sales_clients'] = [];
+            $finalData = [];
+            $finalData['sales_clients'] = [];
             if($request->category == 'client_categories'){
 
                 $categories = ClientCategory::get();
                 //    return $categories;
                 $arr = [];
-                $data = [];
+                $finalData = [];
                 $request['clientCategoryNull'] = 1;
-                $data['sales_clients'][] = [
+                $finalData['sales_clients'][] = [
                     "type" => "bar",
                     "label" => "No Selected Category",
                     "backgroundColor" => "#26C184",
@@ -842,7 +843,7 @@ class ReportController extends Controller
                 unset($request['clientCategoryNull']);
                 foreach($categories as $category){
                     $request['clientCategory'] = $category->id;
-                    $data['sales_clients'][] = [
+                    $finalData['sales_clients'][] = [
                         "type" => "bar",
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
@@ -855,7 +856,7 @@ class ReportController extends Controller
                 $client_ids = SalesEstimate::whereHas('client')->pluck('client_id')->toArray();
                 $clients = Client::whereIn('id',$client_ids)->get();
                 foreach($clients as $client){
-                    $data['sales_clients'][] = [
+                    $finalData['sales_clients'][] = [
                     "type" => "bar",
                     "label" => "" .  $client->legal_name,
                     "backgroundColor" => "#26C184",
@@ -867,13 +868,13 @@ class ReportController extends Controller
             }
             return response()->json([
                 "status" => true,
-                "data" => $data
+                "data" => $finalData
             ]);
             
         }elseif($request->type == "agents"){
-            $data = [];
-            $data['sales_agents'] = [];
-            $data['sales_agents'][] = [
+            $finalData = [];
+            $finalData['sales_agents'] = [];
+            $finalData['sales_agents'][] = [
                 "type" => "bar",
                 "label" => "" .  \Auth::user()->name,
                 "backgroundColor" => "#26C184",
@@ -883,7 +884,7 @@ class ReportController extends Controller
             ];
             return response()->json([
                 "status" => true,
-                "data" => $data
+                "data" => $finalData
             ]);
         }elseif($request->type == "items"){
             $taxColumn = 'amount_with_out_vat';
@@ -893,13 +894,13 @@ class ReportController extends Controller
             $itemServiceIds = Item::whereIn('reference',['SER'])->whereIn('type', $referenceType)->whereIn('parent_id', $invoiceIds)->pluck('reference_id')->toArray();
             $products = Product::whereIn('id',$itemProductIds)->get();
             $services = Service::whereIn('id',$itemServiceIds)->get();
-            $data = [];
-            $data['sales_items'] = [];
+            $finalData = [];
+            $finalData['sales_items'] = [];
             if($request->category == 'product_categories'){
                 $categories = ProductCategory::get();
-                $data = [];
+                $finalData = [];
                 $request['productCategoryNull'] = 1;
-                $data['sales_items'][] = [
+                $finalData['sales_items'][] = [
                     "type" => "bar",
                     "label" => "Not found in catalog
                     ",
@@ -911,7 +912,7 @@ class ReportController extends Controller
                 unset($request['productCategoryNull']);
                 foreach($categories as $category){
                     $request['productCategory'] = $category->id;
-                    $data['sales_items'][] = [
+                    $finalData['sales_items'][] = [
                         "type" => "bar",
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
@@ -921,7 +922,7 @@ class ReportController extends Controller
                     ];
                 }
             }else{
-                $data['sales_items'][] = [
+                $finalData['sales_items'][] = [
                     "type" => "bar",
                     "label" => "Not found in catalog",
                     "backgroundColor" => "#26C184",
@@ -931,7 +932,7 @@ class ReportController extends Controller
                 ];
                 foreach($products as $product){
                     $request['product_id'] = $product->id;
-                    $data['sales_items'][] = [
+                    $finalData['sales_items'][] = [
                     "type" => "bar",
                     "label" => "" .  $product->name,
                     "backgroundColor" => "#26C184",
@@ -942,7 +943,7 @@ class ReportController extends Controller
                 }
                 foreach($services as $service){
                     $request['service_id'] = $service->id;
-                    $data['sales_items'][] = [
+                    $finalData['sales_items'][] = [
                     "type" => "bar",
                     "label" => "" .  $service->name,
                     "backgroundColor" => "#26C184",
@@ -954,14 +955,54 @@ class ReportController extends Controller
             }
             return response()->json([
                 "status" => true,
-                "data" => $data
+                "data" => $finalData
             ]);
 
         }
 
+        if($request->export){
+            $fileName = 'SALESOVERVIEWREPORT-'.time().$request->company_id.'.xlsx';
+            $arr = [];
+
+            $arr['SPendingQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'pending')->count();
+            $arr['SPending'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'pending')->get()->sum($taxColumn);
+            $arr['SRefusedQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'refused')->count();
+            $arr['SRefused'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'refused')->get()->sum($taxColumn);
+            $arr['SAcceptedQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'refused')->get()->sum($taxColumn);
+            $arr['SAccepted'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'accepted')->get()->sum($taxColumn);
+            $arr['SClosedQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'closed')->count();
+            $arr['SClosed'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesEstimatereferenceType)->where('status', 'closed')->get()->sum($taxColumn);
+            $arr['OPendingQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'pending')->count();
+            $arr['OPending'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'pending')->get()->sum($taxColumn);
+            $arr['ORefusedQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'refused')->count();
+            $arr['ORefused'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'refused')->get()->sum($taxColumn);
+            $arr['OProgressQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->whereIn('status', ['in progress', 'in_progress'])->count();
+            $arr['OProgress'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->whereIn('status', ['in progress', 'in_progress'])->get()->sum($taxColumn);
+            $arr['OClosedQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'closed')->count();
+            $arr['OClosed'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesOrderreferenceType)->where('status', 'closed')->get()->sum($taxColumn);
+            $arr['DPendingInvoiceQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'pending invoice')->count();
+            $arr['DPendingInvoice'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'pending invoice')->get()->sum($taxColumn);
+            $arr['DInProgressQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->whereIn('status', ['in progress', 'in_progress'])->count();
+            $arr['DInProgress'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->whereIn('status', ['in progress', 'in_progress'])->get()->sum($taxColumn);
+            $arr['DClosedQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'closed')->count();
+            $arr['DClosed'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'closed')->get()->sum($taxColumn);
+            $arr['DInvoicedQuantity'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'invoiced')->count();
+            $arr['DInvoiced'] = SalesEstimate::filter($request->all())->whereIn('reference', $salesDeliveryNotesreferenceType)->where('status', 'invoiced')->get()->sum($taxColumn);
+
+
+            $finalData = $arr;
+            Excel::store(new SalesOverViewExport($finalData, $request), 'public/xlsx/'.$fileName);
+
+            
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
+
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
     }
 
