@@ -42,6 +42,7 @@ use App\Exports\ReportExport\SalesOverViewExport;
 use App\Exports\ReportExport\SalesClientExport;
 use App\Exports\ReportExport\SalesAgentsExport;
 use App\Exports\ReportExport\SalesItemsExport;
+use App\Exports\ReportExport\TechnicalOverViewExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -1727,6 +1728,48 @@ class ReportController extends Controller
                 "pointHitRadius" => 1000,
                 "data" => @$tempData[\Auth::id()]
             ];
+        }
+        if($request->export){
+            $fileName = 'TECHNICALSERVICEOVERVIEWREPORT-'.time().$request->company_id.'.xlsx';
+            $arr = [];
+
+            $arr['IPendingQuantity'] = TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'pending')->count();
+            $arr['IRefused'] = TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'refused')->count();
+            $arr['IResolved'] = TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'resolved')->count();
+            $arr['IClosed'] = TechnicalIncident::filter($request->all())->whereIn('reference',$technicalIncidentReference)->where('status', 'closed')->count();
+            $arr['EPendingQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'pending')->count();
+            $arr['EPending'] = TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'pending')->get()->sum($taxColumn);
+            $arr['ERefusedQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'refused')->count();
+            $arr['ERefused'] = TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'refused')->get()->sum($taxColumn);
+            $arr['EAcceptedQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'accepted')->count();
+            $arr['EAccepted'] = TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'accepted')->get()->sum($taxColumn);
+            $arr['EClosedQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'closed')->count();
+            $arr['EClosed'] = TechnicalTable::filter($request->all())->whereIn('reference', $workEstimatesReference )->where('status', 'closed')->get()->sum($taxColumn);
+            $arr['OPendingQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'pending')->count();
+            $arr['OPending'] = TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'pending')->get()->sum($taxColumn);
+            $arr['ORefusedQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'refused')->count();
+            $arr['ORefused'] = TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'refused')->get()->sum($taxColumn);
+            $arr['OInProgressQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'in_progress')->count();
+            $arr['OInProgress'] = TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'in_progress')->get()->sum($taxColumn);
+            $arr['OClosedQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'closed')->count();
+            $arr['OClosed'] = TechnicalTable::filter($request->all())->whereIn('reference', $workOrderReference)->where('status', 'closed')->get()->sum($taxColumn);
+            $arr['DPendingInvoiceQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending invoice')->count();
+            $arr['PPendingInvoice'] = TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'pending invoice')->get()->sum($taxColumn);
+            $arr['DInProgressQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'In Progress')->count();
+            $arr['DInProgress'] = TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'In Progress')->get()->sum($taxColumn);
+            $arr['DClosedQuantity'] = TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'closed')->count();
+            $arr['DClosed'] = TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'closed')->get()->sum($taxColumn);
+            $arr['DInvoicedQuantity'] = TechnicalTable::filter($request->all())->where('reference', $workDeliveryNotesReference)->where('status', 'Invoiced')->count();
+            $arr['DInvoiced'] = TechnicalTable::filter($request->all())->whereIn('reference',$workDeliveryNotesReference)->where('status', 'invoiced')->get()->sum($taxColumn);
+
+
+            $data = $arr;
+            Excel::store(new TechnicalOverViewExport($data, $request), 'public/xlsx/'.$fileName); 
+
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
 
         return response()->json([

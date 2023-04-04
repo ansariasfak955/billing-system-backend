@@ -38,22 +38,18 @@
                 <th>Name</th>
             @if($request->status)
                 <th>Pending</th>
-                <th>Total</th>
                 <th>Units</th>
                 <th>Amount (before tax)</th>
             @elseif($request->status)
                 <th>Refused</th>
-                <th>Total</th>
                 <th>Units</th>
                 <th>Amount (before tax)</th>
             @elseif($request->status)
                 <th>Accepted</th>
-                <th>Total</th>
                 <th>Units</th>
                 <th>Amount (before tax)</th>
             @elseif($request->status)
                 <th>Closed</th>
-                <th>Total</th>
                 <th>Units</th>
                 <th>Amount (before tax)</th>
             @else

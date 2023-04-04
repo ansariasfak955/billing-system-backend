@@ -2,19 +2,19 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>After tax:</th>
-            <td>data</td>
+            <td>{{($request->after_tax ? 'Yes' : 'No')}}</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
     </thead>
 </table>
@@ -30,8 +30,20 @@
     </thead>
     <tbody>
         <tr>
-            <td>pending</td>
-            <td>3</td>
+            <td>Pending</td>
+            <td>{{@$data['IPendingQuantity']}}</td>
+        </tr>
+        <tr>
+            <td>Refused</td>
+            <td>{{@$data['IRefused']}}</td>
+        </tr>
+        <tr>
+            <td>Resolved</td>
+            <td>{{@$data['IResolved']}}</td>
+        </tr>
+        <tr>
+            <td>Closed</td>
+            <td>{{@$data['IClosed']}}</td>
         </tr>
     </tbody>
 </table>
@@ -48,9 +60,24 @@
     </thead>
     <tbody>
         <tr>
-            <td>pending</td>
-            <td>30</td>
-            <td>40</td>
+            <td>Pending</td>
+            <td>{{@$data['EPendingQuantity']}}</td>
+            <td>{{@$data['EPending']}}</td>
+        </tr>
+        <tr>
+            <td>Refused</td>
+            <td>{{@$data['ERefusedQuantity']}}</td>
+            <td>{{@$data['ERefused']}}</td>
+        </tr>
+        <tr>
+            <td>Accepted</td>
+            <td>{{@$data['EAcceptedQuantity']}}</td>
+            <td>{{@$data['EAccepted']}}</td>
+        </tr>
+        <tr>
+            <td>Closed</td>
+            <td>{{@$data['EClosedQuantity']}}</td>
+            <td>{{@$data['EClosed']}}</td>
         </tr>
     </tbody>
 </table>
@@ -67,9 +94,24 @@
     </thead>
     <tbody>
         <tr>
-            <td>pending</td>
-            <td>30</td>
-            <td>40</td>
+            <td>Pending</td>
+            <td>{{@$data['OPendingQuantity']}}</td>
+            <td>{{@$data['OPending']}}</td>
+        </tr>
+        <tr>
+            <td>Refused</td>
+            <td>{{@$data['ORefusedQuantity']}}</td>
+            <td>{{@$data['ORefused']}}</td>
+        </tr>
+        <tr>
+            <td>In Progress</td>
+            <td>{{@$data['OInProgressQuantity']}}</td>
+            <td>{{@$data['OInProgress']}}</td>
+        </tr>
+        <tr>
+            <td>Closed</td>
+            <td>{{@$data['OClosedQuantity']}}</td>
+            <td>{{@$data['OClosed']}}</td>
         </tr>
     </tbody>
 </table>
@@ -86,9 +128,24 @@
     </thead>
     <tbody>
         <tr>
-            <td>pending</td>
-            <td>30</td>
-            <td>40</td>
+            <td>Pending Invoice</td>
+            <td>{{@$data['DPendingInvoiceQuantity']}}</td>
+            <td>{{@$data['PPendingInvoice']}}</td>
+        </tr>
+        <tr>
+            <td>In Progress</td>
+            <td>{{@$data['DInProgressQuantity']}}</td>
+            <td>{{@$data['DInProgress']}}</td>
+        </tr>
+        <tr>
+            <td>Closed</td>
+            <td>{{@$data['DClosedQuantity']}}</td>
+            <td>{{@$data['DClosed']}}</td>
+        </tr>
+        <tr>
+            <td>Invoiced</td>
+            <td>{{@$data['DInvoicedQuantity']}}</td>
+            <td>{{@$data['DInvoiced']}}</td>
         </tr>
     </tbody>
 </table>

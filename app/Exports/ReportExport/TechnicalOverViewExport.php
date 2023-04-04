@@ -12,14 +12,16 @@ class TechnicalOverViewExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $technicalOverviewExports;
-    public function __construct($technicalOverviewExports){
-        $this->technicalOverviewExports = $technicalOverviewExports;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $technicalOverviewExports = $this->technicalOverviewExports;
-        // dd($technicalOverviewExports);
-        return view('exports.reports.technicalOverview', compact('technicalOverviewExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.technicalOverview', compact('data','request'));
     }
 }
