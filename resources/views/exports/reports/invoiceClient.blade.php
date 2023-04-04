@@ -6,26 +6,26 @@
         </tr>
         <tr>
             <th>After tax:</th>
-            <td>{{($request->after_tax) ? 'Yes' : 'No'}}</td>
+            <td>{{(@$request->after_tax) ? 'Yes' : 'No'}}</td>
         </tr>
         <tr>
             <th>According to:</th>
-            <td>{{($request->category == 'client_categories') ? 'Client Categories' : 'Clients'}}</td>
+            <td>{{(@$request->category == 'client_categories') ? 'Client Categories' : 'Clients'}}</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>{{$request->startDate}}</td>
+            <td>{{@$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>{{$request->endDate}}</td>
+            <td>{{@$request->endDate}}</td>
         </tr>
     </thead>
 </table>
 <table>
     <thead>
         <tr>
-            @if($request->category == 'clients') 
+            @if(@$request->category == 'clients') 
                 <th>Reference</th>
                 <th>RUC</th>
                 <th>Name</th>
