@@ -32,8 +32,8 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password', 'mobile_number', 'username', 'surname', 'role', 'tin', 'country', 'phone_1', 'phone_2', 'position', 'calendar', 'address', 'city', 'state', 'pincode', 'country', 'language', 'gmail_sender_name', '    gmail_email_address', 'smtp_sender_name', 'smtp_email_address', 'smtp_server', 'smtp_security_protocol', 'smtp_password', 'smtp_port'
+    protected $guarded = [
+      'id', 'created_at', 'updated_at'
     ];
 
     /**

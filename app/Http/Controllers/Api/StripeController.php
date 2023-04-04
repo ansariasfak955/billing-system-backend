@@ -87,6 +87,7 @@ class StripeController extends Controller
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
         $subscription = \Stripe\Subscription::retrieve(\Auth::user()->stripe_subscription_id);
+        info(\Auth::user()->stripe_subscription_id);
         $subscription->cancel();
         \Auth::user()->subscription_status = 'cancelled';
         \Auth::user()->save();
@@ -124,13 +125,13 @@ class StripeController extends Controller
         if ($event->type === 'checkout.session.completed') {
             // update customer subscription
             $this->updateUserPaymentDetails($event->data);
-
+            
         }elseif($event->type === 'customer.subscription.deleted'){
             $this->removeUserPlanDetails($event->data);
         }elseif($event->type === 'customer.subscription.updated'){
             $this->updateUserOnSubscriptionUpdate($event->data);
         }
-
+        
         // Return a 200 response to acknowledge receipt of the event
         return response()->json(['status' => 'success']);
     }
@@ -139,16 +140,19 @@ class StripeController extends Controller
     public function updateUserPaymentDetails($data){
         Stripe::setApiKey(env('STRIPE_SECRET'));
         $user_id = @$data->object->metadata->user_id;
+        $company_id = @$data->object->metadata->company_id;
         $price_id = @$data->object->metadata->price_id;
         $subscription = @$data->object->subscription;
         $customer = @$data->object->customer;
-        if($user_id && $price_id && $subscription && $customer){
+        if($company_id && $user_id && $price_id && $subscription && $customer){
             $subscriptionData = Subscription::retrieve($subscription);
             $expiry_date = @$subscriptionData->current_period_end;
+            $usersTables = 'company_'.$company_id.'_users';
+            User::setGlobalTable($usersTables);
             $user = User::find($user_id);
             if(!$user){return;}
 
-            $user->plan_id = $price_id;
+            $user->stripe_price_id = $price_id;
             $user->stripe_customer_id = $customer;
             $user->stripe_subscription_id = $subscription;
             if($expiry_date ){
@@ -164,6 +168,7 @@ class StripeController extends Controller
     public function updateUserOnSubscriptionUpdate($data){
         Stripe::setApiKey(env('STRIPE_SECRET'));
         $subscription = @$data->object->id;
+        // $data = Subscription::retrieve($subscription);
         if( $subscription ){
             $expiry_date = @$data->object->current_period_end;
             $user = User::where('stripe_subscription_id',$subscription)->first();
@@ -176,11 +181,13 @@ class StripeController extends Controller
             return true;
         }
     }
-
-     //update the required payment info in user table
+    
+    //update the required payment info in user table
     public function removeUserPlanDetails($data){
-       
+        
         $subscription = @$data->object->subscription;
+        $subscriptionData = Subscription::retrieve($subscription);
+        info($subscriptionData);
         if( $subscription){
             $user = User::where('stripe_subscription_id', $subscription)->first();
             if(!$user){return;}
