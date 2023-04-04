@@ -161,7 +161,7 @@ class User extends Authenticatable
     }
     public function getSubscriptionAmountAttribute(){
         if(isset($this->attributes['stripe_price_id'])){
-            return Subscription::where('stripe_price_id', $this->attributes['stripe_price_id'])->pluck('amount')->first();
+            return Subscription::where('stripe_price_id', $this->attributes['stripe_price_id'])->pluck('price')->first();
         }
         
     }
