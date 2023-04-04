@@ -45,6 +45,7 @@ use App\Exports\ReportExport\SalesItemsExport;
 use App\Exports\ReportExport\TechnicalOverViewExport;
 use App\Exports\ReportExport\IncidentsByClientExport;
 use App\Exports\ReportExport\IncidentsByAgentExport;
+use App\Exports\ReportExport\IncidentByClientExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -2013,13 +2014,13 @@ class ReportController extends Controller
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         }
 
-        $data = [];
+        $finalData = [];
         if($request->type == 'incident_by_client'){
-            $data['incident_clients'] = [];
+            $finalData['incident_clients'] = [];
             if($request->category == 'client_categories'){
                 $categories = ClientCategory::get();
                 $request['clientCategoryNull'] = 1;
-                $data['incident_clients'][] = [
+                $finalData['incident_clients'][] = [
                     "type" => "bar",
                     "label" => "No Selected Category",
                     "backgroundColor" => "#26C184",
@@ -2055,7 +2056,7 @@ class ReportController extends Controller
             }    
         }elseif($request->type == 'by_client_history'){
             $arr = [];
-            $data = [];
+            $finalData = [];
             if($request->category == 'client_categories'){
                 $categories = ClientCategory::get();
                 $request['clientCategoryNull'] = 1;
@@ -2067,7 +2068,7 @@ class ReportController extends Controller
                 $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                 $arr['amount'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn);
 
-                $data[] = $arr;
+                $finalData[] = $arr;
                 unset($request['clientCategoryNull']);
                 foreach($categories as $category){
                     $request['clientCategory'] = $category->id;
@@ -2079,7 +2080,7 @@ class ReportController extends Controller
                     $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($taxColumn), 2, '.', '');
     
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
             }
             else{
@@ -2089,6 +2090,9 @@ class ReportController extends Controller
     
                 foreach($clients as $client){
                     $arr['name'] = $client->legal_name;
+                    $arr['reference'] = $client->reference.''.$client->reference_number;
+                    $arr['ruc'] = $client->tin;
+                    $arr['category'] = $client->client_category_name;
                     $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->whereIn('status',['pending','pending invoice'])->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','refused')->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->where('status','accepted')->count();
@@ -2096,14 +2100,23 @@ class ReportController extends Controller
                     $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->count();
                     $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('client_id',$client->id)->get()->sum($taxColumn), 2, '.', '');
     
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
             }    
             
         }
+        if($request->export){
+            $fileName = 'CLIENTTECHNICALSERVICEREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new IncidentByClientExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
             
     }

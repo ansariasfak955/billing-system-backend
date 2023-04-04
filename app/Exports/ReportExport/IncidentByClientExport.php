@@ -11,14 +11,16 @@ class IncidentByClientExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $incidentByClientExports;
-    public function __construct($incidentByClientExports){
-        $this->incidentByClientExports = $incidentByClientExports;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $incidentByClientExports = $this->incidentByClientExports;
-        // dd($incidentByClientExports);
-        return view('exports.reports.incByClient', compact('incidentByClientExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.incByClient', compact('data','request'));
     }
 }
