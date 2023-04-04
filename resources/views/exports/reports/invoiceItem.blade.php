@@ -40,7 +40,9 @@
                 <td>{{$finalData['category']}}</td>
             @endif
             <td>{{$finalData['name']}}</td>
-            <td>{{$finalData['units']}}</td>
+            @if($request->category == 'catalog')
+                <td>{{$finalData['units']}}</td>
+            @endif
             <td>{{$finalData['amount']}}</td>
 
         </tr>

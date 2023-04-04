@@ -43,6 +43,8 @@ use App\Exports\ReportExport\SalesClientExport;
 use App\Exports\ReportExport\SalesAgentsExport;
 use App\Exports\ReportExport\SalesItemsExport;
 use App\Exports\ReportExport\TechnicalOverViewExport;
+use App\Exports\ReportExport\IncidentsByClientExport;
+use App\Exports\ReportExport\IncidentsByAgentExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -1811,7 +1813,7 @@ class ReportController extends Controller
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
-            $data = [];
+            $finalData = [];
             if($request->reference){
                 $referenceType = [$request->reference];
             }else{
@@ -1829,7 +1831,7 @@ class ReportController extends Controller
                 $arr['closed'] = TechnicalIncident::filter(['clientCategoryNull' => 1, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'closed')->count();
                 $arr['total'] = TechnicalIncident::filter(['clientCategoryNull' => 1, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->count();
     
-                $data[] = $arr;
+                $finalData[] = $arr;
                 $arr['name'] = 'Without Client';
                 $arr['pending'] = TechnicalIncident::filter([ 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'pending')->whereDoesntHave('client')->count();
                 $arr['resolved'] = TechnicalIncident::filter([ 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'resolved')->whereDoesntHave('client')->count();
@@ -1840,7 +1842,7 @@ class ReportController extends Controller
                 $arr['closed'] = TechnicalIncident::filter([ 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'closed')->whereDoesntHave('client')->count();
                 $arr['total'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->count();
     
-                $data[] = $arr;
+                $finalData[] = $arr;
                 foreach($categories as $category){
     
                     $arr['name'] = $category->name;
@@ -1851,7 +1853,7 @@ class ReportController extends Controller
                     $arr['closed'] = TechnicalIncident::filter(['clientCategory' => $category->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'closed')->count();
                     $arr['total'] = TechnicalIncident::filter(['clientCategory' => $category->id, 'agent_id' =>$request->agent_id ])->count();
         
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
             }else{
                 $clients = Client::get();
@@ -1863,11 +1865,13 @@ class ReportController extends Controller
                 $arr['closed'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->where('reference',$referenceType)->where('status', 'closed')->count();
                 $arr['total'] = TechnicalIncident::filter(['agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereDoesntHave('client')->count();
     
-                $data[] = $arr;
+                $finalData[] = $arr;
                 foreach($clients as $client){
     
                     
                     $arr['name'] = $client->legal_name.' ('.$client->name.')';
+                    $arr['reference'] = $client->reference.''.$client->reference_number;
+                    $arr['ruc'] = $client->tin;
                     $arr['pending'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'pending')->count();
                     $arr['resolved'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'resolved')->count();
                     $arr['refused'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'refused')->count();
@@ -1875,14 +1879,23 @@ class ReportController extends Controller
                     $arr['closed'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'closed')->count();
                     $arr['total'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->count();
         
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
                
+            }
+            if($request->export){
+                $fileName = 'CLIENTINCIDENTSTECHNICALSERVICEREPORT-'.time().$request->company_id.'.xlsx';
+    
+                Excel::store(new IncidentsByClientExport($finalData, $request), 'public/xlsx/'.$fileName);
+                return response()->json([
+                    'status' => true,
+                    'url' => url('/storage/xlsx/'.$fileName),
+                 ]);
             }
             
             return response()->json([
                 "status" => true,
-                "data" =>  $data
+                "data" =>  $finalData
             ]);
     }
     public function incidentByAgentHistory(Request $request){
@@ -1922,7 +1935,7 @@ class ReportController extends Controller
             $referenceType = Reference::where('type', 'Incident')->pluck('prefix')->toArray();
         };
         $arr = [];
-        $data = [];
+        $finalData = [];
 
         $arr['name'] = 'Unassigned';
         $arr['pending'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereNull('assigned_to')->where('status', 'Pending')->count();
@@ -1931,7 +1944,7 @@ class ReportController extends Controller
         $arr['closed'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereNull('assigned_to')->where('status', 'Closed')->count();
         $arr['total'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->whereNull('assigned_to')->count();
 
-        $data[] = $arr;
+        $finalData[] = $arr;
         $arr['name'] = \Auth::user()->name;
         $arr['pending'] = TechnicalIncident::filter(['client_id' => $request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'Pending')->count();
         $arr['refused'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'Refused')->count();
@@ -1939,11 +1952,22 @@ class ReportController extends Controller
         $arr['closed'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'Closed')->count();
         $arr['total'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->count();
 
-        $data[] = $arr;
+        $finalData[] = $arr;
         
+
+        if($request->export){
+            $fileName = 'EMPLOYEEINCIDENTSTECHNICALSERVICEREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new IncidentsByAgentExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
+
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
     }
     public function technicalByClient(Request $request){

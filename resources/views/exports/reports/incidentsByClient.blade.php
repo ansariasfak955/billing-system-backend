@@ -2,23 +2,25 @@
     <thead>
         <tr>
             <th>According to:</th>
-            <td>data</td>
+            <td>{{($request->category == 'client_categories') ? 'Client Categories' : 'Clients'}}</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
     </thead>
 </table>
 <table>
     <thead>
         <tr>
-            <th>Reference</th>
-            <th>RUC</th>
+            @if($request->category == 'clients')
+                <th>Reference</th>
+                <th>RUC</th>
+            @endif
             <th>Name</th>
             <th>Pending</th>
             <th>Refused</th>
@@ -28,16 +30,18 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($incidentByClientExports as $incidentByClientExport)
+        @foreach($data as $finalData)
         <tr>
-            <td>{{$incidentByClientExport['reference']}}</td>
-            <td>{{$incidentByClientExport['ruc']}}</td>
-            <td>{{$incidentByClientExport['name']}}</td>
-            <td>{{$incidentByClientExport['pending']}}</td>
-            <td>{{$incidentByClientExport['refused']}}</td>
-            <td>{{$incidentByClientExport['accepted']}}</td>
-            <td>{{$incidentByClientExport['closed']}}</td>
-            <td>{{$incidentByClientExport['total']}}</td>
+            @if($request->category == 'clients')
+                <td>{{@$finalData['reference']}}</td>
+                <td>{{@$finalData['ruc']}}</td>
+            @endif
+            <td>{{$finalData['name']}}</td>
+            <td>{{$finalData['pending']}}</td>
+            <td>{{$finalData['refused']}}</td>
+            <td>{{$finalData['accepted']}}</td>
+            <td>{{$finalData['closed']}}</td>
+            <td>{{$finalData['total']}}</td>
         </tr>
         @endforeach
     </tbody>

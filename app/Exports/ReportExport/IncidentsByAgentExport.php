@@ -11,14 +11,16 @@ class IncidentsByAgentExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $incidentsAgentsExports;
-    public function __construct($incidentsAgentsExports){
-        $this->incidentsAgentsExports = $incidentsAgentsExports;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $incidentsAgentsExports = $this->incidentsAgentsExports;
-        // dd($incidentsAgentsExports);
-        return view('exports.reports.incidentsByAgent', compact('incidentsAgentsExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.incidentsByAgent', compact('data','request'));
     }
 }

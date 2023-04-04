@@ -2,11 +2,11 @@
     <thead>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{$request->endDate}}</td>
         </tr>
     </thead>
 </table>
@@ -22,14 +22,14 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($incidentsAgentsExports as $incidentsAgentsExport)
+        @foreach($data as $finalData)
         <tr>
-            <td>{{$incidentsAgentsExport['name']}}</td>
-            <td>{{$incidentsAgentsExport['pending']}}</td>
-            <td>{{$incidentsAgentsExport['refused']}}</td>
-            <td>{{$incidentsAgentsExport['accepted']}}</td>
-            <td>{{$incidentsAgentsExport['closed']}}</td>
-            <td>{{$incidentsAgentsExport['total']}}</td>
+            <td>{{$finalData['name']}}</td>
+            <td>{{$finalData['pending']}}</td>
+            <td>{{$finalData['refused']}}</td>
+            <td>{{$finalData['resolved']}}</td>
+            <td>{{$finalData['closed']}}</td>
+            <td>{{$finalData['total']}}</td>
         </tr>
         @endforeach
     </tbody>

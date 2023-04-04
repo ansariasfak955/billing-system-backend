@@ -6,7 +6,7 @@
         </tr>
         <tr>
             <th>After tax:</th>
-            <td>{{($request->after_tax ? 'Yes' : 'No')}}</td>
+            <td>{{($request->after_tax) ? 'Yes' : 'No'}}</td>
         </tr>
         <tr>
             <th>According to:</th>

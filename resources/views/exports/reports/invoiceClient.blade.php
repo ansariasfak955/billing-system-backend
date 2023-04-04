@@ -6,7 +6,7 @@
         </tr>
         <tr>
             <th>After tax:</th>
-            <td>{{($request->after_tax ? 'Yes' : 'No')}}</td>
+            <td>{{($request->after_tax) ? 'Yes' : 'No'}}</td>
         </tr>
         <tr>
             <th>According to:</th>
@@ -25,7 +25,7 @@
 <table>
     <thead>
         <tr>
-            @if(@$request->category == 'clients']) 
+            @if($request->category == 'clients') 
                 <th>Reference</th>
                 <th>RUC</th>
                 <th>Name</th>
@@ -39,7 +39,7 @@
     <tbody>
         @foreach($data as $invoiceClients)
             <tr>
-                @if(@$request->category == 'clients'])
+                @if(@$request->category == 'clients')
                     <td>{{@$invoiceClients['reference']}}</td>
                     <td>{{@$invoiceClients['ruc']}}</td>
                     <td>{{@$invoiceClients['name']}}</td>
