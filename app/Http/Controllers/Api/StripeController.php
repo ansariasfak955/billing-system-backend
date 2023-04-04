@@ -88,8 +88,16 @@ class StripeController extends Controller
         }
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
-        $subscription = \Stripe\Subscription::retrieve(\Auth::user()->stripe_subscription_id);
-        $subscription->cancel();
+        try {
+            $subscription = \Stripe\Subscription::retrieve(\Auth::user()->stripe_subscription_id);
+            $subscription->cancel();
+        } catch (\Exception $e) {
+            return response()->json([
+                'success'   =>  false,
+                'message'   => 'Something went wrong!' 
+    
+            ]);
+        }
         \Auth::user()->subscription_status = 'cancelled';
         \Auth::user()->save();
         $token  =   \Auth::user()->createToken('api')->accessToken;
