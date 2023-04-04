@@ -162,6 +162,7 @@ class AuthController extends Controller
             'mobile_number' => $request->mobile_number,
             'password' => bcrypt($request->password),
             'country' => $request->country,
+            'plan_expiry_date' => now()->addDays(15)->format('Y-m-d H:i:s'),
         ]);
         $company->where('id', $company->id)->update([
             'user_id' => $user->id,

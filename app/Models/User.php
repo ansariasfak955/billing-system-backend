@@ -63,7 +63,7 @@ class User extends Authenticatable
         self::$globalTable = $table;
     }
 
-    protected $appends = ['company_country','default_country','company_id','enable_technical_module','logo', 'is_subscription_active'];
+    protected $appends = ['company_country','default_country','company_id','enable_technical_module','logo', 'is_subscription_active', 'membership_name'];
 
     public function companies()
     {
