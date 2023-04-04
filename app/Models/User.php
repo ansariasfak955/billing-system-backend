@@ -63,7 +63,7 @@ class User extends Authenticatable
         self::$globalTable = $table;
     }
 
-    protected $appends = ['company_country','default_country','company_id','enable_technical_module','logo'];
+    protected $appends = ['company_country','default_country','company_id','enable_technical_module','logo', 'is_subscription_active', 'membership_name'];
 
     public function companies()
     {
@@ -138,5 +138,25 @@ class User extends Authenticatable
         if(isset($company_id)){
             return Company::where('id', $company_id)->pluck('logo')->first();
         }
+    }
+    public function getIsSubscriptionActiveAttribute(){
+    
+        if(  isset($this->attributes['plan_expiry_date'])  ){
+            if( date( 'Y-m-d H:i:s', strtotime( $this->attributes['plan_expiry_date'] ) ) > date('Y-m-d H:i:s')  ){
+                return 1;
+            }
+        }
+        return 0;
+    }
+    public function getPlanExpiryDateAttribute(){
+        if( isset( $this->attributes['plan_expiry_date'] )  ){
+            return date('d F Y' , strtotime($this->attributes['plan_expiry_date']));
+        }
+    }
+     public function getMembershipNameAttribute(){
+        if(isset($this->attributes['stripe_price_id'])){
+            return Subscription::where('stripe_price_id', $this->attributes['stripe_price_id'])->pluck('name')->first();
+        }
+        
     }
 }

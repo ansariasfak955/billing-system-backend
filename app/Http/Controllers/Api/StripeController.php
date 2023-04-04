@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
 use Validator;
+use Illuminate\Support\Facades\Schema;
+
 class StripeController extends Controller
 {
     public function createPaymentLink(Request $request){
@@ -68,8 +70,8 @@ class StripeController extends Controller
                 'user_id' => \Auth::id(),
                 'company_id' => request()->company_id
             ],
-            'success_url' => env('WEBSITE_APP_URL').'?payment=success',
-            'cancel_url' => env('WEBSITE_APP_URL').'?payment=failed',
+            'success_url' => env('WEBSITE_APP_URL').'/plans?payment=success',
+            'cancel_url' => env('WEBSITE_APP_URL').'/plans?payment=failed',
         ]);
         return response()->json(['url' => $session->url]);
     }
@@ -86,9 +88,16 @@ class StripeController extends Controller
         }
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
-        $subscription = \Stripe\Subscription::retrieve(\Auth::user()->stripe_subscription_id);
-        info(\Auth::user()->stripe_subscription_id);
-        $subscription->cancel();
+        try {
+            $subscription = \Stripe\Subscription::retrieve(\Auth::user()->stripe_subscription_id);
+            $subscription->cancel();
+        } catch (\Exception $e) {
+            return response()->json([
+                'success'   =>  false,
+                'message'   => 'Something went wrong!' 
+    
+            ]);
+        }
         \Auth::user()->subscription_status = 'cancelled';
         \Auth::user()->save();
         $token  =   \Auth::user()->createToken('api')->accessToken;
@@ -99,6 +108,26 @@ class StripeController extends Controller
             'data'      =>  $data,
             'message'   => 'Subscription cancelled!' 
 
+        ]);
+    }
+    public function getInvoices(Request $request){
+
+        if(!\Auth::user()->stripe_customer_id){
+
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Customer id not found!'
+
+            ]);
+        }
+
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $invoices = \Stripe\Invoice::all(['customer' => \Auth::user()->stripe_customer_id]);
+        return response()->json([
+            'success'   =>  true,
+            'data'      =>  $invoices,
+            'message'   => '' 
         ]);
     }
 
@@ -139,6 +168,7 @@ class StripeController extends Controller
     //update the required payment info in user table
     public function updateUserPaymentDetails($data){
         Stripe::setApiKey(env('STRIPE_SECRET'));
+        info($data);
         $user_id = @$data->object->metadata->user_id;
         $company_id = @$data->object->metadata->company_id;
         $price_id = @$data->object->metadata->price_id;
@@ -160,6 +190,10 @@ class StripeController extends Controller
             }
             $user->subscription_status = 'active';
             $user->save();
+            $subscription = \Stripe\Subscription::retrieve($subscription);
+            $subscription->metadata['user_id'] = $user_id;
+            $subscription->metadata['company_id'] = $company_id;
+            $subscription->save();
             return true;
         }
     }
@@ -168,9 +202,13 @@ class StripeController extends Controller
     public function updateUserOnSubscriptionUpdate($data){
         Stripe::setApiKey(env('STRIPE_SECRET'));
         $subscription = @$data->object->id;
-        // $data = Subscription::retrieve($subscription);
-        if( $subscription ){
+        $user_id = @$data->object->metadata->user_id;
+        $company_id = @$data->object->metadata->company_id;
+        if( $subscription && $company_id){
+
             $expiry_date = @$data->object->current_period_end;
+            $usersTables = 'company_'.$company_id.'_users';
+            User::setGlobalTable($usersTables);
             $user = User::where('stripe_subscription_id',$subscription)->first();
             if(!$user){return;}
             if($expiry_date ){
@@ -186,9 +224,11 @@ class StripeController extends Controller
     public function removeUserPlanDetails($data){
         
         $subscription = @$data->object->subscription;
-        $subscriptionData = Subscription::retrieve($subscription);
-        info($subscriptionData);
-        if( $subscription){
+        $user_id = @$data->object->metadata->user_id;
+        $company_id = @$data->object->metadata->company_id;
+        if( $subscription && $company_id){
+            $usersTables = 'company_'.$company_id.'_users';
+            User::setGlobalTable($usersTables);
             $user = User::where('stripe_subscription_id', $subscription)->first();
             if(!$user){return;}
 

@@ -429,6 +429,7 @@ Route::group(['namespace' => 'Api'], function() {
             //stripe apis 
             Route::post('create-payment-link', 'StripeController@createPaymentLink');
             Route::get('cancel-subscription', 'StripeController@cancelSubscription');
+            Route::get('get-invoices', 'StripeController@getInvoices');
         });
 
         /* Activity Type */
