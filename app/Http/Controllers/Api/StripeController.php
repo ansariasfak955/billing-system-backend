@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
 use Validator;
+use Illuminate\Support\Facades\Schema;
+
 class StripeController extends Controller
 {
     public function createPaymentLink(Request $request){

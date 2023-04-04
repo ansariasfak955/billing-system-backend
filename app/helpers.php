@@ -1,6 +1,9 @@
 <?php
 use App\Models\MyTemplate;
 use App\Models\MyTemplateMeta;
+use App\Models\User;
+use Illuminate\Support\Facades\Schema;
+
 function active_class($path, $active = 'active') {
   return call_user_func_array('Request::is', (array)$path) ? $active : '';
 }
@@ -659,4 +662,23 @@ function generateRandomColor() {
     $b = mt_rand(0, 255);
 
     return "rgba($r, $g, $b, 0.5)";
+}
+function removeStripeFromAllCompanies(){
+    foreach(\App\Models\Company::pluck('id') as $company_id){
+            
+        $userTable = 'company_'.$company_id.'_users';
+        if(Schema::hasTable('company_'.$company_id.'_users')){
+
+            User::setGlobalTable($userTable);
+            $users =  User::whereNotNull('stripe_customer_id')->get();
+            foreach  ( $users as $user){
+                $user->stripe_customer_id=null;
+                $user->stripe_price_id=null;
+                $user->stripe_subscription_id=null;
+                $user->plan_expiry_date=null;
+                $user->save();
+            }
+        }
+    }
+    echo"<center>Done<center>";
 }

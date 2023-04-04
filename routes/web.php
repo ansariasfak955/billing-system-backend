@@ -17,6 +17,9 @@ use Spatie\Permission\Models\Permission;
 Route::get('/add-signed-template-meta/{id}', function ($id) {
     return add_signed_parameter_in_my_templates($id);
 });
+Route::get('/remove-stripe-from-all', function () {
+    return removeStripeFromAllCompanies();
+});
 Auth::routes();
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/', function () {
