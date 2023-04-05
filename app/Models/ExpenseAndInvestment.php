@@ -12,6 +12,8 @@ class ExpenseAndInvestment extends Model
 
     protected $fillable = ['name', 'price', 'reference', 'purchase_price', 'image', 'description', 'private_comments', 'vat', 'created_from', 'purchase_margin', 'sales_margin', ' discount', 'minimum_price', 'tax', 'images','reference_number'];
 
+
+    protected $appends = ['expense_category_name'];
     protected static $globalTable = 'expense_and_investments' ;
 
     public function getTable() {
@@ -27,6 +29,13 @@ class ExpenseAndInvestment extends Model
             return url('/storage').'/expense_n_investments/images/'.$this->attributes['image'];
         } else {
             return 'https://via.placeholder.com/400/fef4d0/060062&text=Not%20Found';
+        }
+    }
+    public function getExpenseCategoryNameAttribute(){
+        if(isset( $this->attributes['category_id'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_expense_category_name($company_id, $this->attributes['category_id']);
         }
     }
     public function modelFilter()

@@ -11,14 +11,16 @@ class PurchaseItemExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $purchaseItemExports;
-    public function __construct($purchaseItemExports){
-        $this->purchaseItemExports = $purchaseItemExports;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $purchaseItemExports = $this->purchaseItemExports;
-        // dd($purchaseItemExports);
-        return view('exports.reports.purchaseItem', compact('purchaseItemExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.purchaseItem', compact('data','request'));
     }
 }

@@ -2,23 +2,19 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>According to:</th>
-            <td>data</td>
+            <td>{{(@$request->category == 'catalog') ? 'Product Categories' : 'Catalog'}}</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{@$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
-        </tr>
-        <tr>
-            <th>Selected Agent:</th>
-            <td>data</td>
+            <td>{{@$request->endDate}}</td>
         </tr>
     </thead>
 </table>
@@ -33,13 +29,13 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($purchaseItemExports as $purchaseItemExport)
+        @foreach($data as $finalData)
         <tr>
-            <td>{{$purchaseItemExport['reference']}}</td>
-            <td>{{$purchaseItemExport['name']}}</td>
-            <td>{{$purchaseItemExport['category']}}</td>
-            <td>{{$purchaseItemExport['units']}}</td>
-            <td>{{$purchaseItemExport['amount']}}</td>
+            <td>{{$finalData['reference']}}</td>
+            <td>{{$finalData['name']}}</td>
+            <td>{{$finalData['category']}}</td>
+            <td>{{$finalData['units']}}</td>
+            <td>{{$finalData['amount']}}</td>
         </tr>
         @endforeach
     </tbody>

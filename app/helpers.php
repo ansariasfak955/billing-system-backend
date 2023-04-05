@@ -78,6 +78,13 @@ function get_product_category_name($company_id,$product_category_id)
     \App\Models\Supplier::setGlobalTable($table);
     return \App\Models\Supplier::where('id', $product_category_id)->pluck('name')->first();
 }
+function get_expense_category_name($company_id,$expense_category_id)
+{
+    // ExpenseCategory::setGlobalTable('company_'.$request->company_id.'_expense_categories');
+    $table = 'company_'.$company_id.'_expense_categories';
+    \App\Models\Supplier::setGlobalTable($table);
+    return \App\Models\Supplier::where('id', $expense_category_id)->pluck('name')->first();
+}
 function get_product_special_price($company_id,$client_id,$product_id)
 {
     $table = 'company_'.$company_id.'_client_special_prices';

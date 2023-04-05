@@ -49,6 +49,7 @@ use App\Exports\ReportExport\IncidentByClientExport;
 use App\Exports\ReportExport\IncidentByAgentExport;
 use App\Exports\ReportExport\IncidentByItemExport;
 use App\Exports\ReportExport\PurchaseSupplierExport;
+use App\Exports\ReportExport\PurchaseItemExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -2737,44 +2738,47 @@ class ReportController extends Controller
         $expenses = ExpenseAndInvestment::whereIn('id',$expenseInvestmentIds)->get();
            
         $arr = [];
-        $data = [];
+        $finalData = [];
         if($request->category == 'catalog'){
 
             foreach($products as $product){
                 $request['product_id'] = $product->id;
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
+                $arr['category'] = $product->product_category_name;
                 $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                 $arr['amount'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
                 
     
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
             foreach($services as $service){
                 $request['service_id'] = $service->id;
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
+                $arr['category'] = $product->product_category_name;
                 $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                 $arr['amount'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
             foreach($expenses as $expense){
                 $request['expense_id'] = $expense->id;
                 $arr['name'] = $expense->name;
                 $arr['reference'] = $expense->reference.''.$expense->reference_number;
+                $arr['category'] = $product->expense_category_name;
                 $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                 $arr['amount'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
         }else{
             $categories = ProductCategory::get();
-            $data = [];
+            $finalData = [];
             $request['productCategoryNull'] = 1;
             $arr['name'] = "No Selected Category";
             $arr['reference'] = '-';
             $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
             $arr['amount'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
-            $data[] = $arr;
+            $finalData[] = $arr;
             unset($request['productCategoryNull']);
             foreach($categories as $category){
                 $request['productCategory'] = $category->id;
@@ -2782,12 +2786,23 @@ class ReportController extends Controller
                 $arr['reference'] = '-';
                 $arr['units'] = PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                 $arr['amount'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_with_out_vat'), 2, '.', '');
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
         }
+
+        if($request->export){
+            $fileName = 'CATALOGPURCHASEREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new PurchaseItemExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
+
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
     }
 

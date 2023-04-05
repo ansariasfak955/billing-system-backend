@@ -35,6 +35,16 @@
         </tr>
     </thead>
     <tbody>
-      
+        @foreach(@$data as $finalData)
+            <tr>
+                    <td>{{$finalData['reference']}}</td>
+                    <td>{{$finalData['ruc']}}</td>
+                    <td>{{$finalData['name']}}</td>
+                    <td>{{$finalData['category']}}</td>
+                    <td>{{$finalData['invoiced']}}</td>
+                    <td>{{$finalData['paid']}}</td>
+                    <td>{{$finalData['Unpaid']}}</td>
+            </tr>
+        @endforeach
     </tbody>
 </table>
