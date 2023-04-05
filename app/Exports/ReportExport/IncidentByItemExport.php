@@ -11,14 +11,16 @@ class IncidentByItemExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $incidentByItemExports;
-    public function __construct($incidentByItemExports){
-        $this->incidentByItemExports = $incidentByItemExports;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $incidentByItemExports = $this->incidentByItemExports;
-        // dd($incidentByItemExports);
-        return view('exports.reports.incByItem', compact('incidentByItemExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.incByItem', compact('data','request'));
     }
 }

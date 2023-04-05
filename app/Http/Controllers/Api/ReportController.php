@@ -47,6 +47,7 @@ use App\Exports\ReportExport\IncidentsByClientExport;
 use App\Exports\ReportExport\IncidentsByAgentExport;
 use App\Exports\ReportExport\IncidentByClientExport;
 use App\Exports\ReportExport\IncidentByAgentExport;
+use App\Exports\ReportExport\IncidentByItemExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -2218,11 +2219,11 @@ class ReportController extends Controller
         $table = 'company_'.$request->company_id.'_technical_incidents';
         TechnicalIncident::setGlobalTable($table);
 
-        $table = 'company_'.$request->company_id.'_services';
-        Service::setGlobalTable($table);
+        $serviceTable = 'company_'.$request->company_id.'_services';
+        Service::setGlobalTable($serviceTable);
 
-        $table = 'company_'.$request->company_id.'_products';
-        Product::setGlobalTable($table);
+        $productTable = 'company_'.$request->company_id.'_products';
+        Product::setGlobalTable($productTable);
 
         $itemTable = 'company_'.$request->company_id.'_items';
         Item::setGlobalTable($itemTable);
@@ -2249,7 +2250,7 @@ class ReportController extends Controller
         }else{
             $referenceType = Reference::whereIn('type', ['Work Delivery Note','Work Estimate', 'Work Order'])->pluck('prefix')->toArray();
         }
-        $data = [];
+        $finalData = [];
         if($request->type == 'incident_by_item'){
             
             $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
@@ -2259,10 +2260,10 @@ class ReportController extends Controller
 
             if($request->category == 'catalog'){
 
-                $data['invoice_items'] = [];
+                $finalData['invoice_items'] = [];
                 foreach($products as $product){
                     $request['product_id'] = $product->id;
-                    $data['invoice_items'][] = [
+                    $finalData['invoice_items'][] = [
                     "type" => "bar",
                     "label" => "" .  $product->name,
                     "backgroundColor" => "#26C184",
@@ -2273,7 +2274,7 @@ class ReportController extends Controller
                 }
                 foreach($services as $service){
                     $request['service_id'] = $service->id;
-                    $data['invoice_items'][] = [
+                    $finalData['invoice_items'][] = [
                     "type" => "bar",
                     "label" => "" .  $service->name,
                     "backgroundColor" => "#26C184",
@@ -2286,7 +2287,7 @@ class ReportController extends Controller
                 $categories = ProductCategory::get();
                 $request['productCategoryNull'] = 1;
                 $arr['name'] = 'Not found in catalog';
-                $data['invoice_items'][] = [
+                $finalData['invoice_items'][] = [
                 "type" => "bar",
                 "label" => 'Not found in catalog',
                 "backgroundColor" => "#26C184",
@@ -2297,7 +2298,7 @@ class ReportController extends Controller
                 unset($request['productCategoryNull']);
                 foreach($categories as $category){
                     $request['productCategory'] = $category->id;
-                    $data['invoice_items'][] = [
+                    $finalData['invoice_items'][] = [
                         "type" => "bar",
                         "label" => "" .  $category->name,
                         "backgroundColor" => "#26C184",
@@ -2312,19 +2313,26 @@ class ReportController extends Controller
 
             $productReferenceType = Reference::where('type', 'Product')->pluck('prefix')->toArray();
             $serviceReferenceType = Reference::where('type', 'Service')->pluck('prefix')->toArray();
-            $itemProductIds = Item::whereIn('reference',$productReferenceType)->pluck('reference_id')->toArray();
+            $itemProductIds = Item::whereIn('reference', $serviceReferenceType)->pluck('reference_id')->toArray();
             $itemServiceIds = Item::whereIn('reference', $serviceReferenceType)->pluck('reference_id')->toArray();
-            $products = Product::filter($request->all())->whereIn('id',$itemProductIds)->get();
-            $services = Service::filter($request->all())->whereIn('id',$itemServiceIds)->get();
-               
+            $products = Product::whereIn('id',$itemProductIds)->get();
+            $services = Service::whereIn('id',$itemServiceIds)->get();
+
+            // $itemProductIds = Item::whereIn('reference',['PRO'])->pluck('reference_id')->toArray();
+            // $itemServiceIds = Item::whereIn('reference',['SER'])->pluck('reference_id')->toArray();
+            // $products = Product::whereIn('id',$itemProductIds)->get();
+            // $services = Service::whereIn('id',$itemServiceIds)->get();
+
+
             $arr = [];
-            $data = [];
+            $finalData = [];
             if($request->category == 'catalog'){
 
                 foreach($products as $product){
                     $request['product_id'] = $product->id;
                     $arr['name'] = $product->name;
                     $arr['reference'] = $product->reference.''.$product->reference_number;
+                    $arr['category'] = $product->product_category_name;
                     $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
@@ -2334,19 +2342,21 @@ class ReportController extends Controller
                     $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', '');
                     
     
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
                 foreach($services as $service){
                     $request['service_id'] = $service->id;
                     $arr['name'] = $service->name;
                     $arr['reference'] = $service->reference.''.$service->reference_number;
+                    $arr['category'] = $product->product_category_name;
                     $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                     $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
+                    $arr['units'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', '');
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
             }else{
                 $categories = ProductCategory::get();
@@ -2358,8 +2368,9 @@ class ReportController extends Controller
                 $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                 $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                 $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
+                $arr['units'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                 $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', '');
-                $data[] = $arr;
+                $finalData[] = $arr;
                 unset($request['productCategoryNull']);
                 foreach($categories as $category){
                     $request['productCategory'] = $category->id;
@@ -2370,15 +2381,27 @@ class ReportController extends Controller
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
                     $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','refused')->count();
                     $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
+                    $arr['units'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->count();
                     $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount'), 2, '.', '');
-                    $data[] = $arr;
+                    $finalData[] = $arr;
                 }
             }
     
         }
+
+        if($request->export){
+            $fileName = 'CATALOGTECHNICALSERVICEREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new IncidentByItemExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
+
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
             
     }
