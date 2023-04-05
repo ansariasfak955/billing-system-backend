@@ -22,7 +22,7 @@
         </tr>
         <tr>
             <th>Document Type:</th>
-            <td>{{$request->reference}}</td>
+            <td>{{$request->referenceType}}</td>
         </tr>
         <tr>
             @if($request->status)

@@ -46,6 +46,7 @@ use App\Exports\ReportExport\TechnicalOverViewExport;
 use App\Exports\ReportExport\IncidentsByClientExport;
 use App\Exports\ReportExport\IncidentsByAgentExport;
 use App\Exports\ReportExport\IncidentByClientExport;
+use App\Exports\ReportExport\IncidentByAgentExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -2162,10 +2163,10 @@ class ReportController extends Controller
             $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
         }
 
-        $data = [];
+        $finalData = [];
         if($request->type == 'incident_by_agent'){
-            $data['incident_agent'] = [];
-            $data['incident_agent'][] = [
+            $finalData['incident_agent'] = [];
+            $finalData['incident_agent'][] = [
             "type" => "bar",
             "label" => "" . \Auth::user()->name,
             "backgroundColor" => "#26C184",
@@ -2177,7 +2178,7 @@ class ReportController extends Controller
 
             // $referenceType = Reference::where('type', $request->referenceType)->pluck('prefix')->toArray();
             $arr = [];
-            $data = [];
+            $finalData = [];
 
             $arr['name'] = \Auth::user()->name;
             $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->whereIn('status',['pending','pending invoice'])->count();
@@ -2187,12 +2188,23 @@ class ReportController extends Controller
             $arr['total'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->count();
             $arr['amount'] = number_format(TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->get()->sum($taxColumn), 2, '.', '');
 
-                $data[] = $arr;
+                $finalData[] = $arr;
             
         }
+
+        if($request->export){
+            $fileName = 'EMPLOYEETECHNICALSERVICEREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new IncidentByAgentExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
+        }
+
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
             
     }
