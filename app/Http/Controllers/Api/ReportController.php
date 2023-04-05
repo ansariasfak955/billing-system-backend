@@ -48,6 +48,7 @@ use App\Exports\ReportExport\IncidentsByAgentExport;
 use App\Exports\ReportExport\IncidentByClientExport;
 use App\Exports\ReportExport\IncidentByAgentExport;
 use App\Exports\ReportExport\IncidentByItemExport;
+use App\Exports\ReportExport\PurchaseSupplierExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -2628,7 +2629,7 @@ class ReportController extends Controller
 
         // $referenceType = Reference::where('type', $request->type)->pluck('prefix')->toArray();
         $arr = [];
-        $data = [];
+        $finalData = [];
         if($request->category == 'supplier_categories'){
             $categories = ClientCategory::where('type','supplier')->get();
             $request['supplierCategoryNull'] = 1;
@@ -2636,7 +2637,7 @@ class ReportController extends Controller
             $arr['invoiced'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column), 2, '.', '');
             $arr['paid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
             $arr['Unpaid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
-            $data[] = $arr;
+            $finalData[] = $arr;
             unset($request['supplierCategoryNull']);
             foreach($categories as $category){
                 $request['supplierCategory'] = $category->id;
@@ -2644,22 +2645,35 @@ class ReportController extends Controller
                 $arr['invoiced'] = number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum($column), 2, '.', '');
                 $arr['paid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
                 $arr['Unpaid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
         }else{
 
             foreach($suppliers as $supplier){
                 $arr['name'] = $supplier->legal_name;
+                $arr['reference'] = $supplier->reference.''.$supplier->reference_number;
+                $arr['ruc'] = $supplier->tin;
+                $arr['category'] = $supplier->supplier_category_name;
                 $arr['invoiced'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum($column), 2, '.', '');
                 $arr['paid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum('amount_paid'), 2, '.', '');
                 $arr['Unpaid'] =  number_format(PurchaseTable::filter($request->all())->whereIn('reference',$referenceType)->where('supplier_id',$supplier->id)->get()->sum('amount_due'), 2, '.', '');
-                $data[] = $arr;
+                $finalData[] = $arr;
             }
+        }
+
+        if($request->export){
+            $fileName = 'SUPPLIERPURCHASEREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new PurchaseSupplierExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
             
             return response()->json([
                 "status" => true,
-                "data" =>  $data
+                "data" =>  $finalData
             ]);
     }
 
