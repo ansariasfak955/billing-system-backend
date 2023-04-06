@@ -53,6 +53,7 @@ use App\Exports\ReportExport\PurchaseItemExport;
 use App\Exports\ReportExport\StockValuationExport;
 use App\Exports\ReportExport\InvoiceByClientEvoluationExport;
 use App\Exports\ReportExport\InvoiceByAgentEvoluationExport;
+use App\Exports\ReportExport\InvoiceByItemEvoluationExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -617,7 +618,9 @@ class ReportController extends Controller
 
             foreach($products as $product){
                 $request['product_id'] = $product->id;
+                $arr['id'] = $product->id;
                 $arr['name'] = $product->name;
+                $arr['referenceType'] = $product->reference;
                 $arr['category'] = $product->product_category_name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 // $units = Item::where('reference_id', $product->id)->whereIn('reference',['PRO'])->count();
@@ -632,7 +635,9 @@ class ReportController extends Controller
             }
             foreach($services as $service){
                 $request['service_id'] = $service->id;
+                $arr['id'] = $service->id;
                 $arr['name'] = $service->name;
+                $arr['referenceType'] = $service->reference;
                 $arr['category'] = $product->product_category_name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 // $units = Item::where('reference_id', $service->id)->whereIn('reference',['SER'])->count();
@@ -4066,6 +4071,15 @@ class ReportController extends Controller
     
                 $finalData['data'][] = $arr;
             }
+        }
+        if($request->export){
+            $fileName = 'CATALOGINVOICINGEVOLUTIONREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new InvoiceByItemEvoluationExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
         return response()->json([
             'status' => true,
