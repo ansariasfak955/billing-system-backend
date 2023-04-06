@@ -11,14 +11,16 @@ class InvoiceByItemEvoluationExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $invoiceByItems;
-    public function __construct($invoiceByItems){
-        $this->invoiceByItems = $invoiceByItems;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $invoiceByItems = $this->invoiceByItems;
-        // dd($invoiceByItems);
-        return view('exports.reports.invoiceByItemEvoluation', compact('invoiceByItems'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.invoiceByItemEvoluation', compact('data','request'));
     }
 }

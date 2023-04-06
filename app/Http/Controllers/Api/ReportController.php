@@ -4034,6 +4034,7 @@ class ReportController extends Controller
             $arr = [];
             $arr['name'] = "Not found in catalog";
             $arr['reference'] = "-";
+            $arr['category'] = "_";
             $arr['total'] = 0;
             foreach($dates as $date){
                 $amount = number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column), 2, '.', '');
@@ -4046,6 +4047,7 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr = [];
                 $arr['name'] = $product->name;
+                $arr['category'] = $product->product_category_name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
@@ -4060,6 +4062,7 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr = [];
                 $arr['name'] = $service->name;
+                $arr['category'] = $service->product_category_name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
