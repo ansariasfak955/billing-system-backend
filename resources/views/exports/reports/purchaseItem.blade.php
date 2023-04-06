@@ -6,7 +6,7 @@
         </tr>
         <tr>
             <th>According to:</th>
-            <td>{{(@$request->category == 'catalog') ? 'Product Categories' : 'Catalog'}}</td>
+            <td>{{(@$request->category == 'catalog') ? 'Catalog' : 'Product Categories'}}</td>
         </tr>
         <tr>
             <th>Start Date:</th>
@@ -21,21 +21,33 @@
 <table>
     <thead>
         <tr>
+            @if(@$request->category == 'catalog')
             <th>Reference</th>
             <th>Name</th>
             <th>Product Category</th>
             <th>Units</th>
             <th>Invoiced (before tax)</th>
+            @else
+                <th>Name</th>
+                <th>Units</th>
+                <th>Invoiced (before tax)</th>
+            @endif
         </tr>
     </thead>
     <tbody>
         @foreach($data as $finalData)
         <tr>
-            <td>{{$finalData['reference']}}</td>
-            <td>{{$finalData['name']}}</td>
-            <td>{{$finalData['category']}}</td>
-            <td>{{$finalData['units']}}</td>
-            <td>{{$finalData['amount']}}</td>
+            @if(@$request->category == 'catalog')
+                <td>{{$finalData['reference']}}</td>
+                <td>{{$finalData['name']}}</td>
+                <td>{{$finalData['category']}}</td>
+                <td>{{$finalData['units']}}</td>
+                <td>{{$finalData['amount']}}</td>
+            @else
+                <td>{{$finalData['name']}}</td>
+                <td>{{$finalData['units']}}</td>
+                <td>{{$finalData['amount']}}</td>
+            @endif
         </tr>
         @endforeach
     </tbody>
