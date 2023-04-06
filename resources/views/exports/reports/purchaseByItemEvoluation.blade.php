@@ -1,16 +1,20 @@
 <table>
     <thead>
-        <tr>
+    <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{@$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{@$request->endDate}}</td>
+        </tr>
+        <tr>
+            <th>Grouped by:</th>
+            <td>{{ucwords($request->date_sub_type)}}</td>
         </tr>
     </thead>
 </table>
@@ -20,24 +24,22 @@
             <th>Reference</th>
             <th>Name</th>
             <th>Product Category</th>
-            <th>2023/Q1</th>
-            <th>2023/Q2</th>
-            <th>2023/Q3</th>
-            <th>2023/Q4</th>
+            @foreach($data['labels'] as $label)
+                <th>{{@$label}}</th>
+            @endforeach
             <th>Total</th>
         </tr>
     </thead>
     <tbody>
-        @foreach($purchaseByItems as $purchaseByItem)
+        @foreach($data['data'] as $finalData)
         <tr>
-            <td>{{$purchaseByItem['reference']}}</td>
-            <td>{{$purchaseByItem['name']}}</td>
-            <td>{{$purchaseByItem['product_category']}}</td>
-            <td>{{$purchaseByItem['Q1']}}</td>
-            <td>{{$purchaseByItem['Q2']}}</td>
-            <td>{{$purchaseByItem['Q3']}}</td>
-            <td>{{$purchaseByItem['Q4']}}</td>
-            <td>{{$purchaseByItem['total']}}</td>
+            <td>{{$finalData['reference']}}</td>
+            <td>{{$finalData['name']}}</td>
+            <td>{{$finalData['category']}}</td>
+            @foreach($finalData['data'] as $datas)
+                <td>{{@$datas}}</td>
+            @endforeach
+            <td>{{$finalData['total']}}</td>
         </tr>
         @endforeach
     </tbody>

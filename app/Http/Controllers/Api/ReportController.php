@@ -55,6 +55,7 @@ use App\Exports\ReportExport\InvoiceByClientEvoluationExport;
 use App\Exports\ReportExport\InvoiceByAgentEvoluationExport;
 use App\Exports\ReportExport\InvoiceByItemEvoluationExport;
 use App\Exports\ReportExport\PurchaseByProviderExport;
+use App\Exports\ReportExport\PurchasesByItemExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -4402,6 +4403,7 @@ class ReportController extends Controller
             $arr = [];
             $arr['name'] = "Not found in catalog";
             $arr['reference'] = "-";
+            $arr['category'] = "-";
             $arr['total'] = 0;
             foreach($dates as $date){
                 $amount = number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' =>$request->client, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id])->whereDoesntHave('products')->get()->sum($column), 2, '.', '');
@@ -4414,6 +4416,7 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr = [];
                 $arr['name'] = $product->name;
+                $arr['category'] = $product->product_category_name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
@@ -4428,6 +4431,7 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr = [];
                 $arr['name'] = $service->name;
+                $arr['category'] = $service->product_category_name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
@@ -4442,6 +4446,7 @@ class ReportController extends Controller
             foreach($expenses as $expense){
                 $arr = [];
                 $arr['name'] = $expense->name;
+                $arr['category'] = $expense->expense_category_name;
                 $arr['reference'] = $expense->reference.''.$expense->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
@@ -4453,6 +4458,15 @@ class ReportController extends Controller
     
                 $finalData['data'][] = $arr;
             }
+        }
+        if($request->export){
+            $fileName = 'CATALOGPURCHASEEVOLUTIONREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new PurchasesByItemExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
         return response()->json([
             'status' => true,
