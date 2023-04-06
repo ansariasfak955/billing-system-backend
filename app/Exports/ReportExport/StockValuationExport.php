@@ -12,14 +12,16 @@ class StockValuationExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $stockValuationExports;
-    public function __construct($stockValuationExports){
-        $this->stockValuationExports = $stockValuationExports;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $stockValuationExports = $this->stockValuationExports;
-        // dd($stockValuationExports);
-        return view('exports.reports.stockValuation', compact('stockValuationExports'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.stockValuation', compact('data','request'));
     }
 }

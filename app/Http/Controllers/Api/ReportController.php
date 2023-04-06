@@ -50,6 +50,7 @@ use App\Exports\ReportExport\IncidentByAgentExport;
 use App\Exports\ReportExport\IncidentByItemExport;
 use App\Exports\ReportExport\PurchaseSupplierExport;
 use App\Exports\ReportExport\PurchaseItemExport;
+use App\Exports\ReportExport\StockValuationExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -3332,24 +3333,34 @@ class ReportController extends Controller
         ItemMeta::setGlobalTable($item_meta_table);
         $products = Product::filter($request->all())->get();
         $arr = [];
-        $data = [];
+        $finalData = [];
         $column  = 'virtual_stock';
         if($request->stock  == 'stock'){
             $column  = 'stock';
         }
         foreach($products as $product){
             $arr['reference'] = $product->reference.$product->reference_number;
+            $arr['category'] = $product->product_category_name;
             $arr['name'] = $product->name;
             $stock = $product->$column;
             $arr['stock'] = $stock;
             $arr['sales_stock_value'] = $product->price*$stock;
             $arr['purchase_stock_value'] = $product->purchase_price*$stock;
 
-            $data[] = $arr;
+            $finalData[] = $arr;
+        }
+        if($request->export){
+            $fileName = 'STOCKVALUATIONREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new StockValuationExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
         return response()->json([
             "status" => true,
-            "data" => $data
+            "data" => $finalData
         ]);
         
     }

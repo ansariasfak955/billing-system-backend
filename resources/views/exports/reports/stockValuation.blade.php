@@ -2,11 +2,15 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>Date:</th>
-            <td>data</td>
+            <td>{{$request->date}}</td>
+        </tr>
+        <tr>
+            <th>Stock:</th>
+            <td>{{($request->stock) ? 'Real' : 'Virtual Stock'}}</td>
         </tr>
     </thead>
 </table>
@@ -22,14 +26,14 @@
         </tr>
     </thead>
     <tbody>
-    @foreach($stockValuationExports as $stockValuationExport)
+    @foreach($data as $finalData)
         <tr>
-            <td>{{$stockValuationExport['reference']}}</td>
-            <td>{{$stockValuationExport['name']}}</td>
-            <td>{{$stockValuationExport['stock']}}</td>
-            <td>{{$stockValuationExport['sales_stock_value']}}</td>
-            <td>{{$stockValuationExport['purchase_stock_value']}}</td>
-            <td>{{$stockValuationExport['category']}}</td>
+            <td>{{$finalData['reference']}}</td>
+            <td>{{$finalData['name']}}</td>
+            <td>{{$finalData['stock']}}</td>
+            <td>{{$finalData['sales_stock_value']}}</td>
+            <td>{{$finalData['purchase_stock_value']}}</td>
+            <td>{{$finalData['category']}}</td>
         </tr>
         @endforeach
     </tbody>
