@@ -11,14 +11,16 @@ class PurchaseByProviderExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $purchaseByProviders;
-    public function __construct($purchaseByProviders){
-        $this->purchaseByProviders = $purchaseByProviders;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $purchaseByProviders = $this->purchaseByProviders;
-        // dd($purchaseByProviders);
-        return view('exports.reports.invoiceByItemEvoluation', compact('purchaseByProviders'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.purchaseByProviderEvoluation', compact('data','request'));
     }
 }

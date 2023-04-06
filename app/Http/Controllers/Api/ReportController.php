@@ -54,6 +54,7 @@ use App\Exports\ReportExport\StockValuationExport;
 use App\Exports\ReportExport\InvoiceByClientEvoluationExport;
 use App\Exports\ReportExport\InvoiceByAgentEvoluationExport;
 use App\Exports\ReportExport\InvoiceByItemEvoluationExport;
+use App\Exports\ReportExport\PurchaseByProviderExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -4182,6 +4183,10 @@ class ReportController extends Controller
             foreach($suppliers as $supplier){
                 $arr = [];
                 $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
+                $arr['reference'] = $supplier->reference.$supplier->reference_number;
+                $arr['ruc'] = $supplier->zip_code;
+                $arr['tin'] = $supplier->tin;
+                $arr['category'] = $supplier->supplier_category_name;
                 $arr['total'] = 0;
                 foreach($dates as $date){
                     $amount = number_format(PurchaseTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'supplier' => $supplier->id, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id ,'service_id' => $request->service_id])->whereIn('reference', $referenceType)->get()->sum($column), 2, '.', '');
@@ -4192,6 +4197,15 @@ class ReportController extends Controller
     
                 $finalData['data'][] = $arr;
             }
+        }
+        if($request->export){
+            $fileName = 'SUPPLIERPURCHASEEVOLUTIONREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new PurchaseByProviderExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
         return response()->json([
             'status' => true,
