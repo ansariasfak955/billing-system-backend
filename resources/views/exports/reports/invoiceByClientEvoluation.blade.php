@@ -2,19 +2,23 @@
     <thead>
         <tr>
             <th>Currency:</th>
-            <td>data</td>
+            <td>USD $ - US Dollar</td>
         </tr>
         <tr>
             <th>After tax:</th>
-            <td>data</td>
+            <td>{{(@$request->after_tax) ? 'Yes' : 'No'}}</td>
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{@$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{@$request->endDate}}</td>
+        </tr>
+        <tr>
+            <th>Grouped by:</th>
+            <td>{{ucwords($request->date_sub_type)}}</td>
         </tr>
     </thead>
 </table>
@@ -26,26 +30,25 @@
             <th>TIN</th>
             <th>Client Category</th>
             <th>Post/Zip Code</th>
-            <th>2023/Q1</th>
-            <th>2023/Q2</th>
-            <th>2023/Q3</th>
-            <th>2023/Q4</th>
+            @foreach($data['labels'] as $label)
+            <th>{{@$label}}</th>
+            @endforeach
             <th>Total</th>
         </tr>
     </thead>
     <tbody>
-        @foreach($invoiceByClients as $invoiceByClient)
+        @foreach($data['data'] as $finalData)
+            
         <tr>
-            <td>{{$invoiceByClient['reference']}}</td>
-            <td>{{$invoiceByClient['name']}}</td>
-            <td>{{$invoiceByClient['tin']}}</td>
-            <td>{{$invoiceByClient['client_category']}}</td>
-            <td>{{$invoiceByClient['zip_code']}}</td>
-            <td>{{$invoiceByClient['Q1']}}</td>
-            <td>{{$invoiceByClient['Q2']}}</td>
-            <td>{{$invoiceByClient['Q3']}}</td>
-            <td>{{$invoiceByClient['Q4']}}</td>
-            <td>{{$invoiceByClient['total']}}</td>
+            <td>{{@$finalData['reference']}}</td>
+            <td>{{@$finalData['name']}}</td>
+            <td>{{@$finalData['tin']}}</td>
+            <td>{{@$finalData['client_category']}}</td>
+            <td>{{@$finalData['zip_code']}}</td>
+            @foreach($finalData['data'] as $datas)
+                <td>{{@$datas}}</td>
+            @endforeach
+            <td>{{@$finalData['total']}}</td>
         </tr>
         @endforeach
     </tbody>

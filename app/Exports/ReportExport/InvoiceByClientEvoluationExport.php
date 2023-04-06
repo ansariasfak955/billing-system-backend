@@ -11,14 +11,16 @@ class InvoiceByClientEvoluationExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $invoiceByClients;
-    public function __construct($invoiceByClients){
-        $this->invoiceByClients = $invoiceByClients;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $invoiceByClients = $this->invoiceByClients;
-        // dd($invoiceByClients);
-        return view('exports.reports.invoiceByClientEvoluation', compact('invoiceByClients'));
+        $data = $this->data;
+        $request = $this->request;
+
+        return view('exports.reports.invoiceByClientEvoluation', compact('data','request'));
     }
 }

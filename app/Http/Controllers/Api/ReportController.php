@@ -51,6 +51,7 @@ use App\Exports\ReportExport\IncidentByItemExport;
 use App\Exports\ReportExport\PurchaseSupplierExport;
 use App\Exports\ReportExport\PurchaseItemExport;
 use App\Exports\ReportExport\StockValuationExport;
+use App\Exports\ReportExport\InvoiceByClientEvoluationExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -2351,7 +2352,7 @@ class ReportController extends Controller
                     $request['service_id'] = $service->id;
                     $arr['name'] = $service->name;
                     $arr['reference'] = $service->reference.''.$service->reference_number;
-                    $arr['category'] = $product->product_category_name;
+                    $arr['category'] = $service->product_category_name;
                     $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
                     $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
@@ -3741,6 +3742,10 @@ class ReportController extends Controller
             foreach($clients as $client){
                 $arr = [];
                 $arr['name'] = $client->legal_name.' ('.$client->name.')';
+                $arr['reference'] = $client->reference.''.$client->reference_number;
+                $arr['tin'] = $client->tin;
+                $arr['client_category'] = $client->client_category_name;
+                $arr['zip_code'] = $client->zip_code;
                 $arr['total'] = 0;
                 foreach($dates as $date){
                     $amount = number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $client->id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'product_id' => $request->product_id, 'service_id' => $request->service_id])->get()->sum($column), 2, '.', '');
@@ -3750,7 +3755,18 @@ class ReportController extends Controller
                 
     
                 $finalData['data'][] = $arr;
+                
             }
+            
+        }
+        if($request->export){
+            $fileName = 'CLIENTINVOICINGEVOLUTIONREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new InvoiceByClientEvoluationExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
         return response()->json([
             'status' => true,
