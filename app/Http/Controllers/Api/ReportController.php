@@ -52,6 +52,7 @@ use App\Exports\ReportExport\PurchaseSupplierExport;
 use App\Exports\ReportExport\PurchaseItemExport;
 use App\Exports\ReportExport\StockValuationExport;
 use App\Exports\ReportExport\InvoiceByClientEvoluationExport;
+use App\Exports\ReportExport\InvoiceByAgentEvoluationExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -3864,6 +3865,16 @@ class ReportController extends Controller
             
 
             $finalData['data'][] = $arr;
+        }
+
+        if($request->export){
+            $fileName = 'EMPLOYEEINVOICINGEVOLUTIONREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new InvoiceByAgentEvoluationExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
         return response()->json([
             'status' => true,
