@@ -56,6 +56,7 @@ use App\Exports\ReportExport\InvoiceByAgentEvoluationExport;
 use App\Exports\ReportExport\InvoiceByItemEvoluationExport;
 use App\Exports\ReportExport\PurchaseByProviderExport;
 use App\Exports\ReportExport\PurchasesByItemExport;
+use App\Exports\ReportExport\TaxSummaryExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -3406,7 +3407,7 @@ class ReportController extends Controller
         $referenceTable = 'company_'.$request->company_id.'_references';
         Reference::setGlobalTable($referenceTable);
 
-        $data = [];
+        $finalData = [];
         $taxes =  ConsumptionTax::get();
         $column = 'vat';
         if($request->name  == 'income_tax'){
@@ -3417,10 +3418,10 @@ class ReportController extends Controller
         }
         if($request->type == 'taxSummary'){
         $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice','Purchase Invoice'])->pluck('prefix')->toArray();
-         $data = [];
-         $data['tax_Summary'] = [];
+         $finalData = [];
+         $finalData['tax_Summary'] = [];
         foreach($taxes as $tax){
-                $data['tax_Summary'][] = [
+                $finalData['tax_Summary'][] = [
                     "type" => "bar", 
                     "label" => "Collected", 
                     "backgroundColor" => "#26C184", 
@@ -3430,7 +3431,7 @@ class ReportController extends Controller
                         })->get()->sum('tax_amount'), 2, '.', ''),
                     ]  
                 ];
-                $data['tax_Summary'][] = [
+                $finalData['tax_Summary'][] = [
                     "type" => "bar", 
                     "label" => "Paid", 
                     "backgroundColor" => "#FB6363", 
@@ -3440,7 +3441,7 @@ class ReportController extends Controller
                         })->get()->sum('tax_amount'), 2, '.', ''),
                     ]  
                 ];
-                $data['tax_Summary'][] = [
+                $finalData['tax_Summary'][] = [
                     "type" => "bar", 
                     "label" => "Total", 
                     "backgroundColor" => "#FE9140", 
@@ -3453,7 +3454,7 @@ class ReportController extends Controller
             }
         }else{
             $arr = [];
-            $data = [];
+            $finalData = [];
             foreach($taxes as $tax){
 
                 $arr['vat'] = $tax->primary_name.' '.$tax->tax.' '.'%';
@@ -3487,13 +3488,22 @@ class ReportController extends Controller
                     $query->where($column, $tax->tax);
                 })->get()->sum('tax_amount'), 2, '.', '');
 
-                $data[] = $arr;
+                $finalData[] = $arr;
             }   
+        }
+        if($request->export){
+            $fileName = 'TAXREPORT-'.time().$request->company_id.'.xlsx';
+
+            Excel::store(new TaxSummaryExport($finalData, $request), 'public/xlsx/'.$fileName);
+            return response()->json([
+                'status' => true,
+                'url' => url('/storage/xlsx/'.$fileName),
+             ]);
         }
         
         return response()->json([
             "status" => true,
-            "data" =>  $data
+            "data" =>  $finalData
         ]);
 
     }

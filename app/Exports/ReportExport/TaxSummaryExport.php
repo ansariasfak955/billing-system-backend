@@ -13,14 +13,16 @@ class TaxSummaryExport implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
-    protected $taxes;
-    public function __construct($taxes){
-        $this->taxes = $taxes;
+    protected $data,$request;
+    public function __construct($data,$request){
+        $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
-        $taxes = $this->taxes;
-        // dd($taxes);
-        return view('exports.reports.taxSummary', compact('taxes'));
+        $data = $this->data;
+        $request = $this->request;
+        // dd($data);
+        return view('exports.reports.taxSummary', compact('data','request'));
     }
 }
