@@ -2053,7 +2053,7 @@ class ReportController extends Controller
                 unset($request['clientCategoryNull']);
                 foreach($categories as $category){
                     $request['clientCategory'] = $category->id;
-                    $data['incident_clients'][] = [
+                    $finalData['incident_clients'][] = [
                     "type" => "bar",
                     "label" => "" .  $category->name,
                     "backgroundColor" => "#26C184",
@@ -2066,7 +2066,7 @@ class ReportController extends Controller
                 $client_ids = TechnicalTable::filter($request->all())->whereHas('client')->pluck('client_id')->toArray();
                 $clients = Client::whereIn('id',$client_ids)->get();
                 foreach($clients as $client){
-                    $data['incident_clients'][] = [
+                    $finalData['incident_clients'][] = [
                     "type" => "bar",
                     "label" => "" .  $client->legal_name,
                     "backgroundColor" => "#26C184",
