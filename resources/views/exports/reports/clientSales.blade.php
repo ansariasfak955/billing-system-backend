@@ -70,8 +70,8 @@
                     <td>{{$finatData['amount']}}</td>
                 @else
                     <td>{{$finatData['reference']}}</td>
-                    <td>{{$finatData['name']}}</td>
                     <td>{{$finatData['tin']}}</td>
+                    <td>{{$finatData['name']}}</td>
                     <td>{{@$finatData['category']}}</td>
                     <td>{{$finatData['pending']}}</td>
                     <td>{{$finatData['refused']}}</td>
