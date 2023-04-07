@@ -48,10 +48,14 @@
                     <th>RUC</th>
                     <th>Name</th>
                     <th>Client Category</th>
-                    <th>Pending</th>
-                    <th>Refused</th>
-                    <th>Accepted</th>
-                    <th>Closed</th>
+                    @if($request->status)
+                        <th>{{@$request->status}}</th>
+                    @else
+                        <th>Pending</th>
+                        <th>Refused</th>
+                        <th>Accepted</th>
+                        <th>Closed</th>
+                    @endif
                     <th>Total</th>
                     <th>Amount</th>
                 @endif
@@ -73,10 +77,14 @@
                     <td>{{$finatData['tin']}}</td>
                     <td>{{$finatData['name']}}</td>
                     <td>{{@$finatData['category']}}</td>
-                    <td>{{$finatData['pending']}}</td>
-                    <td>{{$finatData['refused']}}</td>
-                    <td>{{$finatData['accepted']}}</td>
-                    <td>{{$finatData['closed']}}</td>
+                    @if($request->status)
+                        <td>{{@$finatData[$request->status]}}</td>
+                    @else
+                        <td>{{$finatData['pending']}}</td>
+                        <td>{{$finatData['refused']}}</td>
+                        <td>{{$finatData['accepted']}}</td>
+                        <td>{{$finatData['closed']}}</td>
+                    @endif
                     <td>{{$finatData['total']}}</td>
                     <td>{{$finatData['amount']}}</td>
                 @endif
