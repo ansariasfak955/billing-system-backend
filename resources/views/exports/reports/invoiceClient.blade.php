@@ -10,7 +10,7 @@
         </tr>
         <tr>
             <th>According to:</th>
-            <td>{{(@$request->category == 'client_categories') ? 'Client Categories' : 'Clients'}}</td>
+            <td>{{(@$request->category == 'client_categories') ? 'Client Categories' : 'Clients' }}</td>
         </tr>
         <tr>
             <th>Start Date:</th>
@@ -20,35 +20,49 @@
             <th>End Date:</th>
             <td>{{@$request->endDate}}</td>
         </tr>
+        <tr>
+            <th>Selected Product:</th>
+            <td>{{@$request->endDate}}</td>
+        </tr>
     </thead>
 </table>
 <table>
     <thead>
         <tr>
-            @if(@$request->category == 'clients') 
+            @if(@$request->category == 'client') 
                 <th>Reference</th>
                 <th>RUC</th>
                 <th>Name</th>
+                <th>Client Category</th>
+                <th>Invoiced</th>
+                <th>Paid</th>
+                <th>Unpaid</th>
+            @else
+                <th>Name</th>
+                <th>Invoiced</th>
+                <th>Paid</th>
+                <th>Unpaid</th>
             @endif
-            <th>Client Category</th>
-            <th>Invoiced</th>
-            <th>Paid</th>
-            <th>Unpaid</th>
         </tr>
     </thead>
     <tbody>
         @foreach($data as $invoiceClients)
             <tr>
-                @if(@$request->category == 'clients')
+                @if(@$request->category == 'client')
                     <td>{{@$invoiceClients['reference']}}</td>
                     <td>{{@$invoiceClients['ruc']}}</td>
                     <td>{{@$invoiceClients['name']}}</td>
+                    <td>{{@$invoiceClients['category']}}</td>
+                    <td>{{@$invoiceClients['invoiced']}}</td>
+                    <td>{{@$invoiceClients['paid']}}</td>
+                    <td>{{@$invoiceClients['Unpaid']}}</td>
+                @else
+                    <td>{{@$invoiceClients['name']}}</td>
+                    <td>{{@$invoiceClients['invoiced']}}</td>
+                    <td>{{@$invoiceClients['paid']}}</td>
+                    <td>{{@$invoiceClients['Unpaid']}}</td>
                 @endif
-            <td>{{@$invoiceClients['category']}}</td>
-            <td>{{@$invoiceClients['invoiced']}}</td>
-            <td>{{@$invoiceClients['paid']}}</td>
-            <td>{{@$invoiceClients['Unpaid']}}</td>
-        </tr>
+            </tr>
         @endforeach
     </tbody>
 </table>

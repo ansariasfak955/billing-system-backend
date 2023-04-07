@@ -455,7 +455,8 @@ class ReportController extends Controller
             $clients = Client::whereIn('id',$client_ids)->get();
             $referenceType = Reference::whereIn('type', ['Normal Invoice', 'Refund Invoice'])->pluck('prefix')->toArray();
             $finalData = [];
-            
+
+
             if($request->category == 'client_categories'){
                 $arr = [];
                 //no category history
@@ -489,6 +490,12 @@ class ReportController extends Controller
                     $finalData[] = $arr;
                 }
             }
+
+            // if($request->product_id){
+            //     $productIds = Product::where('id',$request->product_id)->first();
+            // }
+            //     $arr['selectProduct'] = $productIds->reference.$productIds->reference_number.' '.$productIds->name;
+            //     $finalData[] = $arr;
 
             if($request->export){
                 $fileName = 'INVOICECLIENTREPORT-'.time().$request->company_id.'.xlsx';

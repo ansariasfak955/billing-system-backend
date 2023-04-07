@@ -6,11 +6,11 @@
         </tr>
         <tr>
             <th>Start Date:</th>
-            <td>data</td>
+            <td>{{@$request->startDate}}</td>
         </tr>
         <tr>
             <th>End Date:</th>
-            <td>data</td>
+            <td>{{@$request->endDate}}</td>
         </tr>
     </thead>
 </table>

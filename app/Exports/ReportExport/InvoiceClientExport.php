@@ -13,12 +13,13 @@ class InvoiceClientExport implements FromView
     protected $data,$request;
     public function __construct($data, $request){
         $this->data = $data;
+        $this->request = $request;
     }
        public function view(): View
     {
         $data = $this->data;
         $request = $this->request;
-        // dd($data);
+        dd($data);
         return view('exports.reports.invoiceClient', compact('data','request'));
     }
 }
