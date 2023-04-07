@@ -21,8 +21,10 @@
             <td>{{@$request->endDate}}</td>
         </tr>
         <tr>
-            <th>Selected Product:</th>
-            <td>{{@$request->endDate}}</td>
+            @if(@$request->product_id)
+                <th>Selected Product:</th>
+                <td>{{@$data['selectProduct']}}</td>
+            @endif
         </tr>
     </thead>
 </table>

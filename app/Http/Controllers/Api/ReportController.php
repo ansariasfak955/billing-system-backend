@@ -491,12 +491,12 @@ class ReportController extends Controller
                 }
             }
 
-            // if($request->product_id){
-            //     $productIds = Product::where('id',$request->product_id)->first();
-            // }
-            //     $arr['selectProduct'] = $productIds->reference.$productIds->reference_number.' '.$productIds->name;
-            //     $finalData[] = $arr;
-
+            if($request->product_id){
+                $product = Product::where('id',$request->product_id)->first();
+                $arr['selectProduct'] = $product->reference.$product->reference_number.' '.$product->name;
+                $finalData[] = $arr;
+            }
+                
             if($request->export){
                 $fileName = 'INVOICECLIENTREPORT-'.time().$request->company_id.'.xlsx';
                 Excel::store(new InvoiceClientExport($finalData, $request), 'public/xlsx/'.$fileName);
