@@ -187,6 +187,12 @@ Route::group(['namespace' => 'Api'], function() {
     Route::group(['middleware' => ['auth:api']], function(){
         Route::apiResource('companies', CompanyController::class);
         Route::post('update-profile', 'UserController@updateProfile');
+        Route::get('get-current-user', function(){
+            return response()->json([
+                'success' => true,
+                'data' => \Auth::user(),
+            ]);
+        });
         Route::group(["prefix" => "{company_id}/"], function(){
             Route::get('dashboard-counts', 'DashboardController@index');
             Route::apiResource('bank_accounts', BankAccountController::class);
