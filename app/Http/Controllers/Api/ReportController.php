@@ -496,7 +496,6 @@ class ReportController extends Controller
                 $arr['selectProduct'] = $product->reference.$product->reference_number.' '.$product->name;
                 $finalData[] = $arr;
             }
-                
             if($request->export){
                 $fileName = 'INVOICECLIENTREPORT-'.time().$request->company_id.'.xlsx';
                 Excel::store(new InvoiceClientExport($finalData, $request), 'public/xlsx/'.$fileName);
@@ -668,6 +667,7 @@ class ReportController extends Controller
             $arr['paid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_paid'), 2, '.', '');
             $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->get()->sum('amount_due'), 2, '.', '');
             $arr['amount'] =  number_format(InvoiceTable::filter($request->all())->get()->sum('amount'), 2, '.', '');
+            // $arr['units'] = $units;
             unset($request['productCategoryNull']);
             $finalData[] = $arr;
             foreach($categories as $category){

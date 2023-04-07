@@ -25,10 +25,13 @@
             <th>Reference</th>
             <th>Name</th>
             <th>Product Category</th>
-        @endif
-            <th>Name</th>
             <th>Units</th>
             <th>Invoiced (before tax)</th>
+        @else
+            <th>Name</th>
+            <th>Invoiced (before tax)</th>
+        @endif
+            
         </tr>
     </thead>
     <tbody>
@@ -38,12 +41,12 @@
                 <td>{{$finalData['reference']}}</td>
                 <td>{{$finalData['name']}}</td>
                 <td>{{$finalData['category']}}</td>
-            @endif
-            <td>{{$finalData['name']}}</td>
-            @if($request->category == 'catalog')
                 <td>{{$finalData['units']}}</td>
+                <td>{{$finalData['amount']}}</td>
+            @else
+                <td>{{$finalData['name']}}</td>
+                <td>{{$finalData['amount']}}</td>
             @endif
-            <td>{{$finalData['amount']}}</td>
 
         </tr>
         @endforeach
