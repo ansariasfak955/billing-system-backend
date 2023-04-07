@@ -31,16 +31,16 @@
 <table>
     <thead>
         <tr>
-            @if(@$request->category == 'client') 
-                <th>Reference</th>
-                <th>RUC</th>
+            @if(@$request->category == 'client_categories') 
                 <th>Name</th>
-                <th>Client Category</th>
                 <th>Invoiced</th>
                 <th>Paid</th>
                 <th>Unpaid</th>
             @else
+                <th>Reference</th>
+                <th>RUC</th>
                 <th>Name</th>
+                <th>Client Category</th>
                 <th>Invoiced</th>
                 <th>Paid</th>
                 <th>Unpaid</th>
@@ -50,16 +50,16 @@
     <tbody>
         @foreach($data as $invoiceClients)
             <tr>
-                @if(@$request->category == 'client')
-                    <td>{{@$invoiceClients['reference']}}</td>
-                    <td>{{@$invoiceClients['ruc']}}</td>
+                @if(@$request->category == 'client_categories')
                     <td>{{@$invoiceClients['name']}}</td>
-                    <td>{{@$invoiceClients['category']}}</td>
                     <td>{{@$invoiceClients['invoiced']}}</td>
                     <td>{{@$invoiceClients['paid']}}</td>
                     <td>{{@$invoiceClients['Unpaid']}}</td>
                 @else
+                    <td>{{@$invoiceClients['reference']}}</td>
+                    <td>{{@$invoiceClients['ruc']}}</td>
                     <td>{{@$invoiceClients['name']}}</td>
+                    <td>{{@$invoiceClients['category']}}</td>
                     <td>{{@$invoiceClients['invoiced']}}</td>
                     <td>{{@$invoiceClients['paid']}}</td>
                     <td>{{@$invoiceClients['Unpaid']}}</td>
