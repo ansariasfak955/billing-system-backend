@@ -20,15 +20,15 @@
 </table>
 <table>
     <thead>
-        <tr>
-        @if($request->category == 'catalog')
+        <tr> 
+        @if($request->category == 'product_categories')
+            <th>Name</th>
+            <th>Invoiced (before tax)</th>
+        @else
             <th>Reference</th>
             <th>Name</th>
             <th>Product Category</th>
             <th>Units</th>
-            <th>Invoiced (before tax)</th>
-        @else
-            <th>Name</th>
             <th>Invoiced (before tax)</th>
         @endif
             
@@ -37,14 +37,14 @@
     <tbody>
         @foreach($data as $finalData)
         <tr>
-            @if($request->category == 'catalog')
+            @if($request->category == 'product_categories')
+                <td>{{$finalData['name']}}</td>
+                <td>{{$finalData['amount']}}</td>
+            @else
                 <td>{{$finalData['reference']}}</td>
                 <td>{{$finalData['name']}}</td>
                 <td>{{$finalData['category']}}</td>
                 <td>{{$finalData['units']}}</td>
-                <td>{{$finalData['amount']}}</td>
-            @else
-                <td>{{$finalData['name']}}</td>
                 <td>{{$finalData['amount']}}</td>
             @endif
 
