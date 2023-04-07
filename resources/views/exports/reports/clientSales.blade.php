@@ -35,21 +35,19 @@
 <table>
     <thead>
         <tr>
-                @if($request->category == 'clients')
+                @if($request->category == 'client_categories')
+                    <th>Name</th>
+                    <th>Pending</th>
+                    <th>Refused</th>
+                    <th>Accepted</th>
+                    <th>Closed</th>
+                    <th>Total</th>
+                    <th>Amount</th>
+                @else
                     <th>Reference</th>
                     <th>RUC</th>
                     <th>Name</th>
                     <th>Client Category</th>
-                @endif
-                @if($request->status)
-                    <th>Pending</th>
-                @elseif($request->status)
-                    <th>Refused</th>
-                @elseif($request->status)
-                    <th>Accepted</th>
-                @elseif($request->status)
-                    <th>Closed</th>
-                @else
                     <th>Pending</th>
                     <th>Refused</th>
                     <th>Accepted</th>
@@ -62,21 +60,19 @@
     <tbody>
         @foreach($data as $finatData)
         <tr>
-                @if($request->category == 'clients')
-                    <td>{{$finatData['reference']}}</td>
-                    <td>{{$finatData['tin']}}</td>
+                @if($request->category == 'client_categories')
                     <td>{{$finatData['name']}}</td>
-                    <td>{{@$finatData['category']}}</td>
-                @endif
-                @if($request->status)
                     <td>{{$finatData['pending']}}</td>
-                @elseif($request->status)
                     <td>{{$finatData['refused']}}</td>
-                @elseif($request->status)
                     <td>{{$finatData['accepted']}}</td>
-                @elseif($request->status)
                     <td>{{$finatData['closed']}}</td>
+                    <td>{{$finatData['total']}}</td>
+                    <td>{{$finatData['amount']}}</td>
                 @else
+                    <td>{{$finatData['reference']}}</td>
+                    <td>{{$finatData['name']}}</td>
+                    <td>{{$finatData['tin']}}</td>
+                    <td>{{@$finatData['category']}}</td>
                     <td>{{$finatData['pending']}}</td>
                     <td>{{$finatData['refused']}}</td>
                     <td>{{$finatData['accepted']}}</td>

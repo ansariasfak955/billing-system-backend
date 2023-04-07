@@ -20,7 +20,7 @@ class SalesClientExport implements FromView
     {
         $data = $this->data;
         $request = $this->request;
-        // dd($data);
+        dd($data);
         return view('exports.reports.clientSales', compact('data','request'));
     }
 }
