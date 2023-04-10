@@ -481,6 +481,7 @@ class ReportController extends Controller
             }else{
                 foreach($clients as $client){
                     $arr['name'] = $client->legal_name;
+                    $arr['id'] = $client->id;
                     $arr['reference'] = $client->reference.''.$client->reference_number;
                     $arr['ruc'] = $client->tin;
                     $arr['category'] = $client->client_category_name;
@@ -558,6 +559,7 @@ class ReportController extends Controller
         $arr = [];
         $finalData = [];
         $arr['name'] = \Auth::user()->name;
+        $arr['id'] = \Auth::user()->id;
         $arr['invoiced'] = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum($column), 2, '.', '');
         $arr['paid'] = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_paid'), 2, '.', '');
         $arr['Unpaid'] = number_format(InvoiceTable::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->get()->sum('amount_due'), 2, '.', '');
@@ -1111,6 +1113,7 @@ class ReportController extends Controller
             $clients = Client::whereIn('id',$client_ids)->get();
             foreach($clients as $client){
                 $arr['name'] = $client->legal_name;
+                $arr['id'] = $client->id;
                 $arr['reference'] = $client->reference.''.$client->reference_number;
                 $arr['tin'] = $client->tin;
                 $arr['category'] = $client->client_category_name;
@@ -1305,6 +1308,8 @@ class ReportController extends Controller
                 foreach($products as $product){
                     $request['product_id'] = $product->id;
                     $arr['name'] = $product->name;
+                    $arr['id'] = $product->id;
+                    $arr['referenceType'] = $product->reference;
                     $arr['reference'] = $product->reference.''.$product->reference_number;
                     $arr['category'] = $product->product_category_name;
                     $arr['pending'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
@@ -1319,8 +1324,10 @@ class ReportController extends Controller
                 foreach($services as $service){
                     $request['service_id'] = $service->id;
                     $arr['name'] = $service->name;
+                    $arr['id'] = @$service->id;
+                    $arr['referenceType'] = @$service->reference;
                     $arr['reference'] = $service->reference.''.$service->reference_number;
-                    $arr['category'] = $product->product_category_name;
+                    $arr['category'] = @$service->product_category_name;
                     $arr['pending'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','pending')->count();
                     $arr['accepted'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','accepted')->count();
                     $arr['closed'] = SalesEstimate::filter($request->all())->whereIn('reference',$referenceType)->where('status','closed')->count();
@@ -1893,6 +1900,7 @@ class ReportController extends Controller
     
                     
                     $arr['name'] = $client->legal_name.' ('.$client->name.')';
+                    $arr['id'] = $client->id;
                     $arr['reference'] = $client->reference.''.$client->reference_number;
                     $arr['ruc'] = $client->tin;
                     $arr['pending'] = TechnicalIncident::filter(['client_id' => $client->id, 'agent_id' =>$request->agent_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->where('reference',$referenceType)->where('status', 'pending')->count();
@@ -1969,6 +1977,7 @@ class ReportController extends Controller
 
         $finalData[] = $arr;
         $arr['name'] = \Auth::user()->name;
+        $arr['id'] = \Auth::user()->id;
         $arr['pending'] = TechnicalIncident::filter(['client_id' => $request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'Pending')->count();
         $arr['refused'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'Refused')->count();
         $arr['resolved'] = TechnicalIncident::filter(['client_id' =>$request->client_id,'startDate' => $request->startDate,'endDate' => $request->endDate,'year' => $request->year ])->whereIn('reference',$referenceType)->where('assigned_to',\Auth::id())->where('status', 'resolved')->count();
@@ -2112,6 +2121,7 @@ class ReportController extends Controller
     
                 foreach($clients as $client){
                     $arr['name'] = $client->legal_name;
+                    $arr['id'] = $client->id;
                     $arr['reference'] = $client->reference.''.$client->reference_number;
                     $arr['ruc'] = $client->tin;
                     $arr['category'] = $client->client_category_name;
@@ -2202,6 +2212,7 @@ class ReportController extends Controller
             $finalData = [];
 
             $arr['name'] = \Auth::user()->name;
+            $arr['id'] = \Auth::user()->id;
             $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->whereIn('status',['pending','pending invoice'])->count();
             $arr['refused'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','refused')->count();
             $arr['accepted'] = TechnicalTable::filter($request->all())->whereIn('reference', $referenceType)->where('agent_id',\Auth::id())->where('status','accepted')->count();
@@ -2350,6 +2361,8 @@ class ReportController extends Controller
                 foreach($products as $product){
                     $request['product_id'] = $product->id;
                     $arr['name'] = $product->name;
+                    $arr['id'] = $product->id;
+                    $arr['referenceType'] = $product->reference;
                     $arr['reference'] = $product->reference.''.$product->reference_number;
                     $arr['category'] = $product->product_category_name;
                     $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
@@ -2366,6 +2379,8 @@ class ReportController extends Controller
                 foreach($services as $service){
                     $request['service_id'] = $service->id;
                     $arr['name'] = $service->name;
+                    $arr['id'] = $service->id;
+                    $arr['referenceType'] = $service->reference;
                     $arr['reference'] = $service->reference.''.$service->reference_number;
                     $arr['category'] = $service->product_category_name;
                     $arr['pending'] = TechnicalTable::filter($request->all())->whereIn('reference',$referenceType)->whereIn('status',['pending','pending invoice'])->count();
@@ -2669,6 +2684,8 @@ class ReportController extends Controller
 
             foreach($suppliers as $supplier){
                 $arr['name'] = $supplier->legal_name;
+                $arr['id'] = $supplier->id;
+                $arr['referenceType'] = $supplier->reference;
                 $arr['reference'] = $supplier->reference.''.$supplier->reference_number;
                 $arr['ruc'] = $supplier->tin;
                 $arr['category'] = $supplier->supplier_category_name;
@@ -2760,6 +2777,8 @@ class ReportController extends Controller
 
             foreach($products as $product){
                 $request['product_id'] = $product->id;
+                $arr['id'] = $product->id;
+                $arr['referenceType'] = $product->reference;
                 $arr['name'] = $product->name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['category'] = $product->product_category_name;
@@ -2771,6 +2790,8 @@ class ReportController extends Controller
             }
             foreach($services as $service){
                 $request['service_id'] = $service->id;
+                $arr['id'] = $service->id;
+                $arr['referenceType'] = $service->reference;
                 $arr['name'] = $service->name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['category'] = $product->product_category_name;
@@ -2780,6 +2801,8 @@ class ReportController extends Controller
             }
             foreach($expenses as $expense){
                 $request['expense_id'] = $expense->id;
+                $arr['id'] = $expense->id;
+                $arr['referenceType'] = $expense->reference;
                 $arr['name'] = $expense->name;
                 $arr['reference'] = $expense->reference.''.$expense->reference_number;
                 $arr['category'] = $product->expense_category_name;
@@ -3073,6 +3096,7 @@ class ReportController extends Controller
             })->get()->sum($column), 2, '.', '');
                 // dd($invoiceAmount);
             $arr['name'] = $paymentOption->name;
+            $arr['id'] = $paymentOption->id;
             $arr['deposit'] = $deposit + $invoiceAmount;
             $arr['withdrawals'] = $withdrawal;
             $arr['balance'] = (($invoiceAmount + $deposit) - $withdrawal);
@@ -3358,6 +3382,8 @@ class ReportController extends Controller
             $arr['reference'] = $product->reference.$product->reference_number;
             $arr['category'] = $product->product_category_name;
             $arr['name'] = $product->name;
+            $arr['id'] = $product->id;
+            $arr['referenceType'] = $product->referenceType;
             $stock = $product->$column;
             $arr['stock'] = $stock;
             $arr['sales_stock_value'] = $product->price*$stock;
@@ -3766,6 +3792,8 @@ class ReportController extends Controller
             foreach($clients as $client){
                 $arr = [];
                 $arr['name'] = $client->legal_name.' ('.$client->name.')';
+                $arr['id'] = $client->id;
+                $arr['referenceType'] = $client->reference;
                 $arr['reference'] = $client->reference.''.$client->reference_number;
                 $arr['tin'] = $client->tin;
                 $arr['client_category'] = $client->client_category_name;
@@ -4065,6 +4093,8 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr = [];
                 $arr['name'] = $product->name;
+                $arr['id'] = $product->id;
+                $arr['referenceType'] = $product->reference;
                 $arr['category'] = $product->product_category_name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['total'] = 0;
@@ -4080,7 +4110,9 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr = [];
                 $arr['name'] = $service->name;
-                $arr['category'] = $service->product_category_name;
+                $arr['id'] = $service->id;
+                $arr['referenceType'] = $service->reference;
+                $arr['category'] = @$service->product_category_name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['total'] = 0;
                 foreach($dates as $date){
@@ -4200,6 +4232,8 @@ class ReportController extends Controller
             foreach($suppliers as $supplier){
                 $arr = [];
                 $arr['name'] = $supplier->legal_name.' ('.$supplier->name.')';
+                $arr['id'] = $supplier->id;
+                $arr['referenceType'] = $supplier->reference;
                 $arr['reference'] = $supplier->reference.$supplier->reference_number;
                 $arr['ruc'] = $supplier->zip_code;
                 $arr['tin'] = $supplier->tin;
@@ -4432,6 +4466,8 @@ class ReportController extends Controller
             foreach($products as $product){
                 $arr = [];
                 $arr['name'] = $product->name;
+                $arr['id'] = $product->id;
+                $arr['referenceType'] = $product->reference;
                 $arr['category'] = $product->product_category_name;
                 $arr['reference'] = $product->reference.''.$product->reference_number;
                 $arr['total'] = 0;
@@ -4447,6 +4483,8 @@ class ReportController extends Controller
             foreach($services as $service){
                 $arr = [];
                 $arr['name'] = $service->name;
+                $arr['id'] = $service->id;
+                $arr['referenceType'] = $service->reference;
                 $arr['category'] = $service->product_category_name;
                 $arr['reference'] = $service->reference.''.$service->reference_number;
                 $arr['total'] = 0;
@@ -4462,6 +4500,8 @@ class ReportController extends Controller
             foreach($expenses as $expense){
                 $arr = [];
                 $arr['name'] = $expense->name;
+                $arr['id'] = $expense->id;
+                $arr['referenceType'] = $expense->reference;
                 $arr['category'] = $expense->expense_category_name;
                 $arr['reference'] = $expense->reference.''.$expense->reference_number;
                 $arr['total'] = 0;
