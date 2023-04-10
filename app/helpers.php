@@ -3,6 +3,8 @@ use App\Models\MyTemplate;
 use App\Models\MyTemplateMeta;
 use App\Models\User;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
 
 function active_class($path, $active = 'active') {
   return call_user_func_array('Request::is', (array)$path) ? $active : '';
@@ -686,6 +688,20 @@ function removeStripeFromAllCompanies(){
                 $user->save();
             }
         }
+    }
+    echo"<center>Done<center>";
+}
+function fixstripeStatusAllCompanies(){
+    foreach(\App\Models\Company::pluck('id') as $company_id){
+            
+        $userTable = 'company_'.$company_id.'_users';
+        if (Schema::hasTable('company_'.$company_id.'_users')  && !Schema::hasColumn('company_'.$company_id.'_users', 'subscription_status')) {
+            Schema::table('company_'.$company_id.'_users', function (Blueprint $table) use ($company_id){
+                //add same column here too
+                $table->string('subscription_status')->nullable();
+            });
+        }
+        
     }
     echo"<center>Done<center>";
 }

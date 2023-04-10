@@ -930,6 +930,7 @@ class TableHelper
                 $table->string('stripe_customer_id')->nullable();
                 $table->string('stripe_price_id')->nullable();
                 $table->string('stripe_subscription_id')->nullable();
+                $table->string('subscription_status')->nullable();
                 $table->dateTime('plan_expiry_date')->nullable();
                 $table->timestamps();
             });

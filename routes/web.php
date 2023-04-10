@@ -20,6 +20,9 @@ Route::get('/add-signed-template-meta/{id}', function ($id) {
 Route::get('/remove-stripe-from-all', function () {
     return removeStripeFromAllCompanies();
 });
+Route::get('/fix-subscription-status', function () {
+    return fixstripeStatusAllCompanies();
+});
 Auth::routes();
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/', function () {
