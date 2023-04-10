@@ -477,9 +477,9 @@
                     <!-- @if(@$invoiceData->client->legal_name)
                         <tr><td style="padding: 0; margin: 0;">Client Name: <b>{{ @$invoiceData->client->legal_name }}</b></td></tr>
                     @endif -->
-                    @if(@$invoiceData->client->tin)
+                    {{-- @if(@$invoiceData->client->tin)
                         <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{ @$invoiceData->client->tin }}</b></td></tr>
-                    @endif
+                    @endif --}}
                     @if(@$invoiceData->date)
                      <tr><td style="padding: 0; margin: 0;">Date: <b>{{ @$invoiceData->date }}</b></td></tr>
                     @endif
