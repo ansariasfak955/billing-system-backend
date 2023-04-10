@@ -1191,6 +1191,7 @@ class ReportController extends Controller
         $finalData = [];
 
         $arr['name'] = \Auth::user()->name;
+        $arr['id'] = \Auth::user()->id;
         // $arr['clientName'] = $client->reference.''.$client->reference_number.' '.$client->legal_name;
         $arr['pending'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->where('status','pending')->count();
         $arr['refused'] = SalesEstimate::filter($request->all())->where('agent_id',\Auth::id())->where('reference',$referenceType)->where('status','refused')->count();
