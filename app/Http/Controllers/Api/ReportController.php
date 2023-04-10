@@ -3971,8 +3971,8 @@ class ReportController extends Controller
                     $data['service_'.$service->id][] =  number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>$request->agent_id , 'service_id' => $service->id])->get()->sum($column), 2, '.', '');
                 }
             }
-            $finalData['labels'] = @$data['labels'];
-            $finalData['data'][] = 
+            $data['labels'] = @$data['labels'];
+            $data['data'][] = 
             [
                 "label" => "Not found in catalog",
                 "fill" => true,
@@ -3996,7 +3996,7 @@ class ReportController extends Controller
             ];
             foreach($products as $product){
 
-                $finalData['data'][] = 
+                $data['data'][] = 
                 [
                     "label" => $product->name,
                     "fill" => true,
@@ -4021,7 +4021,7 @@ class ReportController extends Controller
             }
             foreach($services as $service){
 
-                $finalData['data'][] = 
+                $data['data'][] = 
                 [
                     "label" => $service->name,
                     "fill" => true,
@@ -4045,9 +4045,9 @@ class ReportController extends Controller
                 ];
             }
         }else{
-            $finalData = [];
+            $data = [];
             foreach($dates as $date){
-                $finalData['labels'][] =  $date['name'];
+                $data['labels'][] =  $date['name'];
             }
             $arr = [];
             $arr['name'] = "Not found in catalog";
@@ -4061,7 +4061,7 @@ class ReportController extends Controller
             }
             
 
-            $finalData['data'][] = $arr;
+            $data['data'][] = $arr;
             foreach($products as $product){
                 $arr = [];
                 $arr['name'] = $product->name;
@@ -4075,7 +4075,7 @@ class ReportController extends Controller
                 }
                 
     
-                $finalData['data'][] = $arr;
+                $data['data'][] = $arr;
             }
             foreach($services as $service){
                 $arr = [];
@@ -4090,13 +4090,13 @@ class ReportController extends Controller
                 }
                 
     
-                $finalData['data'][] = $arr;
+                $data['data'][] = $arr;
             }
         }
         if($request->export){
             $fileName = 'CATALOGINVOICINGEVOLUTIONREPORT-'.time().$request->company_id.'.xlsx';
 
-            Excel::store(new InvoiceByItemEvoluationExport($finalData, $request), 'public/xlsx/'.$fileName);
+            Excel::store(new InvoiceByItemEvoluationExport($data, $request), 'public/xlsx/'.$fileName);
             return response()->json([
                 'status' => true,
                 'url' => url('/storage/xlsx/'.$fileName),
@@ -4104,7 +4104,7 @@ class ReportController extends Controller
         }
         return response()->json([
             'status' => true,
-            'data' => $finalData
+            'data' => $data
         ]);
     }
     /* -------------------------------------------------------------------------- */
