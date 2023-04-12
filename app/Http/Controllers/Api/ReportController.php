@@ -3384,7 +3384,7 @@ class ReportController extends Controller
             $arr['category'] = $product->product_category_name;
             $arr['name'] = $product->name;
             $arr['id'] = $product->id;
-            $arr['referenceType'] = $product->referenceType;
+            $arr['referenceType'] = $product->reference;
             $stock = $product->$column;
             $arr['stock'] = $stock;
             $arr['sales_stock_value'] = $product->price*$stock;
