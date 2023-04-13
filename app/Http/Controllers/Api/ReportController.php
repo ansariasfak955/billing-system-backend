@@ -3384,7 +3384,7 @@ class ReportController extends Controller
             $arr['category'] = $product->product_category_name;
             $arr['name'] = $product->name;
             $arr['id'] = $product->id;
-            $arr['referenceType'] = $product->referenceType;
+            $arr['referenceType'] = $product->reference;
             $stock = $product->$column;
             $arr['stock'] = $stock;
             $arr['sales_stock_value'] = $product->price*$stock;
@@ -3908,6 +3908,7 @@ class ReportController extends Controller
             }
             $arr = [];
             $arr['name'] =  \Auth::user()->name;
+            $arr['id'] =  \Auth::user()->id;
             $arr['total'] = 0;
             foreach($dates as $date){
                 $amount =  number_format(InvoiceTable::filter(['dateStartDate' =>$date['start_date'] ,'dateEndDate' => $date['end_date'], 'client_id' => $request->client_id, 'reference' => $request->reference, 'agent_id' =>\Auth::id() , 'product_id' => $request->product_id , 'service_id' => $request->service_id])->get()->sum($column), 2, '.', '');
