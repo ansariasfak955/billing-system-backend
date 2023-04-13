@@ -144,8 +144,15 @@ class User extends Authenticatable
     public function getIsSubscriptionActiveAttribute(){
     
         if(  isset($this->attributes['plan_expiry_date'])  ){
-            if( date( 'Y-m-d H:i:s', strtotime( $this->attributes['plan_expiry_date'] ) ) > date('Y-m-d H:i:s')  ){
-                return 1;
+            if(!$this->attributes['stripe_subscription_id']){
+
+                if( date( 'Y-m-d H:i:s', strtotime( $this->attributes['plan_expiry_date'] ) ) > date('Y-m-d H:i:s')  ){
+                    return 1;
+                }
+            }else{
+                if( date( 'Y-m-d H:i:s', strtotime( $this->attributes['plan_expiry_date'].'+10 days' ) ) > date('Y-m-d H:i:s')  ){
+                    return 1;
+                }
             }
         }
         return 0;
@@ -171,7 +178,8 @@ class User extends Authenticatable
 
         if(isset($this->attributes['plan_expiry_date'])){
             $currentDate = Carbon::createFromFormat('Y-m-d', date('Y-m-d'));
-            $expiryDate = Carbon::createFromFormat('Y-m-d', $this->attributes['plan_expiry_date']);
+            $date = date('Y-m-d', strtotime($this->attributes['plan_expiry_date']));
+            $expiryDate = Carbon::createFromFormat('Y-m-d', $date);
             $dayDifference = $expiryDate->diffInDays($currentDate);
             return $dayDifference;
         }
