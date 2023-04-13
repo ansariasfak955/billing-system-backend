@@ -2233,7 +2233,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "client_tin_heading",
-                    "option_value" => "Ruc",
+                    "option_value" => "Ced/Ruc",
                     "category" => "Client/Supplier Information",
                     "type" => "client_tin",
                 ]);

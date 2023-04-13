@@ -554,7 +554,7 @@
                     @endif
 
                     @if(@$client_supplier_tin_show && @$client_supplier_tin)
-                        <tr><td style="padding: 0; margin: 0;">Ruc: <b>{{$client_supplier_tin}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_phone_show && @$client_supplier_phone)
