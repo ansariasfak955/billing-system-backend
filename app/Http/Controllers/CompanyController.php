@@ -61,7 +61,7 @@ class CompanyController extends Controller
         } else {
             $request['enable_technical_module'] = '0';
         }
-
+        $request['allow_access'] = ($request->allow_access == 'on' ? 1: 0);
         if($request->rimpe_regime) {    
             $request['rimpe_regime'] = 'yes';
         } else {
@@ -169,7 +169,7 @@ class CompanyController extends Controller
         } else {
             $request['rimpe_regime'] = 'no';
         }
-
+        $request['allow_access'] = ($request->allow_access == 'on' ? 1: 0);
         $num_added = sprintf("%010d", $request->number_of_establishment);
 
         if ($request->password != '') {

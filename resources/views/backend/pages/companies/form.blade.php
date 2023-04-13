@@ -39,10 +39,16 @@
             <label class="form-check-label" for="formSwitch1">Rimpe Regime</label>
         </div>
     </div>
-    <div class="mb-3">
+    <div class=" col-md-6 mb-3">
         <div class="form-check form-switch mb-2">
             <input type="checkbox" class="form-check-input" id="formSwitch1" name="enable_technical_module" @if(@$company->enable_technical_module == '1') checked @endif>
             <label class="form-check-label" for="formSwitch1">Enable Technical Module</label>
+        </div>
+    </div>
+    <div class=" col-md-6 mb-3">
+        <div class="form-check form-switch mb-2">
+            <input type="checkbox" class="form-check-input" id="formSwitch1" name="allow_access" @if(@$company->allow_access == 1) checked @endif>
+            <label class="form-check-label" for="formSwitch1">Allow Access</label>
         </div>
     </div>
 </div>

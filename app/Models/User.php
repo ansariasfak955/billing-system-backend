@@ -143,6 +143,14 @@ class User extends Authenticatable
     }
     public function getIsSubscriptionActiveAttribute(){
     
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        if(isset($company_id)){
+            $allow_access =  Company::where('id', $company_id)->pluck('allow_access')->first();
+            if($allow_access){
+                return 1;
+            }
+        }
         if(  isset($this->attributes['plan_expiry_date'])  ){
             if(!$this->attributes['stripe_subscription_id']){
 
@@ -175,7 +183,14 @@ class User extends Authenticatable
         
     }
     public function getPlanExpiryDaysAttribute(){
-
+        $table = $this->getTable();
+        $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+        if(isset($company_id)){
+            $allow_access =  Company::where('id', $company_id)->pluck('allow_access')->first();
+            if($allow_access){
+                return 99;
+            }
+        }
         if(isset($this->attributes['plan_expiry_date'])){
             $currentDate = Carbon::createFromFormat('Y-m-d', date('Y-m-d'));
             $date = date('Y-m-d', strtotime($this->attributes['plan_expiry_date']));
