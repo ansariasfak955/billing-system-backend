@@ -400,7 +400,7 @@
         }
     </style>
 
-    <div style="position:relative; ">
+    <div style="position:relative; font-size: 12px; font-family:{{$font}};"">
         <img src="{{ $watermark_image }}" alt="" style="position: absolute; z-index: -1; opacity: 0.3; top:50%; left: 50%; transform: translate(-50%); width: 600px">
         <div style="margin-top: 0px;height: 45px;">
         @if($company_company_info_show != 1)
@@ -409,7 +409,7 @@
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         @if($company_logo_show)
-                            <img src="{{ @$company->logo }}" alt="" srcset="" style="width: 70px; height: 80px; object-fit: cover;">
+                            <img src="{{ @$company->logo }}" alt="" srcset="" style="width: 80px; height: 80px; object-fit: cover;">
                         @endif
                         </td>
                         <span class="section">
