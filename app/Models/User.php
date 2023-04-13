@@ -7,6 +7,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Carbon\Carbon;
+
 use Auth;
 
 
@@ -63,7 +65,7 @@ class User extends Authenticatable
         self::$globalTable = $table;
     }
 
-    protected $appends = ['company_country','default_country','company_id','enable_technical_module','logo', 'is_subscription_active', 'membership_name','subscription_amount'];
+    protected $appends = ['company_country','default_country','company_id','enable_technical_module','logo', 'is_subscription_active', 'membership_name','subscription_amount', 'plan_expiry_days'];
 
     public function companies()
     {
@@ -162,6 +164,16 @@ class User extends Authenticatable
     public function getSubscriptionAmountAttribute(){
         if(isset($this->attributes['stripe_price_id'])){
             return Subscription::where('stripe_price_id', $this->attributes['stripe_price_id'])->pluck('price')->first();
+        }
+        
+    }
+    public function getPlanExpiryDaysAttribute(){
+
+        if(isset($this->attributes['plan_expiry_date'])){
+            $currentDate = Carbon::createFromFormat('Y-m-d', date('Y-m-d'));
+            $expiryDate = Carbon::createFromFormat('Y-m-d', $this->attributes['plan_expiry_date']);
+            $dayDifference = $expiryDate->diffInDays($currentDate);
+            return $dayDifference;
         }
         
     }
