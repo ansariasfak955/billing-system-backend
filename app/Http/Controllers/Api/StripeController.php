@@ -75,6 +75,62 @@ class StripeController extends Controller
         ]);
         return response()->json(['url' => $session->url]);
     }
+    public function updateSubscription(Request $request){
+
+        $validator = Validator::make($request->all(),[
+            'months' => 'required',
+        ]);
+
+        if($validator->fails()){
+
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => $validator->errors()->first()
+
+            ]);
+        }
+        if(!\Auth::user()->stripe_subscription_id){
+
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Subscription id not found!'
+
+            ]);
+        }
+
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        try {
+            $subscription = \Stripe\Subscription::retrieve( \Auth::user()->stripe_subscription_id);
+            $subscriptionItemId = $subscription->items->data[0]->id;
+            $subscription =\Stripe\Subscription::update(
+                \Auth::user()->stripe_subscription_id,
+                ['items' => [
+                  [
+                    'id' => $subscriptionItemId,
+                    'quantity' => $request->months,
+                  ],
+                ]]
+              );;
+        } catch (\Exception $e) {
+            return $e;
+            return response()->json([
+                'success'   =>  false,
+                'message'   => 'Something went wrong!' 
+    
+            ]);
+        }
+        $token  =   \Auth::user()->createToken('api')->accessToken;
+        $data   =   User::find(\Auth::id());
+        $data['token'] = $token;
+        return response()->json([
+            'success'   =>  true,
+            'data'      =>  $data,
+            'message'   => 'Subscription updated!' 
+
+        ]);
+    }
     public function cancelSubscription(Request $request){
 
         if(!\Auth::user()->stripe_subscription_id){
