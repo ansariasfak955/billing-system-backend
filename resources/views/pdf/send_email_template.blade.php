@@ -549,11 +549,10 @@
                         @if($invoiceData->client->legal_name)
                             <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} {{@$client_supplier_name.' '.@$invoiceData->client->name}}</b></td></tr>
                         @endif
-                    @endif 
 
                     @if(@$client_supplier_tin_show)
                         @if($invoiceData->client->tin)
-                            <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{str_replace('Ced/Ruc',$client_supplier_tin)}} {{@$invoiceData->client->tin}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{str_replace('Ced/Ruc',$client_supplier_tin,$client_supplier_tin)}} {{@$invoiceData->client->tin}}</b></td></tr>
                         @endif
                     @endif
 
