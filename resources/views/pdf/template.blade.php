@@ -8,6 +8,7 @@
     $company_country_show = 0;
     $document_payment_info_show = 0;
     $document_reference_show = 0;
+    $client_supplier_tin_show = 0;
     $document_date_show = 0;
     $document_status_show = 0;
     $document_status_text = 'Status:';
@@ -277,7 +278,7 @@
 
         @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_tin' && $meta->option_name == 'text')
             @php
-            $client_supplier_tin = $meta->option_value;
+            $client_supplier_tin_text = $meta->option_value;
             @endphp
         @endif
 
@@ -553,9 +554,21 @@
                         <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
                     @endif
 
-                    @if(@$client_supplier_tin_show && @$client_supplier_tin)
-                        <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{$client_supplier_tin}}</b></td></tr>
+                    @if(@$client_supplier_tin_show == 1 && @$client_supplier_tin_text)
+                        <tr>
+                            <td style="padding: 0; margin: 0;">
+                                {{$client_supplier_tin_text ? $client_supplier_tin_text : 'Ced/Ruc:'}} <b>{{$client_supplier_tin_text}}</b>
+                            </td>
+                        </tr>
                     @endif
+
+                    <!-- @if($document_reference_show == 1)
+                        <tr>
+                            <td style="padding: 0; margin: 0;">
+                            {{ $document_reference_text ? $document_reference_text : 'Number:'}} <b> INV00001</b>
+                            </td>
+                        </tr>
+                    @endif -->
 
                     @if(@$client_supplier_phone_show && @$client_supplier_phone)
                         <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone}}</b></td></tr>
