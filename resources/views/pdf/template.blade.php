@@ -445,13 +445,14 @@
                             @endif
                             @if(@$company_website_show['show'] == 1 && @$company_website_show['value'])    
                                 <span style="margin-left: 30px;">
-                                {{ @$company_website_show['value'] ? @$company_website_show['value'] : 'Website:'}}</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                                Website:</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
                                 @endif
                             @endif
                             <br>
+                            <!-- {{ @$company_website_show['value'] ? @$company_website_show['value'] : 'Website:'}} -->
                             @if(@$company_phone_show['show'] && @$company_phone_show['value'])    
                                 <span style="margin-left: 30px;">Phone:</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
                                     {{$company_phone_show['value']}}
