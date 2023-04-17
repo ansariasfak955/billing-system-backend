@@ -555,7 +555,7 @@
                         @if($invoiceData->client->tin)
                             <tr>
                                 <td style="padding: 0; margin: 0;">
-                                 Ced/Ruc: <b>{{@$client_supplier_tin_text}} {{@$invoiceData->client->tin}}</b>
+                                {{$client_supplier_tin_text ? $client_supplier_tin_text : 'Ced/Ruc:'}}  <b>{{@$client_supplier_tin_text}} {{@$invoiceData->client->tin}}</b>
                                 </td>
                             </tr>
                         @endif
