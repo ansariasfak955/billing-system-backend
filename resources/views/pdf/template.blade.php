@@ -443,8 +443,9 @@
                                 @endif
                                 <br>
                             @endif
-                            @if(@$company_website_show['show'] && @$company_website_show['value'])    
-                                <span style="margin-left: 30px;">Website:</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                            @if(@$company_website_show['show'] == 1 && @$company_website_show['value'])    
+                                <span style="margin-left: 30px;">
+                                {{ @$company_website_show['value'] ? @$company_website_show['value'] : 'Website:'}}</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     {{$company_website_show['value']}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
@@ -557,18 +558,10 @@
                     @if(@$client_supplier_tin_show == 1 && @$client_supplier_tin_text)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{$client_supplier_tin_text ? $client_supplier_tin_text : 'Ced/Ruc:'}} <b>{{$client_supplier_tin_text}}</b>
+                                {{$client_supplier_tin_text ? $client_supplier_tin_text : 'Ced/Ruc:'}} 
                             </td>
                         </tr>
                     @endif
-
-                    <!-- @if($document_reference_show == 1)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">
-                            {{ $document_reference_text ? $document_reference_text : 'Number:'}} <b> INV00001</b>
-                            </td>
-                        </tr>
-                    @endif -->
 
                     @if(@$client_supplier_phone_show && @$client_supplier_phone)
                         <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone}}</b></td></tr>
@@ -634,11 +627,22 @@
                     
                 </table>
             </div>
+                    <!-- @if($document_reference_show == 1)
+                        <tr>
+                            <td style="padding: 0; margin: 0;">
+                            {{ $document_reference_text ? $document_reference_text : 'Number:'}} <b> INV00001</b>
+                            </td>
+                        </tr>
+                    @endif -->
             <div style="clear: both;"></div>
             <div style="margin-top: 20px;">
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>
+                        @if($document_reference_show == 1)
+                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                            {{ $document_reference_text ? $document_reference_text : 'REF.'}}
+                            </th>
+                        @endif
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DESCRIPTION</th>
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">QTY.</th>
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
