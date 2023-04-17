@@ -58,6 +58,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::group(['prefix' => 'settings'], function(){
         Route::get('/smtp', 'SettingController@getSmtpDetails');
         Route::post('/smtp', 'SettingController@storeSmtpDetails')->name('smtp.store');
+        Route::get('/subscription-trial', 'SettingController@getSubscriptionTrialDetails');
+        Route::post('/subscription-trial', 'SettingController@storeSubscriptionTrialDetails')->name('subscription-trial.store');
     });
     Route::group(['prefix' => 'company'], function(){
         Route::get('{id}/user/edit/{user_id}', 'CompanyController@editUser');

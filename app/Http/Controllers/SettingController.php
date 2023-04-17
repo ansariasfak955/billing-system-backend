@@ -45,4 +45,19 @@ class SettingController extends Controller
         ]);
         return back()->withSuccess('Settings updated successfully!');
     }
+    public function getSubscriptionTrialDetails(){
+        $page_title = "Subscription Trial Days";
+        return view('backend.pages.subscription-trial.create', compact('page_title'));
+    }
+
+    public function storeSubscriptionTrialDetails(Request $request){
+
+        Setting::updateOrCreate([
+            'option_name' => 'subscription_trail_days' 
+        ], [
+            'option_value' => $request->subscription_trail_days
+        ]);
+
+        return back()->withSuccess('Settings updated successfully!');
+    }
 }

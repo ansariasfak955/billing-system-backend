@@ -147,6 +147,7 @@
           <div class="submenu">
             <ul class="submenu-item">
               <li class="nav-item"><a href="{{ url('/settings/smtp') }}" class="nav-link {{ active_class(['settings/smtp']) }}">SMTP</a></li>
+              <li class="nav-item"><a href="{{ url('/settings/subscription-trial') }}" class="nav-link {{ active_class(['settings/subscription-trial']) }}">Subscription Trial Days</a></li>
             </ul>
           </div>
         </li>
