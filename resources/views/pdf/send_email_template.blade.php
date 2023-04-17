@@ -8,6 +8,7 @@
     $company_commercial_name_show = 0;
     $company_pincode_show = 0;
     $company_address_show = 0;
+    $client_supplier_tin_show = 0;
     $company_tin_show = 0;
     $company_phone_show = 0;
     $document_payment_info_show = 0;
@@ -271,7 +272,7 @@
 
         @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_tin' && $meta->option_name == 'text')
             @php
-            $client_supplier_tin = $meta->option_value;
+            $client_supplier_tin_text = $meta->option_value;
             @endphp
         @endif
 
@@ -550,9 +551,13 @@
                             <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} {{@$client_supplier_name.' '.@$invoiceData->client->name}}</b></td></tr>
                         @endif
                     @endif
-                    @if(@$client_supplier_tin_show)
+                    @if(@$client_supplier_tin_show == 1)
                         @if($invoiceData->client->tin)
-                            <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{@$client_supplier_tin}} {{@$invoiceData->client->tin}}</b></td></tr>
+                            <tr>
+                                <td style="padding: 0; margin: 0;">
+                                 Ced/Ruc: <b>{{@$client_supplier_tin_text}} {{@$invoiceData->client->tin}}</b>
+                                </td>
+                            </tr>
                         @endif
                     @endif
 
