@@ -9,6 +9,7 @@
     $company_pincode_show = 0;
     $company_address_show = 0;
     $client_supplier_tin_show = 0;
+    $document_reference_show = 0;
     $company_tin_show = 0;
     $company_phone_show = 0;
     $document_payment_info_show = 0;
@@ -143,6 +144,18 @@
         @endif
 
         {{-- Document Information --}}
+
+        @if($meta->category == 'Document Information' && $meta->type == 'reference' && $meta->option_name == 'show')
+            @php
+            $document_reference_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Document Information' && $meta->type == 'reference' && $meta->option_name == 'text')
+            @php
+            $document_reference_text = $meta->option_value;
+            @endphp
+        @endif
 
         @if($meta->category == 'Document Information' && $meta->type == 'document_payment' && $meta->option_name == 'show')
             @php
@@ -442,8 +455,9 @@
                                     <br>
                                 @endif
                                 @if($company->website)
-                                    @if(@$company_website_show['show'])    
-                                        <span style="margin-left: 20px;">website: </span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                                    @if(@$company_website_show['show'] == 1)    
+                                        <span style="margin-left: 20px;">
+                                        {{ @$company_website_show['value'] ? @$company_website_show['value'] : 'Website:'}} </span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                             {{$company_website_show['value']}}
                                         @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                             {{ $company->website}}
@@ -555,7 +569,7 @@
                         @if($invoiceData->client->tin)
                             <tr>
                                 <td style="padding: 0; margin: 0;">
-                                {{$client_supplier_tin_text ? $client_supplier_tin_text : 'Ced/Ruc:'}}  <b>{{@$client_supplier_tin_text}} {{@$invoiceData->client->tin}}</b>
+                                {{$client_supplier_tin_text ? $client_supplier_tin_text : 'Ced/Ruc:'}}  <b>{{@$invoiceData->client->tin}}</b>
                                 </td>
                             </tr>
                         @endif
@@ -723,7 +737,11 @@
             <div style="margin-top: 40px;">       
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">REF.</th>
+                        @if($document_reference_show == 1)
+                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                            {{ $document_reference_text ? $document_reference_text : 'REF.'}}
+                            </th>
+                        @endif
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DESCRIPTION</th>
                         <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">QTY.</th>
                         @if($request->format != 'without_values') 
