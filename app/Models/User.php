@@ -201,14 +201,12 @@ class User extends Authenticatable
         
     }
     public function getAllowTrialExtendAttribute(){
-        if(isset($this->attributes['trial_extended'])){
-            
-            if($this->attributes['trial_extended'] || $this->attributes['stripe_subscription_id']){
-                return 0;
-            }
-            if( date( 'Y-m-d H:i:s', strtotime( $this->attributes['plan_expiry_date'] ) ) < date('Y-m-d H:i:s')  ){
-                return 0;
-            }
+        if(@$this->attributes['trial_extended']){
+            return 0;
+        }
+
+        if( $this->attributes['stripe_subscription_id'] || date( 'Y-m-d H:i:s', strtotime( $this->attributes['plan_expiry_date'] ) ) < date('Y-m-d H:i:s')){
+            return 0;
         }
         return 1;
     }

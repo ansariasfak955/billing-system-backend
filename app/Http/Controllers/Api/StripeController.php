@@ -76,14 +76,18 @@ class StripeController extends Controller
         return response()->json(['url' => $session->url]);
     }
     public function extendSubscription(Request $request){
+        $daysToAdd = getSettingValue('subscription_trail_days') ?? 15;
+        // echo $daysToAdd;
+        // die();
         if(\Auth::user()->plan_expiry_date){
-            \Auth::user()->plan_expiry_date =  date( 'Y-m-d H:i:s', strtotime( \Auth::user()->plan_expiry_date.'+15 days' ));
+            \Auth::user()->plan_expiry_date =  date( 'Y-m-d H:i:s', strtotime( \Auth::user()->plan_expiry_date."+ $daysToAdd days" ));
         }else{
 
-            \Auth::user()->plan_expiry_date = date( 'Y-m-d H:i:s', strtotime( date('Y-m-d H:i:s').'+15 days' ));
+            \Auth::user()->plan_expiry_date = date( 'Y-m-d H:i:s', strtotime( date('Y-m-d H:i:s')."+ $daysToAdd days" ));
         }
+        \Auth::user()->trial_extended = 1;
         \Auth::user()->save();
-        
+
         return response()->json([
             'success'   =>  true,
             'data'      =>  '',
