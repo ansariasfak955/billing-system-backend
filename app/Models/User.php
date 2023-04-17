@@ -65,7 +65,7 @@ class User extends Authenticatable
         self::$globalTable = $table;
     }
 
-    protected $appends = ['company_country','default_country','company_id','enable_technical_module','logo', 'is_subscription_active', 'membership_name','subscription_amount', 'plan_expiry_days'];
+    protected $appends = ['company_country','default_country','company_id','enable_technical_module','logo', 'is_subscription_active', 'membership_name','subscription_amount', 'plan_expiry_days',  'allow_trial_extend'];
 
     public function companies()
     {
@@ -199,5 +199,17 @@ class User extends Authenticatable
             return $dayDifference;
         }
         
+    }
+    public function getAllowTrialExtendAttribute(){
+        if(isset($this->attributes['trial_extended'])){
+            
+            if($this->attributes['trial_extended'] || $this->attributes['stripe_subscription_id']){
+                return 0;
+            }
+            if( date( 'Y-m-d H:i:s', strtotime( $this->attributes['plan_expiry_date'] ) ) < date('Y-m-d H:i:s')  ){
+                return 0;
+            }
+        }
+        return 1;
     }
 }

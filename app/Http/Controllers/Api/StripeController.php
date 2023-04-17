@@ -75,61 +75,22 @@ class StripeController extends Controller
         ]);
         return response()->json(['url' => $session->url]);
     }
-    public function updateSubscription(Request $request){
+    public function extendSubscription(Request $request){
+        if(\Auth::user()->plan_expiry_date){
+            \Auth::user()->plan_expiry_date =  date( 'Y-m-d H:i:s', strtotime( \Auth::user()->plan_expiry_date.'+15 days' ));
+        }else{
 
-        $validator = Validator::make($request->all(),[
-            'months' => 'required',
-        ]);
-
-        if($validator->fails()){
-
-            return response()->json([
-                'success' => false,
-                'data' => [],
-                'message' => $validator->errors()->first()
-
-            ]);
+            \Auth::user()->plan_expiry_date = date( 'Y-m-d H:i:s', strtotime( date('Y-m-d H:i:s').'+15 days' ));
         }
-        if(!\Auth::user()->stripe_subscription_id){
-
-            return response()->json([
-                'success' => false,
-                'data' => [],
-                'message' => 'Subscription id not found!'
-
-            ]);
-        }
-
-        Stripe::setApiKey(env('STRIPE_SECRET'));
-        try {
-            $subscription = \Stripe\Subscription::retrieve( \Auth::user()->stripe_subscription_id);
-            $subscriptionItemId = $subscription->items->data[0]->id;
-            $subscription =\Stripe\Subscription::update(
-                \Auth::user()->stripe_subscription_id,
-                ['items' => [
-                  [
-                    'id' => $subscriptionItemId,
-                    'quantity' => $request->months,
-                  ],
-                ]]
-              );;
-        } catch (\Exception $e) {
-            return $e;
-            return response()->json([
-                'success'   =>  false,
-                'message'   => 'Something went wrong!' 
-    
-            ]);
-        }
-        $token  =   \Auth::user()->createToken('api')->accessToken;
-        $data   =   User::find(\Auth::id());
-        $data['token'] = $token;
+        \Auth::user()->save();
+        
         return response()->json([
             'success'   =>  true,
-            'data'      =>  $data,
-            'message'   => 'Subscription updated!' 
+            'data'      =>  '',
+            'message'   => 'Subscription extended!' 
 
         ]);
+
     }
     public function cancelSubscription(Request $request){
 

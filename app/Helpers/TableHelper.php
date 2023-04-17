@@ -932,6 +932,7 @@ class TableHelper
                 $table->string('stripe_subscription_id')->nullable();
                 $table->string('subscription_status')->nullable();
                 $table->dateTime('plan_expiry_date')->nullable();
+                $table->integer('trial_extended')->nullable();
                 $table->timestamps();
             });
         }
