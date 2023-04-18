@@ -158,15 +158,13 @@ class CompanyController extends Controller
 
 
         MyTemplate::setGlobalTable('company_'.$company->id.'_my_templates');
-        // $template = MyTemplate::where('id', $request->my_template)->first();
-        
-        // $template->update($request->except('color'));
-        // $template->color = $request->color; 
-        // $template->save();
 
-        $newColor = request()->input('color');
-        $company->corporate_color = $newColor;
-        $company->save();
+        if($request->color){
+            $template = MyTemplate::whereNotNull('id')->update([
+           'color'  => $request->color
+           ]);
+        }
+        
 
         return response()->json([
             "status" => true,
