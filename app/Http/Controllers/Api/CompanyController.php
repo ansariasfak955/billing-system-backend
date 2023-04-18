@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\User;
-// use App\Models\MyTemplate;
+use App\Models\MyTemplate;
 use App\Helpers\TableHelper;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -157,16 +157,16 @@ class CompanyController extends Controller
         }   
 
 
-        // MyTemplate::setGlobalTable('company_'.$company->id.'_my_templates');
-        // // $template = MyTemplate::where('id', $request->my_template)->first();
+        MyTemplate::setGlobalTable('company_'.$company->id.'_my_templates');
+        // $template = MyTemplate::where('id', $request->my_template)->first();
         
-        // // $template->update($request->except('color'));
-        // // $template->color = $request->color; 
-        // // $template->save();
+        // $template->update($request->except('color'));
+        // $template->color = $request->color; 
+        // $template->save();
 
-        // $newColor = request()->input('color');
-        // $company->corporate_color = $newColor;
-        // $company->save();
+        $newColor = request()->input('color');
+        $company->corporate_color = $newColor;
+        $company->save();
 
         return response()->json([
             "status" => true,
