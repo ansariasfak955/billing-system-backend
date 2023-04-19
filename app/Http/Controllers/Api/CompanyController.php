@@ -159,10 +159,10 @@ class CompanyController extends Controller
 
         MyTemplate::setGlobalTable('company_'.$company->id.'_my_templates');
 
-        if($request->color){
+        if($request->corporate_color){
             $template = MyTemplate::whereNotNull('id')->update([
-           'color'  => $request->color
-           ]);
+                'color'  => $request->corporate_color
+            ]);
         }
         
 
