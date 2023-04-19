@@ -569,7 +569,7 @@
                         @if($invoiceData->client->tin)
                             <tr>
                                 <td style="padding: 0; margin: 0;">
-                                {{$client_supplier_tin_text ? $client_supplier_tin_text : 'Ced/Ruc'}}  :<b>{{@$invoiceData->client->tin}}</b>
+                                {{$client_supplier_tin_text: ? $client_supplier_tin_text : 'Ced/Ruc:'}}  <b>{{@$invoiceData->client->tin}}</b>
                                 </td>
                             </tr>
                         @endif
