@@ -446,7 +446,7 @@
                             @if(@$company_website_show['show'] == 1 && @$company_website_show['value'])    
                                 <span style="margin-left: 30px;">
                                 {{ @$company_website_show['value'] ? @$company_website_show['value'] : 'Website:'}}</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
-                                    <!-- {{$company_website_show['value']}} -->
+                                    <!-- {{$company_website_show['value']}} -->{{ $company->website}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
                                 @endif
