@@ -868,8 +868,8 @@
                                             <th class="table_heading" style=" text-align: left;">Expiration</th>
                                         </tr>
                                     </table>
-                                    <div style="border: 1px solid gray; padding: 10px;">
-                                        <table style="border-collapse: collapse; width: 100%; ">
+                                    <div style="border: 1px solid gray; padding: 10px;  width: 80%;">
+                                        <table style="border-collapse: collapse; width: 90%;">
                                             <tr>
                                                 <th class="table_heading" style="padding: 5px 0; text-align: left;">DATE</th>
                                                 <th class="table_heading" style="padding: 5px 0; text-align: center;">AMOUNT</th>
@@ -882,9 +882,9 @@
                                             </tr>
                                         </table>
                                     </div>
-                                </td>
+                            </td>
 
-                            <td style="padding: 0; margin: 0; padding-left: 30px;">
+                            <td style="padding: 0; margin: 0; ">
                                 <div>
                                     <table style="border-collapse: collapse; width: 100%; ">
                                         <tr style="border-bottom: 1px solid gray;">
@@ -930,14 +930,14 @@
                         </td>
                         @endif
                     @endif
-                        <td style="padding: 0; margin: 0;">
-                            <table>
-                                <tr>
-                                    <th class="table_heading" style=" text-align: left;">Expiration</th>
-                                </tr>
-                            </table>
-                                <div style="border: 1px solid gray; padding: 10px;">
-                                        <table style="border-collapse: collapse; width: 100%; ">
+                    <td style="padding: 0; margin: 0;">
+                                    <table>
+                                        <tr>
+                                            <th class="table_heading" style=" text-align: left;">Expiration</th>
+                                        </tr>
+                                    </table>
+                                    <div style="border: 1px solid gray; padding: 10px;  width: 80%;">
+                                        <table style="border-collapse: collapse; width: 90%;">
                                             <tr>
                                                 <th class="table_heading" style="padding: 5px 0; text-align: left;">DATE</th>
                                                 <th class="table_heading" style="padding: 5px 0; text-align: center;">AMOUNT</th>
@@ -949,8 +949,8 @@
                                                 <td style="padding: 5px 0; text-align: right">No</td>
                                             </tr>
                                         </table>
-                                </div>
-                        </td>
+                                    </div>
+                            </td>
                     <td style="padding: 0; margin: 0; padding-left: 120px;">
                                 <div>
                                     <table style="border-collapse: collapse; width: 100%; ">
