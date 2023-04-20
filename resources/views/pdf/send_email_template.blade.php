@@ -879,7 +879,7 @@
                                             <tr>
                                                 <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $invoiceData->date }}</td>
                                                 <td style="padding: 5px 0; text-align: center"><span>{{ $invoiceData->amount }}</span></td>
-                                                <td style="padding: 5px 0; text-align: right">{{($request->set_as_paid) ? 'Yes' : 'No'}}</td>
+                                                <td style="padding: 5px 0; text-align: right">{{($invoiceData->set_as_paid) ? 'Yes' : 'No'}}</td>
                                             </tr>
                                         </table>
                                     </div>
