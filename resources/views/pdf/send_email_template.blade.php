@@ -862,7 +862,6 @@
                                 @endif
                             @endif
                         @endif
-                        <!-- @if($request->set_as_paid) -->
                             <td style="padding: 0; margin: 0;">
                                     <table>
                                         <tr>
@@ -879,12 +878,11 @@
                                             <tr>
                                                 <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $invoiceData->date }}</td>
                                                 <td style="padding: 5px 0; text-align: center"><span>{{ $invoiceData->amount }}</span></td>
-                                                <td style="padding: 5px 0; text-align: right">{{($invoiceData->set_as_paid) ? 'Yes' : 'No'}}</td>
+                                                <td style="padding: 5px 0; text-align: right">No</td>
                                             </tr>
                                         </table>
                                     </div>
                                 </td>
-                        <!-- @endif -->
 
                             <td style="padding: 0; margin: 0; padding-left: 120px;">
                                 <div>
@@ -932,7 +930,6 @@
                         </td>
                         @endif
                     @endif
-                     <!-- @if($request->set_as_paid) -->
                         <td style="padding: 0; margin: 0;">
                             <table>
                                 <tr>
@@ -949,12 +946,11 @@
                                             <tr>
                                                 <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $invoiceData->date }}</td>
                                                 <td style="padding: 5px 0; text-align: center"><span>{{ $invoiceData->amount }}</span></td>
-                                                <td style="padding: 5px 0; text-align: right">{{($invoiceData->set_as_paid) ? 'Yes' : 'No'}}</td>
+                                                <td style="padding: 5px 0; text-align: right">No</td>
                                             </tr>
                                         </table>
                                 </div>
                         </td>
-                    <!-- @endif -->
                     <td style="padding: 0; margin: 0; padding-left: 120px;">
                                 <div>
                                     <table style="border-collapse: collapse; width: 100%; ">
