@@ -884,7 +884,7 @@
                                         </table>
                                     </div>
                                 </td>
-                            <!-- @endif -->
+                        <!-- @endif -->
 
                             <td style="padding: 0; margin: 0; padding-left: 120px;">
                                 <div>
@@ -932,6 +932,29 @@
                         </td>
                         @endif
                     @endif
+                     <!-- @if($request->set_as_paid) -->
+                        <td style="padding: 0; margin: 0;">
+                            <table>
+                                <tr>
+                                    <th class="table_heading" style=" text-align: left;">Expiration</th>
+                                </tr>
+                            </table>
+                                <div style="border: 1px solid gray; padding: 10px;">
+                                        <table style="border-collapse: collapse; width: 100%; ">
+                                            <tr>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: left;">DATE</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: center;">AMOUNT</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: right;">PAID</th>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $invoiceData->date }}</td>
+                                                <td style="padding: 5px 0; text-align: center"><span>{{ $invoiceData->amount }}</span></td>
+                                                <td style="padding: 5px 0; text-align: right">{{($invoiceData->set_as_paid) ? 'Yes' : 'No'}}</td>
+                                            </tr>
+                                        </table>
+                                </div>
+                        </td>
+                    <!-- @endif -->
                     <td style="padding: 0; margin: 0; padding-left: 120px;">
                                 <div>
                                     <table style="border-collapse: collapse; width: 100%; ">
