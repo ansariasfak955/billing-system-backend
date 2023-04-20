@@ -884,7 +884,7 @@
                                     </div>
                                 </td>
 
-                            <td style="padding: 0; margin: 0; padding-left: 120px;">
+                            <td style="padding: 0; margin: 0; padding-left: 30px;">
                                 <div>
                                     <table style="border-collapse: collapse; width: 100%; ">
                                         <tr style="border-bottom: 1px solid gray;">
