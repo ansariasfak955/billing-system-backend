@@ -32,7 +32,8 @@ class SubscriptionController extends Controller
         $page_title = "Create Subscription";
         $types = array(
             'monthly' => 'Monthly',
-            'annually' => 'Annually'
+            'annually' => 'Annually',
+            'semi_annual' => 'Semi Annual'
         );
         return view('backend.pages.subscriptions.create', compact('page_title', 'types'));
     }
@@ -87,7 +88,8 @@ class SubscriptionController extends Controller
         $page_title = "Edit Subscription";
         $types = array(
             'monthly' => 'Monthly',
-            'annually' => 'Annually'
+            'annually' => 'Annually',
+            'semi_annual' => 'Semi Annual'
         );
         return view('backend.pages.subscriptions.edit', compact('subscription', 'page_title', 'types'));
     }
