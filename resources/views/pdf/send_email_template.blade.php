@@ -862,7 +862,7 @@
                                 @endif
                             @endif
                         @endif
-                            <td style="padding: 0; margin: 0;">
+                            <td style="padding: 0; margin: 0; padding-left:30px">
                                     <table>
                                         <tr>
                                             <th class="table_heading" style=" text-align: left;">Expiration</th>
