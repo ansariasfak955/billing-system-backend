@@ -59,6 +59,7 @@ class ImportExportController extends Controller
             $haveClientCategoryId = '';
             $havePaymentTermsId = '';
             $havePaymentOptionId = '';
+            $haveTin = '';
             if( in_array('client_category', $headings) ){
                 $haveClientCategoryId = 1;
             }
@@ -67,6 +68,10 @@ class ImportExportController extends Controller
             }
             if( in_array('payment_option_id', $headings) ){
                 $havePaymentOptionId = 1;
+            }
+            if( in_array('ced_ruc', $headings) ){
+                $haveTin = 1;
+                $headings[] = 'tin';
             }
 
             $data =  Client::get($headings)->toArray();
@@ -102,6 +107,13 @@ class ImportExportController extends Controller
                    if($havePaymentOptionId){
                     unset($arr['payment_option_id']);
                    }
+                   if($haveTin){
+                    $arr['ced_ruc'] = $arr['tin'];
+                    unset($arr['tin']);
+                    if (($key = array_search('tin', $headings)) !== false) {
+                        unset($headings[$key]);
+                    }
+                   }
                    $finalData[] = $arr;
                 }
             }
@@ -115,7 +127,7 @@ class ImportExportController extends Controller
             $haveSupplierCategoryId = '';
             $havePaymentTermsId = '';
             $havePaymentOptionId = '';
-
+            $haveTin = '';
             if( in_array('supplier_category', $headings) ){
                 $haveSupplierCategoryId = 1;
             }
@@ -125,7 +137,10 @@ class ImportExportController extends Controller
             if( in_array('payment_option_id', $headings) ){
                 $havePaymentOptionId = 1;
             }
-
+            if( in_array('ced_ruc', $headings) ){
+                $haveTin = 1;
+                $headings[] = 'tin';
+            }
             $data =  Supplier::get($headings)->toArray();
             if($haveSupplierCategoryId){
                 $headings[] = 'supplier_category_name';
@@ -157,6 +172,13 @@ class ImportExportController extends Controller
                    }
                    if($havePaymentOptionId){
                     unset($arr['payment_option_id']);
+                   }
+                   if($haveTin){
+                    $arr['ced_ruc'] = $arr['tin'];
+                    unset($arr['tin']);
+                    if (($key = array_search('tin', $headings)) !== false) {
+                        unset($headings[$key]);
+                    }
                    }
                    $finalData[] = $arr;
                 }

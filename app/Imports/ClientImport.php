@@ -47,6 +47,10 @@ class ClientImport implements ToModel, WithHeadingRow
         if(@$row['id']){
             unset($row['id']);
         }
+        if(@$row['ced_ruc']){
+            $row['tin']= $row['ced_ruc'];
+            unset($row['ced_ruc']);
+        }
 
         if(!@$row['payment_option_id']){unset($row['payment_option_id']);}
         //set the default value
