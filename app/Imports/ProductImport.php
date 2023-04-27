@@ -26,7 +26,10 @@ class ProductImport implements ToModel, WithHeadingRow
         $request = $this->request;
         Product::setGlobalTable($table);
         $row['reference'] = $request->reference;
-        
+        if(@$row['reference_number']){
+            unset($row['reference_number']);
+        }
+        $row['reference_number'] = get_product_latest_ref_number($this->company_id, $request->reference, 1);
         //unset the empty columns to prevent integrity error
         if(@$row['id']){
             unset($row['id']);

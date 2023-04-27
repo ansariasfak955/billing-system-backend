@@ -86,18 +86,19 @@ class ProductController extends Controller
         $productRate = 'company_'.$request->company_id.'_product_rates';
         ProductRate::setGlobalTable($productRate);
 
-        $product = Product::create($request->except('image', 'company_id', 'images'));
         // dd($request->all());
         if ($request->reference_number == '') {
+            $product = Product::create($request->except('image', 'company_id', 'images'));
             $product->reference_number = get_product_latest_ref_number($request->company_id, $request->reference, 1);
         } else {
             $product = Product::where('reference', $request->reference)->where('reference_number', $request->reference_number)->first();
             if ($product == NULL) {
+                $product = Product::create($request->except('image', 'company_id', 'images'));
                 $product->reference_number = get_product_latest_ref_number($request->company_id, $request->reference, 0);
             } else {
                 return response()->json([
                     "status"  => false,
-                    "client"  => $product,
+                    // "client"  => $product,
                     "message" => "Please choose different reference number"
                 ]);
             }

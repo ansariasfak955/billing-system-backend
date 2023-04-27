@@ -26,7 +26,10 @@ class ServiceImport implements ToModel, WithHeadingRow
         $request = $this->request;
         Service::setGlobalTable($table);
         $row['reference'] = $request->reference;
-
+        if(@$row['reference_number']){
+            unset($row['reference_number']);
+        }
+        $row['reference_number'] = get_service_latest_ref_number($this->company_id, $request->reference, 1);
         if(@$row['id']){
             unset($row['id']);
         }

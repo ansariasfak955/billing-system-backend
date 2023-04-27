@@ -28,7 +28,10 @@ class ClientImport implements ToModel, WithHeadingRow
         Client::setGlobalTable($table);
         $row['reference']= $request->reference;
         //unset the empty columns to prevent integrity error
-
+        if(@$row['reference_number']){
+            unset($row['reference_number']);
+        }
+        $row['reference_number'] = get_client_latest_ref_number($this->company_id, $request->reference, 1);
         if(!@$row['client_category']){
             unset($row['client_category']);
         }
