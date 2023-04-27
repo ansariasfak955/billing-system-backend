@@ -17,6 +17,9 @@ use Spatie\Permission\Models\Permission;
 Route::get('/add-signed-template-meta/{id}', function ($id) {
     return add_signed_parameter_in_my_templates($id);
 });
+Route::get('/fix-ruc-template', function () {
+    return fix_ruc_signature_in_my_templates();
+});
 Route::get('/remove-stripe-from-all', function () {
     return removeStripeFromAllCompanies();
 });

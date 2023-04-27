@@ -227,7 +227,6 @@
             $hide_signed_box_show = $meta->option_value;
             @endphp
         @endif
-
         @if($meta->category == 'Document Information' && $meta->type == 'document_title' && $meta->option_name == 'show')
             @php
             $document_title_show = $meta->option_value;
@@ -396,6 +395,38 @@
             $client_supplier_country_show = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Signature and Summary' && $meta->type == 'sign_signature_title' && $meta->option_name == 'show')
+            @php
+                $show_signed_title = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Signature and Summary' && $meta->type == 'sign_signature_title' && $meta->option_name == 'text')
+            @php
+                $signed_box_text = $meta->option_value;
+            @endphp
+        @endif
+        {{-- Signature Name show hide --}}
+        @if($meta->category == 'Signature and Summary' && $meta->type == 'sign_signature_name' && $meta->option_name == 'show')
+        @php
+                $sign_signature_title = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Signature and Summary' && $meta->type == 'sign_signature_name' && $meta->option_name == 'text')
+        @php
+                $sign_signature_text = $meta->option_value;
+            @endphp
+        @endif
+        {{-- RUC Text and show hide --}}
+        @if($meta->category == 'Signature and Summary' && $meta->type == 'sign_tin_signature' && $meta->option_name == 'show')
+            @php
+                $show_signed_tin_title = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Signature and Summary' && $meta->type == 'sign_tin_signature' && $meta->option_name == 'text')
+            @php
+                $signed_tin_text = $meta->option_value;
+            @endphp
+        @endif
     @endforeach
 
     @if(strpos($template->watermark,"via.placeholder") !== false)
@@ -562,7 +593,7 @@
         
                     @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
                         @if($invoiceData->client->legal_name)
-                            <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} {{@$client_supplier_name.' '.@$invoiceData->client->name}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} {{'('.@$client_supplier_name.' '.@$invoiceData->client->name.')'}}</b></td></tr>
                         @endif
                     @endif
                     @if(@$client_supplier_tin_show == 1)
@@ -605,7 +636,7 @@
                         @endif
                     @endif
 
-                    @if(@$client_supplier_billing_show)
+                    @if(@$client_supplier_billing_show && @$client_supplier_billing)
                         <tr><td style="padding: 0; margin: 0;">Billing: <b>{{$client_supplier_billing}}</b></td></tr>
                     @endif
 
@@ -793,7 +824,7 @@
                                 @if($request->format != 'without_values')
                                     @if($request->format != 'without_totals')
                                         <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                            <p style="marging: 0; padding: 0">{{ @$product->amount_with_out_vat }}</p>
+                                            <p style="marging: 0; padding-left: 15px;">{{ @$product->amount_with_out_vat }}</p>
                                         </td>
                                     @endif
                                 @endif
@@ -836,9 +867,11 @@
                                 </li>
                             </ul>
                         </div>
-                        <div>
-                            <p style="font-weight: bold;">Signed:</p>
-                        </div>
+                        @if(@$show_signed_title)
+                            <div>
+                                <p style="font-weight: bold;"> {{@$signed_box_text ?? 'Signed:'}}</p>
+                            </div>
+                        @endif
                     @endif
                 @endif
             @endif
@@ -854,8 +887,12 @@
                                             <div style="border: 1px solid gray; padding: 100px 70px 10px 10px;">
                                                 <!-- <img width="100" height="80" object-fit="cover"
                                                     src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" /> -->
-                                                <p style="font-weight: bold; position: relative; bottom: 0;">Name:</p>
-                                                <p style="font-weight: bold; position: relative; bottom: 0;">Ced/Ruc:</p>
+                                                    @if(@$sign_signature_title)
+                                                        <p style="font-weight: bold; position: relative; bottom: 0;">{{@$sign_signature_text ?? 'Name:'}}</p>
+                                                    @endif
+                                                    @if(@$show_signed_tin_title)
+                                                        <p style="font-weight: bold; position: relative; bottom: 0;">{{@$signed_tin_text ?? 'Ced/Ruc:'}}</p>
+                                                    @endif
                                             </div>
                                         </td>
                                      @endif
@@ -915,7 +952,9 @@
         @else
         
         <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
-        <p style="font-weight: bold;">Signed:</p><br
+            @if(@$show_signed_title)
+                <p style="font-weight: bold;">{{@$signed_box_text ?? 'Signed:'}}</p><br>
+            @endif
             <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                 <tr>
                 @if(($request->disable_signed)? '0':'1')   
@@ -924,8 +963,12 @@
                             <div style="border: 1px solid gray; padding: 100px 100px 10px 10px;">
                                 <!-- <img width="100" height="80" object-fit="cover"
                                     src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" /> -->
-                                <p style="font-weight: bold; position: relative; bottom: 0;">Name:</p>
-                                <p style="font-weight: bold; position: relative; bottom: 0;">Ced/Ruc:</p>
+                                @if(@$sign_signature_title)
+                                    <p style="font-weight: bold; position: relative; bottom: 0;">{{@$sign_signature_text ?? 'Name:'}}</p>
+                                @endif
+                                @if(@$show_signed_tin_title)
+                                    <p style="font-weight: bold; position: relative; bottom: 0;">{{@$signed_tin_text ?? 'Ced/Ruc:'}}</p>
+                                @endif
                             </div>
                         </td>
                         @endif

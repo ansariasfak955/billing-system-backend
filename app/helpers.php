@@ -581,6 +581,17 @@ function add_signed_parameter_in_my_templates($company_id){
     }
     echo 'done adding';       
 }
+function fix_ruc_signature_in_my_templates(){
+    foreach(\App\Models\Company::pluck('id') as $company_id){
+        if(Schema::hasTable('company_'.$company_id.'_my_template_metas')){
+            MyTemplateMeta::setGlobalTable('company_'.$company_id.'_my_template_metas');
+            MyTemplateMeta::where('option_name', 'sign_tin_signature_heading')->update([
+                'option_value' => 'RUC Signature'
+            ]);
+        }
+    }
+    echo 'done adding';       
+}
 function getDateToIterate($request){
     $data = [];
     $year =     $request->year ?? date('Y');

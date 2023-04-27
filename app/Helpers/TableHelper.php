@@ -2729,7 +2729,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_tin_signature_heading",
-                        "option_value" => "Signature Name",
+                        "option_value" => "RUC Signature",
                         "category" => "Signature and Summary",
                         "type" => "sign_tin_signature",
                     ]);
