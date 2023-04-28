@@ -202,7 +202,22 @@ class StripeController extends Controller
             User::setGlobalTable($usersTables);
             $user = User::find($user_id);
             if(!$user){return;}
-
+            // Get all subscriptions for the customer
+            $subscriptions = \Stripe\Subscription::all([
+                'customer' => $customer,
+                'status' => 'active',
+            ]);
+            info($subscriptions);
+            // Loop through each subscription and cancel it if it's not the current subscription
+            foreach ($subscriptions->data as $subscription_data) {
+                if ($subscription_data->id !== $subscription) {
+                    try{
+                        $subscription_data->cancel();
+                    }catch(\Exception $e){
+                        continue;
+                    }
+                }
+            }
             $user->stripe_price_id = $price_id;
             $user->stripe_customer_id = $customer;
             $user->stripe_subscription_id = $subscription;

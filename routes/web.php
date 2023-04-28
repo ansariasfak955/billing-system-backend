@@ -20,6 +20,18 @@ Route::get('/add-signed-template-meta/{id}', function ($id) {
 Route::get('/fix-ruc-template', function () {
     return fix_ruc_signature_in_my_templates();
 });
+Route::get('/fix-end-warranty', function () {
+    return fix_end_warranty_in_my_templates();
+});
+Route::get('/add-expiration-option', function () {
+    return add_expiration_option_in_my_templates();
+});
+Route::get('/fix-expiration-option', function () {
+    return fix_expiry_text_in_my_templates();
+});
+Route::get('/add-page-count-in-template', function () {
+    return add_show_page_option_in_my_templates();
+});
 Route::get('/remove-stripe-from-all', function () {
     return removeStripeFromAllCompanies();
 });

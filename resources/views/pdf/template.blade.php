@@ -421,6 +421,11 @@
                 $sign_signature_text = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Footer and Legal Note' && $meta->type == 'footer_pages' && $meta->option_name == 'show')
+            @php
+                $show_footer_count = $meta->option_value;
+            @endphp
+        @endif
     @endforeach
 
     @if(strpos($template->watermark,"via.placeholder") !== false)
@@ -844,6 +849,9 @@
                     </td>
                 </tr>
             </table>
+            @if(@$show_footer_count)
+                <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: center;">1/1</div>
+            @endif
         </div>
         @endif
     </div>

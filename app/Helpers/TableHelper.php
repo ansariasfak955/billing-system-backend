@@ -2807,6 +2807,50 @@ class TableHelper
                         "type" => "footer_heading",
                     ]);
 
+                    /* show footer page */
+                   MyTemplateMeta::create([
+                       "template_id" => $template_created->id,
+                       "option_name" => "footer_page_heading",
+                       "option_value" => "Show Pages Count",
+                       "category" => 'Footer and Legal Note',
+                       "type" => "footer_pages",
+                   ]);
+                   MyTemplateMeta::create([
+                       "template_id" => $template_created->id,
+                       "option_name" => "footer_page_show",
+                       "option_value" => "1",
+                       "category" => 'Footer and Legal Note',
+                       "type" => "footer_pages",
+                   ]);
+                   MyTemplateMeta::create([
+                        "template_id" => $template_created->id,
+                        "option_name" => "footer_page_text",
+                        "option_value" => "",
+                        "category" => 'Footer and Legal Note',
+                        "type" => "footer_pages",
+                    ]);
+                    /* show expiry  Box */
+                   MyTemplateMeta::create([
+                       "template_id" => $template_created->id,
+                       "option_name" => "expiration_heading",
+                       "option_value" => "Show Expiration Box",
+                       "category" => 'Footer and Legal Note',
+                       "type" => "expiration",
+                   ]);
+                   MyTemplateMeta::create([
+                       "template_id" => $template_created->id,
+                       "option_name" => "expiration_show",
+                       "option_value" => "1",
+                       "category" => 'Footer and Legal Note',
+                       "type" => "expiration",
+                   ]);
+                   MyTemplateMeta::create([
+                        "template_id" => $template_created->id,
+                        "option_name" => "expiration_text",
+                        "option_value" => "Expiration",
+                        "category" => 'Footer and Legal Note',
+                        "type" => "expiration",
+                    ]);
                     /* Legal Note */
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
@@ -3167,7 +3211,7 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_description_heading",
-                            "option_value" => "End of the Warranty",
+                            "option_value" => "Description",
                             "category" => "Client Assets",
                             "type" => "client_assets_description",
                         ]);

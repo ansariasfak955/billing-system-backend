@@ -592,6 +592,106 @@ function fix_ruc_signature_in_my_templates(){
     }
     echo 'done adding';       
 }
+function fix_end_warranty_in_my_templates(){
+    foreach(\App\Models\Company::pluck('id') as $company_id){
+        if(Schema::hasTable('company_'.$company_id.'_my_template_metas')){
+            MyTemplateMeta::setGlobalTable('company_'.$company_id.'_my_template_metas');
+            MyTemplateMeta::where('option_name', 'client_assets_description_heading')->update([
+                'option_value' => 'Description'
+            ]);
+        }
+    }
+    echo 'done adding';       
+}
+function fix_expiry_text_in_my_templates(){
+    foreach(\App\Models\Company::pluck('id') as $company_id){
+        if(Schema::hasTable('company_'.$company_id.'_my_template_metas')){
+            MyTemplateMeta::setGlobalTable('company_'.$company_id.'_my_template_metas');
+            MyTemplateMeta::where('option_name', 'expiration_text')->update([
+                'option_value' => 'Expiration'
+            ]);
+        }
+    }
+    echo 'done adding';       
+}
+function add_show_page_option_in_my_templates(){
+    foreach(\App\Models\Company::pluck('id') as $company_id){
+        if(Schema::hasTable('company_'.$company_id.'_my_template_metas')){
+            MyTemplate::setGlobalTable('company_'.$company_id.'_my_templates');
+            MyTemplateMeta::setGlobalTable('company_'.$company_id.'_my_template_metas');
+            $templates = MyTemplate::get();
+            foreach($templates as $template){
+                // if(Schema::hasColumn('company_'.$company_id.'_my_templates', 'type')){
+
+                    if(!MyTemplateMeta::where('type', 'footer_pages')->where('template_id', $template->id)->first()){
+                        echo "needs to be added";
+                        MyTemplateMeta::create([
+                            "template_id" => $template->id,
+                            "option_name" => "footer_page_heading",
+                            "option_value" => "Show Pages Count",
+                            "category" => 'Footer and Legal Note',
+                            "type" => "footer_pages",
+                        ]);
+                        MyTemplateMeta::create([
+                            "template_id" => $template->id,
+                            "option_name" => "footer_page_show",
+                            "option_value" => "1",
+                            "category" => 'Footer and Legal Note',
+                            "type" => "footer_pages",
+                        ]);
+                        MyTemplateMeta::create([
+                            "template_id" => $template->id,
+                            "option_name" => "footer_page_text",
+                            "option_value" => "",
+                            "category" => 'Footer and Legal Note',
+                            "type" => "footer_pages",
+                        ]);
+                    }
+                // }
+            }
+        }
+    }
+    echo 'done adding';       
+}
+function add_expiration_option_in_my_templates(){
+    foreach(\App\Models\Company::pluck('id') as $company_id){
+        if(Schema::hasTable('company_'.$company_id.'_my_template_metas')){
+            MyTemplate::setGlobalTable('company_'.$company_id.'_my_templates');
+            MyTemplateMeta::setGlobalTable('company_'.$company_id.'_my_template_metas');
+            $templates = MyTemplate::get();
+            foreach($templates as $template){
+                // if(Schema::hasColumn('company_'.$company_id.'_my_templates', 'type')){
+
+                    if(!MyTemplateMeta::where('type', 'expiration')->where('template_id', $template->id)->first()){
+                        echo "needs to be added";
+                        MyTemplateMeta::create([
+                            "template_id" => $template->id,
+                            "option_name" => "expiration_heading",
+                            "option_value" => "Show Expiration Box",
+                            "category" => 'Footer and Legal Note',
+                            "type" => "expiration",
+                        ]);
+                        MyTemplateMeta::create([
+                            "template_id" => $template->id,
+                            "option_name" => "expiration_show",
+                            "option_value" => "1",
+                            "category" => 'Footer and Legal Note',
+                            "type" => "expiration",
+                        ]);
+                        MyTemplateMeta::create([
+                             "template_id" => $template->id,
+                             "option_name" => "expiration_text",
+                             "option_value" => "Expiration",
+                             "category" => 'Footer and Legal Note',
+                             "type" => "expiration",
+                         ]);
+                    }
+                // }
+            }
+        }
+    }
+    echo 'done adding';       
+}
 function getDateToIterate($request){
     $data = [];
     $year =     $request->year ?? date('Y');
