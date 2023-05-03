@@ -42,7 +42,7 @@
         p.mdaa {
             color: black;
             position: relative;
-            width: 70%;
+            width: 100%;
             text-align: right;
         }
 
