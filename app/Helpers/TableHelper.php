@@ -2697,7 +2697,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_signature_title_text",
-                        "option_value" => "Signed:",
+                        "option_value" => "Signed",
                         "category" => "Signature and Summary",
                         "type" => "sign_signature_title",
                     ]);
@@ -2720,7 +2720,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_signature_name_text",
-                        "option_value" => "Name:",
+                        "option_value" => "Name",
                         "category" => "Signature and Summary",
                         "type" => "sign_signature_name",
                     ]);
@@ -2743,7 +2743,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "sign_tin_signature_text",
-                        "option_value" => "Ced/Ruc:",
+                        "option_value" => "Ced/Ruc",
                         "category" => "Signature and Summary",
                         "type" => "sign_tin_signature",
                     ]);
