@@ -882,16 +882,15 @@
                                 </li>
                             </ul>
                         </div>
-                        @if(@$show_signed_title)
-                            <div>
-                                <p style="font-weight: bold; bottom: 0;"> {{@$signed_box_text ?? 'Signed:'}}</p>
-                            </div>
-                        @endif
+
                     @endif
                 @endif
             @endif
             @if($request->format != 'without_totals')
                 <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
+                        @if(@$show_signed_title)
+                                <p style="font-weight: bold;"> {{@$signed_box_text ?? 'Signed:'}}</p>
+                        @endif
                     <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                         <tr>
                         @if($request->format != 'before_tax') 
@@ -903,7 +902,7 @@
                                                 <!-- <img width="100" height="80" object-fit="cover"
                                                     src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" /> -->
                                                     @if(@$sign_signature_title)
-                                                        <span style="font-weight: bold; position: relative; bottom: 0;">{{@$sign_signature_text ?? 'Name:'}}</span>
+                                                        <span style="font-weight: bold; position: relative; bottom: 0;">{{@$sign_signature_text ?? 'Name:'}}</span><br>
                                                     @endif
                                                     @if(@$show_signed_tin_title)
                                                         <span style="font-weight: bold; position: relative; bottom: 0;">{{@$signed_tin_text ?? 'Ced/Ruc:'}}</span>
