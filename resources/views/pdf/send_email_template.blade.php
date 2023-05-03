@@ -796,7 +796,7 @@
                         @endif
                         @if($request->format != 'without_values')
                             @if($request->format != 'without_totals')
-                                <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;;">SUBTOTAL</th>
+                                <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">SUBTOTAL</th>
                             @endif
                         @endif
                     </tr>
@@ -830,16 +830,16 @@
                                 </td>
                                 @if($request->format != 'without_values') 
                                     <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                        <p style="margin: 0px; padding: -10px">{{ @$product->discount }}</p>
+                                        <p style="margin: 0px; padding: -15px">{{ @$product->discount }}</p>
                                     </td>
                                     <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                        <p style="margin: 0px; padding: -10px">{{ @$product->base_price }}</p>
+                                        <p style="margin: 0px; padding: -15px">{{ @$product->base_price }}</p>
                                     </td>
                                 @endif
                                 @if($request->format != 'without_values')
                                     @if($request->format != 'without_totals')
                                         <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                            <p style="margin: 0; padding-left: 15px;">{{ @$product->amount_with_out_vat }}</p>
+                                            <p style="margin: 0; padding-left: 15px; text-align: right;">{{ @$product->amount_with_out_vat }}</p>
                                         </td>
                                     @endif
                                 @endif
