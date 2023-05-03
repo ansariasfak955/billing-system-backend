@@ -91,7 +91,7 @@ class TechnicalTableController extends Controller
     {
         $table = 'company_'.$request->company_id.'_technical_tables';
         $validator = Validator::make($request->all(),[
-            'title' => "required|unique:$table",
+            // 'title' => "required|unique:$table",
             'client_id' => 'required',
             'reference' => 'required',
             'tin' => 'required'
@@ -278,7 +278,7 @@ class TechnicalTableController extends Controller
     {
         $table = 'company_'.$request->company_id.'_technical_tables';
         $validator = Validator::make($request->all(),[
-            'title' => "required|unique:$table",
+            // 'title' => "required|unique:$table",
             'client_id' => 'required',
             'reference' => 'required',
             'tin' => 'required'
