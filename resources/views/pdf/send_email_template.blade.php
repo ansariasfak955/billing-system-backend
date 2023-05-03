@@ -796,7 +796,7 @@
                         @endif
                         @if($request->format != 'without_values')
                             @if($request->format != 'without_totals')
-                                <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">SUBTOTAL</th>
+                                <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;;">SUBTOTAL</th>
                             @endif
                         @endif
                     </tr>
@@ -1037,7 +1037,7 @@
                 </tr>
             </table>
             @if(@$show_footer_count)
-                <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: center;">1/1</div>
+                <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: right;">1/1</div>
             @endif
         </div>
         @endif
