@@ -1855,7 +1855,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_reference_text",
-                    "option_value" => "Number:",
+                    "option_value" => "Number",
                     "category" => "Document Information",
                     "type" => "reference",
                 ]);
@@ -1878,7 +1878,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_generated_from_text",
-                    "option_value" => "Generated From:",
+                    "option_value" => "Generated From",
                     "category" => "Document Information",
                     "type" => "document",
                 ]);
@@ -1901,7 +1901,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_date_text",
-                    "option_value" => "Date:",
+                    "option_value" => "Date",
                     "category" => "Document Information",
                     "type" => "date",
                 ]);
@@ -1924,7 +1924,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_payment_option_text",
-                    "option_value" => "Payment Option:",
+                    "option_value" => "Payment Option",
                     "category" => "Document Information",
                     "type" => "document_payment",
                 ]);
@@ -1947,7 +1947,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_bank_account_text",
-                    "option_value" => "Account:",
+                    "option_value" => "Account",
                     "category" => "Document Information",
                     "type" => "document_bank",
                 ]);
@@ -1970,7 +1970,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_bic_text",
-                    "option_value" => "BIC:",
+                    "option_value" => "BIC",
                     "category" => "Document Information",
                     "type" => "document_bic",
                 ]);
@@ -1993,7 +1993,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_status_text",
-                    "option_value" => "Status:",
+                    "option_value" => "Status",
                     "category" => "Document Information",
                     "type" => "document_status",
                 ]);
@@ -2016,7 +2016,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_created_by_text",
-                    "option_value" => "Created by:",
+                    "option_value" => "Created by",
                     "category" => "Document Information",
                     "type" => "document_created",
                 ]);
@@ -2039,7 +2039,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_agent_text",
-                    "option_value" => "Agent:",
+                    "option_value" => "Agent",
                     "category" => "Document Information",
                     "type" => "document_agent",
                 ]);
@@ -2062,7 +2062,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "purchase_document_ref_text",
-                    "option_value" => "Purchase Document Ref.:",
+                    "option_value" => "Purchase Document Ref.",
                     "category" => "Document Information",
                     "type" => "purchase_document",
                 ]);
@@ -2085,7 +2085,7 @@ class TableHelper
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
                     "option_name" => "document_sent_date_text",
-                    "option_value" => "Delivery Date:",
+                    "option_value" => "Delivery Date",
                     "category" => "Document Information",
                     "type" => "document_sent",
                 ]);
@@ -2639,7 +2639,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_text",
-                        "option_value" => "Disc.:",
+                        "option_value" => "Disc.",
                         "category" => "Items",
                         "type" => "discount",
                     ]);
@@ -2655,7 +2655,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_subtotal_text_text",
-                        "option_value" => "Subtotal:",
+                        "option_value" => "Subtotal",
                         "category" => "Items",
                         "type" => "items_subtotal",
                     ]);
@@ -2671,7 +2671,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_line_text",
-                        "option_value" => "Discount on subtotal:",
+                        "option_value" => "Discount on subtotal",
                         "category" => "Items",
                         "type" => "items_discount_line",
                     ]);
@@ -3063,7 +3063,7 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_name_text",
-                            "option_value" => "NAME:",
+                            "option_value" => "NAME",
                             "category" => "Client Assets",
                             "type" => "client_assets_name",
                         ]);
@@ -3086,7 +3086,7 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_identifier_text",
-                            "option_value" => "Identifier:",
+                            "option_value" => "Identifier",
                             "category" => "Client Assets",
                             "type" => "client_assets_identifier",
                         ]);
@@ -3110,7 +3110,7 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_serial_no_text",
-                            "option_value" => "Serial Number:",
+                            "option_value" => "Serial Number",
                             "category" => "Client Assets",
                             "type" => "client_assets_serial_no",
                         ]);
@@ -3133,7 +3133,7 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_brand_text",
-                            "option_value" => "Brand:",
+                            "option_value" => "Brand",
                             "category" => "Client Assets",
                             "type" => "client_assets_brand",
                         ]);
@@ -3156,7 +3156,7 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_model_text",
-                            "option_value" => "Brand:",
+                            "option_value" => "Brand",
                             "category" => "Client Assets",
                             "type" => "client_assets_model",
                         ]);
@@ -3270,7 +3270,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "payment_terms_title_text",
-                        "option_value" => "Payment Terms:",
+                        "option_value" => "Payment Terms",
                         "category" => "Payment Terms",
                         "type" => "payment_terms_title",
                     ]);
