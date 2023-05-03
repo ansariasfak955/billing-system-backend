@@ -38,7 +38,22 @@
         .sectionLeft{
             /* margin-left: 50px; */
         }
-        
+
+        p.mdaa {
+            color: black;
+            position: relative;
+            width: 70%;
+            text-align: right;
+        }
+
+        p.mdaa:before {
+            content: "-------------------------------------------------------------------------------------------------------------------------------";
+            width: 100px;
+            height: 2px;
+            letter-spacing: -1px;
+            margin: 0 10px 0 0;
+        }
+                
     </style>
 
     {{-- <style type="text/css">
@@ -1037,7 +1052,7 @@
                 </tr>
             </table>
             @if(@$show_footer_count)
-                <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: right;">1/1</div>
+            <div style="margin-top:20px; text-align: right;"><p class="mdaa">1/1</p>
             @endif
         </div>
         @endif
