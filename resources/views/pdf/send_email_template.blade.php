@@ -789,10 +789,10 @@
                             </th>
                         @endif
                         <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">DESCRIPTION</th>
-                        <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">QTY.</th>
+                        <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">QTY.</th>
                         @if($request->format != 'without_values') 
-                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">DISC.</th>
-                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">PRICE</th>
+                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">DISC.</th>
+                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">PRICE</th>
                         @endif
                         @if($request->format != 'without_values')
                             @if($request->format != 'without_totals')
@@ -826,14 +826,14 @@
                                    
                                 </td>
                                 <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                    <p style="margin: 0px; padding: -10px">{{ $product->quantity }}</p>
+                                    <p style="margin: 0px; padding: -10px; text-align: right;">{{ $product->quantity }}</p>
                                 </td>
                                 @if($request->format != 'without_values') 
                                     <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                        <p style="margin: 0px; padding: -15px">{{ @$product->discount }}</p>
+                                        <p style="margin: 0px; padding: -10px; text-align: right;">{{ @$product->discount }}</p>
                                     </td>
                                     <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                        <p style="margin: 0px; padding: -15px">{{ @$product->base_price }}</p>
+                                        <p style="margin: 0px; padding: -10px; text-align: right;" >{{ @$product->base_price }}</p>
                                     </td>
                                 @endif
                                 @if($request->format != 'without_values')
@@ -975,7 +975,7 @@
                 @if(($request->disable_signed)? '0':'1')   
                     @if(@$hide_signed_box_show == 0)
                         <td style="margin: 0;">
-                            <div style="border: 1px solid gray; padding: 100px 100px 10px 10px;">
+                            <div style="border: 1px solid gray; padding: 100px 70px 10px 10px;">
                                 <!-- <img width="100" height="80" object-fit="cover"
                                     src="https://camo.githubusercontent.com/fcd5a5ab2be5419d00fcb803f14c55652cf60696d7f6d9828b99c1783d9f14a3/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f393837332f3236383034362f39636564333435342d386566632d313165322d383136652d6139623137306135313030342e706e67" /> -->
                                 @if(@$sign_signature_title)
@@ -989,28 +989,28 @@
                         @endif
                     @endif
                     @if(@$show_expiration)
-                        <td style="padding: 0; margin-left: 50px; padding-left:40px;">
-                            <table>
-                                <tr>
-                                    <th class="table_heading" style=" text-align: left;">{{@$expiration_text ?? 'Expiration'}}</th>
-                                </tr>
-                            </table>
-                            <div style="border: 1px solid gray; padding: 5px;  width: 100%;">
-                                <table style="border-collapse: collapse; width: 90%;">
-                                    <tr>
-                                        <th class="table_heading" style="padding: 5px 0; text-align: left;">DATE</th>
-                                        <th class="table_heading" style="padding: 5px 0; text-align: center;">AMOUNT</th>
-                                        <th class="table_heading" style="padding: 5px 0; text-align: right;">PAID</th>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $invoiceData->date }}</td>
-                                        <td style="padding: 5px 0; text-align: center"><span>{{ $invoiceData->amount }}</span></td>
-                                        <td style="padding: 5px 0; text-align: right">No</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </td>
-                    @endif
+                            <td style="padding: 0; margin: 0; padding-left:10px">
+                                    <table>
+                                        <tr>
+                                            <th class="table_heading" style=" text-align: left;">{{@$expiration_text ?? 'Expiration'}}</th>
+                                        </tr>
+                                    </table>
+                                    <div style="border: 1px solid gray; padding: 5px;  width: 90%;">
+                                        <table style="border-collapse: collapse; width: 90%;">
+                                            <tr>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: left;">DATE</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: center;">AMOUNT</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: right;">PAID</th>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $invoiceData->date }}</td>
+                                                <td style="padding: 5px 0; text-align: center"><span>{{ $invoiceData->amount }}</span></td>
+                                                <td style="padding: 5px 0; text-align: right">No</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                            </td>
+                        @endif
                     <td style="padding: 0; margin: 0; padding-left: 120px;">
                                 <div>
                                     <table style="border-collapse: collapse; width: 100%; ">
