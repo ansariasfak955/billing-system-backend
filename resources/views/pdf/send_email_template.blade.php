@@ -968,7 +968,7 @@
         
         <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
             @if(@$show_signed_title)
-                <p style="font-weight: bold;">{{@$signed_box_text ?? 'Signed:'}}</p><br>
+                <p style="font-weight: bold;">{{@$signed_box_text ?? 'Signed:'}}</p>
             @endif
             <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                 <tr>
