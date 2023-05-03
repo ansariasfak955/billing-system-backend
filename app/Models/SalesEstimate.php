@@ -62,7 +62,7 @@ class SalesEstimate extends Model
     public function delivery_options(){
         return $this->hasOne(DeliveryOption::class,'id', 'delivery_option');
     }
-	protected $appends = ['client_name', 'created_by_name', 'amount', 'meta_discount','reference_type','agent_name','amount_with_out_vat','tax_amount','client_legal_name'];
+	protected $appends = ['generated_from_se', 'client_name', 'created_by_name', 'amount', 'meta_discount','reference_type','agent_name','amount_with_out_vat','tax_amount','client_legal_name'];
 
     public function getSignatureAttribute()
     {
@@ -134,6 +134,22 @@ class SalesEstimate extends Model
             $amount =  $this->items->sum('amount_with_out_vat') ?? 0.00;
             return number_format($amount, 2, '.', '');	
         }
+    }
+
+    public function getGeneratedFromAttribute() {
+        $generated_from = $this->attributes['generated_from'];
+        $generated_from = preg_replace('/SE\d+/', '', $generated_from);
+        $generated_from = rtrim($generated_from);
+        return str_replace(":", " ", $generated_from);
+    }
+
+    public function getGeneratedFromSeAttribute() {
+        $generated_from = $this->attributes['generated_from'];
+        preg_match('/SE\d+/', $generated_from, $matches);
+        if(isset($matches[0])){
+            return $matches[0];
+        }
+        return '';
     }
 
 	public function getAmountAttribute(){

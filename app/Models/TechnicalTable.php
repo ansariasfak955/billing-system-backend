@@ -13,7 +13,7 @@ class TechnicalTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'technical_tables' ;
 
-    public $appends = ['client_name','asset_name','payment_option_name','created_by_name', 'amount','meta_discount', 'reference_type', 'agent_name','amount_with_out_vat','assign_to_name','tax_amount','client_legal_name'];
+    public $appends = ['generated_from_inc', 'client_name','asset_name','payment_option_name','created_by_name', 'amount','meta_discount', 'reference_type', 'agent_name','amount_with_out_vat','assign_to_name','tax_amount','client_legal_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -79,6 +79,22 @@ class TechnicalTable extends Model
             $asset_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_asset_name($asset_id, $this->attributes['asset_id']);
         }
+    }
+
+    public function getGeneratedFromAttribute() {
+        $generated_from = $this->attributes['generated_from'];
+        $generated_from = preg_replace('/INC\d+/', '', $generated_from);
+        $generated_from = rtrim($generated_from);
+        return str_replace(":", " ", $generated_from);
+    }
+
+    public function getGeneratedFromIncAttribute() {
+        $generated_from = $this->attributes['generated_from'];
+        preg_match('/INC\d+/', $generated_from, $matches);
+        if(isset($matches[0])){
+            return $matches[0];
+        }
+        return '';
     }
 
     public function getPaymentOptionNameAttribute(){
