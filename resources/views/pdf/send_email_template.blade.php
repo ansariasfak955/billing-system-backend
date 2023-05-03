@@ -1037,7 +1037,9 @@
                 </tr>
             </table>
             @if(@$show_footer_count)
-                <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: right;">1/1</div>
+                <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: right;">
+                    <span style="margin-left:100px;">1/1</span>
+                </div>
             @endif
         </div>
         @endif
