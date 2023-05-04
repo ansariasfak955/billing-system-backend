@@ -875,27 +875,26 @@
                             </th>
                         @endif
                         @if($show_items_units == 1)
-                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
-                            {{ @$item_units_text ? @$item_units_text : 'QTY.'}}
+                            <th class="table_heading" style=" border-bottom: 1px solid #999;">
+                            <span style="margin: 0; padding-left: 50px;">{{ @$item_units_text ? @$item_units_text : 'QTY.'}}</span>
                             </th>
                         @endif
                         @if($request->format != 'without_values') 
                             @if(@$discount_show == 1)
-                                <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
-                                {{ @$discount_text ? @$discount_text : 'DISC.'}}
+                                <th class="table_heading" style=" border-bottom: 1px solid #999; ">
+                                    {{ @$discount_text ? @$discount_text : 'DISC.'}}
                                 </th>
                             @endif
                             @if(@$items_unit_price_show == 1)
-                                <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
+                                <th class="table_heading" style=" border-bottom: 1px solid #999; ">
                                 {{ @$items_unit_price_text ? @$items_unit_price_text : 'PRICE'}}
-                                </th>
                             @endif
                         @endif
                         @if($request->format != 'without_values')
                             @if($request->format != 'without_totals')
                                 @if(@$items_price_show == 1)
                                     <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
-                                    {{ @$items_price_text ? @$items_price_text : 'SUBTOTAL'}}
+                                        {{ @$items_price_text ? @$items_price_text : 'SUBTOTAL'}}
                                     </th>
                                 @endif
                             @endif
@@ -927,20 +926,20 @@
                                    
                                 </td>
                                 <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                    <p style="margin: 0px; padding: -10px; text-align: right;">{{ $product->quantity }}</p>
+                                    <p style="margin: 0px; padding: -10px;">{{ $product->quantity }}</p>
                                 </td>
                                 @if($request->format != 'without_values') 
                                     <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                        <p style="margin: 0px; padding: -10px; text-align: right;">{{ @$product->discount }}</p>
+                                        <p style="margin: 0px; padding: -10px;">{{ @$product->discount }}</p>
                                     </td>
                                     <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                        <p style="margin: 0px; padding: -10px; text-align: right;" >{{ @$product->base_price }}</p>
+                                        <p style="margin: 0px; padding: -10px; " >{{ @$product->base_price }}</p>
                                     </td>
                                 @endif
                                 @if($request->format != 'without_values')
                                     @if($request->format != 'without_totals')
                                         <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                            <p style="margin: 0; padding-left: 15px; text-align: right;">{{ @$product->amount_with_out_vat }}</p>
+                                            <p style="margin: 0; padding-left: 15px;">{{ @$product->amount_with_out_vat }}</p>
                                         </td>
                                     @endif
                                 @endif

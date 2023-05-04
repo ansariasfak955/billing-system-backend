@@ -149,7 +149,6 @@ class SalesEstimate extends Model
         $generated_from = rtrim($generated_from);
         return str_replace(":", " ", $generated_from);
 
-
         // $generated_from = $this->attributes['generated_from'];
         // $generated_from = preg_replace('/SE\d+/', '', $generated_from);
         // $generated_from = rtrim($generated_from);
@@ -158,25 +157,23 @@ class SalesEstimate extends Model
 
     public function getGeneratedFromSeAttribute() {
 
-        // $generated_from = $this->attributes['generated_from'];
-        // if($this->attributes['reference'] == 'SE'){
-        //     preg_match('/SE\d+/', $generated_from, $matches);
-        // }elseif ($this->attributes['reference'] == 'SO') {
-        //     preg_match('/SO\d+/', $generated_from, $matches);
-        // }elseif($this->attributes['reference'] == 'SDN'){
-        //     preg_match('/SDN\d+/', $generated_from, $matches);
-        // }
-        // if(isset($matches[0])){
-        //     return $matches[0];
-        // }
-        // return '';
-
         $generated_from = $this->attributes['generated_from'];
-        preg_match('/SE\d+/', $generated_from, $matches);
+        if($this->attributes['reference'] == 'SE' || $this->attributes['reference'] == 'SO' || $this->attributes['reference'] == 'SDN'){
+            preg_match('/SE\d+/', $generated_from, $matches);
+        }elseif ($this->attributes['reference'] == 'SO' || $this->attributes['reference'] == 'SDN' || $this->attributes['reference'] == 'INV') {
+            preg_match('/SO\d+/', $generated_from, $matches);
+        }
         if(isset($matches[0])){
             return $matches[0];
         }
         return '';
+
+        // $generated_from = $this->attributes['generated_from'];
+        // preg_match('/SE\d+/', $generated_from, $matches);
+        // if(isset($matches[0])){
+        //     return $matches[0];
+        // }
+        // return '';
     }
 
 	public function getAmountAttribute(){
