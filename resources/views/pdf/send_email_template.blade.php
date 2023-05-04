@@ -862,38 +862,38 @@
             <div style="margin-top: 40px;font-size:10px;">       
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
-                        @if($show_items)
+                        @if(@$show_items == 1)
                             <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">
-                            {{ $item_text ?? 'REF.'}}
+                            {{ @$item_text ? @$item_text : 'REF.'}}
                             </th>
                         @endif
-                        @if(@$show_items_description)
+                        @if(@$show_items_description == 1)
                             <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">
-                            {{ @$item_description_text ?? 'DESCRIPTION'}}
+                            {{ @$item_description_text ? @$item_description_text : 'DESCRIPTION'}}
                             </th>
                         @endif
-                        @if($show_items_units)
+                        @if($show_items_units == 1)
                             <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
-                            {{ @$item_units_text ?? 'QTY.'}}
+                            {{ @$item_units_text ? @$item_units_text : 'QTY.'}}
                             </th>
                         @endif
                         @if($request->format != 'without_values') 
-                            @if(@$discount_show)
+                            @if(@$discount_show == 1)
                                 <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
-                                {{ @$discount_text ?? 'DISC.'}}
+                                {{ @$discount_text ? @$discount_text : 'DISC.'}}
                                 </th>
                             @endif
-                            @if(@$items_unit_price_show)
+                            @if(@$items_unit_price_show == 1)
                                 <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
-                                {{ @$items_unit_price_text ?? 'PRICE'}}
+                                {{ @$items_unit_price_text ? @$items_unit_price_text : 'PRICE'}}
                                 </th>
                             @endif
                         @endif
                         @if($request->format != 'without_values')
                             @if($request->format != 'without_totals')
-                                @if(@$items_price_show)
+                                @if(@$items_price_show == 1)
                                     <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
-                                    {{ @$items_price_text ?? 'SUBTOTAL'}}
+                                    {{ @$items_price_text ? @$items_price_text : 'SUBTOTAL'}}
                                     </th>
                                 @endif
                             @endif

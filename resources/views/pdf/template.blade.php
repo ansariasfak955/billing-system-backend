@@ -426,6 +426,69 @@
                 $show_footer_count = $meta->option_value;
             @endphp
         @endif
+
+        <!-- Items  -->
+        @if($meta->category == 'Items' && $meta->type == 'items_reference' && $meta->option_name == 'show')
+            @php
+                $show_items = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_reference' && $meta->option_name == 'text')
+            @php
+                $item_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_description' && $meta->option_name == 'show')
+            @php
+                $show_items_description = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_description' && $meta->option_name == 'text')
+            @php
+                $item_description_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_units' && $meta->option_name == 'show')
+            @php
+                $show_items_units = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_units' && $meta->option_name == 'text')
+            @php
+                $item_units_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_discount' && $meta->option_name == 'show')
+            @php
+                $discount_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_discount' && $meta->option_name == 'text')
+            @php
+                $discount_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_unit_price' && $meta->option_name == 'show')
+            @php
+                $items_unit_price_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_unit_price' && $meta->option_name == 'text')
+            @php
+                $items_unit_price_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_price' && $meta->option_name == 'show')
+            @php
+                $items_price_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_price' && $meta->option_name == 'text')
+            @php
+                $items_price_text = $meta->option_value;
+            @endphp
+        @endif
+
     @endforeach
 
     @if(strpos($template->watermark,"via.placeholder") !== false)
@@ -675,16 +738,36 @@
             <div style="margin-top: 20px;">
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
-                        @if($document_reference_show == 1)
-                            <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
-                            {{ $document_reference_text ? $document_reference_text : 'REF.'}}
+                        @if(@$show_items == 1)
+                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">
+                            {{ @$item_text ? @$item_text : 'REF.'}}
                             </th>
                         @endif
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DESCRIPTION</th>
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">QTY.</th>
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">DISC.</th>
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">PRICE</th>
-                        <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">SUBTOTAL</th>
+                        @if(@$show_items_description == 1)
+                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                            {{ @$item_description_text ? @$item_description_text : 'DESCRIPTION'}}
+                            </th>
+                        @endif
+                        @if($show_items_units == 1)
+                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                            {{ @$item_units_text ? @$item_units_text : 'QTY.'}}
+                            </th>
+                        @endif
+                        @if(@$discount_show == 1)
+                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                                {{ @$discount_text ? @$discount_text : 'DISC.'}}
+                                </th>
+                            @endif
+                            @if(@$items_unit_price_show == 1)
+                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                                {{ @$items_unit_price_text ? @$items_unit_price_text : 'PRICE'}}
+                                </th>
+                            @endif
+                            @if(@$items_price_show == 1)
+                                    <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
+                                    {{ @$items_price_text ? @$items_price_text : 'SUBTOTAL'}}
+                                    </th>
+                            @endif
                        {{--  <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">TAXES</th> --}}
                     </tr>
                     @php
