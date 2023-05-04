@@ -72,12 +72,9 @@ class PurchaseTable extends Model
 
     public function getGeneratedFromAttribute() {
         $generated_from = $this->attributes['generated_from'];
-        if ($this->attributes['reference'] == 'PO') {
-        $generated_from = preg_replace('/PO\d+/', '', $generated_from);
-        } elseif($this->attributes['reference'] == 'PINV') {
-        $generated_from = preg_replace('/PINV\d+/', '', $generated_from);
-        } elseif($this->attributes['reference'] == 'PDN') {
+        if ($this->attributes['reference'] == 'PO' || $this->attributes['reference'] == 'PINV' || $this->attributes['reference'] == 'PDN' || $this->attributes['reference'] == 'WDN') {
             $generated_from = preg_replace('/PO\d+/', '', $generated_from);
+            $generated_from = preg_replace('/PDN\d+/', '', $generated_from);
         }
 
         $generated_from = rtrim($generated_from);
@@ -89,7 +86,6 @@ class PurchaseTable extends Model
         $generated_from = $this->attributes['generated_from'];
         if($this->attributes['reference'] == 'PO' || $this->attributes['reference'] == 'PINV' || $this->attributes['reference'] == 'PDN' || $this->attributes['reference'] == 'WDN'){
             preg_match('/PO\d+/', $generated_from, $matches);
-        }elseif ($this->attributes['reference'] == 'PDN' || $this->attributes['reference'] == 'PINV') {
             preg_match('/PDN\d+/', $generated_from, $matches);
         }
         if(isset($matches[0])){
