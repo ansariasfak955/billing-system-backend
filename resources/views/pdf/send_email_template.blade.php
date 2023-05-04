@@ -490,12 +490,12 @@
                 $item_units_text = $meta->option_value;
             @endphp
         @endif
-        @if($meta->category == 'Items' && $meta->type == 'discount' && $meta->option_name == 'show')
+        @if($meta->category == 'Items' && $meta->type == 'items_discount' && $meta->option_name == 'show')
             @php
                 $discount_show = $meta->option_value;
             @endphp
         @endif
-        @if($meta->category == 'Items' && $meta->type == 'discount' && $meta->option_name == 'text')
+        @if($meta->category == 'Items' && $meta->type == 'items_discount' && $meta->option_name == 'text')
             @php
                 $discount_text = $meta->option_value;
             @endphp
