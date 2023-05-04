@@ -138,21 +138,14 @@ class SalesEstimate extends Model
 
     public function getGeneratedFromAttribute() {
         $generated_from = $this->attributes['generated_from'];
-        if ($this->attributes['reference'] == 'SE') {
-        $generated_from = preg_replace('/SE\d+/', '', $generated_from);
-        } elseif($this->attributes['reference'] == 'SO') {
-        $generated_from = preg_replace('/SO\d+/', '', $generated_from);
-        } elseif($this->attributes['reference'] == 'SDN') {
-        $generated_from = preg_replace('/SDN\d+/', '', $generated_from);
+        if ($this->attributes['reference'] == 'SE' || $this->attributes['reference'] == 'SO' || $this->attributes['reference'] == 'SDN') {
+            $generated_from = preg_replace('/SE\d+/', '', $generated_from);
+            $generated_from = preg_replace('/SO\d+/', '', $generated_from);
         }
 
         $generated_from = rtrim($generated_from);
         return str_replace(":", " ", $generated_from);
 
-        // $generated_from = $this->attributes['generated_from'];
-        // $generated_from = preg_replace('/SE\d+/', '', $generated_from);
-        // $generated_from = rtrim($generated_from);
-        // return str_replace(":", " ", $generated_from);
     }
 
     public function getGeneratedIdAttribute() {
@@ -160,7 +153,6 @@ class SalesEstimate extends Model
         $generated_from = $this->attributes['generated_from'];
         if($this->attributes['reference'] == 'SE' || $this->attributes['reference'] == 'SO' || $this->attributes['reference'] == 'SDN'){
             preg_match('/SE\d+/', $generated_from, $matches);
-        }elseif ($this->attributes['reference'] == 'SO' || $this->attributes['reference'] == 'SDN' || $this->attributes['reference'] == 'INV') {
             preg_match('/SO\d+/', $generated_from, $matches);
         }
         if(isset($matches[0])){
@@ -168,12 +160,6 @@ class SalesEstimate extends Model
         }
         return '';
 
-        // $generated_from = $this->attributes['generated_from'];
-        // preg_match('/SE\d+/', $generated_from, $matches);
-        // if(isset($matches[0])){
-        //     return $matches[0];
-        // }
-        // return '';
     }
 
 	public function getAmountAttribute(){

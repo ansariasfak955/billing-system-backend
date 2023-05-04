@@ -83,14 +83,15 @@ class TechnicalTable extends Model
 
     public function getGeneratedFromAttribute() {
         $generated_from = $this->attributes['generated_from'];
-        if ($this->attributes['reference'] == 'INC') {
-        $generated_from = preg_replace('/INC\d+/', '', $generated_from);
-        } elseif($this->attributes['reference'] == 'WE') {
-        $generated_from = preg_replace('/WE\d+/', '', $generated_from);
-        }elseif($this->attributes['reference'] == 'WO') {
+        // return $generated_from;
+        if($this->attributes['reference'] == 'WE' || $this->attributes['reference'] == 'WO' || $this->attributes['reference'] == 'WDN') {
+            
+            if(strpos($generated_from, 'INC') !== false){
+                $generated_from = preg_replace('/INC\d+/', '', $generated_from);
+            }
+
+            $generated_from = preg_replace('/WE\d+/', '', $generated_from);
             $generated_from = preg_replace('/WO\d+/', '', $generated_from);
-        }elseif($this->attributes['reference'] == 'WDN') {
-            $generated_from = preg_replace('/WDN\d+/', '', $generated_from);
         }
 
         $generated_from = rtrim($generated_from);
@@ -100,11 +101,9 @@ class TechnicalTable extends Model
     public function getGeneratedIdAttribute() {
 
         $generated_from = $this->attributes['generated_from'];
-        if($this->attributes['reference'] == 'INC' || $this->attributes['reference'] == 'WE' || $this->attributes['reference'] == 'WO' || $this->attributes['reference'] == 'WDN'){
-            preg_match('/INC\d+/', $generated_from, $matches);
-        }elseif ($this->attributes['reference'] == 'WE' || $this->attributes['reference'] == 'WO' || $this->attributes['reference'] == 'WDN') {
+        // return $generated_from;
+        if($this->attributes['reference'] == 'WE' || $this->attributes['reference'] == 'WO' || $this->attributes['reference'] == 'WDN'){
             preg_match('/WE\d+/', $generated_from, $matches);
-        }elseif ($this->attributes['reference'] == 'WO' || $this->attributes['reference'] == 'WDN') {
             preg_match('/WO\d+/', $generated_from, $matches);
         }
         if(isset($matches[0])){

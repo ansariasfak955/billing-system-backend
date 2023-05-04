@@ -80,8 +80,19 @@ class InvoiceTable extends Model
                 $generated_from = preg_replace('/INV\d+/', '', $generated_from);
             }
 
+            if(strpos($generated_from, 'SE') !== false){
+                $generated_from = preg_replace('/SE\d+/', '', $generated_from);
+            }
+
+            if(strpos($generated_from, 'SO') !== false){
+                $generated_from = preg_replace('/SO\d+/', '', $generated_from);
+            }
+
             if(strpos($generated_from, 'SDN') !== false){
                 $generated_from = preg_replace('/SDN\d+/', '', $generated_from);
+            }
+            if(strpos($generated_from, 'INC') !== false){
+                $generated_from = preg_replace('/INC\d+/', '', $generated_from);
             }
             
         }
@@ -100,7 +111,16 @@ class InvoiceTable extends Model
             }
 
             // if string contains SDN
-            if(strpos($generated_from, 'SDN') !== false){
+            if(strpos($generated_from, 'SE') !== false){
+                preg_match('/SE\d+/', $generated_from, $matches);
+            }
+            if(strpos($generated_from, 'SO') !== false){
+                preg_match('/SO\d+/', $generated_from, $matches);
+            }
+            if(strpos($generated_from, 'INC') !== false){
+                preg_match('/SDN\d+/', $generated_from, $matches);
+            }
+            if(strpos($generated_from, 'INC') !== false){
                 preg_match('/SDN\d+/', $generated_from, $matches);
             }
         }
