@@ -708,7 +708,9 @@
 
                     @if(@$client_supplier_reference_show)
                         @if($invoiceData->client->reference)
-                            <tr><td style="padding: 0; margin: 0;">Reference: <b>{{$client_supplier_reference}} {{@$invoiceData->client->reference.''.@$invoiceData->client->reference_number}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">
+                            {{@$client_supplier_reference ? @$client_supplier_reference : 'Reference'}}: <b>{{@$invoiceData->client->reference.''.@$invoiceData->client->reference_number}}</b></td>
+                            </tr>
                         @endif
                     @endif
 
