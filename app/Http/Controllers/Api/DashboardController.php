@@ -102,7 +102,7 @@ class DashboardController extends Controller
                     ],
                     [
                         "lable" => "Delivery Notes", 
-                        "value" => TechnicalTable::where('reference', 'WDN')->where('status', 'pending')->count()." ($ ". TechnicalTable::where('reference', 'WDN')->where('status', 'pending')->get()->sum('amount').")",
+                        "value" => TechnicalTable::where('reference', 'WDN')->where('status', 'pending invoice')->count()." ($ ". TechnicalTable::where('reference', 'WDN')->where('status', 'pending invoice')->get()->sum('amount').")",
                         "link" => "/work-delivery"
                     ]
                 ] 
