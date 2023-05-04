@@ -62,7 +62,7 @@ class SalesEstimate extends Model
     public function delivery_options(){
         return $this->hasOne(DeliveryOption::class,'id', 'delivery_option');
     }
-	protected $appends = ['generated_from_se', 'client_name', 'created_by_name', 'amount', 'meta_discount','reference_type','agent_name','amount_with_out_vat','tax_amount','client_legal_name'];
+	protected $appends = ['generated_id', 'client_name', 'created_by_name', 'amount', 'meta_discount','reference_type','agent_name','amount_with_out_vat','tax_amount','client_legal_name'];
 
     public function getSignatureAttribute()
     {
@@ -155,7 +155,7 @@ class SalesEstimate extends Model
         // return str_replace(":", " ", $generated_from);
     }
 
-    public function getGeneratedFromSeAttribute() {
+    public function getGeneratedIdAttribute() {
 
         $generated_from = $this->attributes['generated_from'];
         if($this->attributes['reference'] == 'SE' || $this->attributes['reference'] == 'SO' || $this->attributes['reference'] == 'SDN'){

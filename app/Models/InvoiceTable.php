@@ -14,7 +14,7 @@ class InvoiceTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'invoice_tables' ;
 
-    protected $appends = ['generated_from_inv','client_name', 'created_by_name', 'product_name','payment_option_name','amount', 'meta_discount','amount_paid', 'amount_due', 'reference_type', 'payment_term_name', 'agent_name','amount_with_out_vat','tax_amount','client_legal_name'];
+    protected $appends = ['generated_id','client_name', 'created_by_name', 'product_name','payment_option_name','amount', 'meta_discount','amount_paid', 'amount_due', 'reference_type', 'payment_term_name', 'agent_name','amount_with_out_vat','tax_amount','client_legal_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -75,21 +75,34 @@ class InvoiceTable extends Model
 
     public function getGeneratedFromAttribute() {
         $generated_from = $this->attributes['generated_from'];
-        if ($this->attributes['reference'] == 'INV') {
-        $generated_from = preg_replace('/INV\d+/', '', $generated_from);
-        } elseif($this->attributes['reference'] == 'RET') {
-        $generated_from = preg_replace('/RET\d+/', '', $generated_from);
+        if ($this->attributes['reference'] == 'INV' || $this->attributes['reference'] == 'RET') {
+            if(strpos($generated_from, 'INV') !== false){
+                $generated_from = preg_replace('/INV\d+/', '', $generated_from);
+            }
+
+            if(strpos($generated_from, 'SDN') !== false){
+                $generated_from = preg_replace('/SDN\d+/', '', $generated_from);
+            }
+            
         }
 
         $generated_from = rtrim($generated_from);
         return str_replace(":", " ", $generated_from);
     }
 
-    public function getGeneratedFromInvAttribute() {
+    public function getGeneratedIdAttribute() {
 
         $generated_from = $this->attributes['generated_from'];
         if($this->attributes['reference'] == 'INV' || $this->attributes['reference'] == 'RET'){
-            preg_match('/INV\d+/', $generated_from, $matches);
+            // if string contains INV
+            if(strpos($generated_from, 'INV') !== false){
+                preg_match('/INV\d+/', $generated_from, $matches);
+            }
+
+            // if string contains SDN
+            if(strpos($generated_from, 'SDN') !== false){
+                preg_match('/SDN\d+/', $generated_from, $matches);
+            }
         }
         if(isset($matches[0])){
             return $matches[0];

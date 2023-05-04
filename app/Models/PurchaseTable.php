@@ -13,7 +13,7 @@ class PurchaseTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'purchase_tables' ;
 
-    protected $appends = ['generated_from_po','client_name', 'created_by_name', 'amount','amount_paid','payment_option_name','amount_due', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name','amount_with_out_vat','total_quantity','tax_amount'];
+    protected $appends = ['generated_id','client_name', 'created_by_name', 'amount','amount_paid','payment_option_name','amount_due', 'meta_discount', 'supplier_name', 'agent_name','sub_total', 'vat', 'amount_vat', 'percentage','income_tax', 'amount_income_tax','reference_type', 'payment_term_name','amount_with_out_vat','total_quantity','tax_amount'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -77,14 +77,14 @@ class PurchaseTable extends Model
         } elseif($this->attributes['reference'] == 'PINV') {
         $generated_from = preg_replace('/PINV\d+/', '', $generated_from);
         } elseif($this->attributes['reference'] == 'PDN') {
-            $generated_from = preg_replace('/PDN\d+/', '', $generated_from);
+            $generated_from = preg_replace('/PO\d+/', '', $generated_from);
         }
 
         $generated_from = rtrim($generated_from);
         return str_replace(":", " ", $generated_from);
     }
 
-    public function getGeneratedFromPoAttribute() {
+    public function getGeneratedIdAttribute() {
 
         $generated_from = $this->attributes['generated_from'];
         if($this->attributes['reference'] == 'PO' || $this->attributes['reference'] == 'PINV' || $this->attributes['reference'] == 'PDN' || $this->attributes['reference'] == 'WDN'){

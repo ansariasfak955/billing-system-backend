@@ -13,7 +13,7 @@ class TechnicalTable extends Model
     protected $guarded = ['id' , 'created_at', 'updated_at'];
     protected static $globalTable = 'technical_tables' ;
 
-    public $appends = ['generated_from_inc', 'client_name','asset_name','payment_option_name','created_by_name', 'amount','meta_discount', 'reference_type', 'agent_name','amount_with_out_vat','assign_to_name','tax_amount','client_legal_name'];
+    public $appends = ['generated_id', 'client_name','asset_name','payment_option_name','created_by_name', 'amount','meta_discount', 'reference_type', 'agent_name','amount_with_out_vat','assign_to_name','tax_amount','client_legal_name'];
 
     public function getTable() {
         return self::$globalTable ;
@@ -97,7 +97,7 @@ class TechnicalTable extends Model
         return str_replace(":", " ", $generated_from);
     }
 
-    public function getGeneratedFromIncAttribute() {
+    public function getGeneratedIdAttribute() {
 
         $generated_from = $this->attributes['generated_from'];
         if($this->attributes['reference'] == 'INC' || $this->attributes['reference'] == 'WE' || $this->attributes['reference'] == 'WO' || $this->attributes['reference'] == 'WDN'){
