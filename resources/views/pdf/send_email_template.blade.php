@@ -457,6 +457,70 @@
                 $expiration_text = $meta->option_value;
             @endphp
         @endif
+
+        <!-- Items -->
+
+        @if($meta->category == 'Items' && $meta->type == 'items_reference' && $meta->option_name == 'show')
+            @php
+                $show_items = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_reference' && $meta->option_name == 'text')
+            @php
+                $item_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_description' && $meta->option_name == 'show')
+            @php
+                $show_items_description = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_description' && $meta->option_name == 'text')
+            @php
+                $item_description_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_units' && $meta->option_name == 'show')
+            @php
+                $show_items_units = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_units' && $meta->option_name == 'text')
+            @php
+                $item_units_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'discount' && $meta->option_name == 'show')
+            @php
+                $discount_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'discount' && $meta->option_name == 'text')
+            @php
+                $discount_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_unit_price' && $meta->option_name == 'show')
+            @php
+                $items_unit_price_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_unit_price' && $meta->option_name == 'text')
+            @php
+                $items_unit_price_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_price' && $meta->option_name == 'show')
+            @php
+                $items_price_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Items' && $meta->type == 'items_price' && $meta->option_name == 'text')
+            @php
+                $items_price_text = $meta->option_value;
+            @endphp
+        @endif
+
     @endforeach
 
     @if(strpos($template->watermark,"via.placeholder") !== false)
@@ -798,20 +862,40 @@
             <div style="margin-top: 40px;font-size:10px;">       
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
-                        @if($document_reference_show == 1)
+                        @if($show_items)
                             <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">
-                            {{ $document_reference_text ? $document_reference_text : 'REF.'}}
+                            {{ $item_text ?? 'REF.'}}
                             </th>
                         @endif
-                        <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">DESCRIPTION</th>
-                        <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">QTY.</th>
+                        @if(@$show_items_description)
+                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">
+                            {{ @$item_description_text ?? 'DESCRIPTION'}}
+                            </th>
+                        @endif
+                        @if($show_items_units)
+                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
+                            {{ @$item_units_text ?? 'QTY.'}}
+                            </th>
+                        @endif
                         @if($request->format != 'without_values') 
-                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">DISC.</th>
-                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">PRICE</th>
+                            @if(@$discount_show)
+                                <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
+                                {{ @$discount_text ?? 'DISC.'}}
+                                </th>
+                            @endif
+                            @if(@$items_unit_price_show)
+                                <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
+                                {{ @$items_unit_price_text ?? 'PRICE'}}
+                                </th>
+                            @endif
                         @endif
                         @if($request->format != 'without_values')
                             @if($request->format != 'without_totals')
-                                <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">SUBTOTAL</th>
+                                @if(@$items_price_show)
+                                    <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right;">
+                                    {{ @$items_price_text ?? 'SUBTOTAL'}}
+                                    </th>
+                                @endif
                             @endif
                         @endif
                     </tr>
