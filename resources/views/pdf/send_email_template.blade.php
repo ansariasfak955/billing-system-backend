@@ -47,7 +47,7 @@
         }
 
         span.mdaa:before {
-            content: "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+            content: "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
             width: 100px;
             height: 2px;
             letter-spacing: -1px;
@@ -1158,7 +1158,11 @@
                             </td>
                 </tr>
             </table>
-            <p class="table_heading" style="border-bottom: 1px solid gray;">Comments</p>
+            <table>
+                <tr>
+                    <th class="table_heading" style="padding: 5px 0; text-align: left; border-bottom: 1px solid gray;">TOTAL</th>
+                </tr>
+            </table>
             @if(@$show_footer_count)
                  <div style="margin-top:20px; margin-left:20px;">
                     @if(@$legal_note_show)
