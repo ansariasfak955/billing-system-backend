@@ -48,9 +48,10 @@ class SendEmailController extends Controller
 {
     public function sendEmail(Request $request){
 
-        $user = Auth::user(); 
+        $user = \Auth::user(); 
+        
         $language = $user->language ?? 'en'; // get the user's language preference, default to English
-        App::setLocale($language);
+        \App::setLocale($language);
 
         $validator = Validator::make($request->all(), [
             'id' => 'required',
