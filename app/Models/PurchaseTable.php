@@ -73,8 +73,15 @@ class PurchaseTable extends Model
     public function getGeneratedFromAttribute() {
         $generated_from = $this->attributes['generated_from'];
         if ($this->attributes['reference'] == 'PO' || $this->attributes['reference'] == 'PINV' || $this->attributes['reference'] == 'PDN' || $this->attributes['reference'] == 'WDN') {
-            $generated_from = preg_replace('/PO\d+/', '', $generated_from);
-            $generated_from = preg_replace('/PDN\d+/', '', $generated_from);
+
+            if(strpos($generated_from, 'WE') !== false){
+                $generated_from = preg_replace('/WE\d+/', '', $generated_from);
+            }
+            
+            if(strpos($generated_from, 'PDN') !== false){
+                $generated_from = preg_replace('/PDN\d+/', '', $generated_from);
+            }
+            
         }
 
         $generated_from = rtrim($generated_from);
@@ -85,8 +92,16 @@ class PurchaseTable extends Model
 
         $generated_from = $this->attributes['generated_from'];
         if($this->attributes['reference'] == 'PO' || $this->attributes['reference'] == 'PINV' || $this->attributes['reference'] == 'PDN' || $this->attributes['reference'] == 'WDN'){
-            preg_match('/PO\d+/', $generated_from, $matches);
-            preg_match('/PDN\d+/', $generated_from, $matches);
+
+            //if string contains PO
+            if(strpos($generated_from, 'PO') !== false){
+                preg_match('/PO\d+/', $generated_from, $matches);
+            }
+
+            //if string contains PDN
+            if(strpos($generated_from, 'PDN') !== false){
+                preg_match('/PDN\d+/', $generated_from, $matches);
+            }
         }
         if(isset($matches[0])){
             return $matches[0];

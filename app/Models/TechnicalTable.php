@@ -90,8 +90,14 @@ class TechnicalTable extends Model
                 $generated_from = preg_replace('/INC\d+/', '', $generated_from);
             }
 
-            $generated_from = preg_replace('/WE\d+/', '', $generated_from);
-            $generated_from = preg_replace('/WO\d+/', '', $generated_from);
+            if(strpos($generated_from, 'WE') !== false){
+                $generated_from = preg_replace('/WE\d+/', '', $generated_from);
+            }
+            
+            if(strpos($generated_from, 'WO') !== false){
+                $generated_from = preg_replace('/WO\d+/', '', $generated_from);
+            }
+
         }
 
         $generated_from = rtrim($generated_from);
@@ -101,10 +107,16 @@ class TechnicalTable extends Model
     public function getGeneratedIdAttribute() {
 
         $generated_from = $this->attributes['generated_from'];
-        // return $generated_from;
         if($this->attributes['reference'] == 'WE' || $this->attributes['reference'] == 'WO' || $this->attributes['reference'] == 'WDN'){
-            preg_match('/WE\d+/', $generated_from, $matches);
-            preg_match('/WO\d+/', $generated_from, $matches);
+            //if string contains WE
+            if(strpos($generated_from, 'WE') !== false){
+                preg_match('/WE\d+/', $generated_from, $matches);
+            }
+
+            //if string contains WO
+            if(strpos($generated_from, 'WO') !== false){
+                preg_match('/WO\d+/', $generated_from, $matches);
+            }
         }
         if(isset($matches[0])){
             return $matches[0];
