@@ -43,7 +43,7 @@
             width: 100px;
             height: 2px;
             letter-spacing: -1px;
-            margin: 0 10px 0 0;
+            /* margin: 0 10px 0 0; */
         }
         
     </style>
