@@ -205,7 +205,7 @@ class User extends Authenticatable
             return 0;
         }
 
-        if( $this->attributes['stripe_subscription_id'] || date( 'Y-m-d H:i:s', strtotime( $this->attributes['plan_expiry_date'] ) ) < date('Y-m-d H:i:s')){
+        if( @$this->attributes['stripe_subscription_id'] || date( 'Y-m-d H:i:s', strtotime( @$this->attributes['plan_expiry_date'] ) ) < date('Y-m-d H:i:s')){
             return 0;
         }
         return 1;

@@ -87,6 +87,7 @@ class UserController extends Controller
 
         User::setGlobalTable('company_'.$request->company_id.'_users');
         $request['password'] = bcrypt($request->password);
+        $request['has_access'] = ($request->has_access ? 1 : 0);
         $user = User::create($request->except('image', 'company_id'));
 
         if($request->image != NULL){
@@ -163,6 +164,7 @@ class UserController extends Controller
 
         User::setGlobalTable('company_'.$request->company_id.'_users');
         $user = User::where('id', $request->user)->first();
+        $request['has_access'] = ($request->has_access ? 1 : 0);
         $user->update($request->except('image', 'company_id', '_method', 'password'));
 
         if($request->image != NULL){
