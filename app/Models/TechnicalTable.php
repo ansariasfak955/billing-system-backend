@@ -117,6 +117,11 @@ class TechnicalTable extends Model
             if(strpos($generated_from, 'WO') !== false){
                 preg_match('/WO\d+/', $generated_from, $matches);
             }
+
+            //if string contains INC
+            if(strpos($generated_from, 'INC') !== false){
+                preg_match('/INC\d+/', $generated_from, $matches);
+            }
         }
         if(isset($matches[0])){
             return $matches[0];
