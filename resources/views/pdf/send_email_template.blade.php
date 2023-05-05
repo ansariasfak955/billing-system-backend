@@ -891,7 +891,7 @@
                             </th>
                         @endif
                         @if(@$show_items_description == 1)
-                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left; padding: 5px;  margin: 0px; width: 300px;">
+                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left; padding: 5px;  margin: 0px; width: 350px;">
                             {{ @$item_description_text ? @$item_description_text : 'DESCRIPTION'}}
                             </th>
                         @endif
@@ -942,7 +942,7 @@
 
                                     <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
                                 </td>
-                                <td style=" margin: 5px; border-bottom: 1px solid #999; width: 300px;">
+                                <td style=" margin: 5px; border-bottom: 1px solid #999; width: 350px;">
                                     <p style="margin: 0px; padding: -10px">{{ $product->name }} 
                                     <span>{{ $product->description }}</span></p>
                                    

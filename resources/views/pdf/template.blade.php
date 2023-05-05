@@ -783,7 +783,7 @@
                             </th>
                         @endif
                         @if(@$show_items_description == 1)
-                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left; width: 300px;">
+                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left; width: 350px;">
                             {{ @$item_description_text ? @$item_description_text : 'DESCRIPTION'}}
                             </th>
                         @endif
@@ -829,14 +829,14 @@
 
                                 <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; width: 300px;">
+                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; width: 350px;">
                                 <p style="marging: 0; padding: 0">{{ $product->name }}</p>
                                 <span>{{ $product->description }}</span>
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; text-align: right;">
                                 <p style="marging: 0; padding: 0">1</p>
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; text-align: right;">
                                 <p style="marging: 0; padding: 0">0</p>
                             </td>
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; text-align: right;">
