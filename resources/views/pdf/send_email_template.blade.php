@@ -265,6 +265,17 @@
             $comments_text = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Comments and Addendums' && $meta->type == 'comments_title' && $meta->option_name == 'show')
+            @php
+            $comments_title_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Comments and Addendums' && $meta->type == 'comments_title' && $meta->option_name == 'text')
+            @php
+            $comments_title_text = $meta->option_value;
+            @endphp
+        @endif
         
         {{-- Client Information --}}
         @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_section' && $meta->option_name == 'show')
@@ -1147,6 +1158,7 @@
                             </td>
                 </tr>
             </table>
+            <p style="border-bottom: 1px solid gray;">Comments</p>
             @if(@$show_footer_count)
                  <div style="margin-top:20px; margin-left:20px;">
                     @if(@$legal_note_show)
