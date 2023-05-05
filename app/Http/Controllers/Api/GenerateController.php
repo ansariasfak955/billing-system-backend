@@ -72,6 +72,7 @@ class GenerateController extends Controller
                     $array = $salesEstimate->toArray();
                     $generateEstimate = InvoiceTable::create($array);
                     $generateEstimate->created_at = now();
+                    $generateEstimate->date = now();
                     $generateEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateEstimate->reference.$generateEstimate->reference_number;
                     $generateEstimate->reference = $referenceType ;
                     $generateEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
