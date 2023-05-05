@@ -1148,7 +1148,7 @@
                 </tr>
             </table>
             @if(@$show_footer_count)
-                 <div style="margin-top:20px; text-align: right;">
+                 <div style="margin-top:20px; margin-left:20px;">
                     @if(@$legal_note_show)
                         <span style="text-align: left;">{{ @$legal_note_text }} </span><br>
                     @endif
