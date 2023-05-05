@@ -31,14 +31,14 @@
             border-left: 2px solid {{ $color }} !important;
         }
 
-        p.mdaa {
+        span.mdaa {
             color: black;
             position: relative;
             width: 100%;
             text-align: right;
         }
 
-        p.mdaa:before {
+        span.mdaa:before {
             content: "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
             width: 100px;
             height: 2px;

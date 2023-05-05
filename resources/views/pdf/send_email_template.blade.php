@@ -39,14 +39,14 @@
             /* margin-left: 50px; */
         }
 
-        p.mdaa {
+        span.mdaa {
             color: black;
             position: relative;
             width: 100%;
             text-align: right;
         }
 
-        p.mdaa:before {
+        span.mdaa:before {
             content: "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
             width: 100px;
             height: 2px;
