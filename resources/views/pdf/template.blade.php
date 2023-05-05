@@ -259,6 +259,17 @@
             $comments_text = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Comments and Addendums' && $meta->type == 'comments_title' && $meta->option_name == 'show')
+            @php
+            $comments_title_show = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Comments and Addendums' && $meta->type == 'comments_title' && $meta->option_name == 'text')
+            @php
+            $comments_title_text = $meta->option_value;
+            @endphp
+        @endif
         
         {{-- Client Information --}}
         @if($meta->category == 'Client/Supplier Information' && $meta->type == 'client_section' && $meta->option_name == 'show')
@@ -959,11 +970,15 @@
                     </td>
                 </tr>
             </table>
-            <table style="border-collapse: collapse; width: 100%; ">
-                <tr>
-                    <th class="table_heading" style="padding: 5px 0; text-align: left; border-bottom: 1px solid gray;">TOTAL</th>
-                </tr>
-            </table>
+            @if(@$comments_title_show)
+                <div style="margin-top: 15px;">
+                    <table style="border-collapse: collapse; width: 100%; ">
+                        <tr>
+                            <th class="table_heading" style="padding: 5px 0; text-align: left; border-bottom: 1px solid gray;">{{@$comments_title_text}}</th>
+                        </tr>
+                    </table>
+                </div>
+            @endif
             @if(@$show_footer_count)
                 <!-- <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: right;">1/1</div> -->
                 <div style="margin-top:20px; margin-left:20px;">

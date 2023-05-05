@@ -1158,11 +1158,15 @@
                             </td>
                 </tr>
             </table>
-            <table style="border-collapse: collapse; width: 100%; ">
-                <tr>
-                    <th class="table_heading" style="padding: 5px 0; text-align: left; border-bottom: 1px solid gray;">TOTAL</th>
-                </tr>
-            </table>
+            @if(@$comments_title_show)
+                <div style="margin-top: 15px;">
+                    <table style="border-collapse: collapse; width: 100%; ">
+                        <tr>
+                            <th class="table_heading" style="padding: 5px 0; text-align: left; border-bottom: 1px solid gray;">{{@$comments_title_text}}</th>
+                        </tr>
+                    </table>
+                </div>
+            @endif
             @if(@$show_footer_count)
                  <div style="margin-top:20px; margin-left:20px;">
                     @if(@$legal_note_show)
