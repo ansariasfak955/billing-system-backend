@@ -959,7 +959,7 @@
                     </td>
                 </tr>
             </table>
-            <table>
+            <table style="border-collapse: collapse; width: 100%; ">
                 <tr>
                     <th class="table_heading" style="padding: 5px 0; text-align: left; border-bottom: 1px solid gray;">TOTAL</th>
                 </tr>
@@ -970,7 +970,7 @@
                     @if(@$legal_note_show)
                         <span style="text-align: left;">{{ @$legal_note_text }} </span><br>
                     @endif
-                        <span class="mdaa">1/1</span>
+                        <span class="mdaa" style="border-collapse: collapse; width: 100%; ">1/1</span>
                 </div>
             @endif
         </div>
