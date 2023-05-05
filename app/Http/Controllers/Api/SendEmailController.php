@@ -42,10 +42,16 @@ use Mail;
 use Storage;
 use Validator;
 use App;
+use Auth;
 
 class SendEmailController extends Controller
 {
     public function sendEmail(Request $request){
+
+        $user = Auth::user(); 
+        $language = $user->language ?? 'en'; // get the user's language preference, default to English
+        App::setLocale($language);
+
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'type' => 'required'

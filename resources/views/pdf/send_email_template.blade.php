@@ -574,7 +574,7 @@
                         </td>
                         <span class="section">
                         <td class="header_border" style="width:250px"  @if($company_name_show || $company_country_show) @endif>
-                            <span style="margin-left: 20px;">Company Name:</span>
+                            <span style="margin-left: 20px;">{{__('Company Name:')}}</span>
                             <span>{{  @$company->commercial_name }}</span> <br>
                             @if(@$company->address)
                             <div style="margin-left: 20px;">
