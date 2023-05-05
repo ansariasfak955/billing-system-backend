@@ -16,7 +16,6 @@ use App\Models\PurchaseTable;
 use App\Models\MyTemplateMeta;
 use App\Models\Reference;
 use Validator;
-use Carbon\Carbon;
 
 class GenerateController extends Controller
 {
@@ -49,6 +48,7 @@ class GenerateController extends Controller
                     $generateEstimate->created_at = now();
                     $generateEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateEstimate->reference.$generateEstimate->reference_number;
                     $generateEstimate->reference = $referenceType ;
+                    $generateEstimate->date = now() ;
                     $generateEstimate->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
                     $generateEstimate->save();
                     
@@ -71,7 +71,7 @@ class GenerateController extends Controller
 
                     $array = $salesEstimate->toArray();
                     $generateEstimate = InvoiceTable::create($array);
-                    $generateEstimate->created_at = Carbon::now();
+                    $generateEstimate->created_at = now();
                     $generateEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateEstimate->reference.$generateEstimate->reference_number;
                     $generateEstimate->reference = $referenceType ;
                     $generateEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
