@@ -74,8 +74,8 @@ class PurchaseTable extends Model
         $generated_from = $this->attributes['generated_from'];
         if ($this->attributes['reference'] == 'PO' || $this->attributes['reference'] == 'PINV' || $this->attributes['reference'] == 'PDN' || $this->attributes['reference'] == 'WDN') {
 
-            if(strpos($generated_from, 'WE') !== false){
-                $generated_from = preg_replace('/WE\d+/', '', $generated_from);
+            if(strpos($generated_from, 'PO') !== false){
+                $generated_from = preg_replace('/PO\d+/', '', $generated_from);
             }
             
             if(strpos($generated_from, 'PDN') !== false){
