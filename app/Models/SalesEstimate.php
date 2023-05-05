@@ -139,8 +139,14 @@ class SalesEstimate extends Model
     public function getGeneratedFromAttribute() {
         $generated_from = $this->attributes['generated_from'];
         if ($this->attributes['reference'] == 'SE' || $this->attributes['reference'] == 'SO' || $this->attributes['reference'] == 'SDN') {
-            $generated_from = preg_replace('/SE\d+/', '', $generated_from);
-            $generated_from = preg_replace('/SO\d+/', '', $generated_from);
+            if(strpos($generated_from, 'SE') !== false){
+                $generated_from = preg_replace('/SE\d+/', '', $generated_from);
+            }
+            
+            if(strpos($generated_from, 'SO') !== false){
+                $generated_from = preg_replace('/SO\d+/', '', $generated_from);
+            }
+
         }
 
         $generated_from = rtrim($generated_from);
@@ -152,8 +158,15 @@ class SalesEstimate extends Model
 
         $generated_from = $this->attributes['generated_from'];
         if($this->attributes['reference'] == 'SE' || $this->attributes['reference'] == 'SO' || $this->attributes['reference'] == 'SDN'){
-            preg_match('/SE\d+/', $generated_from, $matches);
-            preg_match('/SO\d+/', $generated_from, $matches);
+            //if string contains SE
+            if(strpos($generated_from, 'SE') !== false){
+                preg_match('/SE\d+/', $generated_from, $matches);
+            }
+
+            //if string contains SO
+            if(strpos($generated_from, 'SO') !== false){
+                preg_match('/SO\d+/', $generated_from, $matches);
+            }
         }
         if(isset($matches[0])){
             return $matches[0];
