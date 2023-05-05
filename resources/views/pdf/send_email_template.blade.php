@@ -1147,10 +1147,10 @@
                             </td>
                 </tr>
             </table>
-            @if(@$legal_note_show)
-                <p style="text-align: left;">{{ @$legal_note_text }} </p>
-            @endif
             @if(@$show_footer_count)
+                @if(@$legal_note_show)
+                    <p style="text-align: left;">{{ @$legal_note_text }} </p>
+                @endif
                 <div style="margin-top:20px; text-align: right;"><p class="mdaa">1/1</p>
             @endif
         </div>
