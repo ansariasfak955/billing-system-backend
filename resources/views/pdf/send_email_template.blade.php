@@ -1089,14 +1089,13 @@
         @else
         
         <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
-        @if(@$hide_signed_box_show == 0)
-            @if(@$show_signed_title)
-                <p style="font-weight: bold;">{{@$signed_box_text ?? 'Signed:'}}</p>
-            @endif
             <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                 <tr>
                 @if(($request->disable_signed)? '0':'1')   
-                    
+                    @if(@$hide_signed_box_show == 0)
+                        @if(@$show_signed_title)
+                            <p style="font-weight: bold;">{{@$signed_box_text ?? 'Signed:'}}</p>
+                        @endif
                         <td style="margin: 0;">
                             <div style="border: 1px solid gray; padding: 100px 70px 10px 10px;">
                                 <!-- <img width="100" height="80" object-fit="cover"
@@ -1109,8 +1108,8 @@
                                 @endif
                             </div>
                         </td>
-                @endif
-        @endif
+                        @endif
+                    @endif
                     @if(@$show_expiration)
                             <td style="padding: 0; margin: 0; padding-left:10px">
                                     <table>
