@@ -53,6 +53,10 @@
             letter-spacing: -1px;
             margin: 0 10px 0 0;
         }
+
+        .description {
+            width: 100px;
+        }
                 
     </style>
 
@@ -922,8 +926,8 @@
                                     <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
                                 </td>
                                 <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                    <p style="margin: 0px; padding: -10px">{{ $product->name }} <span>{{ $product->description }}</span></p>
-                                   
+                                    <p style="margin: 0px; padding: -10px">{{ $product->name }} 
+                                    <span class="description">{{ $product->description }}</span></p>
                                 </td>
                                 <td style=" margin: 5px; border-bottom: 1px solid #999;">
                                     <p style="margin: 0px; padding: -10px; text-align: right;">{{ $product->quantity }}</p>
