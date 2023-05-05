@@ -1152,7 +1152,7 @@
                     @if(@$legal_note_show)
                         <span style="text-align: left;">{{ @$legal_note_text }} </span><br>
                     @endif
-                    <p class="mdaa">1/1</p>
+                    <span class="mdaa">1/1</span>
             @endif
         </div>
         @endif

@@ -963,9 +963,9 @@
                 <!-- <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: right;">1/1</div> -->
                 <div style="margin-top:20px; text-align: right;">
                 @if(@$legal_note_show)
-                    <p style="text-align: left;">{{ @$legal_note_text }} </p>
+                    <p style="text-align: left;">{{ @$legal_note_text }} </p><br>
                 @endif
-                <p class="mdaa">1/1</p>
+                <span class="mdaa">1/1</span>
             @endif
         </div>
         @endif
