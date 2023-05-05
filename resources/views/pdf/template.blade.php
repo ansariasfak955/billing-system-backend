@@ -783,22 +783,22 @@
                             </th>
                         @endif
                         @if(@$show_items_description == 1)
-                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left; width: 300px;">
                             {{ @$item_description_text ? @$item_description_text : 'DESCRIPTION'}}
                             </th>
                         @endif
                         @if($show_items_units == 1)
-                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
                             {{ @$item_units_text ? @$item_units_text : 'QTY.'}}
                             </th>
                         @endif
                         @if(@$discount_show == 1)
-                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
                                 {{ @$discount_text ? @$discount_text : 'DISC.'}}
                                 </th>
                             @endif
                             @if(@$items_unit_price_show == 1)
-                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">
+                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
                                 {{ @$items_unit_price_text ? @$items_unit_price_text : 'PRICE'}}
                                 </th>
                             @endif
@@ -829,7 +829,7 @@
 
                                 <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; width: 300px;">
                                 <p style="marging: 0; padding: 0">{{ $product->name }}</p>
                                 <span>{{ $product->description }}</span>
                             </td>
@@ -839,10 +839,10 @@
                             <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                 <p style="marging: 0; padding: 0">0</p>
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
+                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; text-align: right;">
                                 <p style="marging: 0; padding: 0">{{ $product->price }}</p>
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;  text-align: left;">
+                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;  text-align: right;">
                                 <p style="marging: 0; padding-left: 15px;">{{ $product->price }}</p>
                             </td>
                            {{--  <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
