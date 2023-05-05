@@ -104,6 +104,7 @@ class GenerateController extends Controller
             if($request->to_type == 'Sales Delivery Note'){
                 $generateSalesOrder = $salesOrder->replicate();
                 $generateSalesOrder->created_at = now();
+                $generateSalesOrder->date = now();
                 $generateSalesOrder->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateSalesOrder->reference.$generateSalesOrder->reference_number;
                 $generateSalesOrder->reference = $referenceType ;
                 $generateSalesOrder->reference_number = get_sales_estimate_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -129,6 +130,7 @@ class GenerateController extends Controller
                 $array = $salesOrder->toArray();
                 $generateInvoice = InvoiceTable::create($array);
                 $generateInvoice->created_at = now();
+                $generateInvoice->date = now();
                 $generateInvoice->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoice->reference.$generateInvoice->reference_number;
                 $generateInvoice->reference = $referenceType ;
                 $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -164,6 +166,7 @@ class GenerateController extends Controller
                 $array = $salesOrder->toArray();
                 $generateInvoice = InvoiceTable::create($array);
                 $generateInvoice->created_at = now();
+                $generateInvoice->date = now();
                 $generateInvoice->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoice->reference.$generateInvoice->reference_number;
                 $generateInvoice->reference = $referenceType ;
                 $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -196,6 +199,7 @@ class GenerateController extends Controller
             if($request->to_type == 'Work Order' || $request->to_type == 'Work Delivery Note'){
                 $generateTechnicalEstimate = $technicalEstimate->replicate();
                 $generateTechnicalEstimate->created_at = now();
+                $generateTechnicalEstimate->date = now();
                 $generateTechnicalEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateTechnicalEstimate->reference.$generateTechnicalEstimate->reference_number;
                 $generateTechnicalEstimate->reference = $referenceType ;
                 $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -221,6 +225,7 @@ class GenerateController extends Controller
                 $array = $technicalEstimate->toArray();
                 $generateTechnicalEstimate = InvoiceTable::create($array);
                 $generateTechnicalEstimate->created_at = now();
+                $generateTechnicalEstimate->date = now();
                 $generateTechnicalEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateTechnicalEstimate->reference.$generateTechnicalEstimate->reference_number;
                 $generateTechnicalEstimate->reference = $referenceType ;
                 $generateTechnicalEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -252,6 +257,7 @@ class GenerateController extends Controller
             if($request->to_type == 'Work Delivery Note'){
                 $generateTechnicalEstimate = $technicalWorkOrder->replicate();
                 $generateTechnicalEstimate->created_at = now();
+                $generateTechnicalEstimate->date = now();
                 $generateTechnicalEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateTechnicalEstimate->reference.$generateTechnicalEstimate->reference_number;
                 $generateTechnicalEstimate->reference = $referenceType ;
                 $generateTechnicalEstimate->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -277,6 +283,7 @@ class GenerateController extends Controller
                 $array = $technicalWorkOrder->toArray();
                 $generateOrdinaryInvoice = InvoiceTable::create($array);
                 $generateOrdinaryInvoice->created_at = now();
+                $generateOrdinaryInvoice->date = now();
                 $generateOrdinaryInvoice->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateOrdinaryInvoice->reference.$generateOrdinaryInvoice->reference_number;
                 $generateOrdinaryInvoice->reference = $referenceType ;
                 $generateOrdinaryInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -312,6 +319,7 @@ class GenerateController extends Controller
                 $array = $technicalWorkDeliveryNote->toArray();
                 $generateInvoiceWorkDeliveryNote = InvoiceTable::create($array);
                 $generateInvoiceWorkDeliveryNote->created_at = now();
+                $generateInvoiceWorkDeliveryNote->date = now();
                 $generateInvoiceWorkDeliveryNote->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoiceWorkDeliveryNote->reference.$generateInvoiceWorkDeliveryNote->reference_number;
                 $generateInvoiceWorkDeliveryNote->reference = $referenceType ;
                 $generateInvoiceWorkDeliveryNote->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -344,6 +352,7 @@ class GenerateController extends Controller
             if($request->to_type == 'Refund Invoice'){
                 $generateInvoiceEstimate = $invoiceEstimate->replicate();
                 $generateInvoiceEstimate->created_at = now();
+                $generateInvoiceEstimate->date = now();
                 $generateInvoiceEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoiceEstimate->reference.$generateInvoiceEstimate->reference_number;
                 $generateInvoiceEstimate->reference = $referenceType ;
                 $generateInvoiceEstimate->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -376,6 +385,7 @@ class GenerateController extends Controller
 
                 $generatePurchaseEstimate = $purchaseOrderEstimate->replicate();
                 $generatePurchaseEstimate->created_at = now();
+                $generatePurchaseEstimate->date = now();
                 $generatePurchaseEstimate->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generatePurchaseEstimate->reference.$generatePurchaseEstimate->reference_number;
                 $generatePurchaseEstimate->reference = $referenceType ;
                 $generatePurchaseEstimate->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -408,6 +418,7 @@ class GenerateController extends Controller
 
                 $generateDeliveryNote = $purchaseDeliveryNote->replicate();
                 $generateDeliveryNote->created_at = now();
+                $generateDeliveryNote->date = now();
                 $generateDeliveryNote->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateDeliveryNote->reference.$generateDeliveryNote->reference_number;
                 $generateDeliveryNote->reference = $referenceType ;
                 $generateDeliveryNote->reference_number = get_purchase_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -441,6 +452,7 @@ class GenerateController extends Controller
                 $array = $technicalIncident->toArray();
                 $generateTechnicalIncident = TechnicalTable::create($array);
                 $generateTechnicalIncident->created_at = now();
+                $generateTechnicalIncident->date = now();
                 $generateTechnicalIncident->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateTechnicalIncident->reference.$generateTechnicalIncident->reference_number;
                 $generateTechnicalIncident->reference = $referenceType ;
                 $generateTechnicalIncident->reference_number = get_technical_table_latest_ref_number($request->company_id, $referenceType, 1 );
@@ -458,6 +470,7 @@ class GenerateController extends Controller
                 $array = $technicalIncident->toArray();
                 $generateInvoice = InvoiceTable::create($array);
                 $generateInvoice->created_at = now();
+                $generateInvoice->date = now();
                 $generateInvoice->generated_from = $type.':' . 'Generated from'.' '.$request->from_type.' '.$generateInvoice->reference.$generateInvoice->reference_number;
                 $generateInvoice->reference = $referenceType ;
                 $generateInvoice->reference_number = get_invoice_table_latest_ref_number($request->company_id, $referenceType, 1 );
