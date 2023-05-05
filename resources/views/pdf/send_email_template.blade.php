@@ -457,6 +457,16 @@
                 $expiration_text = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Footer and Legal Note' && $meta->type == 'legal_note' && $meta->option_name == 'show')
+            @php
+                $legal_note_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Footer and Legal Note' && $meta->type == 'legal_note' && $meta->option_name == 'text')
+            @php
+                $legal_note_text = $meta->option_value;
+            @endphp
+        @endif
 
         <!-- Items -->
 
@@ -1137,8 +1147,11 @@
                             </td>
                 </tr>
             </table>
+            @if(@$legal_note_show)
+                <p style="text-align: left;">{{ @$legal_note_text }} </p>
+            @endif
             @if(@$show_footer_count)
-            <div style="margin-top:20px; text-align: right;"><p class="mdaa">1/1</p>
+                <div style="margin-top:20px; text-align: right;"><p class="mdaa">1/1</p>
             @endif
         </div>
         @endif

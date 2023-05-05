@@ -30,6 +30,21 @@
         .header_border {
             border-left: 2px solid {{ $color }} !important;
         }
+
+        p.mdaa {
+            color: black;
+            position: relative;
+            width: 100%;
+            text-align: right;
+        }
+
+        p.mdaa:before {
+            content: "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+            width: 100px;
+            height: 2px;
+            letter-spacing: -1px;
+            margin: 0 10px 0 0;
+        }
         
     </style>
 
@@ -424,6 +439,19 @@
         @if($meta->category == 'Footer and Legal Note' && $meta->type == 'footer_pages' && $meta->option_name == 'show')
             @php
                 $show_footer_count = $meta->option_value;
+            @endphp
+        @endif
+
+        <!-- Footer legal note -->
+
+        @if($meta->category == 'Footer and Legal Note' && $meta->type == 'legal_note' && $meta->option_name == 'show')
+            @php
+                $legal_note_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Footer and Legal Note' && $meta->type == 'legal_note' && $meta->option_name == 'text')
+            @php
+                $legal_note_text = $meta->option_value;
             @endphp
         @endif
 
@@ -931,8 +959,12 @@
                     </td>
                 </tr>
             </table>
+            @if(@$legal_note_show)
+                <p style="text-align: left;">{{ @$legal_note_text }} </p>
+            @endif
             @if(@$show_footer_count)
-                <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: right;">1/1</div>
+                <!-- <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: right;">1/1</div> -->
+                <div style="margin-top:20px; text-align: right;"><p class="mdaa">1/1</p>
             @endif
         </div>
         @endif
