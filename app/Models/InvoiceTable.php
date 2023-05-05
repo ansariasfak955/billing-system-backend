@@ -117,11 +117,11 @@ class InvoiceTable extends Model
             if(strpos($generated_from, 'SO') !== false){
                 preg_match('/SO\d+/', $generated_from, $matches);
             }
-            if(strpos($generated_from, 'INC') !== false){
+            if(strpos($generated_from, 'SDN') !== false){
                 preg_match('/SDN\d+/', $generated_from, $matches);
             }
             if(strpos($generated_from, 'INC') !== false){
-                preg_match('/SDN\d+/', $generated_from, $matches);
+                preg_match('/INC\d+/', $generated_from, $matches);
             }
         }
         if(isset($matches[0])){
