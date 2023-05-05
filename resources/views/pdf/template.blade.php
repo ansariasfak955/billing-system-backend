@@ -962,10 +962,11 @@
             @if(@$show_footer_count)
                 <!-- <div style="margin-left:15%;margin-top:20px;width: 70%; border-bottom: 1px solid black; text-align: right;">1/1</div> -->
                 <div style="margin-top:20px; text-align: right;">
-                @if(@$legal_note_show)
-                    <p style="text-align: left;">{{ @$legal_note_text }} </p><br>
-                @endif
-                <span class="mdaa">1/1</span>
+                    @if(@$legal_note_show)
+                        <span style="text-align: left;">{{ @$legal_note_text }} </span><br>
+                    @endif
+                        <span class="mdaa">1/1</span>
+                </div>
             @endif
         </div>
         @endif
