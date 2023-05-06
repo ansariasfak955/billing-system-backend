@@ -584,7 +584,7 @@
                             @endif
                             @if(@$company_website_show['show'] == 1 && @$company_website_show['value'])  {{__('template.company_name')}}  
                                 <span style="margin-left: 30px;">
-                                {{ @$company_website_show['value'] ? @$company_website_show['value'] : __('template.website')}}</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                                {{ @$company_website_show['value'] ? @$company_website_show['value'] : 'Website'}}</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     <!-- {{$company_website_show['value']}} -->{{ $company->website}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
@@ -624,7 +624,7 @@
                         </tr>
                     @endif
                     @if(@$client_supplier_legal_name_show)
-                    <tr><td style="padding: 0; margin: 0;">Client Name: <b>Johnny {{@$client_supplier_legal_name}}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;">{{__('template.client_name')}} <b>Johnny {{@$client_supplier_legal_name}}</b></td></tr>
                     @endif
                     {{-- @if(@$client_supplier_tin_show)
                     <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>54578 {{@$client_supplier_tin}}</b></td></tr>
