@@ -651,7 +651,7 @@
                     @if($document_payment_info_show == 1 && @$invoiceData->payment_options->name)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_payment_info_text ? $document_payment_info_text : 'Payment Option:'}} <b>{{ @$invoiceData->payment_options->name }}</b>
+                                {{ $document_payment_info_text ? $document_payment_info_text : __('template.payment_option')}} <b>{{ @$invoiceData->payment_options->name }}</b>
                             </td>
                         </tr>
                     @endif
