@@ -213,6 +213,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::get('template-fields', 'MyTemplateController@getTemplateFields');
             Route::post('update-template-field', 'MyTemplateController@updateTemplateField');
             Route::apiResource('users', UserController::class);
+            Route::post('users/update-language', 'UserController@updateLanguage');
             Route::apiResource('references', ReferenceController::class);
             Route::post('references/batch-delete', 'ReferenceController@batchDelete');
             Route::apiResource('service-attachments', ServiceAttachmentController::class);

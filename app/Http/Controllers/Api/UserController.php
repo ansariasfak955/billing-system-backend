@@ -251,4 +251,15 @@ class UserController extends Controller
             'user'    => Auth::user(),
         ]);
     }
+    public function updateLanguage(Request $request){
+        User::setGlobalTable('company_'.$request->company_id.'_users');
+        \Auth::user()->language = $request->language;
+        \Auth::user()->save();
+
+        return response()->json([
+            'status'  => true,
+            'message' => "Language updated successfully!",
+        ]);
+    }
+
 }
