@@ -636,6 +636,13 @@
                             </td>
                         </tr>
                     @endif
+                    {{-- @if($document_status_show == 1)
+                        <tr>
+                            <td style="padding: 0; margin: 0;">
+                                {{ $document_status_text ? $document_status_text : 'Status:'}}<b> Pending</b>
+                            </td>
+                        </tr>
+                    @endif --}}
 
                     @if($document_payment_info_show == 1)
                         <tr>
@@ -644,14 +651,6 @@
                             </td>
                         </tr>
                     @endif
-
-                    {{-- @if($document_status_show == 1)
-                        <tr>
-                            <td style="padding: 0; margin: 0;">
-                                {{ $document_status_text ? $document_status_text : 'Status:'}}<b> Pending</b>
-                            </td>
-                        </tr>
-                    @endif --}}
                     
                     @if($document_created_by_show == 1)
                         <tr>
