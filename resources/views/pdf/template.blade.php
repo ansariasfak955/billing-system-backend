@@ -564,7 +564,7 @@
                             @if(@$company->address)
                             <div style="margin-left: 20px;">
                                 
-                                <span >Address:</span>
+                                <span >{{__('template.Address')}}</span>
                                 <span>{{@$company->address}}</span><br>
                             </div>
                             @endif
@@ -690,7 +690,7 @@
                         </th>
         
                     @if((@$client_supplier_name_show || @$client_supplier_legal_name_show) && (@$client_supplier_legal_name || @$client_supplier_name))
-                        <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">{{__('template.Name/Legal Name')}} <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_tin_show == 1 && @$client_supplier_tin_text)
@@ -702,11 +702,11 @@
                     @endif
 
                     @if(@$client_supplier_phone_show && @$client_supplier_phone)
-                        <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">{{__('template.phone')}} <b>{{$client_supplier_phone}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_reference_show && @$client_supplier_reference)
-                        <tr><td style="padding: 0; margin: 0;">Reference: <b>{{$client_supplier_reference}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">{{__('template.Reference')}} <b>{{$client_supplier_reference}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_fax_show && @$client_supplier_fax)
@@ -714,7 +714,7 @@
                     @endif
 
                     @if(@$client_supplier_email_show && @$client_supplier_email)
-                        <tr><td style="padding: 0; margin: 0;">Email: <b>{{$client_supplier_email}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">{{__('template.email')}} <b>{{$client_supplier_email}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_website_show && @$client_supplier_website)
@@ -728,7 +728,7 @@
                     <tr><td style="padding: 0; margin: 0;">
                     @if(@$client_supplier_zip_code_show == 1) 
                         {{-- <b>{{$client_supplier_zip_code_show}}</b> --}}
-                        Zip Code: <b>90001</b>
+                        {{__('template.zip_code')}} <b>90001</b>
                     @endif
                         </td>
                     </tr>
@@ -739,7 +739,7 @@
                     @if(@$client_supplier_city_show == 1)
                         {{-- <b>{{$client_supplier_city_show}}</b>
                     @else --}}
-                        City: <b>Los Angeles, California</b>
+                        {{__('template.City')}}City: <b>Los Angeles, California</b>
                     @endif
                         </td>
                     </tr>
@@ -748,7 +748,7 @@
                     @if(@$client_supplier_state_show == 1) 
                         {{-- <b>{{$client_supplier_state_show}}</b>
                     @else --}}
-                        State: <b>Alaska</b>
+                        {{__('template.State')}} <b>Alaska</b>
                     @endif
                         </td>
                     </tr>
@@ -757,7 +757,7 @@
                     @if(@$client_supplier_country_show == 1)
                         {{-- <b>{{$client_supplier_country_show}}</b>
                     @else --}}
-                        Country: <b>USA</b>
+                        {{__('template.Country')}} <b>USA</b>
                     @endif
                         </td>
                     </tr>
@@ -783,7 +783,7 @@
                         @endif
                         @if(@$show_items_description == 1)
                             <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left; width: 350px;">
-                            {{ @$item_description_text ? @$item_description_text : 'DESCRIPTION'}}
+                            {{ @$item_description_text ? @$item_description_text : __('template.DESCRIPTION')}}
                             </th>
                         @endif
                         @if($show_items_units == 1)
