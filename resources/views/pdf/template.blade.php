@@ -619,7 +619,7 @@
                     @if($document_reference_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                            {{ $document_reference_text ? $document_reference_text : 'Number:'}} <b> INV00001</b>
+                            {{ $document_reference_text ? $document_reference_text : __('template.Number')}} <b> INV00001</b>
                             </td>
                         </tr>
                     @endif
@@ -639,7 +639,7 @@
                     {{-- @if($document_status_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_status_text ? $document_status_text : 'Status:'}}<b> Pending</b>
+                                {{ $document_status_text ? $document_status_text : __('template.Status')}}<b> Pending</b>
                             </td>
                         </tr>
                     @endif --}}
@@ -655,21 +655,21 @@
                     @if($document_created_by_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_created_by_text ? $document_created_by_text : 'Created by:'}}<b> Test View Account</b>
+                                {{ $document_created_by_text ? $document_created_by_text : __('template.created_by')}}<b> Test View Account</b>
                             </td>
                         </tr>
                     @endif
 
                     <tr>
                         <td style="padding: 0; margin: 0;">
-                            Delivery to: <b> HongKong 9205 Olive Ave., 10977, Spring Valley, NY, United States</b>
+                            {{__('template.delivery_to')}} <b> HongKong 9205 Olive Ave., 10977, Spring Valley, NY, United States</b>
                         </td>
                     </tr>
 
                     @if(@$document_delivery_by_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}} <b>test delivery A domicilio</b>
+                                {{ $document_delivery_by_text ? $document_delivery_by_text : __('template.delivery_option')}} <b>test delivery A domicilio</b>
                             </td>
                         </tr>
                     @endif
@@ -677,7 +677,7 @@
                     @if(@$document_agent_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_agent_text ? $document_agent_text : 'Agent:'}} <b>Test View Account</b>
+                                {{ $document_agent_text ? $document_agent_text : __('template.Agent')}} <b>Test View Account</b>
                             </td>
                         </tr>
                     @endif
