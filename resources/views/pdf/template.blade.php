@@ -574,7 +574,7 @@
                         </td>
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
                             @if(@$company_email_show['show'] ==1)
-                                <span style="margin-left: 30px;">Email:</span> 
+                                <span style="margin-left: 30px;">{{__('template.email')}}</span> 
                                 @if(@$company_email_show['show'] ==1 && @$company_email_show['value'])
                                     {{$company_email_show['value']}}
                                 @elseif(@$company_email_show['show'] ==1 && @!$company_email_show['value'])
@@ -632,7 +632,7 @@
                     @if($document_date_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                            {{ $document_date_text ? $document_date_text : 'Date:'}} <b>{{ date('d F Y') }}</b>
+                            {{ $document_date_text ? $document_date_text : __('template.Date')}} <b>{{ date('d F Y') }}</b>
                             </td>
                         </tr>
                     @endif
