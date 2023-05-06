@@ -582,9 +582,9 @@
                                 @endif
                                 <br>
                             @endif
-                            @if(@$company_website_show['show'] == 1 && @$company_website_show['value'])    
+                            @if(@$company_website_show['show'] == 1 && @$company_website_show['value'])  {{__('template.company_name')}}  
                                 <span style="margin-left: 30px;">
-                                {{ @$company_website_show['value'] ? @$company_website_show['value'] : 'Website:'}}</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
+                                {{ @$company_website_show['value'] ? @$company_website_show['value'] : __('template.website')}}</span> @if(@$company_website_show['show'] ==1 && @$company_website_show['value'])
                                     <!-- {{$company_website_show['value']}} -->{{ $company->website}}
                                 @elseif(@$company_website_show['show'] ==1 && @!$company_website_show['value'])
                                     {{ $company->website}}
@@ -592,7 +592,7 @@
                             @endif
                             <br>
                             @if(@$company_phone_show['show'] && @$company_phone_show['value'])    
-                                <span style="margin-left: 30px;">Phone:</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
+                                <span style="margin-left: 30px;">{{__('template.phone')}}</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
                                     {{$company_phone_show['value']}}
                                 @elseif(@$company_phone_show['show'] ==1 && @!$company_phone_show['value'])
                                     {{ $company->phone}}
