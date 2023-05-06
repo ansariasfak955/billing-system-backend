@@ -564,7 +564,7 @@
                             @if(@$company->address)
                             <div style="margin-left: 20px;">
                                 
-                                <span >{{__('template.Address')}}</span>
+                                <span >{{__('template.address')}}</span>
                                 <span>{{@$company->address}}</span><br>
                             </div>
                             @endif
@@ -619,7 +619,7 @@
                     @if($document_reference_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                            {{ $document_reference_text ? $document_reference_text : __('template.Number')}} <b> INV00001</b>
+                            {{ $document_reference_text ? $document_reference_text : __('template.number')}} <b> INV00001</b>
                             </td>
                         </tr>
                     @endif
@@ -632,14 +632,14 @@
                     @if($document_date_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                            {{ $document_date_text ? $document_date_text : __('template.Date')}} <b>{{ date('d F Y') }}</b>
+                            {{ $document_date_text ? $document_date_text : __('template.date')}} <b>{{ date('d F Y') }}</b>
                             </td>
                         </tr>
                     @endif
                     {{-- @if($document_status_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_status_text ? $document_status_text : __('template.Status')}}<b> Pending</b>
+                                {{ $document_status_text ? $document_status_text : __('template.status')}}<b> Pending</b>
                             </td>
                         </tr>
                     @endif --}}
@@ -677,7 +677,7 @@
                     @if(@$document_agent_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_agent_text ? $document_agent_text : __('template.Agent')}} <b>Test View Account</b>
+                                {{ $document_agent_text ? $document_agent_text : __('template.agent')}} <b>Test View Account</b>
                             </td>
                         </tr>
                     @endif
@@ -690,7 +690,7 @@
                         </th>
         
                     @if((@$client_supplier_name_show || @$client_supplier_legal_name_show) && (@$client_supplier_legal_name || @$client_supplier_name))
-                        <tr><td style="padding: 0; margin: 0;">{{__('template.Name/Legal Name')}} <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">{{__('template.name_legal_name')}} <b>{{$client_supplier_legal_name}}({{$client_supplier_name}})</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_tin_show == 1 && @$client_supplier_tin_text)
@@ -706,7 +706,7 @@
                     @endif
 
                     @if(@$client_supplier_reference_show && @$client_supplier_reference)
-                        <tr><td style="padding: 0; margin: 0;">{{__('template.Reference')}} <b>{{$client_supplier_reference}}</b></td></tr>
+                        <tr><td style="padding: 0; margin: 0;">{{__('template.reference')}} <b>{{$client_supplier_reference}}</b></td></tr>
                     @endif
 
                     @if(@$client_supplier_fax_show && @$client_supplier_fax)
@@ -739,7 +739,7 @@
                     @if(@$client_supplier_city_show == 1)
                         {{-- <b>{{$client_supplier_city_show}}</b>
                     @else --}}
-                        {{__('template.City')}} <b>Los Angeles, California</b>
+                        {{__('template.city')}} <b>Los Angeles, California</b>
                     @endif
                         </td>
                     </tr>
@@ -748,7 +748,7 @@
                     @if(@$client_supplier_state_show == 1) 
                         {{-- <b>{{$client_supplier_state_show}}</b>
                     @else --}}
-                        {{__('template.State')}} <b>Alaska</b>
+                        {{__('template.state')}} <b>Alaska</b>
                     @endif
                         </td>
                     </tr>
@@ -757,7 +757,7 @@
                     @if(@$client_supplier_country_show == 1)
                         {{-- <b>{{$client_supplier_country_show}}</b>
                     @else --}}
-                        {{__('template.Country')}} <b>USA</b>
+                        {{__('template.country')}} <b>USA</b>
                     @endif
                         </td>
                     </tr>
@@ -783,27 +783,27 @@
                         @endif
                         @if(@$show_items_description == 1)
                             <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left; width: 350px;">
-                            {{ @$item_description_text ? @$item_description_text : __('template.DESCRIPTION')}}
+                            {{ @$item_description_text ? @$item_description_text : __('template.description')}}
                             </th>
                         @endif
                         @if($show_items_units == 1)
                             <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
-                            {{ @$item_units_text ? @$item_units_text : __('template.QTY')}}
+                            {{ @$item_units_text ? @$item_units_text : __('template.qty')}}
                             </th>
                         @endif
                         @if(@$discount_show == 1)
                                 <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
-                                {{ @$discount_text ? @$discount_text : __('template.DISC')}}
+                                {{ @$discount_text ? @$discount_text : __('template.disc')}}
                                 </th>
                             @endif
                             @if(@$items_unit_price_show == 1)
                                 <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
-                                {{ @$items_unit_price_text ? @$items_unit_price_text : __('template.PRICE')}}
+                                {{ @$items_unit_price_text ? @$items_unit_price_text : __('template.price')}}
                                 </th>
                             @endif
                             @if(@$items_price_show == 1)
                                     <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
-                                    {{ @$items_price_text ? @$items_price_text : __('template.SUBTOTAL')}}
+                                    {{ @$items_price_text ? @$items_price_text : __('template.subtotal')}}
                                     </th>
                             @endif
                        {{--  <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">TAXES</th> --}}

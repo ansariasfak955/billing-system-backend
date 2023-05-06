@@ -579,7 +579,7 @@
                             @if(@$company->address)
                             <div style="margin-left: 20px;">
                                 
-                                <span >{{__('template.Address')}}</span>
+                                <span >{{__('template.address')}}</span>
                                 <span>{{@$company->address}}</span><br>
                             </div>
                             @endif
@@ -634,7 +634,7 @@
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} INFO</th>
 
-                    <tr><td style="padding: 0; margin: 0;">__('template.Number') <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;">__('template.number') <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
                     <!-- @if(@$invoiceData->client->legal_name)
                         <tr><td style="padding: 0; margin: 0;">Client Name: <b>{{ @$invoiceData->client->legal_name }}</b></td></tr>
                     @endif -->
@@ -642,10 +642,10 @@
                         <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{ @$invoiceData->client->tin }}</b></td></tr>
                     @endif --}}
                     @if(@$invoiceData->date)
-                     <tr><td style="padding: 0; margin: 0;">__('template.Date') <b>{{ @$invoiceData->date }}</b></td></tr>
+                     <tr><td style="padding: 0; margin: 0;">__('template.date') <b>{{ @$invoiceData->date }}</b></td></tr>
                     @endif
                     @if(@$invoiceData->status)
-                     <tr><td style="padding: 0; margin: 0;">__('template.Status') <b>{{ @$invoiceData->status }}</b></td></tr>
+                     <tr><td style="padding: 0; margin: 0;">__('template.status') <b>{{ @$invoiceData->status }}</b></td></tr>
                     @endif
 
                     @if($document_payment_info_show == 1 && @$invoiceData->payment_options->name)
@@ -684,21 +684,21 @@
                     @if(@$document_agent_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_agent_text ? $document_agent_text : __('template.Agent')}} <b>Test View Account</b>
+                                {{ $document_agent_text ? $document_agent_text : __('template.agent')}} <b>Test View Account</b>
                             </td>
                         </tr>
                     @endif
                 </table>
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
                     @if($invoiceData->client)
-                        <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">{{__('template.CLIENT_OF_DATA')}}
+                        <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">{{__('template.client_of_data')}}
                         @if(@$client_supplier_section_show == 1)
                             {{($client_supplier_section) ? $client_supplier_section : ""}}
                         @endif
 
                         </th>
                     @elseif($invoiceData->supplier)
-                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">{{__('template.SUPPLIER_OF_DATA')}}
+                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">{{__('template.supplier_of_data')}}
                         @if(@$client_supplier_section_show == 1)
                             {{($client_supplier_section) ? $client_supplier_section : ""}}
                         @endif
@@ -708,7 +708,7 @@
         
                     @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
                         @if($invoiceData->client->legal_name)
-                            <tr><td style="padding: 0; margin: 0;">{{__('template.Name/Legal Name')}} <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} {{'('.@$client_supplier_name.' '.@$invoiceData->client->name.')'}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">{{__('template.name_legal_name')}} <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} {{'('.@$client_supplier_name.' '.@$invoiceData->client->name.')'}}</b></td></tr>
                         @endif
                     @endif
                     @if(@$client_supplier_tin_show == 1)
@@ -730,7 +730,7 @@
                     @if(@$client_supplier_reference_show)
                         @if($invoiceData->client->reference)
                             <tr><td style="padding: 0; margin: 0;">
-                            {{@$client_supplier_reference ? @$client_supplier_reference : __('template.Reference')}}: <b>{{@$invoiceData->client->reference.''.@$invoiceData->client->reference_number}}</b></td>
+                            {{@$client_supplier_reference ? @$client_supplier_reference : __('template.reference')}}: <b>{{@$invoiceData->client->reference.''.@$invoiceData->client->reference_number}}</b></td>
                             </tr>
                         @endif
                     @endif
@@ -774,7 +774,7 @@
                         {{-- <b>{{$client_supplier_city_show}}</b>
                     @else --}}
                         @if($invoiceData->client->city)
-                        {{__('template.City')}} <b>{{ $invoiceData->client->city }}</b>
+                        {{__('template.city')}} <b>{{ $invoiceData->client->city }}</b>
                         @endif
                     @endif
                         </td>
@@ -785,7 +785,7 @@
                         {{-- <b>{{$client_supplier_state_show}}</b>
                     @else --}}
                         @if($invoiceData->client->state)
-                        {{__('template.State')}} <b>{{ $invoiceData->client->state }}</b>
+                        {{__('template.state')}} <b>{{ $invoiceData->client->state }}</b>
                         @endif
                     @endif
                         </td>
@@ -796,7 +796,7 @@
                         {{-- <b>{{$client_supplier_country_show}}</b>
                     @else --}}
                         @if($invoiceData->client->country)
-                        {{__('template.Country')}} <b>{{ $invoiceData->client->country }}</b>
+                        {{__('template.country')}} <b>{{ $invoiceData->client->country }}</b>
                         @endif
                     @endif
                         </td>
@@ -818,7 +818,7 @@
                         {{-- <b>{{$client_supplier_city_show}}</b>
                     @else --}}
                         @if($invoiceData->supplier->city)
-                        {{__('template.City')}} <b>{{ $invoiceData->supplier->city }}</b>
+                        {{__('template.city')}} <b>{{ $invoiceData->supplier->city }}</b>
                         @endif
                     @endif
                         </td>
@@ -829,7 +829,7 @@
                         {{-- <b>{{$client_supplier_state_show}}</b>
                     @else --}}
                         @if($invoiceData->supplier->state)
-                        {{__('template.State')}} <b>{{ $invoiceData->supplier->state }}</b>
+                        {{__('template.state')}} <b>{{ $invoiceData->supplier->state }}</b>
                         @endif
                     @endif
                         </td>
@@ -840,7 +840,7 @@
                         {{-- <b>{{$client_supplier_country_show}}</b>
                     @else --}}
                         @if($invoiceData->supplier->country)
-                        {{__('template.Country')}} <b>{{ $invoiceData->supplier->country }}</b>
+                        {{__('template.country')}} <b>{{ $invoiceData->supplier->country }}</b>
                         @endif
                     @endif
                         </td>
@@ -892,30 +892,30 @@
                         @endif
                         @if(@$show_items_description == 1)
                             <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left; padding: 5px;  margin: 0px; width: 350px;">
-                            {{ @$item_description_text ? @$item_description_text : __('template.DESCRIPTION')}}
+                            {{ @$item_description_text ? @$item_description_text : __('template.description')}}
                             </th>
                         @endif
                         @if($show_items_units == 1)
                             <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right; padding: 5px;  margin: 0px;">
-                            {{ @$item_units_text ? @$item_units_text : __('template.QTY')}}
+                            {{ @$item_units_text ? @$item_units_text : __('template.qty')}}
                             </th>
                         @endif
                         @if($request->format != 'without_values') 
                             @if(@$discount_show == 1)
                                 <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right; padding: 5px;  margin: 0px;">
-                                    {{ @$discount_text ? @$discount_text : __('template.DISC')}}
+                                    {{ @$discount_text ? @$discount_text : __('template.disc')}}
                                 </th>
                             @endif
                             @if(@$items_unit_price_show == 1)
                                 <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right; padding: 5px;  margin: 0px;">
-                                {{ @$items_unit_price_text ? @$items_unit_price_text : __('template.PRICE')}}
+                                {{ @$items_unit_price_text ? @$items_unit_price_text : __('template.price')}}
                             @endif
                         @endif
                         @if($request->format != 'without_values')
                             @if($request->format != 'without_totals')
                                 @if(@$items_price_show == 1)
                                     <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right; padding: 5px;  margin: 0px;">
-                                        {{ @$items_price_text ? @$items_price_text : __('template.SUBTOTAL')}}
+                                        {{ @$items_price_text ? @$items_price_text : __('template.subtotal')}}
                                     </th>
                                 @endif
                             @endif
