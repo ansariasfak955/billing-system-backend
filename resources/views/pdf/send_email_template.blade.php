@@ -634,7 +634,7 @@
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} INFO</th>
 
-                    <tr><td style="padding: 0; margin: 0;">__('template.number') <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;">{{__('template.number')}} <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
                     <!-- @if(@$invoiceData->client->legal_name)
                         <tr><td style="padding: 0; margin: 0;">Client Name: <b>{{ @$invoiceData->client->legal_name }}</b></td></tr>
                     @endif -->
@@ -642,10 +642,10 @@
                         <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{ @$invoiceData->client->tin }}</b></td></tr>
                     @endif --}}
                     @if(@$invoiceData->date)
-                     <tr><td style="padding: 0; margin: 0;">__('template.date') <b>{{ @$invoiceData->date }}</b></td></tr>
+                     <tr><td style="padding: 0; margin: 0;">{{__('template.date')}} <b>{{ @$invoiceData->date }}</b></td></tr>
                     @endif
                     @if(@$invoiceData->status)
-                     <tr><td style="padding: 0; margin: 0;">__('template.status') <b>{{ @$invoiceData->status }}</b></td></tr>
+                     <tr><td style="padding: 0; margin: 0;">{{__('template.status')}} <b>{{ @$invoiceData->status }}</b></td></tr>
                     @endif
 
                     @if($document_payment_info_show == 1 && @$invoiceData->payment_options->name)
