@@ -18,5 +18,9 @@ return [
     'City' => 'Ciudad:',
     'State' => 'Estado:',
     'Country' => 'País:',
-    'DESCRIPTION' => 'DESCRIPCIÓN:',
+    'DESCRIPTION' => 'DESCRIPCIÓN',
+    'QTY' => 'CANTIDAD',
+    'DISC' => 'DESCT',
+    'PRICE' => 'PRECIO',
+    'SUBTOTAL' => 'TOTAL PARCIAL',
 ];

@@ -788,22 +788,22 @@
                         @endif
                         @if($show_items_units == 1)
                             <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
-                            {{ @$item_units_text ? @$item_units_text : 'QTY.'}}
+                            {{ @$item_units_text ? @$item_units_text : __('template.QTY)'}}
                             </th>
                         @endif
                         @if(@$discount_show == 1)
                                 <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
-                                {{ @$discount_text ? @$discount_text : 'DISC.'}}
+                                {{ @$discount_text ? @$discount_text : __('template.DISC')}}
                                 </th>
                             @endif
                             @if(@$items_unit_price_show == 1)
                                 <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
-                                {{ @$items_unit_price_text ? @$items_unit_price_text : 'PRICE'}}
+                                {{ @$items_unit_price_text ? @$items_unit_price_text : __('template.PRICE')}}
                                 </th>
                             @endif
                             @if(@$items_price_show == 1)
                                     <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
-                                    {{ @$items_price_text ? @$items_price_text : 'SUBTOTAL'}}
+                                    {{ @$items_price_text ? @$items_price_text : __('template.SUBTOTAL')}}
                                     </th>
                             @endif
                        {{--  <th class="table_heading" style="padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left;">TAXES</th> --}}
