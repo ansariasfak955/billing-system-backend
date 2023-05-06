@@ -788,7 +788,7 @@
                         @endif
                         @if($show_items_units == 1)
                             <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
-                            {{ @$item_units_text ? @$item_units_text : __('template.QTY)'}}
+                            {{ @$item_units_text ? @$item_units_text : __('template.QTY')}}
                             </th>
                         @endif
                         @if(@$discount_show == 1)
