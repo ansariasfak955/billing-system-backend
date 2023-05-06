@@ -7,6 +7,7 @@ return [
     'phone' => 'teléfono:',
     'client_name' => 'nombre del cliente:',
     'date' => 'Fecha:',
+    'status' => 'Estado:',
     'number' => 'Número:',
     'created_by' => 'creado por:',
     'delivery_to' => 'Entregar a:',
