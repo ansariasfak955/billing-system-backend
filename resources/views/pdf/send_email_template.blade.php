@@ -574,12 +574,12 @@
                         </td>
                         <span class="section">
                         <td class="header_border" style="width:250px"  @if($company_name_show || $company_country_show) @endif>
-                            <span style="margin-left: 20px;">{{__('Company Name:')}}</span>
+                            <span style="margin-left: 20px;">{{__('template.company_name')}}</span>
                             <span>{{  @$company->commercial_name }}</span> <br>
                             @if(@$company->address)
                             <div style="margin-left: 20px;">
                                 
-                                <span >Address:</span>
+                                <span >{{__('template.Address')}}</span>
                                 <span>{{@$company->address}}</span><br>
                             </div>
                             @endif
@@ -592,7 +592,7 @@
                         <span class="sectionLeft">
                             <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
                                 @if(@$company_email_show['show'] ==1)
-                                    <span style="margin-left: 20px;">Email:</span> 
+                                    <span style="margin-left: 20px;">{{__('template.email')}}</span> 
                                     @if(@$company_email_show['show'] ==1 && @$company_email_show['value'])
                                         {{$company_email_show['value']}}
                                     @elseif(@$company_email_show['show'] ==1 && @!$company_email_show['value'])
@@ -612,7 +612,7 @@
                                     @endif
                                 @endif
                                 @if(@$company->phone)
-                                    <span style="margin-left: 20px;">Phone: {{ $company_phone_show == 1 ? $company->phone : '' }}</span>
+                                    <span style="margin-left: 20px;">{{__('template.phone')}} {{ $company_phone_show == 1 ? $company->phone : '' }}</span>
                                 @endif
                             </td>
                         </span>
@@ -634,7 +634,7 @@
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : $template->document_type) }} INFO</th>
 
-                    <tr><td style="padding: 0; margin: 0;">Number: <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
+                    <tr><td style="padding: 0; margin: 0;">__('template.Number') <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
                     <!-- @if(@$invoiceData->client->legal_name)
                         <tr><td style="padding: 0; margin: 0;">Client Name: <b>{{ @$invoiceData->client->legal_name }}</b></td></tr>
                     @endif -->
@@ -642,10 +642,10 @@
                         <tr><td style="padding: 0; margin: 0;">Ced/Ruc: <b>{{ @$invoiceData->client->tin }}</b></td></tr>
                     @endif --}}
                     @if(@$invoiceData->date)
-                     <tr><td style="padding: 0; margin: 0;">Date: <b>{{ @$invoiceData->date }}</b></td></tr>
+                     <tr><td style="padding: 0; margin: 0;">__('template.Date') <b>{{ @$invoiceData->date }}</b></td></tr>
                     @endif
                     @if(@$invoiceData->status)
-                     <tr><td style="padding: 0; margin: 0;">Status: <b>{{ @$invoiceData->status }}</b></td></tr>
+                     <tr><td style="padding: 0; margin: 0;">__('template.Status') <b>{{ @$invoiceData->status }}</b></td></tr>
                     @endif
 
                     @if($document_payment_info_show == 1 && @$invoiceData->payment_options->name)
@@ -659,7 +659,7 @@
                     @if($document_created_by_show == 1 && @$invoiceData->created_by)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_created_by_text ? $document_created_by_text : 'Created by:'}} <b>{{ @$invoiceData->created_by }}</b>
+                                {{ $document_created_by_text ? $document_created_by_text : __('template.created_by')}} <b>{{ @$invoiceData->created_by }}</b>
                             </td>
                         </tr>
                     @endif
@@ -667,7 +667,7 @@
                     <tr>
                         <td style="padding: 0; margin: 0;">
                         @if($invoiceData->delivery_address)
-                            Delivery to: <b>{{ @$invoiceData->delivery_address }}</b>
+                        {{__('template.delivery_to')}} <b>{{ @$invoiceData->delivery_address }}</b>
                         @endif
                         </td>
                     </tr>
@@ -675,7 +675,7 @@
                     @if(@$document_delivery_by_show == 1 && @$invoiceData->delivery_options->name)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_delivery_by_text ? $document_delivery_by_text : 'Delivery Option:'}}
+                                {{ $document_delivery_by_text ? $document_delivery_by_text : __('template.delivery_option')}}
                                         <b>{{ @$invoiceData->delivery_options->name }}</b>
                             </td>
                         </tr>
@@ -684,21 +684,21 @@
                     @if(@$document_agent_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
-                                {{ $document_agent_text ? $document_agent_text : 'Agent:'}} <b>Test View Account</b>
+                                {{ $document_agent_text ? $document_agent_text : __('template.Agent')}} <b>Test View Account</b>
                             </td>
                         </tr>
                     @endif
                 </table>
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: right;">
                     @if($invoiceData->client)
-                        <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">CLIENT OF DATA
+                        <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">{{__('template.CLIENT_OF_DATA')}}
                         @if(@$client_supplier_section_show == 1)
                             {{($client_supplier_section) ? $client_supplier_section : ""}}
                         @endif
 
                         </th>
                     @elseif($invoiceData->supplier)
-                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">SUPPLIER OF DATA
+                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left; height:16px">{{__('template.SUPPLIER_OF_DATA')}}
                         @if(@$client_supplier_section_show == 1)
                             {{($client_supplier_section) ? $client_supplier_section : ""}}
                         @endif
@@ -708,7 +708,7 @@
         
                     @if(@$client_supplier_name_show || @$client_supplier_legal_name_show)
                         @if($invoiceData->client->legal_name)
-                            <tr><td style="padding: 0; margin: 0;">Name/Legal Name: <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} {{'('.@$client_supplier_name.' '.@$invoiceData->client->name.')'}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">{{__('template.Name/Legal Name')}} <b>{{@$client_supplier_legal_name}} {{@$invoiceData->client->legal_name}} {{'('.@$client_supplier_name.' '.@$invoiceData->client->name.')'}}</b></td></tr>
                         @endif
                     @endif
                     @if(@$client_supplier_tin_show == 1)
@@ -723,14 +723,14 @@
 
                     @if(@$client_supplier_phone_show)
                         @if($invoiceData->client->phone_1)
-                            <tr><td style="padding: 0; margin: 0;">Phone: <b>{{$client_supplier_phone}} {{@$invoiceData->client->phone_1}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">{{__('template.phone')}} <b>{{$client_supplier_phone}} {{@$invoiceData->client->phone_1}}</b></td></tr>
                         @endif        
                     @endif
 
                     @if(@$client_supplier_reference_show)
                         @if($invoiceData->client->reference)
                             <tr><td style="padding: 0; margin: 0;">
-                            {{@$client_supplier_reference ? @$client_supplier_reference : 'Reference'}}: <b>{{@$invoiceData->client->reference.''.@$invoiceData->client->reference_number}}</b></td>
+                            {{@$client_supplier_reference ? @$client_supplier_reference : __('template.Reference')}}: <b>{{@$invoiceData->client->reference.''.@$invoiceData->client->reference_number}}</b></td>
                             </tr>
                         @endif
                     @endif
@@ -743,7 +743,7 @@
 
                     @if(@$client_supplier_email_show)
                         @if($invoiceData->client->email)
-                            <tr><td style="padding: 0; margin: 0;">Email: <b>{{$client_supplier_email}} {{@$invoiceData->client->email}}</b></td></tr>
+                            <tr><td style="padding: 0; margin: 0;">{{__('template.email')}} <b>{{$client_supplier_email}} {{@$invoiceData->client->email}}</b></td></tr>
                         @endif
                     @endif
 
@@ -761,7 +761,7 @@
                     <tr><td style="padding: 0; margin: 0;">
                     @if(@$client_supplier_zip_code_show == 1) 
                         @if($invoiceData->client->zip_code)
-                            Zip Code: <b>{{ $invoiceData->client->zip_code }}</b>
+                        {{__('template.zip_code')}} <b>{{ $invoiceData->client->zip_code }}</b>
                         @endif
                     @endif
                         </td>
@@ -774,7 +774,7 @@
                         {{-- <b>{{$client_supplier_city_show}}</b>
                     @else --}}
                         @if($invoiceData->client->city)
-                            City: <b>{{ $invoiceData->client->city }}</b>
+                        {{__('template.City')}} <b>{{ $invoiceData->client->city }}</b>
                         @endif
                     @endif
                         </td>
@@ -785,7 +785,7 @@
                         {{-- <b>{{$client_supplier_state_show}}</b>
                     @else --}}
                         @if($invoiceData->client->state)
-                            State: <b>{{ $invoiceData->client->state }}</b>
+                        {{__('template.State')}} <b>{{ $invoiceData->client->state }}</b>
                         @endif
                     @endif
                         </td>
@@ -796,7 +796,7 @@
                         {{-- <b>{{$client_supplier_country_show}}</b>
                     @else --}}
                         @if($invoiceData->client->country)
-                            Country: <b>{{ $invoiceData->client->country }}</b>
+                        {{__('template.Country')}} <b>{{ $invoiceData->client->country }}</b>
                         @endif
                     @endif
                         </td>
@@ -805,7 +805,7 @@
                     <tr><td style="padding: 0; margin: 0;">
                     @if(@$client_supplier_zip_code_show == 1) 
                         @if($invoiceData->supplier->zip_code)
-                            Zip Code: <b>{{ $invoiceData->supplier->zip_code }}</b>
+                        {{__('template.zip_code')}} <b>{{ $invoiceData->supplier->zip_code }}</b>
                         @endif
                     @endif
                         </td>
@@ -818,7 +818,7 @@
                         {{-- <b>{{$client_supplier_city_show}}</b>
                     @else --}}
                         @if($invoiceData->supplier->city)
-                            City: <b>{{ $invoiceData->supplier->city }}</b>
+                        {{__('template.City')}} <b>{{ $invoiceData->supplier->city }}</b>
                         @endif
                     @endif
                         </td>
@@ -829,7 +829,7 @@
                         {{-- <b>{{$client_supplier_state_show}}</b>
                     @else --}}
                         @if($invoiceData->supplier->state)
-                            State: <b>{{ $invoiceData->supplier->state }}</b>
+                        {{__('template.State')}} <b>{{ $invoiceData->supplier->state }}</b>
                         @endif
                     @endif
                         </td>
@@ -840,7 +840,7 @@
                         {{-- <b>{{$client_supplier_country_show}}</b>
                     @else --}}
                         @if($invoiceData->supplier->country)
-                            Country: <b>{{ $invoiceData->supplier->country }}</b>
+                        {{__('template.Country')}} <b>{{ $invoiceData->supplier->country }}</b>
                         @endif
                     @endif
                         </td>
@@ -892,30 +892,30 @@
                         @endif
                         @if(@$show_items_description == 1)
                             <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left; padding: 5px;  margin: 0px; width: 350px;">
-                            {{ @$item_description_text ? @$item_description_text : 'DESCRIPTION'}}
+                            {{ @$item_description_text ? @$item_description_text : __('template.DESCRIPTION')}}
                             </th>
                         @endif
                         @if($show_items_units == 1)
                             <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right; padding: 5px;  margin: 0px;">
-                            {{ @$item_units_text ? @$item_units_text : 'QTY.'}}
+                            {{ @$item_units_text ? @$item_units_text : __('template.QTY')}}
                             </th>
                         @endif
                         @if($request->format != 'without_values') 
                             @if(@$discount_show == 1)
                                 <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right; padding: 5px;  margin: 0px;">
-                                    {{ @$discount_text ? @$discount_text : 'DISC.'}}
+                                    {{ @$discount_text ? @$discount_text : __('template.DISC')}}
                                 </th>
                             @endif
                             @if(@$items_unit_price_show == 1)
                                 <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right; padding: 5px;  margin: 0px;">
-                                {{ @$items_unit_price_text ? @$items_unit_price_text : 'PRICE'}}
+                                {{ @$items_unit_price_text ? @$items_unit_price_text : __('template.PRICE')}}
                             @endif
                         @endif
                         @if($request->format != 'without_values')
                             @if($request->format != 'without_totals')
                                 @if(@$items_price_show == 1)
                                     <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: right; padding: 5px;  margin: 0px;">
-                                        {{ @$items_price_text ? @$items_price_text : 'SUBTOTAL'}}
+                                        {{ @$items_price_text ? @$items_price_text : __('template.SUBTOTAL')}}
                                     </th>
                                 @endif
                             @endif

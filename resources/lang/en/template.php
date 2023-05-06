@@ -23,4 +23,6 @@ return [
     'DISC' => 'DESCT',
     'PRICE' => 'PRECIO',
     'SUBTOTAL' => 'TOTAL PARCIAL',
+    'CLIENT_OF_DATA' => 'CLIENTE DE DATOS',
+    'SUPPLIER_OF_DATA' => 'PROVEEDOR DE DATOS',
 ];

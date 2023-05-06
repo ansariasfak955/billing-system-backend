@@ -739,7 +739,7 @@
                     @if(@$client_supplier_city_show == 1)
                         {{-- <b>{{$client_supplier_city_show}}</b>
                     @else --}}
-                        {{__('template.City')}}City: <b>Los Angeles, California</b>
+                        {{__('template.City')}} <b>Los Angeles, California</b>
                     @endif
                         </td>
                     </tr>
