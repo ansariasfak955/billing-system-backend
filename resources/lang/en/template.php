@@ -29,6 +29,17 @@ return [
     'supplier_of_data' => 'SUPPLIER_OF_DATA',
     'amount' => 'Amount',
     'paid' => 'Paid',
-    'Normal Invoice Template' => 'Normal Invoice Template'
+    'Sales Estimate Template' => 'Sales Estimate Template',
+    'Sales Order Template' => 'Sales Order Template',
+    'Sales Delivery Note Template' => 'Sales Delivery Note Template',
+    'Work Estimate Template' => 'Work Estimate Template',
+    'Work Order Template' => 'Work Order Template',
+    'Work Delivery Note Template' => 'Work Delivery Note Template',
+    'Purchase Order Template' => 'Purchase Order Template',
+    'Purchase Delivery Note Template' => 'Purchase Delivery Note Template',
+    'Purchase Invoice Template' => 'Purchase Invoice Template',
+    'Normal Invoice Template' => 'Normal Invoice Template',
+    'Refund Invoice Template' => 'Refund Invoice Template',
+    'info' => 'INFO',
 
 ];

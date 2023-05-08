@@ -29,6 +29,18 @@ return [
     'supplier_of_data' => 'PROVEEDOR DE DATOS',
     'amount' => 'Cantidad',
     'paid' => 'Pagada',
-    'Normal Invoice Template' => 'Plantilla de factura normal'
+    'Sales Estimate Template' => 'Plantilla de estimación de ventas',
+    'Sales Order Template' => 'Plantilla de orden de venta',
+    'Sales Delivery Note Template' => 'Plantilla de nota de entrega de ventas',
+    'Work Estimate Template' => 'Plantilla de estimación de trabajo',
+    'Work Order Template' => 'Plantilla de orden de trabajo',
+    'Work Delivery Note Template' => 'Plantilla de nota de entrega de trabajo',
+    'Purchase Order Template' => 'Plantilla de orden de compra',
+    'Purchase Delivery Note Template' => 'Plantilla de nota de entrega de compra',
+    'Purchase Invoice Template' => 'Plantilla de factura de compra',
+    'Normal Invoice Template' => 'Plantilla de factura normal',
+    'Refund Invoice Template' => 'Plantilla de factura de reembolso',
+    'info' => 'INFORMACIÓN',
+
 
 ];
