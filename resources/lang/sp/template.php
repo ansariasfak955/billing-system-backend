@@ -29,5 +29,6 @@ return [
     'supplier_of_data' => 'PROVEEDOR DE DATOS',
     'amount' => 'Cantidad',
     'paid' => 'Pagada',
+    'Normal Invoice Template' => 'Plantilla de factura normal'
 
 ];

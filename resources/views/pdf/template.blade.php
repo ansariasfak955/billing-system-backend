@@ -773,7 +773,7 @@
                         </tr>
                     @endif -->
             <div style="clear: both;"></div>
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 20px; font-size:10px;">
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
                         @if(@$show_items == 1)

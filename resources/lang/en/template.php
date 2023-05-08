@@ -29,5 +29,6 @@ return [
     'supplier_of_data' => 'SUPPLIER_OF_DATA',
     'amount' => 'Amount',
     'paid' => 'Paid',
+    'Normal Invoice Template' => 'Normal Invoice Template'
 
 ];
