@@ -1008,6 +1008,11 @@
                     @endif
                 @endif
             @endif
+            @if(@$hide_signed_box_show == 0)
+                @if(@$show_signed_title)
+                    <p style="font-weight: bold;"> {{@$signed_box_text ?? 'Signed:'}}</p>
+                @endif
+            @endif
             @if($request->format != 'without_totals')
                 <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
                     <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
@@ -1016,9 +1021,6 @@
                             @if($request->format != 'pro_forma') 
                                  @if(($request->disable_signed)? '0':'1')     
                                     @if(@$hide_signed_box_show == 0)
-                                        @if(@$show_signed_title)
-                                            <p style="font-weight: bold;"> {{@$signed_box_text ?? 'Signed:'}}</p>
-                                        @endif
                                         <td style="margin: 0;">
                                             <div style="border: 1px solid gray; padding: 100px 70px 10px 10px;">
                                                 <!-- <img width="100" height="80" object-fit="cover"
