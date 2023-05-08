@@ -2822,13 +2822,6 @@ class TableHelper
                        "category" => 'Footer and Legal Note',
                        "type" => "footer_pages",
                    ]);
-                //    MyTemplateMeta::create([
-                //         "template_id" => $template_created->id,
-                //         "option_name" => "footer_page_text",
-                //         "option_value" => "",
-                //         "category" => 'Footer and Legal Note',
-                //         "type" => "footer_pages",
-                //     ]);
                     /* show expiry  Box */
                    MyTemplateMeta::create([
                        "template_id" => $template_created->id,
