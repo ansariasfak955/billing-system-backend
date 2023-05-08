@@ -944,7 +944,7 @@
                                 </td>
                                 <td style=" margin: 5px; border-bottom: 1px solid #999; width: 350px;">
                                     <p style="margin: 0px; padding: -10px">{{ $product->name }}</p>
-                                    <span style="color:#6e669b;">{{ $product->description }}</span>
+                                    <span style="color:#666666;">{{ $product->description }}</span>
                                    
                                 </td>
                                 <td style=" margin: 5px; border-bottom: 1px solid #999;">
