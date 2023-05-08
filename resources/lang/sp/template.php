@@ -38,8 +38,8 @@ return [
     'Purchase Order' => 'Orden de compra',
     'Purchase Delivery Note' => 'Nota de entrega de compra',
     'Purchase Invoice' => 'Factura de compra',
-    'Normal Invoice' => 'Factura Normal',
-    'Refund Invoice' => 'Factura de reembolso',
+    'Normal Invoice' => 'Normal Factura ',
+    'Refund Invoice' => 'Reembolso Factura',
     'info' => 'INFORMACIÓN',
 
 
