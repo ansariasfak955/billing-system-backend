@@ -491,14 +491,14 @@
                 $item_text = $meta->option_value;
             @endphp
         @endif
-        @if($meta->category == 'Items' && $meta->type == 'items_description' && $meta->option_name == 'show')
+        @if($meta->category == 'Items' && $meta->type == 'items_name' && $meta->option_name == 'show')
             @php
-                $show_items_description = $meta->option_value;
+                $show_items_name = $meta->option_value;
             @endphp
         @endif
-        @if($meta->category == 'Items' && $meta->type == 'items_description' && $meta->option_name == 'text')
+        @if($meta->category == 'Items' && $meta->type == 'items_name' && $meta->option_name == 'text')
             @php
-                $item_description_text = $meta->option_value;
+                $item_name_text = $meta->option_value;
             @endphp
         @endif
         @if($meta->category == 'Items' && $meta->type == 'items_units' && $meta->option_name == 'show')
@@ -890,9 +890,9 @@
                             {{ @$item_text ? @$item_text : 'REF.'}}
                             </th>
                         @endif
-                        @if(@$show_items_description == 1)
+                        @if(@$show_items_name == 1)
                             <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left; padding: 5px;  margin: 0px; width: 350px;">
-                            {{ @$item_description_text ? @$item_description_text : __('template.description')}}
+                            {{ @$item_name_text ? @$item_name_text : __('template.description')}}
                             </th>
                         @endif
                         @if($show_items_units == 1)
