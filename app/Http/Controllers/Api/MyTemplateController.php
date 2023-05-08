@@ -11,6 +11,7 @@ use App\Models\MyTemplateMeta;
 use Validator;
 use App;
 use Storage;
+use Auth;
 
 class MyTemplateController extends Controller
 {
