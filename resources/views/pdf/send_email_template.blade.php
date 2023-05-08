@@ -1004,17 +1004,15 @@
                                 </li>
                             </ul>
                         </div>
-
+                        
                     @endif
-                @endif
-            @endif
-            @if(@$hide_signed_box_show == 0)
-                @if(@$show_signed_title)
-                    <p style="font-weight: bold;"> {{@$signed_box_text ?? 'Signed:'}}</p>
                 @endif
             @endif
             @if($request->format != 'without_totals')
                 <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
+                    @if(@$show_signed_title)
+                        <p style="font-weight: bold;"> {{@$signed_box_text ?? 'Signed:'}}</p>
+                    @endif
                     <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                         <tr>
                         @if($request->format != 'before_tax') 
@@ -1089,12 +1087,11 @@
             @endif
         @endif
         @else
-        @if(@$hide_signed_box_show == 0)
-            @if(@$show_signed_title)
-                <p style="font-weight: bold;"> {{@$signed_box_text ?? 'Signed:'}}</p>
-            @endif
-        @endif
+        
         <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
+            @if(@$show_signed_title)
+                <p style="font-weight: bold;">{{@$signed_box_text ?? 'Signed:'}}</p>
+            @endif
             <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
                 <tr>
                 @if(($request->disable_signed)? '0':'1')   
