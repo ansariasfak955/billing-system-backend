@@ -27,5 +27,7 @@ return [
     'subtotal' => 'SUBTOTAL',
     'client_of_data' => 'CLIENT OF DATA',
     'supplier_of_data' => 'SUPPLIER_OF_DATA',
+    'amount' => 'Amount',
+    'paid' => 'Paid',
 
 ];

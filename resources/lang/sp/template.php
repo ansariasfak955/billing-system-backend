@@ -27,5 +27,7 @@ return [
     'subtotal' => 'TOTAL PARCIAL',
     'client_of_data' => 'CLIENTE DE DATOS',
     'supplier_of_data' => 'PROVEEDOR DE DATOS',
+    'amount' => 'Cantidad',
+    'paid' => 'Pagada',
 
 ];

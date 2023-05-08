@@ -1047,9 +1047,9 @@
                                     <div style="border: 1px solid gray; padding: 5px;  width: 90%;">
                                         <table style="border-collapse: collapse; width: 90%;">
                                             <tr>
-                                                <th class="table_heading" style="padding: 5px 0; text-align: left;">DATE</th>
-                                                <th class="table_heading" style="padding: 5px 0; text-align: center;">AMOUNT</th>
-                                                <th class="table_heading" style="padding: 5px 0; text-align: right;">PAID</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: left;">{{__('template.date')}}</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: center;">{{__('template.amount')}}</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: right;">{{__('template.paid')}}</th>
                                             </tr>
                                             <tr>
                                                 <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $invoiceData->date }}</td>
@@ -1124,9 +1124,9 @@
                                     <div style="border: 1px solid gray; padding: 5px;  width: 90%;">
                                         <table style="border-collapse: collapse; width: 90%;">
                                             <tr>
-                                                <th class="table_heading" style="padding: 5px 0; text-align: left;">DATE</th>
-                                                <th class="table_heading" style="padding: 5px 0; text-align: center;">AMOUNT</th>
-                                                <th class="table_heading" style="padding: 5px 0; text-align: right;">PAID</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: left;">{{__('template.date')}}</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: center;">{{__('template.amount')}}</th>
+                                                <th class="table_heading" style="padding: 5px 0; text-align: right;">{{__('template.paid')}}</th>
                                             </tr>
                                             <tr>
                                                 <td style="padding: 5px 0;  margin: 0; text-align: left;">{{ $invoiceData->date }}</td>
