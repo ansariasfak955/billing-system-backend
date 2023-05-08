@@ -777,32 +777,32 @@
                 <table style="border-collapse: collapse; width:100%; ">
                     <tr class="table_heading" style=" border-bottom: 1px solid gray;">
                         @if(@$show_items == 1)
-                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left;">
+                            <th class="table_heading" style=" border-bottom: 1px solid #999; text-align: left; padding: 5px;  margin: 0px;">
                             {{ @$item_text ? @$item_text : 'REF.'}}
                             </th>
                         @endif
                         @if(@$show_items_name == 1)
-                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left; width: 350px;">
+                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: left; padding: 5px;  margin: 0px; width: 350px;">
                             {{ @$item_name_text ? @$item_name_text : __('template.description')}}
                             </th>
                         @endif
                         @if($show_items_units == 1)
-                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
+                            <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; padding: 5px;  margin: 0px; text-align: right;">
                             {{ @$item_units_text ? @$item_units_text : __('template.qty')}}
                             </th>
                         @endif
                         @if(@$discount_show == 1)
-                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
+                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; padding: 5px;  margin: 0px; text-align: right;">
                                 {{ @$discount_text ? @$discount_text : __('template.disc')}}
                                 </th>
                             @endif
                             @if(@$items_unit_price_show == 1)
-                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
+                                <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; padding: 5px;  margin: 0px; text-align: right;">
                                 {{ @$items_unit_price_text ? @$items_unit_price_text : __('template.price')}}
                                 </th>
                             @endif
                             @if(@$items_price_show == 1)
-                                    <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; text-align: right;">
+                                    <th class="table_heading" style=" padding: 0 0 5px; border-bottom: 1px solid #999; padding: 5px;  margin: 0px; text-align: right;">
                                     {{ @$items_price_text ? @$items_price_text : __('template.subtotal')}}
                                     </th>
                             @endif
@@ -828,21 +828,21 @@
 
                                 <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; width: 350px;">
-                                <p style="marging: 0; padding: 0">{{ $product->name }}</p>
+                            <td style="margin: 5px; border-bottom: 1px solid #999; width: 350px;">
+                                <p style="margin: 0px; padding: -10px">{{ $product->name }}</p>
                                 <span style="color:#666666;">{{ $product->description }}</span>
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; text-align: right;">
-                                <p style="marging: 0; padding: 0">1</p>
+                            <td style="margin: 5px; border-bottom: 1px solid #999;">
+                                <p style="margin: 0px; padding: -10px; text-align: right;">1</p>
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; text-align: right;">
-                                <p style="marging: 0; padding: 0">0</p>
+                            <td style="margin: 5px; border-bottom: 1px solid #999;">
+                                <p style="margin: 0px; padding: -10px; text-align: right;">0</p>
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999; text-align: right;">
-                                <p style="marging: 0; padding: 0">{{ $product->price }}</p>
+                            <td style="margin: 5px; border-bottom: 1px solid #999;">
+                                <p style="margin: 0px; padding: -10px; text-align: right;">{{ $product->price }}</p>
                             </td>
-                            <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;  text-align: right;">
-                                <p style="marging: 0; padding-left: 15px;">{{ $product->price }}</p>
+                            <td style="margin: 5px; border-bottom: 1px solid #999;">
+                                <p style="margin: 0; padding-left: 15px; text-align: right;">{{ $product->price }}</p>
                             </td>
                            {{--  <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
                                 <p style="marging: 0; padding: 0">VAT 21%</p>
