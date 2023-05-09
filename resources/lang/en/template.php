@@ -29,7 +29,7 @@ return [
     'supplier_of_data' => 'SUPPLIER_OF_DATA',
     'amount' => 'Amount',
     'paid' => 'Paid',
-    'Sales Estimate Template' => 'Sales Estimate',
+    'Sales Estimate' => 'Sales Estimate',
     'Sales Order' => 'Sales Order',
     'Sales Delivery Note' => 'Sales Delivery Note',
     'Work Estimate' => 'Work Estimate',
