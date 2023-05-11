@@ -70,8 +70,8 @@ class StripeController extends Controller
                 'user_id' => \Auth::id(),
                 'company_id' => request()->company_id
             ],
-            'success_url' => env('WEBSITE_APP_URL').'/plans?payment=success',
-            'cancel_url' => env('WEBSITE_APP_URL').'/plans?payment=failed',
+            'success_url' => env('WEBSITE_APP_URL').'/membership?payment=success',
+            'cancel_url' => env('WEBSITE_APP_URL').'/membership?payment=failed',
         ]);
         return response()->json(['url' => $session->url]);
     }
