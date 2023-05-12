@@ -816,3 +816,8 @@ function fixstripeStatusAllCompanies(){
     }
     echo"<center>Done<center>";
 }
+// Custom comparison function based on 'status' field
+function compareStatus($a, $b)
+{
+    return strcmp($a['status'], $b['status']);
+}

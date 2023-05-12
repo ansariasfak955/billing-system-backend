@@ -332,11 +332,17 @@ class StripeController extends Controller
             return true;
         }
     }
+    
     public function getPurchaseSubscriptions(){
         
         $invoiceTable = 'company_'.request()->company_id.'_invoices';
         Invoice::setGlobalTable($invoiceTable);
-        $invoices = Invoice::where('user_id',\Auth::id())->get();
+        $invoices = Invoice::where('user_id',\Auth::id())->get()->toArray();
+        if(!empty($invoices)){
+
+            // Sort the array by 'status' field in ascending order
+            usort($invoices, 'compareStatus');
+        }
         return response()->json([
             'success'   =>  true,
             'data'      =>  $invoices,
