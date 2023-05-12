@@ -122,29 +122,42 @@ class StripeController extends Controller
 
     }
     public function cancelSubscription(Request $request){
+        $validator = Validator::make($request->all(),[
+            // 'price_id' => 'required',
+            'status' => 'required',
+        ]);
 
-        if(!\Auth::user()->stripe_subscription_id){
+        if($validator->fails()){
 
             return response()->json([
                 'success' => false,
                 'data' => [],
-                'message' => 'Subscription id not found!'
+                'message' => $validator->errors()->first()
 
             ]);
         }
+        // if(!\Auth::user()->stripe_subscription_id){
 
-        Stripe::setApiKey(env('STRIPE_SECRET'));
-        try {
-            $subscription = \Stripe\Subscription::retrieve(\Auth::user()->stripe_subscription_id);
-            $subscription->cancel();
-        } catch (\Exception $e) {
-            return response()->json([
-                'success'   =>  false,
-                'message'   => 'Something went wrong!' 
+        //     return response()->json([
+        //         'success' => false,
+        //         'data' => [],
+        //         'message' => 'Subscription id not found!'
+
+        //     ]);
+        // }
+
+        // Stripe::setApiKey(env('STRIPE_SECRET'));
+        // try {
+        //     $subscription = \Stripe\Subscription::retrieve(\Auth::user()->stripe_subscription_id);
+        //     $subscription->cancel();
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'success'   =>  false,
+        //         'message'   => 'Something went wrong!' 
     
-            ]);
-        }
-        \Auth::user()->subscription_status = 'cancelled';
+        //     ]);
+        // }
+        \Auth::user()->subscription_status = $request->status;
         \Auth::user()->save();
         $token  =   \Auth::user()->createToken('api')->accessToken;
         $data   =   User::find(\Auth::id());
@@ -152,7 +165,7 @@ class StripeController extends Controller
         return response()->json([
             'success'   =>  true,
             'data'      =>  $data,
-            'message'   => 'Subscription cancelled!' 
+            'message'   => 'Subscription updated!' 
 
         ]);
     }
