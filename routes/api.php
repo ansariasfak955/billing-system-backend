@@ -437,6 +437,7 @@ Route::group(['namespace' => 'Api'], function() {
             Route::post('create-payment-link', 'StripeController@createPaymentLink');
             Route::get('cancel-subscription', 'StripeController@cancelSubscription');
             Route::get('get-invoices', 'StripeController@getInvoices');
+            Route::get('get-purchased-subscriptions', 'StripeController@getPurchaseSubscriptions');
             Route::get('extend-subscription', 'StripeController@extendSubscription');
         });
 

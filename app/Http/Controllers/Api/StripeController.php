@@ -8,6 +8,7 @@ use Stripe\Plan;
 use Stripe\Product;
 use Stripe\Customer;
 use App\Http\Controllers\Controller;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
@@ -70,7 +71,13 @@ class StripeController extends Controller
         }
 
         // $price = \Stripe\Price::retrieve($request->price_id);
-        
+        if($plan->type == 'monthly'){
+            $type = 'month';
+        }elseif($plan->type  == 'annually'){
+            $type = 'year';
+        }else{
+            $type = '6 months';
+        }
         $session = \Stripe\Checkout\Session::create([
             // 'payment_method_types' => ['card'],
             'customer' => $customerId,
@@ -86,6 +93,7 @@ class StripeController extends Controller
                 'company_id' => request()->company_id,
                 'plan_id' => $plan->id,
                 'amount' => $plan->price,
+                'membership' => "1 x ".$plan->name.'(at $'.$plan->price.'/'.$type.')' ,
             ],
             'success_url' => env('WEBSITE_APP_URL').'/membership?payment=success',
             'cancel_url' => env('WEBSITE_APP_URL').'/membership?payment=failed',
@@ -161,7 +169,9 @@ class StripeController extends Controller
         }
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
-        $invoices = \Stripe\Invoice::all(['customer' => \Auth::user()->stripe_customer_id]);
+        Stripe::setApiVersion('2020-08-27');
+        $invoices = \Stripe\Charge::all(['customer' => \Auth::user()->stripe_customer_id]);
+
         return response()->json([
             'success'   =>  true,
             'data'      =>  $invoices,
@@ -215,11 +225,12 @@ class StripeController extends Controller
         $subscription = @$data->object->id;
         $customer = @$data->object->customer;
         if($company_id && $user_id  && $plan_id && $subscription && $customer){
-            $subscriptionData = Subscription::retrieve($subscription);
+            // $subscriptionData = Subscription::retrieve($subscription);
             $usersTables = 'company_'.$company_id.'_users';
             User::setGlobalTable($usersTables);
             $user = User::find($user_id);
-            if(!$user){return;}
+            $plan = SubPlan::find($plan_id);
+            if(!$user || !$plan){return;}
             // Get all subscriptions for the customer
             // $subscriptions = \Stripe\Subscription::all([
             //     'customer' => $customer,
@@ -237,18 +248,44 @@ class StripeController extends Controller
             //     }
             // }
             // $user->stripe_price_id = $price_id;
-            $expiry_date = @$subscriptionData->current_period_end;
+            if($plan->type == 'monthly'){
+                $monthsToAdd = 1;
+            }elseif($plan->type == 'annually'){
+                $monthsToAdd = 12;
+            }else{
+                $monthsToAdd = 6; 
+            }
+            $expiry_date = date('Y-m-d H:i:s', strtotime($user->plan_expiry_date . " +$monthsToAdd month"));
             $user->stripe_customer_id = $customer;
             $user->stripe_subscription_id = $subscription;
-            if($expiry_date ){
-                $user->plan_expiry_date = date('Y-m-d H:i:s', $expiry_date);
-            }
+            $user->plan_expiry_date = $expiry_date;
             $user->subscription_status = 'active';
             $user->save();
             // $subscription = \Stripe\Subscription::retrieve($subscription);
             // $subscription->metadata['user_id'] = $user_id;
             // $subscription->metadata['company_id'] = $company_id;
             // $subscription->save();
+            //updating the meta in charge
+            $paymentIntent = \Stripe\PaymentIntent::retrieve($data->object->payment_intent);
+            if(@$paymentIntent->charges->data[0]->id){
+                // Update the Charge object with metadata
+                $charge = \Stripe\Charge::retrieve($paymentIntent->charges->data[0]->id);
+                $charge->metadata = [
+                    'date' => date('d F Y'),
+                    'membership' => @$data->object->metadata->membership,
+                ];
+                $charge->save();
+            }
+            //Create invoice/subscription purchased for customer
+            $invoiceTable = 'company_'.$company_id.'_invoices';
+            Invoice::setGlobalTable($invoiceTable);
+            Invoice::create([
+                'plan_id' => @$data->object->metadata->plan_id,
+                'user_id' => @$data->object->metadata->user_id,
+                'expiry_date' => $expiry_date,
+                'type' => $plan->type,
+                'amount' => @$data->object->metadata->amount
+            ]);
             return true;
         }
     }
@@ -294,6 +331,17 @@ class StripeController extends Controller
             $user->save();
             return true;
         }
+    }
+    public function getPurchaseSubscriptions(){
+        
+        $invoiceTable = 'company_'.request()->company_id.'_invoices';
+        Invoice::setGlobalTable($invoiceTable);
+        $invoices = Invoice::where('user_id',\Auth::id())->get();
+        return response()->json([
+            'success'   =>  true,
+            'data'      =>  $invoices,
+            'message'   => '' 
+        ]);
     }
     
 }
