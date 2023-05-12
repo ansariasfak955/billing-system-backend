@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 use Stripe\Stripe;
 use Stripe\Subscription;
+use App\Models\Subscription as SubPlan;
 use Stripe\Plan;
 use Stripe\Product;
 use Stripe\Customer;
@@ -18,7 +19,8 @@ class StripeController extends Controller
     public function createPaymentLink(Request $request){
 
         $validator = Validator::make($request->all(),[
-            'price_id' => 'required',
+            // 'price_id' => 'required',
+            'plan_id' => 'required',
         ]);
 
         if($validator->fails()){
@@ -30,7 +32,18 @@ class StripeController extends Controller
 
             ]);
         }
+        $plan =   SubPlan::find($request->plan_id);
+
+        if(!$plan){
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Plan not found!'
+
+            ]);
+        }
         Stripe::setApiKey(env('STRIPE_SECRET'));
+        Stripe::setApiVersion('2020-08-27');
         //create or check for customer
         if(!\Auth::user()->stripe_customer_id){
 
@@ -56,19 +69,23 @@ class StripeController extends Controller
             $customerId = \Auth::user()->stripe_customer_id;
         }
 
-        $price = \Stripe\Price::retrieve($request->price_id);
+        // $price = \Stripe\Price::retrieve($request->price_id);
+        
         $session = \Stripe\Checkout\Session::create([
-            'payment_method_types' => ['card'],
+            // 'payment_method_types' => ['card'],
             'customer' => $customerId,
             'line_items' => [[
-                'price' => $price->id,
+                'name' => $plan->name,
+                'amount' => $plan->price*100,
                 'quantity' => 1,
+                'currency' => 'usd',
             ]],
-            'mode' => 'subscription',
             'metadata' => [
-                'price_id' => $price->id,
+                // 'price_id' => $price->id,
                 'user_id' => \Auth::id(),
-                'company_id' => request()->company_id
+                'company_id' => request()->company_id,
+                'plan_id' => $plan->id,
+                'amount' => $plan->price,
             ],
             'success_url' => env('WEBSITE_APP_URL').'/membership?payment=success',
             'cancel_url' => env('WEBSITE_APP_URL').'/membership?payment=failed',
@@ -176,11 +193,12 @@ class StripeController extends Controller
             // update customer subscription
             $this->updateUserPaymentDetails($event->data);
             
-        }elseif($event->type === 'customer.subscription.deleted'){
-            $this->removeUserPlanDetails($event->data);
-        }elseif($event->type === 'customer.subscription.updated'){
-            $this->updateUserOnSubscriptionUpdate($event->data);
         }
+        // elseif($event->type === 'customer.subscription.deleted'){
+        //     $this->removeUserPlanDetails($event->data);
+        // }elseif($event->type === 'customer.subscription.updated'){
+        //     $this->updateUserOnSubscriptionUpdate($event->data);
+        // }
         
         // Return a 200 response to acknowledge receipt of the event
         return response()->json(['status' => 'success']);
@@ -192,33 +210,34 @@ class StripeController extends Controller
         info($data);
         $user_id = @$data->object->metadata->user_id;
         $company_id = @$data->object->metadata->company_id;
-        $price_id = @$data->object->metadata->price_id;
-        $subscription = @$data->object->subscription;
+        // $price_id = @$data->object->metadata->price_id;
+        $plan_id = @$data->object->metadata->plan_id;
+        $subscription = @$data->object->id;
         $customer = @$data->object->customer;
-        if($company_id && $user_id && $price_id && $subscription && $customer){
+        if($company_id && $user_id  && $plan_id && $subscription && $customer){
             $subscriptionData = Subscription::retrieve($subscription);
-            $expiry_date = @$subscriptionData->current_period_end;
             $usersTables = 'company_'.$company_id.'_users';
             User::setGlobalTable($usersTables);
             $user = User::find($user_id);
             if(!$user){return;}
             // Get all subscriptions for the customer
-            $subscriptions = \Stripe\Subscription::all([
-                'customer' => $customer,
-                'status' => 'active',
-            ]);
-            info($subscriptions);
-            // Loop through each subscription and cancel it if it's not the current subscription
-            foreach ($subscriptions->data as $subscription_data) {
-                if ($subscription_data->id !== $subscription) {
-                    try{
-                        $subscription_data->cancel();
-                    }catch(\Exception $e){
-                        continue;
-                    }
-                }
-            }
-            $user->stripe_price_id = $price_id;
+            // $subscriptions = \Stripe\Subscription::all([
+            //     'customer' => $customer,
+            //     'status' => 'active',
+            // ]);
+            // info($subscriptions);
+            // // Loop through each subscription and cancel it if it's not the current subscription
+            // foreach ($subscriptions->data as $subscription_data) {
+            //     if ($subscription_data->id !== $subscription) {
+                //         try{
+            //             $subscription_data->cancel();
+            //         }catch(\Exception $e){
+            //             continue;
+            //         }
+            //     }
+            // }
+            // $user->stripe_price_id = $price_id;
+            $expiry_date = @$subscriptionData->current_period_end;
             $user->stripe_customer_id = $customer;
             $user->stripe_subscription_id = $subscription;
             if($expiry_date ){
@@ -226,10 +245,10 @@ class StripeController extends Controller
             }
             $user->subscription_status = 'active';
             $user->save();
-            $subscription = \Stripe\Subscription::retrieve($subscription);
-            $subscription->metadata['user_id'] = $user_id;
-            $subscription->metadata['company_id'] = $company_id;
-            $subscription->save();
+            // $subscription = \Stripe\Subscription::retrieve($subscription);
+            // $subscription->metadata['user_id'] = $user_id;
+            // $subscription->metadata['company_id'] = $company_id;
+            // $subscription->save();
             return true;
         }
     }

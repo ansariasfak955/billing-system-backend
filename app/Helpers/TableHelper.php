@@ -772,6 +772,18 @@ class TableHelper
                 $table->timestamps();
             });
         }
+        /* Creating dynamic invoices table */
+        if (!Schema::hasTable('company_'.$company_id.'_invoices')) {
+            Schema::create('company_'.$company_id.'_invoices', function (Blueprint $table) {
+                $table->id();
+                $table->integer('plan_id');
+                $table->integer('user_id');
+                $table->dateTime('expiry_date');
+                $table->string('type');
+                $table->float('amount', 8,2);
+                $table->timestamps();
+            });
+        }
         if (!Schema::hasTable('company_'.$company_id.'_delivery_options')) {
             
             Schema::create('company_'.$company_id.'_delivery_options', function (Blueprint $table) {
