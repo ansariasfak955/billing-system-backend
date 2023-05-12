@@ -9,7 +9,7 @@ class Invoice extends Model
 {
     use HasFactory;
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $appends = ['status'];
+    protected $appends = ['status', 'membership_name'];
     
     protected static $globalTable = 'invoices';
 
@@ -34,5 +34,11 @@ class Invoice extends Model
         if( isset( $this->attributes['expiry_date'] )  ){
             return date('d F Y' , strtotime($this->attributes['expiry_date']));
         }
+    }
+    public function getMembershipNameAttribute(){
+        if(isset($this->attributes['plan_id'])){
+            return Subscription::where('id', $this->attributes['plan_id'])->pluck('name')->first();
+        }
+        
     }
 }
