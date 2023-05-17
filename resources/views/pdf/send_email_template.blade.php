@@ -644,8 +644,8 @@
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">
                     @if(@$document_section_title_show == 1)
-                        <!-- {{ @$document_sub_type_text ? @$document_sub_type_text :  strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : __('template.'.$template->document_type.'')) }} {{__('template.info')}}</th> -->
-                        {{ @$document_section_title_text ? @$document_section_title_text : 'invoice' }}
+                        <!-- {{  strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : __('template.'.$template->document_type.'')) }} {{__('template.info')}}</th> -->
+                        {{ @$document_section_title_text ? @$document_section_title_text : strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : __('template.'.$template->document_type.'')) . __('template.info') }}
                     @endif
                     <tr><td style="padding: 0; margin: 0;">{{__('template.number')}} <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
                     <!-- @if(@$invoiceData->client->legal_name)
