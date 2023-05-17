@@ -574,9 +574,9 @@
                         </td>
                         <td class="header_border" @if(@$company_email_show['show'] || @$company_website_show['show']) style="width: 300px; " @endif>
                             @if(@$company_email_show['show'] ==1)
-                                <span style="margin-left: 30px;">{{__('template.email')}}</span> 
+                                <span style="margin-left: 30px;">{{ $company_email_show['value'] ? $company_email_show['value'] : __('template.email')}}</span> 
                                 @if(@$company_email_show['show'] ==1 && @$company_email_show['value'])
-                                    {{$company_email_show['value']}}
+                                    <!-- {{$company_email_show['value']}} -->
                                 @elseif(@$company_email_show['show'] ==1 && @!$company_email_show['value'])
                                     {{ $company->email}}
                                 @endif
