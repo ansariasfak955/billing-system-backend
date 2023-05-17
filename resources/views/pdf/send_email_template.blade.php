@@ -1053,7 +1053,7 @@
                             <td style="padding: 0; margin: 0; padding-left:10px">
                                     <table>
                                         <tr>
-                                            <th class="table_heading" style=" text-align: left;">{{@$expiration_text ?? 'Expiration'}}</th>
+                                            <th class="table_heading" style=" text-align: left;">{{@$expiration_text ?? __('template.expiration')}}</th>
                                         </tr>
                                     </table>
                                     <div style="border: 1px solid gray; padding: 5px;  width: 90%;">
@@ -1130,7 +1130,7 @@
                             <td style="padding: 0; margin: 0; padding-left:10px">
                                     <table>
                                         <tr>
-                                            <th class="table_heading" style=" text-align: left;">{{@$expiration_text ?? 'Expiration'}}</th>
+                                            <th class="table_heading" style=" text-align: left;">{{@$expiration_text ?? __('template.expiration')}}</th>
                                         </tr>
                                     </table>
                                     <div style="border: 1px solid gray; padding: 5px;  width: 90%;">

@@ -29,6 +29,7 @@ return [
     'supplier_of_data' => 'SUPPLIER_OF_DATA',
     'amount' => 'Amount',
     'paid' => 'Paid',
+    'expiration' => 'Expiration',
     'Sales Estimate' => 'Sales Estimate',
     'Sales Order' => 'Sales Order',
     'Sales Delivery Note' => 'Sales Delivery Note',

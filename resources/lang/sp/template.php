@@ -29,6 +29,7 @@ return [
     'supplier_of_data' => 'PROVEEDOR DE DATOS',
     'amount' => 'Cantidad',
     'paid' => 'Pagada',
+    'expiration' => 'Vencimiento',
     'Sales Estimate' => 'Estimación de ventas',
     'Sales Order' => 'Órdenes de venta',
     'Sales Delivery Note' => 'Nota de entrega de venta',
