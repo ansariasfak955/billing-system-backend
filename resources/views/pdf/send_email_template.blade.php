@@ -594,7 +594,7 @@
                                 @if(@$company_email_show['show'] ==1)
                                     <span style="margin-left: 20px;">{{ $company_email_show['value'] ? $company_email_show['value'] : __('template.email')}}</span> 
                                     @if(@$company_email_show['show'] ==1 && @$company_email_show['value'])
-                                        <!-- {{$company_email_show['value']}} -->
+                                        <!-- {{$company_email_show['value']}} -->{{ $company->email}}
                                     @elseif(@$company_email_show['show'] ==1 && @!$company_email_show['value'])
                                         {{ $company->email}}
                                     @endif
