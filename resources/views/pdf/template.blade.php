@@ -230,6 +230,16 @@
             $document_type_show = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Document Information' && $meta->type == 'document_sub_type' && $meta->option_name == 'show')
+            @php
+            $document_sub_type_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Document Information' && $meta->type == 'document_sub_type' && $meta->option_name == 'text')
+            @php
+            $document_sub_type_text = $meta->option_value;
+            @endphp
+        @endif
         @if($meta->category == 'Document Information' && $meta->type == 'hide_signed_box' && $meta->option_name == 'show')
             @php
                 $hide_signed_box_show = (int)$meta->option_value;
@@ -615,7 +625,10 @@
         <div style="height:400px">
             <div style="margin-top: 20px;font-size: 13px">
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
-                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} INFO</th>
+                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">
+                    @if(@$document_sub_type_show == 1)
+                        {{ strtoupper($template->document_type) }} INFO</th>
+                    @endif
                     @if($document_reference_show == 1)
                         <tr>
                             <td style="padding: 0; margin: 0;">
