@@ -630,7 +630,7 @@
                         {{ strtoupper($template->document_type) }} INFO</th>
                     @endif -->
                     @if(@$document_section_title_show == 1)
-                        {{ @$document_section_title_text ? @$document_section_title_text : 'invoice' }}
+                        {{ @$document_section_title_text ? @$document_section_title_text : strtoupper($template->document_type). . __('template.info') }}
                     @endif
                     @if($document_reference_show == 1)
                         <tr>
@@ -879,7 +879,7 @@
             
         
         @if(@$comments_show == 1)
-            <div style="margin-top: 20px;">
+            <!-- <div style="margin-top: 20px;">
                 <h5 style="border-bottom: 1px solid black ;">{{ $comments_text }}</h5>
                 <ul>
                     <li>
@@ -896,7 +896,7 @@
                         orders, invoices and any other commercial document reference.
                     </li>
                 </ul>
-            </div>
+            </div> -->
 
             <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
             @if(@$hide_signed_box_show == 0)

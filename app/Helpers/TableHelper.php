@@ -1803,29 +1803,6 @@ class TableHelper
                     "type" => "document_type",
                 ]);
 
-                // /* Document sub Type */
-                // MyTemplateMeta::create([
-                //     "template_id" => $template_created->id,
-                //     "option_name" => "document_sub_type_heading",
-                //     "option_value" => "Document Sub Type",
-                //     "category" => "Document Information",
-                //     "type" => "document_sub_type",
-                // ]);
-                // MyTemplateMeta::create([
-                //     "template_id" => $template_created->id,
-                //     "option_name" => "document_sub_type_show",
-                //     "option_value" => "1",
-                //     "category" => "Document Information",
-                //     "type" => "document_sub_type",
-                // ]);
-                // MyTemplateMeta::create([
-                //     "template_id" => $template_created->id,
-                //     "option_name" => "document_sub_type_text",
-                //     "option_value" => "",
-                //     "category" => "Document Information",
-                //     "type" => "document_sub_type",
-                // ]);
-
                 /* Document Title */
                 MyTemplateMeta::create([
                     "template_id" => $template_created->id,
