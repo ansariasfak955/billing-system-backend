@@ -242,14 +242,14 @@
             $hide_signed_box_show = $meta->option_value;
             @endphp
         @endif
-        @if($meta->category == 'Document Information' && $meta->type == 'document_sub_type' && $meta->option_name == 'show')
+        @if($meta->category == 'Document Information' && $meta->type == 'section' && $meta->option_name == 'show')
             @php
-            $document_sub_type_show = $meta->option_value;
+            $document_section_title_show = $meta->option_value;
             @endphp
         @endif
-        @if($meta->category == 'Document Information' && $meta->type == 'document_sub_type' && $meta->option_name == 'text')
+        @if($meta->category == 'Document Information' && $meta->type == 'section' && $meta->option_name == 'text')
             @php
-            $document_sub_type_text = $meta->option_value;
+            $document_section_title_text = $meta->option_value;
             @endphp
         @endif
         @if($meta->category == 'Document Information' && $meta->type == 'document_title' && $meta->option_name == 'show')
@@ -643,9 +643,9 @@
             <div style="margin-top: 0px;font-size: 13px">
                 <table style="border-collapse: collapse; width:50%; padding: 10px; float: left;">
                     <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">
-                    @if(@$document_sub_type_show == 1)
+                    @if(@$document_section_title_show == 1)
                         <!-- {{ @$document_sub_type_text ? @$document_sub_type_text :  strtoupper(($request->format == 'pro_forma') ? 'PRO FORMA' : __('template.'.$template->document_type.'')) }} {{__('template.info')}}</th> -->
-                        {{ @$document_sub_type_text ? @$document_sub_type_text : 'invoice' }}
+                        {{ @$document_section_title_text ? @$document_section_title_text : 'invoice' }}
                     @endif
                     <tr><td style="padding: 0; margin: 0;">{{__('template.number')}} <b>{{ @$invoiceData->reference.''.@$invoiceData->reference_number }}</b></td></tr>
                     <!-- @if(@$invoiceData->client->legal_name)
