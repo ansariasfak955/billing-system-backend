@@ -2464,7 +2464,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_reference_column_text",
-                        "option_value" => "REF.",
+                        "option_value" => "",
                         "category" => "Items",
                         "type" => "items_reference",
                     ]);
@@ -2503,7 +2503,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_name_column_text",
-                        "option_value" => "NAME",
+                        "option_value" => "",
                         "category" => "Items",
                         "type" => "items_name",
                     ]);
@@ -2542,7 +2542,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_unit_price_column_text",
-                        "option_value" => "PRICE",
+                        "option_value" => "",
                         "category" => "Items",
                         "type" => "items_unit_price",
                     ]);
@@ -2566,7 +2566,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_discount_column_text",
-                        "option_value" => "DISC.",
+                        "option_value" => "",
                         "category" => "Items",
                         "type" => "items_discount",
                     ]);
@@ -2589,7 +2589,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_units_column_text",
-                        "option_value" => "QTY.",
+                        "option_value" => "",
                         "category" => "Items",
                         "type" => "items_units",
                     ]);
@@ -2612,7 +2612,7 @@ class TableHelper
                     MyTemplateMeta::create([
                         "template_id" => $template_created->id,
                         "option_name" => "items_price_column_text",
-                        "option_value" => "SUBTOTAL",
+                        "option_value" => "",
                         "category" => "Items",
                         "type" => "items_price",
                     ]);

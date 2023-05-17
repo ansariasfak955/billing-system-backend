@@ -25,7 +25,7 @@ return [
     'disc' => 'DESCT',
     'price' => 'PRECIO',
     'subtotal' => 'TOTAL PARCIAL',
-    'client_of_data' => 'CLIENTE DE DATOS',
+    'client_of_data' => 'DATOS DEL CLIENTE',
     'supplier_of_data' => 'PROVEEDOR DE DATOS',
     'amount' => 'Cantidad',
     'paid' => 'Pagada',
