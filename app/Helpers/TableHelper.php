@@ -1815,7 +1815,7 @@ class TableHelper
                     "template_id" => $template_created->id,
                     "option_name" => "document_sub_type_show",
                     "option_value" => "1",
-                    "category" => "Document Sub Information",
+                    "category" => "Document Information",
                     "type" => "document_sub_type",
                 ]);
                 MyTemplateMeta::create([
