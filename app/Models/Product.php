@@ -149,7 +149,7 @@ class Product extends Model
             
             
         }
-        return $basePrice ?? $basePrice;
+        return $basePrice ?? 0;
     }
 
     public function getSalesStockValueAttribute(){
