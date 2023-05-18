@@ -106,6 +106,11 @@
             $company_address_show = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'address' && $meta->option_name == 'text')
+            @php
+            $company_address_text = $meta->option_value;
+            @endphp
+        @endif
         @if($meta->category == 'Company Information' && $meta->type == 'tin' && $meta->option_name == 'show')
             @php
             $company_tin_show = $meta->option_value;
@@ -134,17 +139,6 @@
             @endphp
         @endif
 
-        @if($meta->category == 'Company Information' && $meta->type == 'address' && $meta->option_name == 'show')
-            @php
-            $company_address_show['show'] = $meta->option_value;
-            @endphp
-        @endif
-        @if($meta->category == 'Company Information' && $meta->type == 'address' && $meta->option_name == 'text')
-            @php
-            $company_address_show['value'] = $meta->option_value;
-            @endphp
-        @endif
-
         @if($meta->category == 'Company Information' && $meta->type == 'country' && $meta->option_name == 'show')
             @php
             $company_country_show = $meta->option_value;
@@ -156,9 +150,15 @@
             $company_city_show = $meta->option_value;
             @endphp
         @endif
+
         @if($meta->category == 'Company Information' && $meta->type == 'phone' && $meta->option_name == 'show')
             @php
             $company_phone_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'phone' && $meta->option_name == 'text')
+            @php
+            $company_phone_text = $meta->option_value;
             @endphp
         @endif
 
@@ -600,8 +600,8 @@
                             @if(@$company->address)
                             <div style="margin-left: 20px;">
                                 
-                            @if(@$company_address_show['show'] == 1)
-                                <span >{{ @$company_address_show['value'] ? @$company_address_show['value'] : __('template.address')}}</span>
+                            @if(@$company_address_show == 1)
+                                <span >{{ @$company_address_text ? @$company_address_text : __('template.address')}}</span>
                             @endif
                                 <span>{{@$company->address}}</span><br>
                             </div>
@@ -635,13 +635,8 @@
                                     @endif
                                 @endif
                                 @if(@$company->phone)
-                                    <!-- <span style="margin-left: 20px;">{{ @$company_phone_show['value'] ? @$company_phone_show['value'] : __('template.phone')}} {{ $company_phone_show == 1 ? $company->phone : '' }}</span> -->
-                                    @if(@$company_phone_show['show'] && @$company_phone_show['value'])    
-                                        <span style="margin-left: 20px;">{{ @$company_phone_show['value'] ? @$company_phone_show['value'] : __('template.phone')}}</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
-                                            <!-- {{$company_phone_show['value']}} -->{{ $company->phone}}
-                                        @elseif(@$company_phone_show['show'] ==1 && @!$company_phone_show['value'])
-                                            {{ $company->phone}}
-                                        @endif
+                                    @if(@$company_phone_show == 1)
+                                        <span style="margin-left: 20px;">{{ @$company_phone_text ? @$company_phone_text : __('template.phone')}}</span>
                                     @endif
                                 @endif
                             </td>
