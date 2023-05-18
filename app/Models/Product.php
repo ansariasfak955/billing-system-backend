@@ -41,7 +41,8 @@ class Product extends Model
                 $discount = get_product_special_price($company_id,request()->client_id,$this->attributes['id']);
                 if($discount){
                     $discountAmount = ($discount / 100) * $amount;
-                    return $amount - $discountAmount;
+                    $productSpecialPrice = $amount - $discountAmount;
+                    return round($productSpecialPrice,2);
                 }
             }elseif(request()->supplier_id){
                 $table = $this->getTable();
@@ -49,7 +50,8 @@ class Product extends Model
                 $specialPrice = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
                 if($specialPrice){
                     $discountAmount = ($specialPrice / 100) * $amount;
-                    return $amount - $discountAmount;
+                    $supplierSpecialPrice = $amount - $discountAmount;
+                    return round($supplierSpecialPrice,2);
                 }
             }
 
@@ -135,7 +137,8 @@ class Product extends Model
                 $discount = get_product_special_price($company_id,request()->client_id,$this->attributes['id']);
                 if($discount){
                     $discountAmount = ($discount / 100) * $basePrice;
-                    return $basePrice - $discountAmount;
+                    $productSpecialPrice = $basePrice - $discountAmount;
+                    return round($productSpecialPrice,2);
                 }
             }elseif(request()->supplier_id){
                 $table = $this->getTable();
@@ -143,7 +146,8 @@ class Product extends Model
                 $specialPrice = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
                 if($specialPrice){
                     $discountAmount = ($discount / 100) * $basePrice;
-                    return $basePrice - $discountAmount;
+                    $supplierSpecialPrice = $basePrice - $discountAmount;
+                    return round($supplierSpecialPrice,2);
                 }
             }
             
