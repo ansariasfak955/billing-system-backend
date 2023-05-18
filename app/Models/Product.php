@@ -41,18 +41,16 @@ class Product extends Model
                 $discount = get_product_special_price($company_id,request()->client_id,$this->attributes['id']);
                 if($discount){
                     $discountAmount = ($discount / 100) * $amount;
-                    $productSpecialPrice = $amount - $discountAmount;
-                    return round($productSpecialPrice,2);
+                    return $amount - $discountAmount;
                 }
             }elseif(request()->supplier_id){
                 $table = $this->getTable();
                 $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
                 $specialPrice = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
-                if($specialPrice){
-                    $discountAmount = ($specialPrice / 100) * $amount;
-                    $supplierSpecialPrice = $amount - $discountAmount;
-                    return round($supplierSpecialPrice,2);
-                }
+                // if($specialPrice){
+                    // $discountAmount = $amount - $specialPrice;
+                    return round($specialPrice,2);
+                // }
             }
 
             return round($amount,2);
@@ -137,18 +135,16 @@ class Product extends Model
                 $discount = get_product_special_price($company_id,request()->client_id,$this->attributes['id']);
                 if($discount){
                     $discountAmount = ($discount / 100) * $basePrice;
-                    $productSpecialPrice = $basePrice - $discountAmount;
-                    return round($productSpecialPrice,2);
+                    return $basePrice - $discountAmount;
                 }
             }elseif(request()->supplier_id){
                 $table = $this->getTable();
                 $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
                 $specialPrice = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
-                if($specialPrice){
-                    $discountAmount = ($discount / 100) * $basePrice;
-                    $supplierSpecialPrice = $basePrice - $discountAmount;
-                    return round($supplierSpecialPrice,2);
-                }
+                // if($specialPrice){
+                    // $discountAmount = $basePrice - $specialPrice;
+                    return $specialPrice ?? $basePrice;
+                // }
             }
             
             
