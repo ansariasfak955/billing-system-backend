@@ -636,7 +636,7 @@
                                 @endif
                                 @if(@$company->phone)
                                     @if(@$company_phone_show == 1)
-                                        <span style="margin-left: 20px;">{{ @$company_phone_text ? @$company_phone_text : __('template.phone')}}</span>
+                                        <span style="margin-left: 20px;">{{ @$company_phone_text ? @$company_phone_text : __('template.phone')}} {{ $company->phone}}</span>
                                     @endif
                                 @endif
                             </td>
