@@ -589,7 +589,9 @@
                             @if(@$company->address)
                             <div style="margin-left: 20px;">
                                 
-                                <span >{{__('template.address')}}</span>
+                            @if(@$company_address_show['show'] == 1)
+                                <span >{{ @$company_address_show['value'] ? @$company_address_show['value'] : __('template.address')}}</span>
+                            @endif
                                 <span>{{@$company->address}}</span><br>
                             </div>
                             @endif
@@ -622,7 +624,14 @@
                                     @endif
                                 @endif
                                 @if(@$company->phone)
-                                    <span style="margin-left: 20px;">{{__('template.phone')}} {{ $company_phone_show == 1 ? $company->phone : '' }}</span>
+                                    <!-- <span style="margin-left: 20px;">{{ @$company_phone_show['value'] ? @$company_phone_show['value'] : __('template.phone')}} {{ $company_phone_show == 1 ? $company->phone : '' }}</span> -->
+                                    @if(@$company_phone_show['show'] && @$company_phone_show['value'])    
+                                        <span style="margin-left: 20px;">{{ @$company_phone_show['value'] ? @$company_phone_show['value'] : __('template.phone')}}</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
+                                            <!-- {{$company_phone_show['value']}} -->{{ $company->phone}}
+                                        @elseif(@$company_phone_show['show'] ==1 && @!$company_phone_show['value'])
+                                            {{ $company->phone}}
+                                        @endif
+                                    @endif
                                 @endif
                             </td>
                         </span>
