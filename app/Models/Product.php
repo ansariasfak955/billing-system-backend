@@ -49,7 +49,8 @@ class Product extends Model
                 $specialPrice = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
                 // if($specialPrice){
                     // $discountAmount = $amount - $specialPrice;
-                    return round($specialPrice,2);
+                    // return round($specialPrice,2);
+                    return $specialPrice ?? $amount;
                 // }
             }
 
@@ -149,7 +150,7 @@ class Product extends Model
             
             
         }
-        return $basePrice;
+        return $basePrice ?? 0;
     }
 
     public function getSalesStockValueAttribute(){
