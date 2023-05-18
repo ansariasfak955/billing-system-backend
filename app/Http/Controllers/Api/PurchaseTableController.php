@@ -13,6 +13,7 @@ use App\Models\ItemMeta;
 use App\Models\PurchaseReceipt;
 use App\Models\Reference;
 use App\Models\PaymentTerm;
+use App\Models\Company;
 use App\Exports\PurchaseOrderExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -87,6 +88,19 @@ class PurchaseTableController extends Controller
      */
     public function store(Request $request)
     {
+        $company = Company::where('id', $request->company_id)->get()->first();
+        if(!$company->address){
+            return response()->json([
+                "status" => false,
+                "message" => 'Mandatory data in the company should be filled for creating a document.'
+            ]);
+        }elseif(!$company->city){
+            return response()->json([
+                "status" => false,
+                "message" => 'Mandatory data in the company should be filled for creating a document.'
+            ]);
+        }
+
         $validator = Validator::make($request->all(),[
             'supplier_id' => 'required',
             'reference' => 'required',

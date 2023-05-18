@@ -10,6 +10,7 @@ use App\Models\PaymentOption;
 use App\Models\Client;
 use App\Models\ItemMeta;
 use App\Models\Reference;
+use App\Models\Company;
 use App\Exports\TechnicalEstimateExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -89,6 +90,19 @@ class TechnicalTableController extends Controller
      */
     public function store(Request $request)
     {
+        $company = Company::where('id', $request->company_id)->get()->first();
+        if(!$company->address){
+            return response()->json([
+                "status" => false,
+                "message" => 'Mandatory data in the company should be filled for creating a document.'
+            ]);
+        }elseif(!$company->city){
+            return response()->json([
+                "status" => false,
+                "message" => 'Mandatory data in the company should be filled for creating a document.'
+            ]);
+        }
+
         $table = 'company_'.$request->company_id.'_technical_tables';
         $validator = Validator::make($request->all(),[
             // 'title' => "required|unique:$table",

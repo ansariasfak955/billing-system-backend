@@ -82,7 +82,6 @@ class SalesEstimateController extends Controller
     {
 
         $company = Company::where('id', $request->company_id)->get()->first();
-        // return $company;
         if(!$company->address){
             return response()->json([
                 "status" => false,

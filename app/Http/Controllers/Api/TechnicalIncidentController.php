@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TechnicalIncident;
 use App\Models\Client;
 use App\Models\Reference;
+use App\Models\Company;
 use App\Exports\TechnicalIncidentExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
@@ -66,6 +67,20 @@ class TechnicalIncidentController extends Controller
      */
     public function store(Request $request)
     {
+        $company = Company::where('id', $request->company_id)->get()->first();
+        if(!$company->address){
+            return response()->json([
+                "status" => false,
+                "message" => 'Mandatory data in the company should be filled for creating a document.'
+            ]);
+        }elseif(!$company->city){
+            return response()->json([
+                "status" => false,
+                "message" => 'Mandatory data in the company should be filled for creating a document.'
+            ]);
+        }
+
+
     	$notifications = json_encode(explode(',', $request->notifications), true);
         $validator = Validator::make($request->all(),[
             'client_id' => 'required'
