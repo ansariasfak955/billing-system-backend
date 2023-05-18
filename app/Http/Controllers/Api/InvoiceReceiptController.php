@@ -164,6 +164,14 @@ class InvoiceReceiptController extends Controller
      */
     public function update(Request $request)
     {
+
+        if($request->amount <= 0){
+            return response()->json([
+                "status" => false,
+                "message" => 'The amount of the receipt cannot be equal to 0'
+            ]);
+        }
+
         $table = 'company_'.$request->company_id.'_invoice_receipts';
         InvoiceReceipt::setGlobalTable($table);
         $invoiceTable = 'company_'.$request->company_id.'_invoice_tables';
