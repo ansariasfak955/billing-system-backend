@@ -47,10 +47,10 @@ class Product extends Model
                 $table = $this->getTable();
                 $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
                 $specialPrice = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
-                // if($specialPrice){
-                    // $discountAmount = $amount - $specialPrice;
-                    return round($specialPrice,2);
-                // }
+                if($specialPrice){
+                    $discountAmount = ($specialPrice / 100) * $amount;
+                    return $amount - $discountAmount;
+                }
             }
 
             return round($amount,2);
@@ -141,10 +141,10 @@ class Product extends Model
                 $table = $this->getTable();
                 $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
                 $specialPrice = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
-                // if($specialPrice){
-                    // $discountAmount = $basePrice - $specialPrice;
-                    return $specialPrice ?? $basePrice;
-                // }
+                if($specialPrice){
+                    $discountAmount = ($discount / 100) * $basePrice;
+                    return $basePrice - $discountAmount;
+                }
             }
             
             
