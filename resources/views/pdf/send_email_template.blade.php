@@ -1013,7 +1013,7 @@
             @if($request->format != 'before_tax') 
                 @if($request->format != 'pro_forma')
                    @if($request->format != 'without_totals')
-                        <div style="margin-top: 20px;">
+                        <!-- <div style="margin-top: 20px;">
                             <h5 style="border-bottom: 1px solid black ;">{{ $comments_text }}</h5>
                             <ul>
                                 <li>
@@ -1030,7 +1030,7 @@
                                     orders, invoices and any other commercial document reference.
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                         
                     @endif
                 @endif
