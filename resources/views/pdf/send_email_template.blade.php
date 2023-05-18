@@ -231,6 +231,16 @@
             $document_agent_text = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'address' && $meta->option_name == 'show')
+            @php
+            $company_address_show['show'] = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'address' && $meta->option_name == 'text')
+            @php
+            $company_address_show['value'] = $meta->option_value;
+            @endphp
+        @endif
 
         @if($meta->category == 'Document Information' && $meta->type == 'document_type' && $meta->option_name == 'show')
             @php
