@@ -115,6 +115,16 @@
             $company_website_show['value'] = $meta->option_value;
             @endphp
         @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'address' && $meta->option_name == 'show')
+            @php
+            $company_address_show['show'] = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'address' && $meta->option_name == 'text')
+            @php
+            $company_address_show['value'] = $meta->option_value;
+            @endphp
+        @endif
 
         @if($meta->category == 'Company Information' && $meta->type == 'phone' && $meta->option_name == 'show')
             @php
@@ -573,8 +583,9 @@
                             <span>{{  @$company->commercial_name }}</span> <br>
                             @if(@$company->address)
                             <div style="margin-left: 20px;">
-                                
-                                <span >{{__('template.address')}}</span>
+                                @if(@$company_address_show['show'] == 1)
+                                    <span >{{ @$company_address_show['value'] ? @$company_address_show['value'] : __('template.address')}}</span>
+                                @endif
                                 <span>{{@$company->address}}</span><br>
                             </div>
                             @endif
@@ -602,8 +613,8 @@
                             @endif
                             <br>
                             @if(@$company_phone_show['show'] && @$company_phone_show['value'])    
-                                <span style="margin-left: 30px;">{{__('template.phone')}}</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
-                                    {{$company_phone_show['value']}}
+                                <span style="margin-left: 30px;">{{ @$company_phone_show['value'] ? @$company_phone_show['value'] : __('template.phone')}}</span> @if(@$company_phone_show['show'] ==1 && @$company_phone_show['value'])
+                                    <!-- {{$company_phone_show['value']}} -->{{ $company->phone}}
                                 @elseif(@$company_phone_show['show'] ==1 && @!$company_phone_show['value'])
                                     {{ $company->phone}}
                                 @endif
@@ -630,7 +641,7 @@
                         {{ strtoupper($template->document_type) }} INFO</th>
                     @endif -->
                     @if(@$document_section_title_show == 1)
-                        {{ @$document_section_title_text ? @$document_section_title_text : strtoupper($template->document_type). . __('template.info') }}
+                        {{ @$document_section_title_text ? @$document_section_title_text : strtoupper(__('template.'.$template->document_type.'')). __('template.info') }}
                     @endif
                     @if($document_reference_show == 1)
                         <tr>
