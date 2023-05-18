@@ -53,6 +53,8 @@ class CompanyController extends Controller
             'commercial_name' => 'required|unique:companies',
             'phone' => 'required',
             'tin' => 'required|alpha_num',  
+            'address' => 'required',  
+            'city' => 'required',  
         ],[
             'tin.required' => 'Ced/Ruc number is required',
             'tin.alpha_num' => 'Ced/Ruc special characters are not allowed',

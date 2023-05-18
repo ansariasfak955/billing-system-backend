@@ -11,6 +11,7 @@ use App\Models\InvoiceTable;
 use App\Models\Client;
 use App\Models\ItemMeta;
 use App\Models\Reference;
+use App\Models\Company;
 use App\Exports\SalesEstimateExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -79,6 +80,21 @@ class SalesEstimateController extends Controller
      */
     public function store(Request $request)
     {
+
+        $company = Company::where('id', $request->company_id)->get()->first();
+        // return $company;
+        if(!$company->address){
+            return response()->json([
+                "status" => false,
+                "message" => 'Mandatory data in the company should be filled for creating a document.'
+            ]);
+        }elseif(!$company->city){
+            return response()->json([
+                "status" => false,
+                "message" => 'Mandatory data in the company should be filled for creating a document.'
+            ]);
+        }
+        
         $validator = Validator::make($request->all(),[
             'client_id' => 'required',
             'item' => 'required',
