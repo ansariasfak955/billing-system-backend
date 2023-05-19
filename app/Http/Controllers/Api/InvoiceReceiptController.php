@@ -181,20 +181,6 @@ class InvoiceReceiptController extends Controller
         $invoiceReceipt = InvoiceReceipt::where('id', $request->invoice_receipt)->first();
         $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
 
-        // $invoice->update($request->except('company_id', '_method'));
-
-
-        // return response()->json([
-        //     "status" => true,
-        //     "invoice" => InvoiceReceipt::with('invoice','items')->where('id', $request->invoice_receipt)->first()
-        // ]);
-        // $status = 'paid';
-        // $invoice  = InvoiceTable::find($invoiceReceipt->invoice_id);
-        // $amountToSub = 0;
-        // if($invoice->amount_due == $request->amount){
-        //     $amountToSub = $request->amount;
-        //     $status = 'partially paid';
-        // }
         $fullAmount = 0;
         $CreateRec = 1;
         $paid = '0';

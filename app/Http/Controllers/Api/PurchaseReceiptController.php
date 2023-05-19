@@ -242,7 +242,7 @@ class PurchaseReceiptController extends Controller
         $id =  ($receipt ? $receipt->id : $purchaseReceipt->id);
         return response()->json([
             "status" => true,
-            "data" => PurchaseReceipt::with('invoice','items')->where('id', $request->purchase_receipt)->first()
+            "data" => PurchaseReceipt::with('invoice','items')->find($id)
         ]);
     }
 
