@@ -97,8 +97,12 @@ class PurchaseReceiptController extends Controller
                 'concept' => $request->concept,
                 'payment_option' => $request->payment_option,
                 'bank_account' => $request->bank_account,
-                'payment_option' => $request->payment_option,
-                'payment_date' => $request->payment_date
+                'payment_date' => $request->payment_date,
+                'amount' => $request->amount,
+                'expiration_date' => $request->expiration_date,
+                'paid' =>  isset($receiptId['paid']) ? $receiptId['paid'] : 0,
+                'paid_by' => $request->paid_by,
+                'type' => 'PINV'
             ]);
             PurchaseTable::where('id', $receiptId)->update([
                 'status' => 'paid'
@@ -236,7 +240,8 @@ class PurchaseReceiptController extends Controller
                 'amount' => $request->amount,
                 'expiration_date' => $request->expiration_date,
                 'paid' => $paidRec,
-                'paid_by' => $request->paid_by
+                'paid_by' => $request->paid_by,
+                'type' => 'PINV'
             ]);
         }
         $id =  ($receipt ? $receipt->id : $purchaseReceipt->id);

@@ -104,7 +104,8 @@ class InvoiceReceiptController extends Controller
                 'amount' => $request->amount,
                 'expiration_date' => $request->expiration_date,
                 'paid' => isset($invoiceId['paid']) ? $invoiceId['paid'] : 0,
-                'paid_by' => $request->paid_by
+                'paid_by' => $request->paid_by,
+                'type' => 'INV'
             ]);
             InvoiceTable::where('id', $invoiceId)->update([
                 'status' => 'paid'
@@ -243,7 +244,8 @@ class InvoiceReceiptController extends Controller
                 'amount' => $request->amount,
                 'expiration_date' => $request->expiration_date,
                 'paid' => $paidRec,
-                'paid_by' => $request->paid_by
+                'paid_by' => $request->paid_by,
+                'type' => 'INV'
             ]);
         }
         $id =  ($receipt ? $receipt->id : $invoiceReceipt->id);
