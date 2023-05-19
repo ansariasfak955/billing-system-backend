@@ -50,16 +50,16 @@ class Product extends Model
                 // if($specialPrice){
                     // $discountAmount = $amount - $specialPrice;
                     if(!$specialPrice){
-                        return  $basePrice;
+                        return  round($basePrice,2);
                     }
-                    return $specialPrice;
+                    return round($specialPrice,2);
                     // return $specialPrice ?? $amount;
                 // }
             }
             if(!$amount){
-                return  $basePrice;
+                return  round($basePrice,2);
             }
-            return $amount;
+            return round($amount,2);
             
             
         }
