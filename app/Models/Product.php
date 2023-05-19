@@ -52,14 +52,14 @@ class Product extends Model
                     if(!$specialPrice){
                         return  $basePrice;
                     }
-                    return round($specialPrice,2);
+                    return $specialPrice;
                     // return $specialPrice ?? $amount;
                 // }
             }
             if(!$amount){
                 return  $basePrice;
             }
-            return round($amount,2);
+            return $amount;
             
             
         }
