@@ -98,7 +98,7 @@ class Product extends Model
             if ($product_stock != NULL) {
                 return $product_stock->sum('stock');
             }
-            return '';
+            return '2';
         }
         
     }
