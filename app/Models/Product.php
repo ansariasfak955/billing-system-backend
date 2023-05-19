@@ -49,11 +49,16 @@ class Product extends Model
                 $specialPrice = get_product_supplier_special_price($company_id,request()->supplier_id,$this->attributes['id']);
                 // if($specialPrice){
                     // $discountAmount = $amount - $specialPrice;
+                    if(!$specialPrice){
+                        return  $basePrice;
+                    }
                     return round($specialPrice,2);
                     // return $specialPrice ?? $amount;
                 // }
             }
-
+            if(!$amount){
+                return  $basePrice;
+            }
             return round($amount,2);
             
             
