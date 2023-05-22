@@ -32,11 +32,13 @@ class ProductStock extends Model
     }
     public function items(){
         return $this->hasOne(Item::class, 'reference_id')->where('reference' , 'pro');
+        return $this->hasOne(Item::class, 'reference_id')->whereIn('type','PINV');
     }
 
     public function getVirtualStockAttribute(){
+        $purchaseItems = $this->items()->sum('quantity');
         $productStock = $this->productStock()->sum('stock');
         $items = $this->items()->sum('quantity');
-        return $productStock - $items;
+        return ($productStock - $items) - $purchaseItems;
     }
 }
