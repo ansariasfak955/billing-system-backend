@@ -115,7 +115,10 @@ class Product extends Model
         if(isset($this->attributes['id'])){
             $product_stock =  ProductStock::where('product_id', $this->attributes['id'])->sum('stock');
             $items = $this->items()->sum('quantity');
-            return $product_stock - $items;
+
+            $purchaseItems = Item::where('reference_id', $this->attributes['id'])->where('type','PINV')->sum('quantity');
+            $invoiceStock = Item::where('reference_id', $this->attributes['id'])->where('type','INV')->sum('quantity');
+            return  ($product_stock - $invoiceStock) + $purchaseItems;
         }
     }
 
