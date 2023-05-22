@@ -28,20 +28,22 @@ class ProductStock extends Model
         self::$globalTable = $table;
     }
     public function productStock(){
-        return $this->hasOne(ProductStock::class, 'product_id');
+        return $this->hasMany(ProductStock::class, 'product_id');
     }
     public function items(){
-        return $this->hasOne(Item::class, 'reference_id')->where('reference' , 'pro');
+        return $this->hasMany(Item::class, 'reference_id')->where('reference' , 'pro');
     }
     public function purchase(){
-        return $this->hasOne(Item::class, 'reference_id')->where('type','PINV');
+        return $this->hasMany(Item::class, 'reference_id')->where('type','PINV');
+    }
+    public function invoice(){
+        return $this->hasMany(Item::class, 'reference_id')->where('type','INV');
     }
 
     public function getVirtualStockAttribute(){
         $purchaseItems = $this->purchase()->sum('quantity');
         $productStock = $this->productStock()->sum('stock');
-        $items = $this->items()->sum('quantity');
-        $virtualStock = $productStock - $items;
-        return $virtualStock - $purchaseItems;
+        $invoiceStock = $this->invoice()->sum('quantity');
+        return  ($productStock - $purchaseItems) + invoiceStock;
     }
 }
