@@ -34,7 +34,7 @@ class ProductStock extends Model
         return $this->hasOne(Item::class, 'reference_id')->where('reference' , 'pro');
     }
     public function purchase(){
-        return $this->hasOne(Item::class, 'reference_id')->whereIn('type','PINV');
+        return $this->hasOne(Item::class, 'reference_id')->where('type','PINV');
     }
 
     public function getVirtualStockAttribute(){
