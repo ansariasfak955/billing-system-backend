@@ -41,6 +41,7 @@ class ProductStock extends Model
         $purchaseItems = $this->purchase()->sum('quantity');
         $productStock = $this->productStock()->sum('stock');
         $items = $this->items()->sum('quantity');
-        return ($productStock - $items) - $purchaseItems;
+        $virtualStock = $productStock - $items;
+        return $virtualStock - $purchaseItems;
     }
 }
