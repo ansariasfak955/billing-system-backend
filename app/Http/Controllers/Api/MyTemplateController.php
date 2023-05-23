@@ -260,19 +260,8 @@ class MyTemplateController extends Controller
 
     public function getTemplateFields(Request $request)
     {
-        $table = 'company_'.$request->company_id.'_my_template_metas';
         MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');
-
-        $company_information = MyTemplateMeta::where('category', 'Company Information')->get();
-        $document_information = MyTemplateMeta::where('category', 'Document Information')->get();
-        $client_information = MyTemplateMeta::where('category', 'Client/Supplier Information')->get();
-        $items = MyTemplateMeta::where('category', 'Items')->get();
-        $signature_summary = MyTemplateMeta::where('category', 'Signature and Summary')->get();
-        $footer_legal = MyTemplateMeta::where('category', 'Footer and Legal Note')->get();
-        $comments_and_addendums = MyTemplateMeta::where('category', 'Comments and Addendums')->get();
-
         $template_metas = MyTemplateMeta::where('template_id', $request->template_id)->groupBy('category')->orderBy('id', 'ASC')->get();
-
         $arr = [];
         $final_arr = [];
         $templateCounter = 0;
@@ -291,7 +280,6 @@ class MyTemplateController extends Controller
 
         foreach ($template_metas as $template_meta) {
             $types = MyTemplateMeta::where('template_id', $request->template_id)->where('category', $template_meta->category)->groupBy('type')->get();
-            
             if ($template_meta->category == 'Company Information'){
                 $counter = 1;
             } else {
@@ -311,13 +299,9 @@ class MyTemplateController extends Controller
                 $showObject = [];
                 $otherObject = [];
                 $optionName = [];
-
                 foreach($moreObject as $more ){
-                    /*if($more->option_name == 'show'){
-                        $showObject[] = $more;
-                    }else{*/
-                        $otherObject[] = $more;
-                    // }
+                    
+                    $otherObject[] = $more;
                     $optionName[] = $more->option_name;
                 }
                 if ($moreObject->count() < 3) {
@@ -333,12 +317,17 @@ class MyTemplateController extends Controller
                     $otherObject[$counter]['category'] = NULL;
                     $otherObject[$counter]['type'] = NULL;
                 }
-
+                
                 $arr[$counter]['more'] = array_merge($showObject, $otherObject);
+                // if($template_meta->category == 'Items'){
+                //     return $counter;
+                // }
                 $counter++;
             }
             $final_arr[$templateCounter]['tab_name'] =  $template_meta->category;
             $final_arr[$templateCounter]['tab_data'] =  $arr;
+            //re-initialize array to fix repeated section title  and other repeated fields issue
+            $arr =[];
             $templateCounter++;
         }
 
