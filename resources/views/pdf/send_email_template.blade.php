@@ -606,11 +606,13 @@
                         </td>
                         <span class="section">
                         <td class="header_border" style="width:250px"  @if($company_name_show || $company_country_show) @endif>
-                            @if(@$company_legal_name_show == 1)
-                                <span style="margin-left: 20px;">{{ @$company_legal_name_text ? @$company_legal_name_text : __('template.company_name')}}</span>
-                            @endif
-                            <span>{{  @$company->commercial_name }}</span> <br>
-                            @if(@$company->address)
+                            <div style="margin-left: 20px;">
+                                @if(@$company_legal_name_show == 1)
+                                    <span>{{ @$company_legal_name_text ? @$company_legal_name_text : __('template.company_name')}}</span>
+                                @endif
+                                <span>{{  @$company->commercial_name }}</span> <br>
+                                @if(@$company->address)
+                            </div>
                             <div style="margin-left: 20px;">
                                 
                             @if(@$company_address_show == 1)
