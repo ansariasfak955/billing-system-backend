@@ -8,6 +8,7 @@
     $company_commercial_name_show = 0;
     $company_pincode_show = 0;
     $company_address_show = 0;
+    $company_legal_name_show = 0;
     $client_supplier_tin_show = 0;
     $document_reference_show = 0;
     $company_tin_show = 0;
@@ -109,6 +110,16 @@
         @if($meta->category == 'Company Information' && $meta->type == 'address' && $meta->option_name == 'text')
             @php
             $company_address_text = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'legal' && $meta->option_name == 'show')
+            @php
+            $company_legal_name_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Company Information' && $meta->type == 'legal' && $meta->option_name == 'text')
+            @php
+            $company_legal_name_text = $meta->option_value;
             @endphp
         @endif
         @if($meta->category == 'Company Information' && $meta->type == 'tin' && $meta->option_name == 'show')
@@ -595,7 +606,9 @@
                         </td>
                         <span class="section">
                         <td class="header_border" style="width:250px"  @if($company_name_show || $company_country_show) @endif>
-                            <span style="margin-left: 20px;">{{__('template.company_name')}}</span>
+                            @if(@$company_legal_name_show == 1)
+                                <span style="margin-left: 20px;">{{ @$company_legal_name_text ? @$company_legal_name_text : __('template.company_name')}}</span>
+                            @endif
                             <span>{{  @$company->commercial_name }}</span> <br>
                             @if(@$company->address)
                             <div style="margin-left: 20px;">
