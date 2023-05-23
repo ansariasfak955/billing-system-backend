@@ -3147,7 +3147,7 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_model_heading",
-                            "option_value" => "Brand",
+                            "option_value" => "Model",
                             "category" => "Client Assets",
                             "type" => "client_assets_model",
                         ]);
@@ -3161,7 +3161,7 @@ class TableHelper
                         MyTemplateMeta::create([
                             "template_id" => $template_created->id,
                             "option_name" => "client_assets_model_text",
-                            "option_value" => "Brand",
+                            "option_value" => "Model",
                             "category" => "Client Assets",
                             "type" => "client_assets_model",
                         ]);

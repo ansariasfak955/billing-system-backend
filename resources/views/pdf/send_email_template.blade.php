@@ -574,6 +574,86 @@
             @endphp
         @endif
 
+        <!-- Client Assets -->
+
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_section' && $meta->option_name == 'show')
+            @php
+                $client_assets_section_title_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_section' && $meta->option_name == 'text')
+            @php
+                $client_assets_section_title_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_reference' && $meta->option_name == 'show')
+            @php
+                $client_assets_reference_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_reference' && $meta->option_name == 'text')
+            @php
+                $client_assets_reference_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_name' && $meta->option_name == 'show')
+            @php
+                $client_assets_name_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_name' && $meta->option_name == 'text')
+            @php
+                $client_assets_name_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_identifier' && $meta->option_name == 'show')
+            @php
+                $client_assets_identifier_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_identifier' && $meta->option_name == 'text')
+            @php
+                $client_assets_identifier_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_serial_no' && $meta->option_name == 'show')
+            @php
+                $client_assets_serial_no_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_serial_no' && $meta->option_name == 'text')
+            @php
+                $client_assets_serial_no_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_brand' && $meta->option_name == 'show')
+            @php
+                $client_assets_brand_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_brand' && $meta->option_name == 'text')
+            @php
+                $client_assets_brand_text = $meta->option_value;
+            @endphp
+        @endif
+
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_model' && $meta->option_name == 'show')
+            @php
+                $client_assets_model_show = $meta->option_value;
+            @endphp
+        @endif
+        @if($meta->category == 'Client Assets' && $meta->type == 'client_assets_model' && $meta->option_name == 'text')
+            @php
+                $client_assets_model_text = $meta->option_value;
+            @endphp
+        @endif
+
+
     @endforeach
 
     @if(strpos($template->watermark,"via.placeholder") !== false)
@@ -896,28 +976,39 @@
             @if($invoiceData->clientAsset)
             <div style="margin-top: 0px;font-size: 13px; height:40px">
                 <table style="border-collapse: collapse; width:100%; padding: 10px; float: left;">
-                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ strtoupper($template->document_type) }} ASSET</th>
-
+                @if(@$client_assets_section_title_show == 1)
+                    <th class="table_heading" style=" border-bottom: 1px solid gray;text-align: left;">{{ @$client_assets_section_title_text ? @$client_assets_section_title_text : strtoupper(__('template.'.$template->document_type.'').__('template.asset')) }}</th>
+                @endif
                     <tr>
                         @if(@$invoiceData->clientAsset->name)
-                            <span><b>Name: </b></span>
-                            <span>{{ $invoiceData->clientAsset->name }}</span>
+                            @if(@$client_assets_name_show == 1)
+                                <span><b>{{ @$client_assets_name_text ? @$client_assets_name_text : __('template.name')}}</b></span>
+                                <span>{{ $invoiceData->clientAsset->name }}</span>
+                            @endif
                         @endif
                         @if(@$invoiceData->clientAsset->brand)
-                            <span><b> Brand: </b></span>
-                            <span>{{ $invoiceData->clientAsset->brand }}</span>
+                            @if(@$client_assets_brand_show == 1)
+                                <span><b>{{ @$client_assets_brand_text ? @$client_assets_brand_text : __('template.brand')}} </b></span>
+                                <span>{{ $invoiceData->clientAsset->brand }}</span>
+                            @endif
                         @endif
                         @if(@$invoiceData->clientAsset->model)
-                            <span><b> Model: </b></span>
-                            <span>{{ $invoiceData->clientAsset->model }}</span><br>
+                            @if(@$client_assets_model_show == 1)
+                                <span><b> {{ @$client_assets_model_text ? @$client_assets_model_text : __('template.model')}} </b></span>
+                                <span>{{ $invoiceData->clientAsset->model }}</span><br>
+                            @endif
                         @endif
                         @if(@$invoiceData->clientAsset->serial_number)
-                            <span><b> Serial Number: </b></span>
-                            <span>{{ $invoiceData->clientAsset->serial_number }}</span>
+                            @if(@$client_assets_serial_no_show == 1)
+                                <span><b> {{ @$client_assets_serial_no_text ? @$client_assets_serial_no_text : __('template.serial_number')}} </b></span>
+                                <span>{{ $invoiceData->clientAsset->serial_number }}</span>
+                            @endif
                         @endif
                         @if(@$invoiceData->clientAsset->identifier)
-                            <span><b> Identifier: </b></span>
-                            <span>{{ $invoiceData->clientAsset->identifier }}</span>
+                            @if(@$client_assets_identifier_show == 1)
+                                <span><b> {{ @$client_assets_identifier_text ? @$client_assets_identifier_text : __('template.identifier')}} </b></span>
+                                <span>{{ $invoiceData->clientAsset->identifier }}</span>
+                            @endif
                         @endif
                     </tr>
                     
