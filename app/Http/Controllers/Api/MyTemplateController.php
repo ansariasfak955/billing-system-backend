@@ -319,9 +319,6 @@ class MyTemplateController extends Controller
                 }
                 
                 $arr[$counter]['more'] = array_merge($showObject, $otherObject);
-                // if($template_meta->category == 'Items'){
-                //     return $counter;
-                // }
                 $counter++;
             }
             $final_arr[$templateCounter]['tab_name'] =  $template_meta->category;
