@@ -912,7 +912,7 @@
             <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
             @if(@$hide_signed_box_show == 0)
                 @if(@$show_signed_title)
-                    <p style="font-weight: bold;">{{@$signed_box_text ?? __('template.expiration')}}</p>
+                    <p style="font-weight: bold;">{{@$signed_box_text ?? __('template.signed')}}</p>
                 @endif
             @endif
                 <table style="border-collapse: collapse; vertical-align: top; width: 100%;">
@@ -958,7 +958,7 @@
         <div style="position: fixed; left: 0; bottom: 0; width: 100%;">
             @if(@$hide_signed_box_show == 0)
                 @if(@$show_signed_title)
-                    <p style="font-weight: bold;">{{@$signed_box_text ?? __('template.expiration')}}</p>
+                    <p style="font-weight: bold;">{{@$signed_box_text ?? __('template.signed')}}</p>
                 @endif
             @endif
             <table style="border-collapse: collapse; vertical-align: top; width: 100%;">

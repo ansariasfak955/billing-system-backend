@@ -372,17 +372,17 @@ class MyTemplateController extends Controller
 
     public function getTemplatePreview(Request $request)
     {
+        $user = \Auth::user(); 
+        
+        $language = $user->language ?? 'en'; // get the user's language preference, default to English
+        \App::setLocale($language);
+        
         $pdf = App::make('dompdf.wrapper');
         $company = Company::where('id', $request->company_id)->first();
 
         $table = 'company_'.$request->company_id.'_products';
         Product::setGlobalTable($table);
         $products = Product::limit(2)->get();
-
-        $user = \Auth::user(); 
-        
-        $language = $user->language ?? 'en'; // get the user's language preference, default to English
-        \App::setLocale($language);
 
         MyTemplate::setGlobalTable('company_'.$request->company_id.'_my_templates');
         MyTemplateMeta::setGlobalTable('company_'.$request->company_id.'_my_template_metas');

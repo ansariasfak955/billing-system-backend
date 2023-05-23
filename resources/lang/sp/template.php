@@ -19,6 +19,7 @@ return [
     'zip_code' => 'Código postal:',
     'city' => 'Ciudad:',
     'state' => 'Estado:',
+    'signed' => 'Firmada:',
     'country' => 'País:',
     'description' => 'DESCRIPCIÓN',
     'qty' => 'CANTIDAD',
