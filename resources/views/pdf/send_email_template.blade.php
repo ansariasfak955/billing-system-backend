@@ -982,13 +982,13 @@
                     <tr>
                         @if(@$invoiceData->clientAsset->name)
                             @if(@$client_assets_name_show == 1)
-                                <span><b>{{ @$client_assets_name_text ? @$client_assets_name_text : __('template.name')}}</b></span>
+                                <span><b> {{ @$client_assets_name_text ? @$client_assets_name_text : __('template.name')}} </b></span>
                                 <span>{{ $invoiceData->clientAsset->name }}</span>
                             @endif
                         @endif
                         @if(@$invoiceData->clientAsset->brand)
                             @if(@$client_assets_brand_show == 1)
-                                <span><b>{{ @$client_assets_brand_text ? @$client_assets_brand_text : __('template.brand')}} </b></span>
+                                <span><b> {{ @$client_assets_brand_text ? @$client_assets_brand_text : __('template.brand')}} </b></span>
                                 <span>{{ $invoiceData->clientAsset->brand }}</span>
                             @endif
                         @endif
