@@ -72,7 +72,7 @@ class DashboardController extends Controller
                     ], 
                     [
                         "lable" => "Delivery Notes", 
-                        "value" => SalesEstimate::where('reference', 'SDN')->where('status', 'pending')->count()." ($ ". SalesEstimate::where('reference', 'SDN')->where('status', 'pending')->get()->sum('amount').")",
+                        "value" => SalesEstimate::where('reference', 'SDN')->where('status', 'pending invoice')->count()." ($ ". SalesEstimate::where('reference', 'SDN')->where('status', 'pending invoice')->get()->sum('amount').")",
                         "link" => "/delivery"
                         ] 
                 ] 
@@ -137,7 +137,7 @@ class DashboardController extends Controller
                     ], 
                     [
                         "lable" => "Invoices", 
-                        "value" =>  PurchaseTable::where('reference', 'PINV')->where('status', 'pending')->count()." ($ ". PurchaseTable::where('reference', 'PINV')->where('status', 'pending')->get()->sum('amount').")",
+                        "value" =>  PurchaseTable::where('reference', 'PINV')->where('status', 'unpaid')->count()." ($ ". PurchaseTable::where('reference', 'PINV')->where('status', 'unpaid')->get()->sum('amount').")",
                         "link" => "/purchase-invoice"
                     ] 
                 ] 
