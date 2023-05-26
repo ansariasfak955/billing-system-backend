@@ -110,7 +110,7 @@ class AuthController extends Controller
             'name'    => 'required|regex:/^[\pL\s\-]+$/u',
             // 'country' => 'required',
             'company_name' => 'required',
-            'surname' => 'required',
+            'surname' => 'required|regex:/^[\pL\s\-]+$/u'
         ], [
             'surname.required' => 'The lastname field is required.',
         ]);
@@ -161,6 +161,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'surname' => $request->surname,
             'mobile_number' => $request->mobile_number,
             'password' => bcrypt($request->password),
             'country' => $request->country,
