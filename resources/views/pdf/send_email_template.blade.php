@@ -1061,7 +1061,7 @@
                         @foreach($products as $product)
                             <tr style="margin: 0px">
                                 <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                    <p style="margin: 0px; padding: -10px; padding-bottom:4px">{{ $product->reference }}</p>
+                                    <p style="margin: 0px; padding: -10px; padding-bottom:4px">{{ @$product->reference.''.@$product->reference_number }}</p>
                                     <span></span>
                                     
                                     {{-- @if(strpos($product->image,"via.placeholder") !== false)

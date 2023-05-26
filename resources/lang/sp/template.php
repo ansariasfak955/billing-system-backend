@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'company' => 'Compañía:',
-    'address' => 'DIRECCIÓN:',
+    'company' => 'Empresa:',
+    'address' => 'Dirección:',
     'email' => 'correo electrónico:',
     'phone' => 'teléfono:',
     'client_name' => 'nombre del cliente:',
@@ -46,7 +46,7 @@ return [
     'Purchase Order' => 'Orden de compra',
     'Purchase Delivery Note' => 'Nota de entrega de compra',
     'Purchase Invoice' => 'Factura de compra',
-    'Normal Invoice' => 'Normal Factura ',
+    'Normal Invoice' => 'Factura normal',
     'Refund Invoice' => 'Reembolso Factura',
     'info' => 'INFORMACIÓN',
 
