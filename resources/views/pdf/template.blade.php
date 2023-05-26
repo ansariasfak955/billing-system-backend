@@ -631,7 +631,7 @@
         </div>
         <div style="text-align: center; margin-top: 70px;">
             @if(@$document_type_show == 1)
-                    <h2>{{ $template->name }}</h2>
+                    <h2>{{ $template->document_type }}</h2>
                     @if($document_title_show && $document_title_text)
                         {{ $document_title_text }}
                     @endif
