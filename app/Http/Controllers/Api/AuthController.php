@@ -110,8 +110,10 @@ class AuthController extends Controller
             'name'    => 'required|regex:/^[\pL\s\-]+$/u',
             // 'country' => 'required',
             'company_name' => 'required',
+            'surname' => 'required',
+        ], [
+            'surname.required' => 'The lastname field is required.',
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
