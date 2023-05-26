@@ -581,7 +581,7 @@
                         <td class="header_border" style="width:250px" @if($company_name_show || $company_country_show) @endif>
                             <div style="margin-left: 20px;">   
                                 @if(@$company_legal_name_show == 1)
-                                    <span>{{ @$company_legal_name_text ? @$company_legal_name_text : __('template.company_name')}}</span>
+                                    <span>{{ @$company_legal_name_text ? @$company_legal_name_text : __('template.company')}}</span>
                                 @endif
                                 <span>{{  @$company->commercial_name }}</span> <br>
                         </div>

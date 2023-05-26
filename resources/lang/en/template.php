@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'company_name' => 'Company Name:',
+    'company' => 'Company:',
     'address' => 'Address:',
     'email' => 'Email:',
     'phone' => 'Phone:',

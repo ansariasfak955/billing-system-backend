@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'company_name' => 'nombre de empresa:',
+    'company' => 'Compañía:',
     'address' => 'DIRECCIÓN:',
     'email' => 'correo electrónico:',
     'phone' => 'teléfono:',
