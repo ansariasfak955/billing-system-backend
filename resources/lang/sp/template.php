@@ -3,8 +3,8 @@
 return [
     'company' => 'Empresa:',
     'address' => 'Dirección:',
-    'email' => 'correo electrónico:',
-    'phone' => 'teléfono:',
+    'email' => 'Email:',
+    'phone' => 'Tel:',
     'client_name' => 'nombre del cliente:',
     'date' => 'Fecha:',
     'status' => 'Estado:',

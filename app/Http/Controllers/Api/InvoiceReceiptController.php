@@ -196,7 +196,7 @@ class InvoiceReceiptController extends Controller
             $amountToCut = 0;
             $fullAmount =  1;
         }
-        if( (!$invoice->amount_due || $invoice->amount_due == 0.00) && $request->amount){
+        if( (!$invoice->amount_due || $invoice->amount_due == 0.00) && $request->amount && $request->paid){
             return response()->json([
                 "status" => false,
                 "message" => 'All pending amount is already  been paid!'
