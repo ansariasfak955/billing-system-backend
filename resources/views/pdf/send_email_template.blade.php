@@ -1061,7 +1061,7 @@
                         @foreach($products as $product)
                             <tr style="margin: 0px">
                                 <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                    <p style="margin: 0px; padding: -10px">{{ $product->reference }}</p>
+                                    <p style="margin: 0px; padding: -10px; padding-bottom:4px">{{ $product->reference }}</p>
                                     <span></span>
                                     
                                     {{-- @if(strpos($product->image,"via.placeholder") !== false)
@@ -1077,25 +1077,25 @@
                                     <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
                                 </td>
                                 <td style=" margin: 5px; border-bottom: 1px solid #999; width: 350px;">
-                                    <p style="margin: 0px; padding: -10px">{{ $product->name }}</p>
+                                    <p style="margin: 0px; padding: -10px; padding-bottom:4px;">{{ $product->name }}</p>
                                     <span style="color:#666666;">{{ $product->description }}</span>
                                    
                                 </td>
                                 <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                    <p style="margin: 0px; padding: -10px; text-align: right;">{{ $product->quantity }}</p>
+                                    <p style="margin: 0px; padding: -10px; text-align: right; padding-bottom:4px;">{{ $product->quantity }}</p>
                                 </td>
                                 @if($request->format != 'without_values') 
                                     <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                        <p style="margin: 0px; padding: -10px; text-align: right;">{{ @$product->discount }}</p>
+                                        <p style="margin: 0px; padding: -10px; text-align: right; padding-bottom:4px;">{{ @$product->discount }}</p>
                                     </td>
                                     <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                        <p style="margin: 0px; padding: -10px; text-align: right;" >{{ @$product->base_price }}</p>
+                                        <p style="margin: 0px; padding: -10px; text-align: right; padding-bottom:4px;" >{{ @$product->base_price }}</p>
                                     </td>
                                 @endif
                                 @if($request->format != 'without_values')
                                     @if($request->format != 'without_totals')
                                         <td style=" margin: 5px; border-bottom: 1px solid #999;">
-                                            <p style="margin: 0; padding-left: 15px; text-align: right;">{{ @$product->amount_with_out_vat }}</p>
+                                            <p style="margin: 0; padding-left: 15px; text-align: right; padding-bottom:4px;">{{ @$product->amount_with_out_vat }}</p>
                                         </td>
                                     @endif
                                 @endif

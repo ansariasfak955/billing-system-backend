@@ -860,23 +860,23 @@
                                 <img height="45" src="{{ $image }}" alt="" srcset=""> --}}
                             </td>
                             <td style="margin: 5px; border-bottom: 1px solid #999; width: 350px;">
-                                <p style="margin: 0px; padding: -10px">{{ $product->name }}</p>
+                                <p style="margin: 0px; padding: -10px; padding-bottom:4px;">{{ $product->name }}</p>
                                 <span style="color:#666666;">{{ $product->description }}</span>
                             </td>
                             <td style="margin: 5px; border-bottom: 1px solid #999;">
-                                <p style="margin: 0px; padding: -10px; text-align: right;">1</p>
+                                <p style="margin: 0px; padding: -10px; text-align: right; padding-bottom:4px;">1</p>
                             </td>
                             <td style="margin: 5px; border-bottom: 1px solid #999;">
-                                <p style="margin: 0px; padding: -10px; text-align: right;">0</p>
+                                <p style="margin: 0px; padding: -10px; text-align: right; padding-bottom:4px;">0</p>
                             </td>
                             <td style="margin: 5px; border-bottom: 1px solid #999;">
-                                <p style="margin: 0px; padding: -10px; text-align: right;">{{ $product->price }}</p>
+                                <p style="margin: 0px; padding: -10px; text-align: right; padding-bottom:4px;">{{ $product->price }}</p>
                             </td>
                             <td style="margin: 5px; border-bottom: 1px solid #999;">
-                                <p style="margin: 0; padding-left: 15px; text-align: right;">{{ $product->price }}</p>
+                                <p style="margin: 0; padding-left: 15px; text-align: right; padding-bottom:4px;">{{ $product->price }}</p>
                             </td>
                            {{--  <td style="padding: 0 0 5px; margin: 0; border-bottom: 1px solid #999;">
-                                <p style="marging: 0; padding: 0">VAT 21%</p>
+                                <p style="marging: 0; padding: 0; padding-bottom:4px;">VAT 21%</p>
                             </td> --}}
                             @php
                             $subtotal += $product->price;
