@@ -1501,7 +1501,7 @@ class TableHelper
             $templates = ['Normal Invoice', 'Purchase Delivery Note', 'Purchase Invoice', 'Purchase Order', 'Refund Invoice', 'Sales Delivery Note', 'Sales Estimate', 'Sales Order', 'Work Delivery Note', 'Work Estimate', 'Work Order'];
             foreach($templates as $template){
                 MyTemplate::setGlobalTable('company_'.$company_id.'_my_templates');
-                $template_created = MyTemplate::create(["name" => $template." Template", "document_type" => $template, "font" => "DejaVu Sans", "color" => "#fd6c00", "is_default" => "1", "hide_company_information" => "0", "hide_assets_information" => "0", "show_signature_box" => "0" ]);
+                $template_created = MyTemplate::create(["name" => $template, "document_type" => $template, "font" => "DejaVu Sans", "color" => "#fd6c00", "is_default" => "1", "hide_company_information" => "0", "hide_assets_information" => "0", "show_signature_box" => "0" ]);
                 MyTemplateMeta::setGlobalTable('company_'.$company_id.'_my_template_metas');
                 /* Company Information block starts here */
                 /* Hide company information */
