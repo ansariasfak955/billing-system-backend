@@ -698,6 +698,26 @@ function add_expiration_option_in_my_templates(){
     }
     echo 'done adding';       
 }
+
+function fix_template_name(){       
+    foreach (\App\Models\Company::pluck('id') as $company_id) {
+        $templateTable = 'company_'.$company_id.'_my_templates';
+        $templateMetaTable = 'company_'.$company_id.'_my_template_metas';
+    
+        if (Schema::hasTable($templateTable) && Schema::hasTable($templateMetaTable)) {
+            MyTemplate::setGlobalTable($templateTable);
+            MyTemplateMeta::setGlobalTable($templateMetaTable);
+    
+            $templates = MyTemplate::all();
+    
+            foreach ($templates as $template) {
+                MyTemplate::where('id', $template->id)->update(['name' => str_replace(' Template', '',  $template->name)]);
+            }
+        }
+    }
+    echo 'done adding';       
+}
+
 function getDateToIterate($request){
     $data = [];
     $year =     $request->year ?? date('Y');
