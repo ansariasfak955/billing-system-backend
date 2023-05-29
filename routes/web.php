@@ -39,7 +39,7 @@ Route::get('/fix-subscription-status', function () {
     return fixstripeStatusAllCompanies();
 });
 Route::get('/remove-template', function () {
-    return fix_template_name(491);
+    return fix_template_name();
 });
 Auth::routes();
 Route::group(['middleware' => 'auth'], function() {
