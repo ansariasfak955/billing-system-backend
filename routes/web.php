@@ -38,7 +38,7 @@ Route::get('/remove-stripe-from-all', function () {
 Route::get('/fix-subscription-status', function () {
     return fixstripeStatusAllCompanies();
 });
-Route::get('/remove-template', function () {
+Route::get('/fix-template-name', function () {
     return fix_template_name();
 });
 Auth::routes();
