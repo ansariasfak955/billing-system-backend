@@ -45,6 +45,12 @@ function get_client_name($company_id,$client_id)
     \App\Models\Client::setGlobalTable($table);
     return \App\Models\Client::where('id', $client_id)->pluck('legal_name')->first();
 }
+function get_product_reference_number($company_id,$reference_number)
+{
+    $table = 'company_'.$company_id.'_products';
+    \App\Models\Product::setGlobalTable($table);
+    return \App\Models\Product::where('id', $reference_number)->pluck('reference_number')->first();
+}
 function get_client_legal_name($company_id,$client_id)
 {
     $table = 'company_'.$company_id.'_clients';

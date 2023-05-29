@@ -35,7 +35,7 @@ class Item extends Model
     public static function setGlobalTable($table) {
         self::$globalTable = $table;
     }
-    public $appends = ['amount', 'taxAmount','otherTaxAmount','amount_with_out_vat','product_name'];
+    public $appends = ['amount', 'taxAmount','otherTaxAmount','amount_with_out_vat','product_name','product_reference_number'];
 
     public function invoice(){
 
@@ -46,6 +46,13 @@ class Item extends Model
             $table = $this->getTable();
             $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
             return get_product_name($company_id, $this->attributes['reference_id']);
+        }
+    }
+    public function getProductReferenceNumberAttribute(){
+        if(isset( $this->attributes['reference_id'] )){
+            $table = $this->getTable();
+            $company_id = filter_var($table, FILTER_SANITIZE_NUMBER_INT);
+            return get_product_reference_number($company_id, $this->attributes['reference_id']);
         }
     }
 
