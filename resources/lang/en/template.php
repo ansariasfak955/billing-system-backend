@@ -46,8 +46,8 @@ return [
     'Purchase Order' => 'Purchase Order',
     'Purchase Delivery Note' => 'Purchase Delivery Note',
     'Purchase Invoice' => 'Purchase Invoice',
-    'Normal Invoice' => 'Normal Invoice',
+    'Normal Invoice' => 'Normal Invoice INFO',
     'Refund Invoice' => 'Refund Invoice',
-    'info' => 'INFO',
+    'info' => ' INFO',
 
 ];

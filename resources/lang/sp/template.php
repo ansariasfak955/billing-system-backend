@@ -48,7 +48,5 @@ return [
     'Purchase Invoice' => 'Factura de compra',
     'Normal Invoice' => 'Factura normal',
     'Refund Invoice' => 'Reembolso Factura',
-    // 'info' => ' INFORMACIÓN',
-
 
 ];
