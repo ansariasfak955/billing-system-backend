@@ -249,6 +249,11 @@ class InvoiceReceiptController extends Controller
             ]);
         }
         $id =  ($receipt ? $receipt->id : $invoiceReceipt->id);
+        
+        if (!$request->paid) {
+            $receipt->paid = '0';
+            $receipt->save();
+        }
         return response()->json([
             "status" => true,
             "data" => InvoiceReceipt::with('invoice')->find($id)
